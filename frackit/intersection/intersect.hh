@@ -605,10 +605,9 @@ intersect(const CylindricalSurface<ctype>& cylSurface,
     // infininte cylinder surface with the supporting plane of the disk
     Ellipse infEllipse;
     if (diskIsOrthogonal)
-    {
-        const auto center = disk.supportingPlane().projection(cylSurface.centerSegment().source());
-        infEllipse = Ellipse(center, cylSurface.base1(), cylSurface.base2(), cylSurface.radius(), cylSurface.radius());
-    }
+        infEllipse = Ellipse(disk.supportingPlane().projection(cylSurface.centerSegment().source()),
+                             cylSurface.base1(), cylSurface.base2(),
+                             cylSurface.radius(), cylSurface.radius());
     else if (!diskIsParallel)
     {
         Vector cylDir(cylSurface.direction());
@@ -626,6 +625,33 @@ intersect(const CylindricalSurface<ctype>& cylSurface,
         const auto center = std::get<Point>(intersect(diskPlane, cylAxisLine, eps));
         infEllipse = Ellipse(center, majAxis, minAxis, majAxisLength, cylSurface.radius());
     }
+
+    // lambda to select the intersecting ellipse arc s.t. its center is contained
+    // in the set of provided edges (from which the corners were extracted)
+    auto selectArc = [&infEllipse, eps] (const auto& p1, const auto& p2, const auto& edges)
+    {
+        EllipseArc arc1(infEllipse, p1, p2);
+        EllipseArc arc2(infEllipse, p2, p1);
+        const auto center1 = OCCUtilities::point(arc1.getPoint(0.5));
+        const auto center2 = OCCUtilities::point(arc2.getPoint(0.5));
+
+        // select the arc whose center is on the set of given edges
+        unsigned int resultArcIndex = 0;
+        for (const auto& edge : edges)
+        {
+            // get unbounded curve and parameter bounds (umin, umax), then trim
+            Standard_Real uMin, uMax;
+            Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, uMin, uMax);
+            curve = new Geom_TrimmedCurve(curve, uMin, uMax);
+            GeomAPI_ProjectPointOnCurve c1OnCurve(center1, curve);
+            GeomAPI_ProjectPointOnCurve c2OnCurve(center2, curve);
+            if (c1OnCurve.LowerDistance() < eps) { resultArcIndex = 1; break; }
+            if (c2OnCurve.LowerDistance() < eps) { resultArcIndex = 2; break; }
+        }
+
+        assert(resultArcIndex != 0);
+        return resultArcIndex == 1 ? arc1 : arc2;
+    };
 
     // Find new edges in the interior of the disk, which
     // can occur if the disk is larger than the entire cylinder
@@ -663,58 +689,25 @@ intersect(const CylindricalSurface<ctype>& cylSurface,
             const auto& c2 = corners.second[1] == 0 ? TopExp::FirstVertex(wireEdges[corners.second[0]])
                                                     : TopExp::LastVertex(wireEdges[corners.second[0]]);
 
-            auto p1 = OCCUtilities::point(c1);
-            auto p2 = OCCUtilities::point(c2);
-
-            if (diskIsParallel) // edge is a segment
-                segmentIntersections.emplace_back(p1, p2);
+            if (diskIsParallel)
+                segmentIntersections.emplace_back(OCCUtilities::point(c1), OCCUtilities::point(c2));
             else
-            {
-                // if (!isRightHandSystem(Vector(infEllipse.center(), p1),
-                //                        Vector(infEllipse.center(), p2),
-                //                        Vector(infEllipse.normal())))
-                //     std::swap(p1, p2);
-
-                EllipseArc arc1(infEllipse, p1, p2);
-                EllipseArc arc2(infEllipse, p2, p1);
-
-                // select the arc whose center is on the wire
-                const auto center1 = OCCUtilities::point(arc1.getPoint(0.5));
-                const auto center2 = OCCUtilities::point(arc2.getPoint(0.5));
-
-                unsigned int resultArcIndex = 0;
-                for (const auto& edge : wireEdges)
-                {
-                    // get unbounded curve and parameter bounds (umin, umax), then trim
-                    Standard_Real uMin, uMax;
-                    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, uMin, uMax);
-                    curve = new Geom_TrimmedCurve(curve, uMin, uMax);
-                    GeomAPI_ProjectPointOnCurve c1OnCurve(center1, curve);
-                    GeomAPI_ProjectPointOnCurve c2OnCurve(center2, curve);
-                    if (c1OnCurve.LowerDistance() < eps) { resultArcIndex = 1; break; }
-                    if (c2OnCurve.LowerDistance() < eps) { resultArcIndex = 2; break; }
-                }
-
-                assert(resultArcIndex != 0);
-                if (resultArcIndex == 1) ellipseArcIntersections.push_back(arc1);
-                else ellipseArcIntersections.push_back(arc2);
-            }
+                ellipseArcIntersections.push_back(selectArc(OCCUtilities::point(c1),
+                                                            OCCUtilities::point(c2),
+                                                            wireEdges));
         }
 
-        // The closed wire is the disk boundary and
-        // might still be (or parts of it) the intersection.
+        // The closed wire is the disk boundary and can be the intersection (or a part of it)
         if (diskFaces.size() == 1 && closedWires.size() == 1 && internalWires.size() == 0)
         {
             // Detect those edges that are on the cylinder.
             std::vector<TopoDS_Edge> edgesOnCylinder;
             for (const auto& edge : closedWires[0])
-            {
-                const auto c1 = OCCUtilities::point(TopExp::FirstVertex(edge));
-                const auto c2 = OCCUtilities::point(TopExp::LastVertex(edge));
-                if (cylSurface.contains(c1, eps) && cylSurface.contains(c2, eps))
+                if (cylSurface.contains(OCCUtilities::point(TopExp::FirstVertex(edge)), eps)
+                    && cylSurface.contains(OCCUtilities::point(TopExp::LastVertex(edge)), eps))
                     edgesOnCylinder.push_back(edge);
-            }
 
+            // the entire disk boundary is on the cylinder
             if (edgesOnCylinder.size() == closedWires[0].size())
             {
                 const auto& be = disk.boundingEllipse();
@@ -725,54 +718,21 @@ intersect(const CylindricalSurface<ctype>& cylSurface,
                                 { return cylSurface.contains(be.getPoint(param), eps); }))
                     return ResultType({ disk.boundingEllipse() });
             }
-
-            if (edgesOnCylinder.size() > 0 && diskVertices.size() > 1)
+            // a part of it is on the cylinder
+            else if (edgesOnCylinder.size() > 0)
             {
                 const auto corners = OCCUtilities::getBoundaryVertices(edgesOnCylinder);
                 const auto& c1 = corners.first[1] == 0 ? TopExp::FirstVertex(edgesOnCylinder[corners.first[0]])
                                                        : TopExp::LastVertex(edgesOnCylinder[corners.first[0]]);
                 const auto& c2 = corners.second[1] == 0 ? TopExp::FirstVertex(edgesOnCylinder[corners.second[0]])
                                                         : TopExp::LastVertex(edgesOnCylinder[corners.second[0]]);
-
-                auto p1 = OCCUtilities::point(c1);
-                auto p2 = OCCUtilities::point(c2);
-
-                if (!p1.isEqual(p2))
-                {
-                    // std::cout << "p1 = " << p1 << std::endl;
-                    // std::cout << "p2 = " << p2 << std::endl;
-                    // if (!isRightHandSystem(Vector(infEllipse.center(), p1),
-                    //                        Vector(infEllipse.center(), p2),
-                    //                        Vector(infEllipse.normal())))
-                    //     std::swap(p1, p2);
-
-                    EllipseArc arc1(infEllipse, p1, p2);
-                    EllipseArc arc2(infEllipse, p2, p1);
-
-                    // Check if the center of one of the arcs is on the cylinder edges
-                    const auto center1 = OCCUtilities::point(arc1.getPoint(0.5));
-                    const auto center2 = OCCUtilities::point(arc2.getPoint(0.5));
-
-                    unsigned int resultArcIndex = 0;
-                    for (const auto& edge : edgesOnCylinder)
-                    {
-                        // get unbounded curve and parameter bounds (umin, umax), then trim
-                        Standard_Real uMin, uMax;
-                        Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, uMin, uMax);
-                        curve = new Geom_TrimmedCurve(curve, uMin, uMax);
-                        GeomAPI_ProjectPointOnCurve c1OnCurve(center1, curve);
-                        GeomAPI_ProjectPointOnCurve c2OnCurve(center2, curve);
-                        if (c1OnCurve.LowerDistance() < eps) { resultArcIndex = 1; break; }
-                        if (c2OnCurve.LowerDistance() < eps) { resultArcIndex = 2; break; }
-                    }
-
-                    if (resultArcIndex == 1) ellipseArcIntersections.push_back(arc1);
-                    else if (resultArcIndex == 2) ellipseArcIntersections.push_back(arc2);
-                }
+                ellipseArcIntersections.push_back(selectArc(OCCUtilities::point(c1),
+                                                            OCCUtilities::point(c2),
+                                                            edgesOnCylinder));
             }
         }
     }
-std::cout << "NUMFACES: " << diskFaces.size() << std::endl;
+
     // If the face was split, find the new edges that lie on the cylinder.
     // These edges exist on two faces, so we are looking for "duplicates"
     for (unsigned int i = 0; i < diskFaces.size(); ++i)
@@ -780,7 +740,6 @@ std::cout << "NUMFACES: " << diskFaces.size() << std::endl;
         for (unsigned int j = i+1; j < diskFaces.size(); ++j)
         {
             const auto overlap = OCCUtilities::getOverlapEdges(diskFaces[i], diskFaces[j]);
-
             if (overlap.size() > 0)
             {
                 const auto cornerInfo = OCCUtilities::getBoundaryVertices(overlap);
@@ -789,58 +748,15 @@ std::cout << "NUMFACES: " << diskFaces.size() << std::endl;
                 const auto& v1 = cornerInfo.first[1] == 0 ? TopExp::FirstVertex(edge1) : TopExp::LastVertex(edge1);
                 const auto& v2 = cornerInfo.second[1] == 0 ? TopExp::FirstVertex(edge2) : TopExp::LastVertex(edge2);
 
-                if (diskIsParallel) // this is a segment
+                if (diskIsParallel)
                     segmentIntersections.emplace_back(OCCUtilities::point(v1), OCCUtilities::point(v2));
-                else // this is an ellipse arc
-                {
-                    auto p1 = OCCUtilities::point(v1);
-                    auto p2 = OCCUtilities::point(v2);
-                    // if (!isRightHandSystem(Vector(infEllipse.center(), p1),
-                    //                        Vector(infEllipse.center(), p2),
-                    //                        Vector(infEllipse.normal())))
-                    //     std::swap(p1, p2);
-
-                    EllipseArc arc1(infEllipse, p1, p2);
-                    EllipseArc arc2(infEllipse, p2, p1);
-
-                    // select the arc whose center is on the overlap region
-                    const auto center1 = OCCUtilities::point(arc1.getPoint(0.5));
-                    const auto center2 = OCCUtilities::point(arc2.getPoint(0.5));
-
-                    unsigned int resultArcIndex = 0;
-                    for (const auto& edge : overlap)
-                    {
-                        // get unbounded curve and parameter bounds (umin, umax), then trim
-                        Standard_Real uMin, uMax;
-                        Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, uMin, uMax);
-                        curve = new Geom_TrimmedCurve(curve, uMin, uMax);
-                        GeomAPI_ProjectPointOnCurve c1OnCurve(center1, curve);
-                        GeomAPI_ProjectPointOnCurve c2OnCurve(center2, curve);
-                        if (c1OnCurve.LowerDistance() < eps) { resultArcIndex = 1; break; }
-                        if (c2OnCurve.LowerDistance() < eps) { resultArcIndex = 2; break; }
-                    }
-
-                    assert(resultArcIndex != 0);
-                    if (resultArcIndex == 1) ellipseArcIntersections.push_back(arc1);
-                    else ellipseArcIntersections.push_back(arc2);
-                }
+                else
+                    ellipseArcIntersections.push_back(selectArc(OCCUtilities::point(v1),
+                                                                OCCUtilities::point(v2),
+                                                                overlap));
             }
         }
     }
-
-    // // The disk boundary might still itself describe the intersection
-    // if (diskFaces.size() == 1
-    //     && segmentIntersections.empty()
-    //     && ellipseArcIntersections.empty())
-    // {
-    //     const auto& be = disk.boundingEllipse();
-    //     std::vector<ctype> params({0.0, 0.25, 0.5, 0.75});
-    //     if (std::all_of(params.begin(),
-    //                     params.end(),
-    //                     [&cylSurface, &be, eps] (auto param)
-    //                     { return cylSurface.contains(be.getPoint(param), eps); }))
-    //         return ResultType({ disk.boundingEllipse() });
-    // }
 
     // There might still be touching points
     if (segmentIntersections.size() < 2 && ellipseArcIntersections.size() < 2)
@@ -856,13 +772,12 @@ std::cout << "NUMFACES: " << diskFaces.size() << std::endl;
                 const auto onArc = std::any_of(ellipseArcIntersections.begin(),
                                                ellipseArcIntersections.end(),
                                                [&p, eps] (const auto& arc) { return arc.contains(p, eps); });
-                // avoid duplicates
+
                 if (!onSeg && !onArc)
                     if (std::none_of(pointIntersections.begin(),
                                      pointIntersections.end(),
                                      [&p, eps] (const auto isP) { return isP.isEqual(p, eps); }))
-                    {std::cout << "ADDING " <<std::setprecision(15) << p << " with eps " << eps << std::endl;
-                        pointIntersections.emplace_back(std::move(p));}
+                        pointIntersections.emplace_back(std::move(p));
             }
         }
     }

@@ -41,11 +41,11 @@ class EllipseArc;
 /*!
  * \brief \todo TODO doc me.
  */
-template<class Scalar>
-class EllipseArc<Scalar, /*worldDim=*/3>
-: public Ellipse<Scalar, /*worldDim=*/3>
+template<class CT>
+class EllipseArc<CT, /*worldDim=*/3>
+: public Ellipse<CT, /*worldDim=*/3>
 {
-    using ParentType = Frackit::Ellipse<Scalar, /*worldDim=*/3>;
+    using ParentType = Frackit::Ellipse<CT, /*worldDim=*/3>;
 
 public:
     //! export dimensionality

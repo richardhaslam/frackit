@@ -80,8 +80,8 @@ int main()
     using Direction = typename Disk::Direction;
     using Vector = typename Direction::Vector;
 
-    // TODO: DOES NOT WORK FOR OTHER SCALES!!
-    std::vector<ctype> scales({1.0});
+    // OCC seems to fail below 1e-3 :(
+    std::vector<ctype> scales({1.0e-3, 1.0, 1.0e3});
     for (auto f : scales)
     {
         std::cout << "\nChecking scale factor " << f << std::endl;
@@ -124,7 +124,7 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // no intersection
-        result = intersect(cylSurface, Disk(Point(1.0*f + 1e-5*f, 0.0, 0.0), e1, e2, 0.5*f, 0.25*f));
+        result = intersect(cylSurface, Disk(Point(1.0*f + 1e-3*f, 0.0, 0.0), e1, e2, 0.5*f, 0.25*f));
         if (result.size() > 1)
             throw std::runtime_error(std::string("5: More than one intersection found"));
         for (const auto& variant : result)
@@ -147,10 +147,10 @@ int main()
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipseArc); }, variant);
         std::cout << "Test passed" << std::endl;
 
-        // same as the previous test but with an inclined disk
+        // // same as the previous test but with an inclined disk
         const auto e11 = Direction(Vector(1.0, 0.0, -0.3));
         const auto e21 = Direction(Vector(0.0, 1.0, 0.0));
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e11, e21, 0.75*f, 0.25*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e11, e21, 0.75*f, 0.25*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("8: Did not find two intersections"));
         for (const auto& variant : result)
@@ -158,15 +158,16 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // disk that is much bigger, intersection an ellipse
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e11, e21, 2.0*f, 2.0*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e11, e21, 2.0*f, 2.0*f));
         if (result.size() > 1)
             throw std::runtime_error(std::string("9: Found more than one intersection"));
+        std::cout << "Checking test 9" << std::endl;
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipse); }, variant);
         std::cout << "Test passed" << std::endl;
 
         // disk that touches in two points
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e1, e2, 0.5*f, 0.12*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e1, e2, 0.5*f, 0.12*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("10: Did not find two intersections"));
         for (const auto& variant : result)
@@ -174,7 +175,7 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects in two short segments
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e1, e3, 0.6*f, 0.12*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e1, e3, 0.6*f, 0.12*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("11: Did not find two intersections"));
         for (const auto& variant : result)
@@ -183,7 +184,7 @@ int main()
 
         // disk that intersects in two short arcs
         const auto e22 = Direction(Vector(0.0, 1.0, 0.3));
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e1, e22, 0.6*f, 0.12*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e1, e22, 0.6*f, 0.12*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("12: Did not find two intersections"));
         for (const auto& variant : result)
@@ -192,7 +193,7 @@ int main()
 
         // disk that intersects in two long arcs
         const auto e23 = Direction(Vector(0.0, 0.3, 1.0));
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e1, e23, 2.0*f, 2.0*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e1, e23, 2.0*f, 2.0*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("13: Did not find two intersections"));
         for (const auto& variant : result)
@@ -200,7 +201,7 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects in one segment and one point
-        result = intersect(cylSurface, Disk(Point(0.5*f, 0.0, 0.5), e1, e3, f, 0.2*f));
+        result = intersect(cylSurface, Disk(Point(0.5*f, 0.0, 0.5*f), e1, e3, f, 0.2*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("14: Did not find two intersections"));
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::point); }, result[0]);
@@ -208,7 +209,7 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects in one arc and one point
-        result = intersect(cylSurface, Disk(Point(0.5*f, 0.0, 0.5), e1, e22, f, 0.2*f));
+        result = intersect(cylSurface, Disk(Point(0.5*f, 0.0, 0.5*f), e1, e22, f, 0.2*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("15: Did not find two intersections"));
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::point); }, result[0]);
