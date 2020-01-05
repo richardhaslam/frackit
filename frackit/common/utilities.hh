@@ -50,6 +50,7 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 // explorer for shape objects
 #include <TopExp.hxx>
@@ -314,6 +315,25 @@ namespace OCCUtilities {
             throw std::runtime_error(std::string("Common operation failed"));
 
         return common.Shape();
+    }
+
+    //! Convenience function to get the shape resulting from the fragmentation of a set of objects
+    template<class ctype>
+    TopoDS_Shape fragment(const std::vector<TopoDS_Shape>& objects, ctype eps)
+    {
+        TopTools_ListOfShape shapes;
+        for (const auto& shape : objects)
+            shapes.Append(shape);
+
+        BRepAlgoAPI_BuilderAlgo fragments;
+        fragments.SetRunParallel(false);
+        fragments.SetArguments(shapes);
+        fragments.SetFuzzyValue(eps);
+        fragments.Build();
+        if (!fragments.IsDone())
+            throw std::runtime_error(std::string("Could not perform segment fragmentation"));
+
+        return fragments.Shape();
     }
 
     /*!

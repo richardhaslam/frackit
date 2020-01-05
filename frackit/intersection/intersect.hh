@@ -126,7 +126,6 @@ intersect(const Segment<ctype, wd>& segment1,
     using ResultType = Intersection<Segment<ctype, wd>, Segment<ctype, wd>>;
     using Segment = Frackit::Segment<ctype, wd>;
     using Direction = typename Segment::Direction;
-    using PointType = typename Segment::Point;
 
     const auto& s1 = segment1.source();
     const auto& s2 = segment2.source();
@@ -162,63 +161,31 @@ intersect(const Segment<ctype, wd>& segment1,
     }
 
     // Fragment the lines to find the intersection point
-    gp_Pnt p11(s1.x(), s1.y(), s1.z());
-    gp_Pnt p12(t1.x(), t1.y(), t1.z());
+    std::vector<TopoDS_Shape> segmentEdges;
+    segmentEdges.emplace_back(OCCUtilities::makeEdge(s1, t1));
+    segmentEdges.emplace_back(OCCUtilities::makeEdge(s2, t2));
 
-    gp_Pnt p21(s2.x(), s2.y(), s2.z());
-    gp_Pnt p22(t2.x(), t2.y(), t2.z());
+    const auto fragmentShape = OCCUtilities::fragment(segmentEdges, 0.1*eps);
+    const auto edges = OCCUtilities::getEdges(fragmentShape);
 
-    const std::string errMsgEdge = "Could not create edge from segment";
-    BRepBuilderAPI_MakeEdge e1(p11, p12); e1.Build(); if (!e1.IsDone()) throw std::runtime_error(errMsgEdge);
-    BRepBuilderAPI_MakeEdge e2(p21, p22); e2.Build(); if (!e2.IsDone()) throw std::runtime_error(errMsgEdge);
-    auto shapeE1 = TopoDS_Edge(e1);
-    auto shapeE2 = TopoDS_Edge(e2);
-
-    // non-parallel segments might intersect
-    TopTools_ListOfShape shapes;
-    shapes.Append(shapeE1);
-    shapes.Append(shapeE2);
-
-    // fragment the segments to detect
-    BRepAlgoAPI_BuilderAlgo fragments;
-    fragments.SetRunParallel(false);
-    fragments.SetArguments(shapes);
-    fragments.SetFuzzyValue(eps);
-    fragments.Build();
-    if (!fragments.IsDone())
-        throw std::runtime_error(std::string("Could not perform segment fragmentation"));
-
-    // explore the number of edges of the resulting shape
-    TopExp_Explorer explorer;
-    std::vector<TopoDS_Edge> edges;
-    for (explorer.Init(fragments.Shape(), TopAbs_EDGE); explorer.More(); explorer.Next())
-        edges.push_back(TopoDS::Edge(explorer.Current()));
-
-    // both segments are split by the intersection point
-    if (edges.size() == 4)
+    // If the result has 3 edges, a corner of one segment splits the other segment.
+    // If it has 4 edges, both segments are split by the intersection point.
+    // In either case, find the newly created point which is the intersection.
+    const auto numEdges = edges.size();
+    if (numEdges == 3 || numEdges == 4)
     {
-        // find the new point, e.g. on the first edge
-        for (explorer.Init(edges[0], TopAbs_VERTEX); explorer.More(); explorer.Next())
-        {
-            const auto curPoint = BRep_Tool::Pnt(TopoDS::Vertex(explorer.Current()));
-            if (!curPoint.IsEqual(p11, eps) && !curPoint.IsEqual(p12, eps)
-                && !curPoint.IsEqual(p21, eps) && !curPoint.IsEqual(p22, eps))
-                return ResultType( PointType(curPoint.X(), curPoint.Y(), curPoint.Z()) );
-        }
-    }
-
-    // a corner of one segment splits the other segment
-    if (edges.size() == 3)
-    {
-        // find the new point
         for (const auto& edge : edges)
-            for (explorer.Init(edge, TopAbs_VERTEX); explorer.More(); explorer.Next())
+        {
+            for (TopExp_Explorer explorer(edge, TopAbs_VERTEX); explorer.More(); explorer.Next())
             {
-                const auto curPoint = BRep_Tool::Pnt(TopoDS::Vertex(explorer.Current()));
-                if (!curPoint.IsEqual(p11, eps) && !curPoint.IsEqual(p12, eps)
-                    && !curPoint.IsEqual(p21, eps) && !curPoint.IsEqual(p22, eps))
-                    return ResultType( PointType(curPoint.X(), curPoint.Y(), curPoint.Z()) );
+                auto curPoint = OCCUtilities::point(TopoDS::Vertex(explorer.Current()));
+                if (!curPoint.isEqual(s1, eps) && !curPoint.isEqual(t1, eps)
+                    && !curPoint.isEqual(s2, eps) && !curPoint.isEqual(t2, eps))
+                    return ResultType( std::move(curPoint) );
             }
+        }
+
+        throw std::runtime_error(std::string("Could not find intersection point"));
     }
 
     // a pair of corners being equal is the last possible option
@@ -270,12 +237,10 @@ intersect(const Plane<ctype, 3>& plane1,
     Handle(Geom_Plane) gpPlane1 = new Geom_Plane(c1, d1);
     Handle(Geom_Plane) gpPlane2 = new Geom_Plane(c2, d2);
     GeomAPI_IntSS interSection(gpPlane1, gpPlane2, eps);
-
     if (!interSection.IsDone())
         throw std::runtime_error(std::string("Could not perform plane-plane intersection"));
-    if (interSection.NbLines() != 1)
-        throw std::runtime_error(std::string("Could not find single intersection line"));
 
+    assert(interSection.NbLines() == 1);
     assert(!interSection.Line(1)->IsClosed());
     assert(interSection.Line(1)->IsCN(1));
 
@@ -305,8 +270,8 @@ intersect(const Plane<ctype, 3>& plane,
     using ResultType = Intersection< Plane<ctype, 3>, Line<ctype, 3> >;
 
     // if the line is not parallel to the plane, the result can only be a point
-    gp_Vec lineDir(OCCUtilities::direction(line.direction()));
-    gp_Vec planeNormal(OCCUtilities::direction(plane.normal()));
+    const auto lineDir = OCCUtilities::direction(line.direction());
+    const auto planeNormal = OCCUtilities::direction(plane.normal());
     if (!lineDir.IsNormal(planeNormal, Precision<ctype>::angular()))
     {
         const auto linePoint = OCCUtilities::point(line.supportingPoint());
@@ -315,7 +280,6 @@ intersect(const Plane<ctype, 3>& plane,
         // let the the geometry package compute the intersection
         Handle(Geom_Surface) planeHandle = new Geom_Plane(planePoint, planeNormal);
         Handle(Geom_Line) lineHandle = new Geom_Line(linePoint, lineDir);
-
         GeomAPI_IntCS interSection(lineHandle, planeHandle);
         if (!interSection.IsDone())
             throw std::runtime_error(std::string("Could not perform disk-line intersection"));
