@@ -86,6 +86,39 @@ int main()
         EllipseArc fullArc2(ellipse, p, p);
         if (!fullArc2.isFullEllipse())
             throw std::runtime_error(std::string("Arc2 is not a full ellipse"));
+
+        // check arc length computation
+        using std::abs;
+        const ctype eps = f*Frackit::Precision<ctype>::confusion();
+        if ( abs(fullArc1.length() - ellipse.length()) > eps )
+            throw std::runtime_error(std::string("Full arc 1 does not have correct length"));
+        if ( abs(fullArc2.length() - ellipse.length()) > eps )
+            throw std::runtime_error(std::string("Full arc 2 does not have correct length"));
+
+        // create circular arcs to test lengths on various orientations
+        std::vector<Ellipse> circles;
+        circles.emplace_back(Point(0.0, 0.0, 0.0), e1, e2, f, f);
+        circles.emplace_back(Point(0.0, 0.0, 0.0), e1, Vector(0.0, 1.0, 1.0), f, f);
+        circles.emplace_back(Point(0.0, 0.0, 0.0), Vector(1.0, 0.0, 1.0), e2, f, f);
+        circles.emplace_back(Point(0.0, 0.0, 0.0), Vector(1.0, 1.0, 1.0), Vector(-1.0, 1.0, 0.0), f, f);
+
+        std::vector<ctype> angles({0.0, M_PI/4.0, M_PI/2.0, 3.0*M_PI/4.0, M_PI, 3.0*M_PI/2.0});
+        for (const auto& c : circles)
+        {
+            for (auto a1 : angles)
+                for (auto a2 : angles)
+                {
+                    if (a1 == a2) continue;
+
+                    const auto l = EllipseArc(c,
+                                              c.getPointFromAngle(a1),
+                                              c.getPointFromAngle(a2)).length();
+                    const auto deltaAngle = a2 < a1 ? 2.0*M_PI - (a1 - a2) : a2 - a1;
+
+                    if ( abs(l - deltaAngle*f) > eps )
+                        throw std::runtime_error("Wrong arc length");
+                }
+        }
     }
 
     std::cout << "All tests passed" << std::endl;

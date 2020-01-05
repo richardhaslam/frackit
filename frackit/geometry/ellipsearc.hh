@@ -26,6 +26,7 @@
 #include <cmath>
 #include <stdexcept>
 
+#include <frackit/common/utilities.hh>
 #include "precision.hh"
 #include "ellipse.hh"
 #include "vector.hh"
@@ -104,7 +105,13 @@ public:
 
     //! \todo TODO doc me.
     ctype length() const
-    { throw std::runtime_error( std::string("NotImplemented: Length of ellipse arc") ); }
+    {
+        if (isFullEllipse())
+             return M_PI*(this->majorAxisLength() + this->minorAxisLength());
+
+        const auto handle = OCCUtilities::getGeomCurveHandle(*this);
+        return OCCUtilities::computeLength(handle);
+    }
 
     //! Return the ellipse that supports this arc
     Ellipse supportingEllipse() const

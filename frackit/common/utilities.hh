@@ -23,6 +23,7 @@
 #ifndef FRACKIT_UTILITIES_HH
 #define FRACKIT_UTILITIES_HH
 
+#include <cmath>
 #include <algorithm>
 #include <stdexcept>
 
@@ -30,6 +31,14 @@
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Elips.hxx>
+
+// objects from the geometry
+#include <Geom_Ellipse.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 
 // shape classes from TopoDS package
 #include <TopoDS.hxx>
@@ -60,12 +69,16 @@
 // internal geometry classes
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/ellipse.hh>
+#include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindricalsurface.hh>
 #include <frackit/geometry/precision.hh>
 
 namespace Frackit {
+
+//! Forward declarations
+template<class CT, int dim> class EllipseArc;
 
 // utility functions for communication with OpenCascade
 namespace OCCUtilities {
@@ -106,6 +119,42 @@ namespace OCCUtilities {
         if (dim == 1) return gp_Dir(dir.x(), 0.0, 0.0);
         else if (dim == 2) return gp_Dir(dir.x(), dir.y(), 0.0);
         else if (dim == 3) return gp_Dir(dir.x(), dir.y(), dir.z());
+    }
+
+    //! returns a Geom_Curve handle for an ellipse
+    template<class ctype>
+    Handle(Geom_Curve) getGeomCurveHandle(const Ellipse<ctype, 3>& ellipse)
+    {
+        gp_Dir normal = direction(ellipse.normal());
+        gp_Dir majorAx = direction(ellipse.majorAxis());
+        gp_Pnt center = point(ellipse.center());
+        gp_Elips gpEllipse(gp_Ax2(center, normal, majorAx),
+                           ellipse.majorAxisLength(),
+                           ellipse.minorAxisLength());
+        return new Geom_Ellipse(gpEllipse);
+    }
+
+    //! returns a Geom_Curve handle for an ellipse arc
+    template<class ctype>
+    Handle(Geom_Curve) getGeomCurveHandle(const EllipseArc<ctype, 3>& ellipseArc)
+    {
+        const auto& ellipse = ellipseArc.supportingEllipse();
+        const auto geomEllipseHandle = getGeomCurveHandle(ellipse);
+        const auto angleSource = ellipse.getAngle(ellipseArc.source());
+        auto angleTarget = ellipse.getAngle(ellipseArc.target());
+        if (angleTarget > angleSource)
+            angleTarget += 2.0*M_PI;
+        return new Geom_TrimmedCurve(geomEllipseHandle, angleSource, angleTarget);
+    }
+
+    //! returns the length of a curve
+    template<class ctype = double>
+    ctype computeLength(const Handle(Geom_Curve)& curve)
+    {
+        const auto uMin = curve->FirstParameter();
+        const auto uMax = curve->LastParameter();
+        GeomAdaptor_Curve adaptorCurve(curve, uMin, uMax);
+        return GCPnts_AbscissaPoint::Length(adaptorCurve, uMin, uMax);
     }
 
     //! converts a gp direction object into an internal one

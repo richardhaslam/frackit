@@ -126,7 +126,6 @@ public:
         return result;
     }
 
-protected:
     //! Returns the angle corresponding to a point on the ellipse
     ctype getAngle(const Point& p, bool checkIfOnEllipse = true) const
     {
