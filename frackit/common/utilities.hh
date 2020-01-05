@@ -34,6 +34,7 @@
 // shape classes from TopoDS package
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Vertex.hxx>
 
@@ -58,6 +59,8 @@
 
 // internal geometry classes
 #include <frackit/geometry/point.hh>
+#include <frackit/geometry/ellipse.hh>
+#include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindricalsurface.hh>
 #include <frackit/geometry/precision.hh>
@@ -114,6 +117,22 @@ namespace OCCUtilities {
         return Direction<ctype, dim>(Vector(dir.X(), dir.Y(), dir.Z()));
     }
 
+    //! get the BRep of a cylinder
+    template<class ctype>
+    TopoDS_Solid getShape(const Cylinder<ctype>& cylinder)
+    {
+        const auto& lateral = cylinder.lateralFace();
+        const auto& bottom = lateral.lowerBoundingCircle();
+        auto axis = direction(bottom.normal());
+        auto base1 = direction(bottom.base1());
+        auto center = point(bottom.center());
+        BRepPrimAPI_MakeCylinder makeCylinder(gp_Ax2(center, axis, base1),
+                                              bottom.radius(),
+                                              lateral.height(),
+                                              2.0*M_PI);
+        return TopoDS::Solid(makeCylinder.Shape());
+    }
+
     //! get the BRep of a lateral cylinder surface
     template<class ctype>
     TopoDS_Face getShape(const CylindricalSurface<ctype>& cylSurface)
@@ -127,6 +146,21 @@ namespace OCCUtilities {
                                               cylSurface.height(),
                                               2.0*M_PI);
         return makeCylinder.Cylinder().LateralFace();
+    }
+
+    //! get the BRep of a 3-dimensional ellipse
+    template<class ctype>
+    TopoDS_Wire getShape(const Ellipse<ctype, 3>& ellipse)
+    {
+        gp_Dir normal = direction(ellipse.normal());
+        gp_Dir majorAx = direction(ellipse.majorAxis());
+        gp_Pnt center = point(ellipse.center());
+        gp_Elips gpEllipse(gp_Ax2(center, normal, majorAx),
+                           ellipse.majorAxisLength(),
+                           ellipse.minorAxisLength());
+
+        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(gpEllipse);
+        return BRepBuilderAPI_MakeWire(edge);
     }
 
     //! get the BRep of a disk
