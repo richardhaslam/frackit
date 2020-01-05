@@ -26,6 +26,9 @@
 #include <cmath>
 #include <stdexcept>
 
+#include <Standard_Handle.hxx>
+#include <Geom_Curve.hxx>
+
 #include <frackit/common/utilities.hh>
 #include "precision.hh"
 #include "ellipse.hh"
@@ -36,8 +39,19 @@ namespace Frackit {
 /*!
  * \brief \todo TODO doc me.
  */
-template<class Scalar, int worldDim>
+template<class CT, int worldDim>
 class EllipseArc;
+
+//! Forward declarations of the required utility functions
+namespace OCCUtilities {
+    //! returns a Geom_Curve handle for a 2d ellipse arc
+    template<class ctype>
+    Handle(Geom_Curve) getGeomCurveHandle(const EllipseArc<ctype, 3>& ellipseArc);
+
+    //! returns the length of a curve
+    template<class ctype = double>
+    ctype computeLength(const Handle(Geom_Curve)& curve);
+} // end namespace OCCUtilities
 
 /*!
  * \brief \todo TODO doc me.

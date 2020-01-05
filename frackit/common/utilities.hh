@@ -24,8 +24,12 @@
 #define FRACKIT_UTILITIES_HH
 
 #include <cmath>
+#include <vector>
 #include <algorithm>
 #include <stdexcept>
+
+// Handle class used by OpenCascade
+#include <Standard_Handle.hxx>
 
 // objects from geometric processors package
 #include <gp_Pnt.hxx>
