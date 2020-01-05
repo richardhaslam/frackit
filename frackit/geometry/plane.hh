@@ -153,7 +153,7 @@ public:
             d /= length;
 
         using std::abs;
-        return abs(d*Vector(normal_)) < eps;
+        return abs(d*Vector(normal_)) < Precision<ctype>::confusion();
     }
 
 private:
