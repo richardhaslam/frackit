@@ -118,6 +118,19 @@ public:
     bool contains(const Point& p, bool checkIfOnLine = true) const
     { return contains(p, length()*Precision<ctype>::confusion(), checkIfOnLine); }
 
+    //! Returns the point on the segment for the given parameter
+    //! \note It has to be 0.0 <= param <= 1.0, where 0.0
+    //!       corresponds to the source and 1.0 to the target.
+    Point getPoint(ctype param) const
+    {
+        assert(param >= 0.0 && param <= 1.0);
+
+        auto d = Vector(source(), target());
+        d *= param;
+
+        return source() + d;
+    }
+
 private:
     Point source_;
     Point target_;
