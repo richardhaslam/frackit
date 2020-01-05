@@ -24,12 +24,17 @@
 #ifndef FRACKIT_SEGMENT_SEGMENT_INTERSECTION_HH
 #define FRACKIT_SEGMENT_SEGMENT_INTERSECTION_HH
 
+#include <stdexcept>
+#include <vector>
+
 #include <gp_Vec.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 
 #include <frackit/geometry/segment.hh>
+#include <frackit/geometry/precision.hh>
 #include <frackit/common/utilities.hh>
 
 #include <frackit/intersection/intersectiontraits.hh>

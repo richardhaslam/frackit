@@ -24,13 +24,17 @@
 #ifndef FRACKIT_PLANE_PLANE_INTERSECTION_HH
 #define FRACKIT_PLANE_PLANE_INTERSECTION_HH
 
+#include <stdexcept>
+
 #include <gp_Vec.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAPI_IntSS.hxx>
 #include <Standard_Handle.hxx>
 
 #include <frackit/geometry/plane.hh>
+#include <frackit/geometry/precision.hh>
 #include <frackit/common/utilities.hh>
+
 #include <frackit/intersection/intersectiontraits.hh>
 #include <frackit/intersection/emptyintersection.hh>
 

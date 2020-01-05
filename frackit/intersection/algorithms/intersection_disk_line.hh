@@ -25,9 +25,12 @@
 #define FRACKIT_DISK_LINE_INTERSECTION_HH
 
 #include <variant>
+#include <stdexcept>
 
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/line.hh>
+#include <frackit/geometry/precision.hh>
+
 #include <frackit/common/utilities.hh>
 #include <frackit/intersection/intersectiontraits.hh>
 #include <frackit/intersection/emptyintersection.hh>

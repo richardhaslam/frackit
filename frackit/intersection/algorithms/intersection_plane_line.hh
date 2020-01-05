@@ -24,6 +24,8 @@
 #ifndef FRACKIT_PLANE_LINE_INTERSECTION_HH
 #define FRACKIT_PLANE_LINE_INTERSECTION_HH
 
+#include <stdexcept>
+
 #include <Geom_Line.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAPI_IntCS.hxx>
@@ -31,6 +33,8 @@
 
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/line.hh>
+#include <frackit/geometry/precision.hh>
+
 #include <frackit/common/utilities.hh>
 #include <frackit/intersection/intersectiontraits.hh>
 #include <frackit/intersection/emptyintersection.hh>
