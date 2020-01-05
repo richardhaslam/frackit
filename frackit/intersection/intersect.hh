@@ -101,12 +101,12 @@
 #include <frackit/common/math.hh>
 
 #include "intersectiontraits.hh"
-#include "algorithms/intersection_segment_segment.hh"
-#include "algorithms/intersection_plane_plane.hh"
-#include "algorithms/intersection_plane_line.hh"
-#include "algorithms/intersection_disk_line.hh"
-#include "algorithms/intersection_disk_disk.hh"
-#include "algorithms/intersection_cylsurface_disk.hh"
+#include "algo_segment_segment.hh"
+#include "algo_plane_plane.hh"
+#include "algo_plane_line.hh"
+#include "algo_disk_line.hh"
+#include "algo_disk_disk.hh"
+#include "algo_cylsurface_disk.hh"
 
 namespace Frackit {
 

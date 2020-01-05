@@ -33,14 +33,14 @@
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/precision.hh>
-
 #include <frackit/common/utilities.hh>
-#include <frackit/intersection/intersectiontraits.hh>
-#include <frackit/intersection/emptyintersection.hh>
 
-#include "intersection_segment_segment.hh"
-#include "intersection_plane_plane.hh"
-#include "intersection_disk_line.hh"
+#include "intersectiontraits.hh"
+#include "emptyintersection.hh"
+
+#include "algo_segment_segment.hh"
+#include "algo_plane_plane.hh"
+#include "algo_disk_line.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {

@@ -34,10 +34,10 @@
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/line.hh>
 #include <frackit/geometry/precision.hh>
-
 #include <frackit/common/utilities.hh>
-#include <frackit/intersection/intersectiontraits.hh>
-#include <frackit/intersection/emptyintersection.hh>
+
+#include "intersectiontraits.hh"
+#include "emptyintersection.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {

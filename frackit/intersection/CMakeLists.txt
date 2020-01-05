@@ -1,6 +1,12 @@
-add_subdirectory(algorithms)
-
 install(FILES
+algo_cylsurface_disk.hh
+algo_disk_disk.hh
+algo_disk_line.hh
+algo_plane_line.hh
+algo_plane_plane.hh
+algo_segment_segment.hh
+emptyintersection.hh
 intersect.hh
+intersectionresult.hh
 intersectiontraits.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/intersection)
