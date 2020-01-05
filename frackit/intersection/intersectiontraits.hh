@@ -35,6 +35,8 @@
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/cylindricalsurface.hh>
 
+#include "emptyintersection.hh"
+
 namespace Frackit {
 
 //! \todo TODO Doc me.
@@ -44,16 +46,6 @@ struct IntersectionTraits;
 //! Convenience alias to obtain intersection type
 template<class Geometry1, class Geometry2>
 using Intersection = typename IntersectionTraits<Geometry1, Geometry2>::type;
-
-//! \todo TODO Doc me.
-template<int wd>
-struct EmptyIntersection
-{
-    static constexpr int myDimension() { return 0; }
-    static constexpr int worldDimension() { return wd; }
-
-    static std::string name() { return "EmptyIntersection"; }
-};
 
 //! \todo TODO Doc me.
 template<class ctype, int wd>

@@ -1,3 +1,5 @@
+add_subdirectory(algorithms)
+
 install(FILES
 intersect.hh
 intersectiontraits.hh
