@@ -25,7 +25,7 @@
 
 #include <cmath>
 
-#include "precision.hh"
+#include <frackit/precision/precision.hh>
 #include "point.hh"
 #include "segment.hh"
 #include "direction.hh"
@@ -96,7 +96,7 @@ public:
     , bottom_(bottom)
     {
         using std::abs;
-        const auto eps = bottom.minorAxisLength()*Precision<ctype>::confusion();
+        const auto eps = bottom.majorAxisLength()*Precision<ctype>::confusion();
         if (abs(bottom.majorAxisLength() - bottom.minorAxisLength()) > eps)
             throw std::runtime_error(std::string("Cylinder requires circular disks as base"));
     }
@@ -148,11 +148,7 @@ public:
     //! Returns true if a point lies inside the cylinder (default tolerance)
     //! \todo note about choice of eps
     bool contains(const Point& p) const
-    {
-        using std::min;
-        const auto lengthScale = min(radius(), height());
-        return contains( p, Precision<ctype>::confusion()*lengthScale );
-    }
+    { return contains( p, Precision<ctype>::confusion()*0.5*(radius() + height()) ); }
 
 private:
     //! \todo TODO doc me

@@ -24,7 +24,7 @@
 #define FRACKIT_MATH_HH
 
 #include <frackit/geometry/vector.hh>
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 
 namespace Frackit {
 
@@ -57,7 +57,9 @@ bool isRightHandSystem(const Vector<ctype, 3>& v1,
                        const Vector<ctype, 3>& v2,
                        const Vector<ctype, 3>& v3)
 {
-    assert(std::abs(boxProduct(v1, v2, v3)) > Precision<ctype>::confusion());
+    assert(std::abs(boxProduct(v1, v2, v3)) > v1.length()*Precision<ctype>::confusion()
+                                              *v2.length()*Precision<ctype>::confusion()
+                                              *v3.length()*Precision<ctype>::confusion());
     return boxProduct(v1, v2, v3) > 0.0;
 }
 

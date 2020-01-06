@@ -23,8 +23,7 @@
 #ifndef FRACKIT_GEOMETRY_SEGMENT_HH
 #define FRACKIT_GEOMETRY_SEGMENT_HH
 
-#include <cmath>
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 
 #include "point.hh"
 #include "vector.hh"
@@ -114,7 +113,10 @@ public:
     //! Returns true if a point lies on the segment
     //! \todo note about choice of eps
     bool contains(const Point& p, bool checkIfOnLine = true) const
-    { return contains(p, Vector(source(), target()).length()*Precision<ctype>::confusion(), checkIfOnLine); }
+    {
+        const auto length = Vector(source(), target()).length();
+        return contains(p, Precision<ctype>::confusion()*length, checkIfOnLine);
+    }
 
     //! Returns the point on the segment for the given parameter
     //! \note It has to be 0.0 <= param <= 1.0, where 0.0

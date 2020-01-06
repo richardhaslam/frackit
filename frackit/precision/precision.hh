@@ -18,10 +18,10 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Defines base epsilons to be used for floating point arithmetic.
  */
-#ifndef FRACKIT_GEOMETRY_PRECISION_HH
-#define FRACKIT_GEOMETRY_PRECISION_HH
+#ifndef FRACKIT_PRECISION_HH
+#define FRACKIT_PRECISION_HH
 
 // standard tolerances for floating point comparison
 #include <Precision.hxx>
@@ -31,12 +31,14 @@ namespace Frackit {
 //! Alias for the OpenCascade Precision class
 using OCCPrecision = Precision;
 
-//! \todo TODO doc me.
+/*!
+ * \brief Defines base epsilons to be used for floating point arithmetic.
+ */
 template<class ctype>
 struct Precision
 {
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Tolerance value to be used for equality queries.
      */
     static ctype confusion() { return OCCPrecision::Confusion(); }
 
@@ -51,4 +53,4 @@ struct Precision
 
 } // end namespace Frackit
 
-#endif // FRACKIT_GEOMETRY_PRECISION_HH
+#endif // FRACKIT_PRECISION_HH

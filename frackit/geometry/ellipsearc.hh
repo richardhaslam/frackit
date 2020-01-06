@@ -25,7 +25,7 @@
 
 #include <cassert>
 
-#include "precision.hh"
+#include <frackit/precision/precision.hh>
 #include "ellipse.hh"
 #include "vector.hh"
 
@@ -129,13 +129,7 @@ public:
     //! Returns true if a point is on the arc
     //! \todo note about choice of eps
     bool contains(const Point& p, bool checkIfOnEllipse = true) const
-    {
-        using std::min;
-        auto eps = min(this->majorAxisLength(), this->minorAxisLength());
-        eps *= Precision<ctype>::confusion();
-
-        return contains(p, eps, checkIfOnEllipse);
-    }
+    { return contains(p, this->majorAxisLength()*Precision<ctype>::confusion(), checkIfOnEllipse); }
 
     //! Returns the point on the arc for the given parameter
     //! \note It has to be 0.0 <= param <= 1.0, where 0.0

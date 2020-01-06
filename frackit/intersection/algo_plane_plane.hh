@@ -32,7 +32,7 @@
 #include <Standard_Handle.hxx>
 
 #include <frackit/geometry/plane.hh>
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 #include <frackit/occ/gputilities.hh>
 
 #include "intersectiontraits.hh"

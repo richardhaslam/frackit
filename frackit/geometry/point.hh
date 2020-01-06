@@ -28,7 +28,7 @@
 #include <algorithm>
 #include <initializer_list>
 
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 #include "vector.hh"
 
 namespace Frackit {
@@ -79,8 +79,16 @@ template<class CT, int wd> class Vector;
         { return "Point"; }
 
         //! Returns true if the given point is equal to this one
-        bool isEqual(const Impl& other, ctype eps = Precision<ctype>::confusion()) const
+        bool isEqual(const Impl& other, ctype eps) const
         { return Vector<ctype, wd>(asImp_(), other).squaredLength() < eps*eps; }
+
+        //! Returns true if the given point is equal to this one (default eps)
+        bool isEqual(const Impl& other) const
+        {
+            const auto scale = Vector<ctype, wd>(Impl(), asImp_()).length();
+            const auto eps = Precision<ctype>::confusion()*scale;
+            return isEqual(other, eps);
+        }
 
     protected:
         //! Provide access to the underlying coordinates

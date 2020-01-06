@@ -32,7 +32,7 @@
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 
 #include "intersectiontraits.hh"
 #include "emptyintersection.hh"

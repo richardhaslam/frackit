@@ -25,7 +25,7 @@
 
 #include <cmath>
 
-#include "precision.hh"
+#include <frackit/precision/precision.hh>
 #include "point.hh"
 #include "segment.hh"
 #include "direction.hh"
@@ -120,11 +120,7 @@ public:
     //! Returns true if a point lies on the surface (default tolerance)
     //! \todo note about choice of eps
     bool contains(const Point& p) const
-    {
-        using std::min;
-        const auto lengthScale = min(radius(), height());
-        return contains( p, Precision<ctype>::confusion()*lengthScale );
-    }
+    { return contains( p, Precision<ctype>::confusion()*0.5*(radius() + height()) ); }
 
 private:
     //! \todo TODO doc me

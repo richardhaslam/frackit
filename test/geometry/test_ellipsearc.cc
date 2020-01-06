@@ -4,7 +4,7 @@
 #include <vector>
 
 #include <frackit/magnitude/length.hh>
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 #include <frackit/geometry/ellipsearc.hh>
 
 //! test some functionality of ellipse arcs

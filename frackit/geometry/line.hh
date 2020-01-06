@@ -23,7 +23,7 @@
 #ifndef FRACKIT_GEOMETRY_LINE_HH
 #define FRACKIT_GEOMETRY_LINE_HH
 
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 
 #include "point.hh"
 #include "direction.hh"
@@ -83,9 +83,12 @@ public:
     }
 
     //! Returns true if a point lies on the line
-    //! \todo note about choice of eps
-    bool contains(const Point& p, ctype eps = Precision<ctype>::confusion()) const
+    bool contains(const Point& p, ctype eps) const
     { return Vector(p, projection(p)).squaredLength() < eps*eps; }
+
+    //! Returns true if a point lies on the line (default eps)
+    bool contains(const Point& p) const
+    { return contains(p, Precision<ctype>::confusion()); }
 
 private:
     Point supportPoint_;

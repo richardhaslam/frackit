@@ -25,7 +25,7 @@
 
 #include <cmath>
 
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 #include "ellipticalgeometry.hh"
 #include "ellipse.hh"
 #include "vector.hh"
@@ -105,13 +105,7 @@ public:
      * \todo note about choice of eps
      */
     bool contains(const Point& p, bool checkIfOnPlane = true) const
-    {
-        using std::min;
-        auto eps = min(this->majorAxisLength(), this->minorAxisLength());
-        eps *= Precision<ctype>::confusion();
-
-        return contains(p, eps, checkIfOnPlane);
-    }
+    { return contains(p, Precision<ctype>::confusion(), checkIfOnPlane); }
 
     //! Returns the ellipse describing the disk's boundary
     Ellipse boundingEllipse() const

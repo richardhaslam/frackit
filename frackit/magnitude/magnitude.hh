@@ -24,6 +24,8 @@
 #ifndef FRACKIT_MAGNITUDE_HH
 #define FRACKIT_MAGNITUDE_HH
 
+#include <type_traits>
+
 #include "length.hh"
 #include "area.hh"
 #include "volume.hh"

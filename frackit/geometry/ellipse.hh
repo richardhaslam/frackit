@@ -25,7 +25,7 @@
 
 #include <cmath>
 
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 #include "ellipticalgeometry.hh"
 #include "vector.hh"
 
@@ -64,7 +64,6 @@ public:
     static std::string name() { return "Ellipse"; }
 
     //! Returns true if a point is on the ellipse
-    //! \todo note about choice of eps
     bool contains(const Point& p, ctype eps, bool checkIfOnPlane = true) const
     {
         if (checkIfOnPlane)
@@ -82,16 +81,9 @@ public:
         return abs(x*x/(a*a) + y*y/(b*b) - 1.0) < eps;
     }
 
-    //! Returns true if a point is on the ellipse
-    //! \todo note about choice of eps
+    //! Returns true if a point is on the ellipse (default epsilon)
     bool contains(const Point& p, bool checkIfOnPlane = true) const
-    {
-        using std::min;
-        auto eps = min(this->majorAxisLength(), this->minorAxisLength());
-        eps *= Precision<ctype>::confusion();
-
-        return contains(p, eps, checkIfOnPlane);
-    }
+    { return contains(p, this->majorAxisLength()*Precision<ctype>::confusion(), checkIfOnPlane); }
 
     //! Returns the point on the arc for the given parameter
     //! \note It has to be 0.0 <= param <= 1.0, where 0.0

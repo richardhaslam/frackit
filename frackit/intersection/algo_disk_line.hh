@@ -29,10 +29,8 @@
 
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/line.hh>
-#include <frackit/geometry/precision.hh>
-
 #include <frackit/occ/breputilities.hh>
-#include <frackit/occ/gputilities.hh>
+#include <frackit/precision/precision.hh>
 
 #include "intersectiontraits.hh"
 #include "emptyintersection.hh"
@@ -121,8 +119,8 @@ intersect_disk_line(const Disk<ctype>& disk,
 
         throw std::runtime_error(std::string("Unexpected code behaviour"));
     }
-    else
-        throw std::runtime_error(std::string("Unexpected Plane-Line intersection result"));
+
+    throw std::runtime_error(std::string("Unexpected Plane-Line intersection result"));
 }
 
 } // end namespace IntersectionAlgorithms
