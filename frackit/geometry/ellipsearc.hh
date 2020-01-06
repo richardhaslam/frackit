@@ -26,10 +26,16 @@
 #include <cmath>
 #include <stdexcept>
 
-#include <Standard_Handle.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Standard_Handle.hxx>
 
-#include <frackit/common/utilities.hh>
 #include "precision.hh"
 #include "ellipse.hh"
 #include "vector.hh"
@@ -41,17 +47,6 @@ namespace Frackit {
  */
 template<class CT, int worldDim>
 class EllipseArc;
-
-//! Forward declarations of the required utility functions
-namespace OCCUtilities {
-    //! returns a Geom_Curve handle for a 2d ellipse arc
-    template<class ctype>
-    Handle(Geom_Curve) getGeomHandle(const EllipseArc<ctype, 3>& ellipseArc);
-
-    //! returns the length of a curve
-    template<class ctype = double>
-    ctype computeLength(const Handle(Geom_Curve)& curve);
-} // end namespace OCCUtilities
 
 /*!
  * \brief \todo TODO doc me.
@@ -123,8 +118,22 @@ public:
         if (isFullEllipse())
              return M_PI*(this->majorAxisLength() + this->minorAxisLength());
 
-        const auto handle = OCCUtilities::getGeomHandle(*this);
-        return OCCUtilities::computeLength(handle);
+        // create Geom_Ellipse and trim to describe arc
+        gp_Dir normal(this->normal().x(), this->normal().y(), this->normal().z());
+        gp_Dir majorAx(this->majorAxis().x(), this->majorAxis().y(), this->majorAxis().z());
+        gp_Pnt center(this->center().x(), this->center().y(), this->center().z());
+        gp_Elips gpEllipse(gp_Ax2(center, normal, majorAx),
+                           this->majorAxisLength(),
+                           this->minorAxisLength());
+        Handle(Geom_Curve) ellipseHandle = new Geom_Ellipse(gpEllipse);
+        Handle(Geom_Curve) arcHandle = targetAngle_ < sourceAngle_
+                                       ? new Geom_TrimmedCurve(ellipseHandle, sourceAngle_, targetAngle_)
+                                       : new Geom_TrimmedCurve(ellipseHandle, sourceAngle_, targetAngle_ + 2.0*M_PI);
+
+        const auto uMin = arcHandle->FirstParameter();
+        const auto uMax = arcHandle->LastParameter();
+        GeomAdaptor_Curve adaptorCurve(arcHandle, uMin, uMax);
+        return GCPnts_AbscissaPoint::Length(adaptorCurve, uMin, uMax);
     }
 
     //! Return the ellipse that supports this arc

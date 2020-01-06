@@ -35,7 +35,9 @@
 
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/precision.hh>
-#include <frackit/common/utilities.hh>
+
+#include <frackit/occ/breputilities.hh>
+#include <frackit/occ/gputilities.hh>
 
 #include "intersectiontraits.hh"
 #include "emptyintersection.hh"

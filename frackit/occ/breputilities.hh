@@ -20,10 +20,9 @@
  * \file
  * \brief \todo TODO doc me.
  */
-#ifndef FRACKIT_UTILITIES_HH
-#define FRACKIT_UTILITIES_HH
+#ifndef FRACKIT_BREP_UTILITIES_HH
+#define FRACKIT_BREP_UTILITIES_HH
 
-#include <cmath>
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
@@ -31,25 +30,13 @@
 // Handle class used by OpenCascade
 #include <Standard_Handle.hxx>
 
-// objects from geometric processors package
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Elips.hxx>
-
-// objects from the geometry
-#include <Geom_Ellipse.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-
 // shape classes from TopoDS package
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 // explorer for shape objects
@@ -72,104 +59,19 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 
 // internal geometry classes
-#include <frackit/geometry/point.hh>
 #include <frackit/geometry/ellipse.hh>
-#include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindricalsurface.hh>
-#include <frackit/geometry/precision.hh>
+
+#include "gputilities.hh"
 
 namespace Frackit {
-
-//! Forward declarations
-template<class CT, int dim> class EllipseArc;
-
-// utility functions for communication with OpenCascade
 namespace OCCUtilities {
-
-    //! converts an n-d point into a 3d point
-    template<class ctype, int dim>
-    Point<ctype, 3> convertTo3d(const Point<ctype, dim>& p)
-    {
-        static_assert(dim <= 3 && dim != 0, "Only 0 < dim <= 3 supported");
-        if (dim == 1) return Point<ctype, 3>(p.x(), 0.0, 0.0);
-        else if (dim == 2) return Point<ctype, 3>(p.x(), p.y(), 0.0);
-        else if (dim == 3) return p;
-    }
-
-    //! converts a point to an object from the geometric processors package
-    template<class ctype, int dim>
-    gp_Pnt point(const Point<ctype, dim>& p)
-    {
-        static_assert(dim <= 3 && dim != 0, "Only 0 < dim <= 3 supported");
-        if (dim == 1) return gp_Pnt(p.x(), 0.0, 0.0);
-        else if (dim == 2) return gp_Pnt(p.x(), p.y(), 0.0);
-        else if (dim == 3) return gp_Pnt(p.x(), p.y(), p.z());
-    }
-
-    //! casts a point from the geometric processors package
-    Point<double, 3> point(const gp_Pnt& p)
-    { return {p.X(), p.Y(), p.Z()}; }
 
     //! converts a vertex shape into a point
     Point<double, 3> point(const TopoDS_Vertex& v)
     { return point(BRep_Tool::Pnt(v)); }
-
-    //! converts an internal direction into gp direction object
-    template<class ctype, int dim>
-    gp_Dir direction(const Direction<ctype, dim>& dir)
-    {
-        static_assert(dim <= 3 && dim != 0, "Only 0 < dim <= 3 supported");
-        if (dim == 1) return gp_Dir(dir.x(), 0.0, 0.0);
-        else if (dim == 2) return gp_Dir(dir.x(), dir.y(), 0.0);
-        else if (dim == 3) return gp_Dir(dir.x(), dir.y(), dir.z());
-    }
-
-    //! returns a Geom_Curve handle for an ellipse
-    template<class ctype>
-    Handle(Geom_Curve) getGeomHandle(const Ellipse<ctype, 3>& ellipse)
-    {
-        gp_Dir normal = direction(ellipse.normal());
-        gp_Dir majorAx = direction(ellipse.majorAxis());
-        gp_Pnt center = point(ellipse.center());
-        gp_Elips gpEllipse(gp_Ax2(center, normal, majorAx),
-                           ellipse.majorAxisLength(),
-                           ellipse.minorAxisLength());
-        return new Geom_Ellipse(gpEllipse);
-    }
-
-    //! returns a Geom_Curve handle for an ellipse arc
-    template<class ctype>
-    Handle(Geom_Curve) getGeomHandle(const EllipseArc<ctype, 3>& ellipseArc)
-    {
-        const auto& ellipse = ellipseArc.supportingEllipse();
-        const auto geomEllipseHandle = getGeomHandle(ellipse);
-        const auto angleSource = ellipse.getAngle(ellipseArc.source());
-        auto angleTarget = ellipse.getAngle(ellipseArc.target());
-        if (angleTarget > angleSource)
-            angleTarget += 2.0*M_PI;
-        return new Geom_TrimmedCurve(geomEllipseHandle, angleSource, angleTarget);
-    }
-
-    //! returns the length of a curve
-    template<class ctype = double>
-    ctype computeLength(const Handle(Geom_Curve)& curve)
-    {
-        const auto uMin = curve->FirstParameter();
-        const auto uMax = curve->LastParameter();
-        GeomAdaptor_Curve adaptorCurve(curve, uMin, uMax);
-        return GCPnts_AbscissaPoint::Length(adaptorCurve, uMin, uMax);
-    }
-
-    //! converts a gp direction object into an internal one
-    template<class ctype = double, int dim = 3>
-    Direction<ctype, dim> direction(const gp_Dir& dir)
-    {
-        static_assert(dim == 3, "Currently only dim == 3 supported");
-        using Vector = Frackit::Vector<ctype, dim>;
-        return Direction<ctype, dim>(Vector(dir.X(), dir.Y(), dir.Z()));
-    }
 
     //! get the BRep of a cylinder
     template<class ctype>
@@ -468,8 +370,6 @@ namespace OCCUtilities {
     { return getBoundaryVertices(edges, getConnectivityInfo(edges)); }
 
 } // end namespace OCCUtilities
-
-
 } // end namespace Frackit
 
-#endif // FRACKIT_UTILITIES_HH
+#endif // FRACKIT_BREP_UTILITIES_HH

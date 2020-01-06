@@ -23,67 +23,6 @@
 #ifndef FRACKIT_INTERSECT_HH
 #define FRACKIT_INTERSECT_HH
 
-#include <algorithm>
-#include <type_traits>
-#include <stdexcept>
-#include <cassert>
-#include <utility>
-#include <variant>
-#include <vector>
-#include <cmath>
-
-// some algorithms/classes receive handles instead of objects
-#include <Standard_Handle.hxx>
-
-// classes from the geometric processors package
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Elips.hxx>
-
-// classes from the geometry package
-#include <GeomAPI_IntSS.hxx>
-#include <GeomAPI_IntCS.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Ellipse.hxx>
-
-// builders for TopoDS_Shapes
-#include <BRepBuilderAPI_MakeVertex.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <BRep_Tool.hxx>
-
-// BRep primitives and operations
-#include <BRepPrimAPI_MakeCylinder.hxx>
-
-// shapes to be passed to intersection algorithms
-#include <TopTools_ListOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-
-// class to explore the resulting shape of an intersection
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopAbs_Orientation.hxx>
-
-// Algorithm for boolean operations on shapes
-#include <BRepAlgoAPI_BuilderAlgo.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-
 // Geometries of intersections
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/line.hh>
@@ -92,13 +31,7 @@
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylindricalsurface.hh>
-
-// base tolerances for floating point comparisons
 #include <frackit/geometry/precision.hh>
-
-// utility functionality
-#include <frackit/common/utilities.hh>
-#include <frackit/common/math.hh>
 
 #include "intersectiontraits.hh"
 #include "algo_segment_segment.hh"

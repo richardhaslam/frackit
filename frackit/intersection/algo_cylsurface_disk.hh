@@ -27,7 +27,10 @@
 #include <vector>
 #include <algorithm>
 
-#include <frackit/common/utilities.hh>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+
+#include <frackit/occ/breputilities.hh>
+#include <frackit/occ/gputilities.hh>
 #include <frackit/intersection/intersectiontraits.hh>
 #include <frackit/intersection/emptyintersection.hh>
 
