@@ -23,18 +23,7 @@
 #ifndef FRACKIT_ELLIPSE_ARC_HH
 #define FRACKIT_ELLIPSE_ARC_HH
 
-#include <cmath>
-#include <stdexcept>
-
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Elips.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-#include <Standard_Handle.hxx>
+#include <cassert>
 
 #include "precision.hh"
 #include "ellipse.hh"
@@ -111,30 +100,6 @@ public:
 
     //! Returns true if the arc describes a full ellipse
     bool isFullEllipse() const { return isFullEllipse_; }
-
-    //! \todo TODO doc me.
-    ctype length() const
-    {
-        if (isFullEllipse())
-             return M_PI*(this->majorAxisLength() + this->minorAxisLength());
-
-        // create Geom_Ellipse and trim to describe arc
-        gp_Dir normal(this->normal().x(), this->normal().y(), this->normal().z());
-        gp_Dir majorAx(this->majorAxis().x(), this->majorAxis().y(), this->majorAxis().z());
-        gp_Pnt center(this->center().x(), this->center().y(), this->center().z());
-        gp_Elips gpEllipse(gp_Ax2(center, normal, majorAx),
-                           this->majorAxisLength(),
-                           this->minorAxisLength());
-        Handle(Geom_Curve) ellipseHandle = new Geom_Ellipse(gpEllipse);
-        Handle(Geom_Curve) arcHandle = targetAngle_ < sourceAngle_
-                                       ? new Geom_TrimmedCurve(ellipseHandle, sourceAngle_, targetAngle_)
-                                       : new Geom_TrimmedCurve(ellipseHandle, sourceAngle_, targetAngle_ + 2.0*M_PI);
-
-        const auto uMin = arcHandle->FirstParameter();
-        const auto uMax = arcHandle->LastParameter();
-        GeomAdaptor_Curve adaptorCurve(arcHandle, uMin, uMax);
-        return GCPnts_AbscissaPoint::Length(adaptorCurve, uMin, uMax);
-    }
 
     //! Return the ellipse that supports this arc
     Ellipse supportingEllipse() const

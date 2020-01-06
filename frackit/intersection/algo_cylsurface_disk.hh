@@ -27,10 +27,15 @@
 #include <vector>
 #include <algorithm>
 
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 
 #include <frackit/occ/breputilities.hh>
 #include <frackit/occ/gputilities.hh>
+
+#include <frackit/geometry/disk.hh>
+#include <frackit/geometry/cylindersurface.hh>
+
 #include <frackit/intersection/intersectiontraits.hh>
 #include <frackit/intersection/emptyintersection.hh>
 
@@ -44,13 +49,13 @@ namespace IntersectionAlgorithms {
 //! - segment(s)
 //! - touching points
 template<class ctype>
-Intersection< CylindricalSurface<ctype>, Disk<ctype> >
-intersect_cylinderSurface_disk(const CylindricalSurface<ctype>& cylSurface,
+Intersection< CylinderSurface<ctype>, Disk<ctype> >
+intersect_cylinderSurface_disk(const CylinderSurface<ctype>& cylSurface,
                                const Disk<ctype>& disk,
                                ctype eps)
 {
     // possible result geometries
-    using ResultType = Intersection< CylindricalSurface<ctype>, Disk<ctype> >;
+    using ResultType = Intersection< CylinderSurface<ctype>, Disk<ctype> >;
     using Point = Frackit::Point<ctype, 3>;
     using Segment = Frackit::Segment<ctype, 3>;
     using EllipseArc = Frackit::EllipseArc<ctype, 3>;

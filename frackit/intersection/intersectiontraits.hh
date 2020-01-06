@@ -33,7 +33,7 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
-#include <frackit/geometry/cylindricalsurface.hh>
+#include <frackit/geometry/cylindersurface.hh>
 
 #include "emptyintersection.hh"
 
@@ -113,10 +113,10 @@ struct IntersectionTraits< Disk<ctype>, Disk<ctype> >
 
 //! \todo TODO Doc me.
 template<class ctype>
-struct IntersectionTraits< CylindricalSurface<ctype>, Disk<ctype> >
+struct IntersectionTraits< CylinderSurface<ctype>, Disk<ctype> >
 {
     static constexpr int wd = Disk<ctype>::worldDimension();
-    static constexpr int wd2 = CylindricalSurface<ctype>::worldDimension();
+    static constexpr int wd2 = CylinderSurface<ctype>::worldDimension();
     static_assert(wd == 3, "World dimension of 3 expected");
     static_assert(wd == wd2, "World dimension of the geometries must match");
 
@@ -130,8 +130,8 @@ struct IntersectionTraits< CylindricalSurface<ctype>, Disk<ctype> >
 
 //! \todo TODO Doc me.
 template<class ctype>
-struct IntersectionTraits< Disk<ctype>, CylindricalSurface<ctype> >
-: public IntersectionTraits< CylindricalSurface<ctype>, Disk<ctype> >
+struct IntersectionTraits< Disk<ctype>, CylinderSurface<ctype> >
+: public IntersectionTraits< CylinderSurface<ctype>, Disk<ctype> >
 {};
 
 } // end namespace Frackit

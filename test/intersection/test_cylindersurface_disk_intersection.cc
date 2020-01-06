@@ -1,6 +1,8 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/ellipsearc.hh>
-#include <frackit/geometry/cylindricalsurface.hh>
+#include <frackit/geometry/cylindersurface.hh>
+
+#include <frackit/magnitude/length.hh>
 #include <frackit/intersection/intersect.hh>
 #include <frackit/intersection/intersectionresult.hh>
 
@@ -32,7 +34,7 @@ void checkResultGeometry(const Frackit::Segment<CT, wd>& segment, IntersectionTy
 {
     std::cout << "Found intersection segment with corners "
               << segment.source() << " - " << segment.target()
-              << " and length " << segment.length() << std::endl;
+              << " and length " << Frackit::computeLength(segment) << std::endl;
     if (expected != IntersectionType::segment)
         throw std::runtime_error(std::string("Got an unexpected segment intersection"));
 }
@@ -75,7 +77,7 @@ void checkResultGeometry(const std::vector<IS>& intersections, IntersectionType 
 int main()
 {
     using ctype = double;
-    using CylinderSurface = Frackit::CylindricalSurface<ctype>;
+    using CylinderSurface = Frackit::CylinderSurface<ctype>;
     using Segment = typename CylinderSurface::Segment;
     using Disk = Frackit::Disk<ctype>;
     using Point = typename Disk::Point;
@@ -131,9 +133,9 @@ int main()
             throw std::runtime_error(std::string("3: Did not find two intersection geometries"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::segment); }, variant);
-        if ( abs(std::get<Segment>(result[0]).length() - cylSurface.height()) > eps )
+        if ( abs(Frackit::computeLength(std::get<Segment>(result[0])) - cylSurface.height()) > eps )
             throw std::runtime_error(std::string("Unexpected segment height (test 3)"));
-        if ( abs(std::get<Segment>(result[1]).length() - cylSurface.height()) > eps )
+        if ( abs(Frackit::computeLength(std::get<Segment>(result[1])) - cylSurface.height()) > eps )
             throw std::runtime_error(std::string("Unexpected segment height (test 3)"));
         if (std::count_if(result.begin(),
                           result.end(),

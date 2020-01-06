@@ -78,8 +78,6 @@ public:
     //! \todo TODO doc me.
     const Point& target() const { return target_; }
 
-    //! \todo TODO doc me.
-    ctype length() const { return Vector(source(), target()).length(); }
     //! Constructs the direction vector
     Direction direction() const { return Vector(source(), target()); }
 
@@ -116,7 +114,7 @@ public:
     //! Returns true if a point lies on the segment
     //! \todo note about choice of eps
     bool contains(const Point& p, bool checkIfOnLine = true) const
-    { return contains(p, length()*Precision<ctype>::confusion(), checkIfOnLine); }
+    { return contains(p, Vector(source(), target()).length()*Precision<ctype>::confusion(), checkIfOnLine); }
 
     //! Returns the point on the segment for the given parameter
     //! \note It has to be 0.0 <= param <= 1.0, where 0.0

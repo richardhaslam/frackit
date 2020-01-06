@@ -30,8 +30,9 @@
 #include <frackit/geometry/direction.hh>
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
-#include <frackit/geometry/cylindricalsurface.hh>
+#include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/precision.hh>
+#include <frackit/magnitude/length.hh>
 
 #include "intersectiontraits.hh"
 #include "algo_segment_segment.hh"
@@ -82,7 +83,8 @@ Intersection< Segment<ctype, wd>, Segment<ctype, wd> >
 intersect(const Segment<ctype, wd>& segment1, const Segment<ctype, wd>& segment2)
 {
     using std::min;
-    const auto eps = Precision<ctype>::confusion()*min(segment1.length(), segment2.length());
+    const auto eps = Precision<ctype>::confusion()
+                     *min(computeLength(segment1), computeLength(segment2));
     return intersect(segment1, segment2, eps);
 }
 
@@ -232,8 +234,8 @@ intersect(const Disk<ctype>& disk1, const Disk<ctype>& disk2)
  * \param eps Tolerance to be used for floating point comparisons
  */
 template<class ctype>
-Intersection< CylindricalSurface<ctype>, Disk<ctype> >
-intersect(const CylindricalSurface<ctype>& cylSurface, const Disk<ctype>& disk, ctype eps)
+Intersection< CylinderSurface<ctype>, Disk<ctype> >
+intersect(const CylinderSurface<ctype>& cylSurface, const Disk<ctype>& disk, ctype eps)
 { return IntersectionAlgorithms::intersect_cylinderSurface_disk(cylSurface, disk, eps); }
 
 /*!
@@ -243,8 +245,8 @@ intersect(const CylindricalSurface<ctype>& cylSurface, const Disk<ctype>& disk, 
  * \note This overload uses the default tolerance
  */
 template<class ctype>
-Intersection< CylindricalSurface<ctype>, Disk<ctype> >
-intersect(const CylindricalSurface<ctype>& cylSurface, const Disk<ctype>& disk)
+Intersection< CylinderSurface<ctype>, Disk<ctype> >
+intersect(const CylinderSurface<ctype>& cylSurface, const Disk<ctype>& disk)
 {
     using std::min;
     auto eps = min(disk.minorAxisLength(), cylSurface.radius());
@@ -260,8 +262,8 @@ intersect(const CylindricalSurface<ctype>& cylSurface, const Disk<ctype>& disk)
  * \param eps Tolerance to be used for floating point comparisons
  */
 template<class ctype>
-Intersection< Disk<ctype>, CylindricalSurface<ctype> >
-intersect(const Disk<ctype>& disk, const CylindricalSurface<ctype>& cylSurface, ctype eps)
+Intersection< Disk<ctype>, CylinderSurface<ctype> >
+intersect(const Disk<ctype>& disk, const CylinderSurface<ctype>& cylSurface, ctype eps)
 { return intersect(cylSurface, disk, eps); }
 
 /*!
@@ -271,8 +273,8 @@ intersect(const Disk<ctype>& disk, const CylindricalSurface<ctype>& cylSurface, 
  * \note This overload uses the default tolerance
  */
 template<class ctype>
-Intersection< Disk<ctype>, CylindricalSurface<ctype> >
-intersect(const Disk<ctype>& disk, const CylindricalSurface<ctype>& cylSurface)
+Intersection< Disk<ctype>, CylinderSurface<ctype> >
+intersect(const Disk<ctype>& disk, const CylinderSurface<ctype>& cylSurface)
 { return intersect(cylSurface, disk); }
 
 } // end namespace Frackit

@@ -75,8 +75,6 @@ public:
 
     //! \todo TODO doc me.
     ctype radius() const { return this->majorAxisLength(); }
-    //! \todo TODO doc me.
-    ctype length() const { return 2.0*M_PI*radius(); }
 
     //! \todo TODO doc me.
     //! \todo note about choice of eps

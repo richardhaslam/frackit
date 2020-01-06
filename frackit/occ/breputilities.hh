@@ -62,7 +62,7 @@
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylinder.hh>
-#include <frackit/geometry/cylindricalsurface.hh>
+#include <frackit/geometry/cylindersurface.hh>
 
 #include "gputilities.hh"
 
@@ -91,7 +91,7 @@ namespace OCCUtilities {
 
     //! get the BRep of a lateral cylinder surface
     template<class ctype>
-    TopoDS_Face getShape(const CylindricalSurface<ctype>& cylSurface)
+    TopoDS_Face getShape(const CylinderSurface<ctype>& cylSurface)
     {
         const auto& bottom = cylSurface.lowerBoundingCircle();
         auto axis = direction(bottom.normal());

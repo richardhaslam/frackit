@@ -2,17 +2,17 @@
 #include <string>
 
 #include <frackit/geometry/vector.hh>
-#include <frackit/geometry/cylindricalsurface.hh>
+#include <frackit/geometry/cylindersurface.hh>
 
 //! test some functionality of circles
 int main()
 {
     using ctype = double;
-    using CylindricalSurface = Frackit::CylindricalSurface<ctype>;
-    using Point = typename CylindricalSurface::Point;
+    using CylinderSurface = Frackit::CylinderSurface<ctype>;
+    using Point = typename CylinderSurface::Point;
     using Vector = Frackit::Vector<ctype, 3>;
 
-    CylindricalSurface surface(1.0, 2.0);
+    CylinderSurface surface(1.0, 2.0);
 
     // check normal vector
     using std::abs;

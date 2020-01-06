@@ -1,4 +1,5 @@
 #include <frackit/geometry/disk.hh>
+#include <frackit/magnitude/length.hh>
 #include <frackit/intersection/intersect.hh>
 #include <frackit/intersection/intersectionresult.hh>
 
@@ -31,7 +32,7 @@ void checkResultGeometry(const Frackit::Segment<CT, wd>& segment, IntersectionTy
 {
     std::cout << "Found intersection segment with corners "
               << segment.source() << " - " << segment.target()
-              << " and length " << segment.length() << std::endl;
+              << " and length " << Frackit::computeLength(segment) << std::endl;
     if (expected != IntersectionType::segment)
         throw std::runtime_error(std::string("Got an unexpected segment intersection"));
 }

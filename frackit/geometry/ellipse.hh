@@ -63,10 +63,6 @@ public:
     //! \todo TODO doc me.
     static std::string name() { return "Ellipse"; }
 
-    //! \todo TODO doc me.
-    ctype length() const
-    { return M_PI*(this->majorAxisLength() + this->minorAxisLength()); }
-
     //! Returns true if a point is on the ellipse
     //! \todo note about choice of eps
     bool contains(const Point& p, ctype eps, bool checkIfOnPlane = true) const

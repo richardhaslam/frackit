@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 
+#include <frackit/magnitude/length.hh>
 #include <frackit/geometry/precision.hh>
 #include <frackit/geometry/ellipsearc.hh>
 
@@ -90,9 +91,9 @@ int main()
         // check arc length computation
         using std::abs;
         const ctype eps = f*Frackit::Precision<ctype>::confusion();
-        if ( abs(fullArc1.length() - ellipse.length()) > eps )
+        if ( abs(Frackit::computeLength(fullArc1) - Frackit::computeLength(ellipse)) > eps )
             throw std::runtime_error(std::string("Full arc 1 does not have correct length"));
-        if ( abs(fullArc2.length() - ellipse.length()) > eps )
+        if ( abs(Frackit::computeLength(fullArc2) - Frackit::computeLength(ellipse)) > eps )
             throw std::runtime_error(std::string("Full arc 2 does not have correct length"));
 
         // create circular arcs to test lengths on various orientations
@@ -110,12 +111,10 @@ int main()
                 {
                     if (a1 == a2) continue;
 
-                    const auto l = EllipseArc(c,
-                                              c.getPointFromAngle(a1),
-                                              c.getPointFromAngle(a2)).length();
+                    const auto arc = EllipseArc(c, c.getPointFromAngle(a1), c.getPointFromAngle(a2));
                     const auto deltaAngle = a2 < a1 ? 2.0*M_PI - (a1 - a2) : a2 - a1;
 
-                    if ( abs(l - deltaAngle*f) > eps )
+                    if ( abs(Frackit::computeLength(arc) - deltaAngle*f) > eps )
                         throw std::runtime_error("Wrong arc length");
                 }
         }
