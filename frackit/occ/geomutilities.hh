@@ -34,8 +34,6 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
 
 // internal geometry classes
 #include <frackit/geometry/ellipse.hh>
@@ -70,16 +68,6 @@ namespace OCCUtilities {
         if (angleTarget > angleSource)
             angleTarget += 2.0*M_PI;
         return new Geom_TrimmedCurve(geomEllipseHandle, angleSource, angleTarget);
-    }
-
-    //! returns the length of a curve
-    template<class ctype = double>
-    ctype computeLength(const Handle(Geom_Curve)& curve)
-    {
-        const auto uMin = curve->FirstParameter();
-        const auto uMax = curve->LastParameter();
-        GeomAdaptor_Curve adaptorCurve(curve, uMin, uMax);
-        return GCPnts_AbscissaPoint::Length(adaptorCurve, uMin, uMax);
     }
 
 } // end namespace OCCUtilities

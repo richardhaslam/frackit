@@ -26,6 +26,11 @@
 
 #include <cmath>
 
+#include <Standard_Handle.hxx>
+#include <Geom_Curve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+
 #include <frackit/occ/geomutilities.hh>
 
 #include <frackit/geometry/circle.hh>
@@ -35,6 +40,18 @@
 #include <frackit/geometry/vector.hh>
 
 namespace Frackit {
+
+/*!
+ * \brief Returns the length of a curve of the Geom package.
+ */
+template<class ctype = double>
+ctype computeLength(const Handle(Geom_Curve)& curve)
+{
+    const auto uMin = curve->FirstParameter();
+    const auto uMax = curve->LastParameter();
+    GeomAdaptor_Curve adaptorCurve(curve, uMin, uMax);
+    return GCPnts_AbscissaPoint::Length(adaptorCurve, uMin, uMax);
+}
 
 /*!
  * \brief Returns the length of a vector
@@ -72,7 +89,7 @@ ctype computeLength(const EllipseArc<ctype, 3>& arc)
 {
     if (arc.isFullEllipse())
          return M_PI*(arc.majorAxisLength() + arc.minorAxisLength());
-    return OCCUtilities::computeLength(OCCUtilities::getGeomHandle(arc));
+    return computeLength(OCCUtilities::getGeomHandle(arc));
 }
 
 } // end namespace Frackit
