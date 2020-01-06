@@ -128,7 +128,7 @@ namespace OCCUtilities {
 
     //! returns a Geom_Curve handle for an ellipse
     template<class ctype>
-    Handle(Geom_Curve) getGeomCurveHandle(const Ellipse<ctype, 3>& ellipse)
+    Handle(Geom_Curve) getGeomHandle(const Ellipse<ctype, 3>& ellipse)
     {
         gp_Dir normal = direction(ellipse.normal());
         gp_Dir majorAx = direction(ellipse.majorAxis());
@@ -141,10 +141,10 @@ namespace OCCUtilities {
 
     //! returns a Geom_Curve handle for an ellipse arc
     template<class ctype>
-    Handle(Geom_Curve) getGeomCurveHandle(const EllipseArc<ctype, 3>& ellipseArc)
+    Handle(Geom_Curve) getGeomHandle(const EllipseArc<ctype, 3>& ellipseArc)
     {
         const auto& ellipse = ellipseArc.supportingEllipse();
-        const auto geomEllipseHandle = getGeomCurveHandle(ellipse);
+        const auto geomEllipseHandle = getGeomHandle(ellipse);
         const auto angleSource = ellipse.getAngle(ellipseArc.source());
         auto angleTarget = ellipse.getAngle(ellipseArc.target());
         if (angleTarget > angleSource)

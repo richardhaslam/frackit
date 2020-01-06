@@ -46,7 +46,7 @@ class EllipseArc;
 namespace OCCUtilities {
     //! returns a Geom_Curve handle for a 2d ellipse arc
     template<class ctype>
-    Handle(Geom_Curve) getGeomCurveHandle(const EllipseArc<ctype, 3>& ellipseArc);
+    Handle(Geom_Curve) getGeomHandle(const EllipseArc<ctype, 3>& ellipseArc);
 
     //! returns the length of a curve
     template<class ctype = double>
@@ -123,7 +123,7 @@ public:
         if (isFullEllipse())
              return M_PI*(this->majorAxisLength() + this->minorAxisLength());
 
-        const auto handle = OCCUtilities::getGeomCurveHandle(*this);
+        const auto handle = OCCUtilities::getGeomHandle(*this);
         return OCCUtilities::computeLength(handle);
     }
 
