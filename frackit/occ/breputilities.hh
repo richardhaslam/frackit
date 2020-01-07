@@ -30,6 +30,11 @@
 // Handle class used by OpenCascade
 #include <Standard_Handle.hxx>
 
+// objects from geometric processors package
+#include <gp_Pnt.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
+
 // shape classes from TopoDS package
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
