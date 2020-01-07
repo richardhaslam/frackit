@@ -67,7 +67,6 @@ ctype computeDistance(const TopoDS_Shape& shape1,
     BRepExtrema_DistShapeShape algo(shape1, shape2, deflection, extFlag, extAlgo);
     if (!algo.IsDone())
         throw std::runtime_error(std::string("Could not compute BRep distance"));
-
     return algo.Value();
 }
 
