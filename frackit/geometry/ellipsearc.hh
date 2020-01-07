@@ -105,14 +105,8 @@ public:
     bool isFullEllipse() const { return isFullEllipse_; }
 
     //! Return the ellipse that supports this arc
-    Ellipse supportingEllipse() const
-    {
-        return Ellipse(this->center(),
-                       this->majorAxis(),
-                       this->minorAxis(),
-                       this->majorAxisLength(),
-                       this->minorAxisLength());
-    }
+    const Ellipse& supportingEllipse() const
+    {  return static_cast<const Ellipse&>(*this); }
 
     //! Returns true if a point is on the arc
     //! \todo note about choice of eps
