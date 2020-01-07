@@ -114,7 +114,27 @@ public:
         return result;
     }
 
-    //! Returns the angle corresponding to a point on the ellipse
+    /*!
+     * \brief Returns the parameter associated with the given point
+     *        on the ellipse. This parameter describes the fraction
+     *        of the ellipse curve that lies between the major axis
+     *        and the point.
+     * \param p The point on the ellipse
+     * \param checkIfOnEllipse If set to false, it is not checked if the
+     *                         provided point actually is on the ellipse.
+     * \returns Returns the parameter 0 <= param <= 1.0 along the ellipse
+     */
+    ctype getParam(const Point& p, bool checkIfOnEllipse = true) const
+    { return getAngle(p, checkIfOnEllipse)/(2.0*M_PI); }
+
+    /*!
+     * \brief Returns the angle for which the given point on the ellipse
+     *        can be computed on the basis of its parametrization.
+     * \param p The point on the ellipse
+     * \param checkIfOnEllipse If set to false, it is not checked if the
+     *                         provided point actually is on the ellipse.
+     * \returns Returns the ellipse angle 0 <= angle <= 2.0*Pi
+     */
     ctype getAngle(const Point& p, bool checkIfOnEllipse = true) const
     {
         if (checkIfOnEllipse)
