@@ -101,7 +101,12 @@ public:
 
     //! \todo TODO doc me.
     Plane supportingPlane() const
-    { return Plane(center(), majorAxis(), minorAxis(), normal()); }
+    {
+        return Plane(center(),
+                     majorAxis(),
+                     minorAxis(),
+                     normal());
+    }
 
 private:
     Point center_;
