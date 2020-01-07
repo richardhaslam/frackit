@@ -96,6 +96,10 @@ public:
     const Point& source() const { return source_; }
     //! \todo TODO doc me.
     const Point& target() const { return target_; }
+    //! \todo TODO doc me.
+    const ctype sourceAngleOnEllipse() const { return sourceAngle_; }
+    //! \todo TODO doc me.
+    const ctype targetAngleOnEllipse() const { return targetAngle_; }
 
     //! Returns true if the arc describes a full ellipse
     bool isFullEllipse() const { return isFullEllipse_; }
