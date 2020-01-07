@@ -39,6 +39,19 @@
 
 namespace Frackit {
 
+/*!
+ * \brief Traits class to identify empty intersections
+ * \tparam IsGeometry The geometry type of an intersection
+ */
+template<class IsGeometry>
+struct IsEmptyIntersection
+{ static constexpr bool value = false; };
+
+//! Specialization for empty intersections
+template<int wd>
+struct IsEmptyIntersection<EmptyIntersection<wd>>
+{ static constexpr bool value = true; };
+
 //! \todo TODO Doc me.
 template<class Geometry1, class Geometry2>
 struct IntersectionTraits;
