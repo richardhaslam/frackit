@@ -81,6 +81,24 @@ namespace OCCUtilities {
     Point<double, 3> point(const TopoDS_Vertex& v)
     { return point(BRep_Tool::Pnt(v)); }
 
+    //! Create an edge shape from two points
+    template<class ctype, int worldDim>
+    TopoDS_Edge makeEdge(const Point<ctype, worldDim>& source,
+                         const Point<ctype, worldDim>& target)
+    {
+        // create TopoDS_Edge of the segment
+        BRepBuilderAPI_MakeEdge segment(point(source), point(target));
+        segment.Build();
+        if (!segment.IsDone())
+            throw std::runtime_error("Could not create segment edge");
+        return TopoDS::Edge(segment.Shape());
+    }
+
+    //! get the BRep of a segment
+    template<class ctype, int worldDim>
+    TopoDS_Edge getShape(const Segment<ctype, worldDim>& segment)
+    { return makeEdge(segment.source(), segment.target()); }
+
     //! get the BRep of a cylinder
     template<class ctype>
     TopoDS_Solid getShape(const Cylinder<ctype>& cylinder)
@@ -200,19 +218,6 @@ namespace OCCUtilities {
         for (TopExp_Explorer explorer(shape, TopAbs_WIRE); explorer.More(); explorer.Next())
             wires.push_back(TopoDS::Wire(explorer.Current()));
         return wires;
-    }
-
-    //! Create an edge shape from two points
-    template<class ctype, int dim>
-    TopoDS_Edge makeEdge(const Point<ctype, dim>& source,
-                         const Point<ctype, dim>& target)
-    {
-        // create TopoDS_Edge of the segment
-        BRepBuilderAPI_MakeEdge segment(point(source), point(target));
-        segment.Build();
-        if (!segment.IsDone())
-            throw std::runtime_error("Could not create segment edge");
-        return TopoDS::Edge(segment.Shape());
     }
 
     //! Convenience function to get the shape resulting from the cut of an object with a tool
