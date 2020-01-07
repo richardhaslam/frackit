@@ -70,10 +70,11 @@ namespace OCCUtilities {
     {
         const auto& ellipse = ellipseArc.supportingEllipse();
         const auto geomEllipseHandle = getGeomHandle(ellipse);
-        const auto angleSource = ellipse.getAngle(ellipseArc.source());
-        auto angleTarget = ellipse.getAngle(ellipseArc.target());
-        if (angleTarget > angleSource)
+        const auto angleSource = ellipseArc.sourceAngleOnEllipse();
+        auto angleTarget = ellipseArc.targetAngleOnEllipse();
+        if (angleTarget < angleSource)
             angleTarget += 2.0*M_PI;
+
         return new Geom_TrimmedCurve(geomEllipseHandle, angleSource, angleTarget);
     }
 
