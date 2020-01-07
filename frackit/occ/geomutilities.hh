@@ -26,14 +26,21 @@
 // Handle class used by OpenCascade
 #include <Standard_Handle.hxx>
 
+// Real number type used by OpenCascade
+#include <Standard_Real.hxx>
+
 // objects from geometric processors package
 #include <gp_Ax2.hxx>
 #include <gp_Elips.hxx>
 
-// objects from the geometry
+// objects from the geometry package
 #include <Geom_Ellipse.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
+
+// Shapes from the TopoDS package
+#include <TopoDS_Edge.hxx>
+#include <BRep_Tool.hxx>
 
 // internal geometry classes
 #include <frackit/geometry/ellipse.hh>
@@ -68,6 +75,17 @@ namespace OCCUtilities {
         if (angleTarget > angleSource)
             angleTarget += 2.0*M_PI;
         return new Geom_TrimmedCurve(geomEllipseHandle, angleSource, angleTarget);
+    }
+
+    //! returns a Geom_Curve handle for an edge
+    Handle(Geom_Curve) getGeomHandle(const TopoDS_Edge& edge)
+    {
+        // get unbounded curve and parameter bounds (umin, umax)
+        Standard_Real uMin, uMax;
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, uMin, uMax);
+
+        // return trimmed curve
+        return new Geom_TrimmedCurve(curve, uMin, uMax);
     }
 
 } // end namespace OCCUtilities
