@@ -126,21 +126,19 @@ public:
         const auto y = d*Vector(this->minorAxis());
 
         using std::abs;
-        if (abs(x) < Precision<ctype>::angular())
-        {
-            if (std::signbit(y)) return 3.0*M_PI/2.0;
-            else return M_PI/2.0;
-        }
+        if (abs(x) < this->majorAxisLength()*Precision<ctype>::confusion())
+            return std::signbit(y) ? 3.0*M_PI/2.0 : M_PI/2.0;
+        if (abs(y) < this->minorAxisLength()*Precision<ctype>::confusion())
+            return std::signbit(x) ? M_PI : 0.0;
 
-        if (abs(y) < Precision<ctype>::angular())
-        {
-            if (std::signbit(x)) return M_PI;
-            else return 0.0;
-        }
+        const auto ratio = this->majorAxisLength()/this->minorAxisLength();
+        const auto isNegX = std::signbit(x);
+        const auto isNegY = std::signbit(y);
 
-        using std::acos;
-        if (y > 0.0) return acos(x/d.length());
-        else return 2.0*M_PI - acos(x/d.length());
+        using std::atan;
+        if (!isNegY && !isNegX) return atan(y*ratio/x);
+        else if (isNegY && !isNegX) return 2.0*M_PI + atan(y*ratio/x);
+        else return M_PI + atan(y*ratio/x);
     }
 };
 
