@@ -41,18 +41,12 @@
 #include <frackit/geometry/segment.hh>
 
 namespace Frackit {
-
-/*!
- * \brief Interface for computing the distance between geometries
- */
-template<class Geom1, class Geom2>
-typename Geom1::ctype computeDistance(const Geom1& geo1, const Geom2& geo2)
-{
-    std::string msg = "Distance computation not implemented between ";
-    msg += "\"" + geo1.name() + "\"";
-    msg += " and ";
-    msg += "\"" + geo2.name() + "\"";
-    throw std::runtime_error(msg);
+namespace Impl {
+    // Convenience alias to extract the promoted type
+    // of the types used for coordinates of two geometries.
+    // This makes the code below more readable in some places
+    template<class Geom1, class Geom2>
+    using PCT = PromotedType<typename Geom1::ctype, typename Geom2::ctype>;
 }
 
 /*!
@@ -76,6 +70,26 @@ ctype computeDistance(const TopoDS_Shape& shape1,
 
     return algo.Value();
 }
+
+/*!
+ * \brief In the general case we compute the distance based on
+ *        the basis of the BRep of the geometries. Overloads for
+ *        geometries for which the distance can be computed more
+ *        easily are provided below.
+ * \param geo1 The first geometry
+ * \param geo2 The second geometry
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class Geom1, class Geom2>
+Impl::PCT<Geom1, Geom2>
+computeDistance(const Geom1& geo1,
+                const Geom2& geo2,
+                Impl::PCT<Geom1, Geom2> deflection = Precision<Impl::PCT<Geom1, Geom2>>::confusion(),
+                Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{ return computeDistance(OCCUtilities::getShape(geo1), OCCUtilities::getShape(geo2)); }
 
 /*!
  * \brief Returns the euclidian distance between two points.
@@ -128,22 +142,6 @@ template<class ctype1, class ctype2, int worldDim>
 PromotedType<ctype1, ctype2> computeDistance(const Segment<ctype1, worldDim>& seg,
                                              const Point<ctype2, worldDim>& p)
 { return computeDistance(p, seg); }
-
-/*!
- * \brief Returns the minimum distance between two disks.
- * \param disk1 The first disk
- * \param disk2 The second disk
- * \param deflection The epsilon used in the BrepExtrema command
- * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
- * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
- */
-template<class ctype1, class ctype2>
-PromotedType<ctype1, ctype2> computeDistance(const Disk<ctype1>& disk1,
-                                             const Disk<ctype2>& disk2,
-                                             PromotedType<ctype1, ctype2> deflection = Precision<PromotedType<ctype1, ctype2>>::confusion(),
-                                             Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
-                                             Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
-{ return computeDistance(OCCUtilities::getShape(disk1), OCCUtilities::getShape(disk2)); }
 
 } // end namespace Frackit
 
