@@ -47,6 +47,8 @@ int main()
             throw std::runtime_error(std::string("Wrong target angle"));
         if ( abs(ellipseArc.getAngle(p) - M_PI/4.0) > Frackit::Precision<ctype>::angular() )
             throw std::runtime_error(std::string("Wrong point angle"));
+        if ( abs(ellipseArc.getParam(p) - 1.0/8.0) > Frackit::Precision<ctype>::confusion() )
+            throw std::runtime_error(std::string("Wrong point param"));
 
         // check contains() queries
         if (!ellipseArc.contains(source))
