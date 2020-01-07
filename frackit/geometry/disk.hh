@@ -107,6 +107,22 @@ public:
     bool contains(const Point& p, bool checkIfOnPlane = true) const
     { return contains(p, Precision<ctype>::confusion(), checkIfOnPlane); }
 
+    /*!
+     * \brief Returns the point on the disk for the given parameters
+     * \param param1 The first parameter (angular fraction -> 0 <= param1 <= 1)
+     * \param param2 The second parameter (radial fraction -> 0 <= param1 <= 1.0)
+     */
+    Point getPoint(ctype param1, ctype param2) const
+    {
+        assert(param1 >= 0.0 && param1 <= 1.0);
+        assert(param2 >= 0.0 && param2 <= 1.0);
+
+        const auto p = boundingEllipse().getPoint(param1);
+        Vector d(this->center(), p);
+        d *= param2;
+        return p + d;
+    }
+
     //! Returns the ellipse describing the disk's boundary
     Ellipse boundingEllipse() const
     {
