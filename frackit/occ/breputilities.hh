@@ -100,6 +100,17 @@ namespace OCCUtilities {
     TopoDS_Shape getShape(const Geo& p)
     { throw std::runtime_error(std::string("getShape() not implemented for " + Geo::name())); }
 
+    //! get the BRep of a point
+    template<class ctype, int worldDim>
+    TopoDS_Vertex getShape(const Point<ctype, worldDim>& p)
+    {
+        BRepBuilderAPI_MakeVertex vertex(point(p));
+        vertex.Build();
+        if (!vertex.IsDone())
+            throw std::runtime_error("Could not create vertex shape");
+        return TopoDS::Vertex(vertex.Shape());
+    }
+
     //! get the BRep of a segment
     template<class ctype, int worldDim>
     TopoDS_Edge getShape(const Segment<ctype, worldDim>& segment)
