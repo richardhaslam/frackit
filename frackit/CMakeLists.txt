@@ -1,4 +1,5 @@
 add_subdirectory(common)
+add_subdirectory(distance)
 add_subdirectory(geometry)
 add_subdirectory(intersection)
 add_subdirectory(magnitude)
