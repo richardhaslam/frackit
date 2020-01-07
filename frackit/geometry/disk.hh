@@ -64,10 +64,10 @@ public:
      */
     Disk(const Ellipse& ellipse)
     : ParentType(ellipse.center(),
-                 ellipse.majorAxisLength(),
-                 ellipse.minorAxisLength(),
                  ellipse.majorAxis(),
-                 ellipse.minorAxis())
+                 ellipse.minorAxis(),
+                 ellipse.majorAxisLength(),
+                 ellipse.minorAxisLength())
     {}
 
     //! \todo TODO doc me.
