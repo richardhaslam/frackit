@@ -64,6 +64,7 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 
 // internal geometry classes
+#include <frackit/geometry/circle.hh>
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/disk.hh>
@@ -124,6 +125,17 @@ namespace OCCUtilities {
 
         TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(gpEllipse);
         return BRepBuilderAPI_MakeWire(edge);
+    }
+
+    //! get the BRep of a 3-dimensional circle
+    template<class ctype>
+    TopoDS_Wire getShape(const Circle<ctype, 3>& circ)
+    {
+        return getShape(Ellipse<ctype, 3>(circ.center(),
+                                          circ.base1(),
+                                          circ.base2(),
+                                          circ.radius(),
+                                          circ.radius()));
     }
 
     //! get the BRep of a 3-dimensional ellipse arc
