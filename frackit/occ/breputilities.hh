@@ -56,6 +56,7 @@
 
 // converter between BRep and TopoDS
 #include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -93,6 +94,11 @@ namespace OCCUtilities {
             throw std::runtime_error("Could not create segment edge");
         return TopoDS::Edge(segment.Shape());
     }
+
+    //! get the BRep of a geometry (overloads provided)
+    template<class Geo>
+    TopoDS_Shape getShape(const Geo& p)
+    { throw std::runtime_error(std::string("getShape() not implemented for " + Geo::name())); }
 
     //! get the BRep of a segment
     template<class ctype, int worldDim>
