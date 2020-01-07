@@ -40,6 +40,14 @@ int main()
         if (!target.isEqual(Point(0.0, minAxis, 0.0), f*Frackit::Precision<ctype>::confusion()))
             throw std::runtime_error(std::string("Unexpected source point"));
 
+        using std::abs;
+        if ( abs(ellipseArc.getAngle(source)) > Frackit::Precision<ctype>::angular() )
+            throw std::runtime_error(std::string("Wrong source angle"));
+        if ( abs(ellipseArc.getAngle(target) - M_PI/2.0) > Frackit::Precision<ctype>::angular() )
+            throw std::runtime_error(std::string("Wrong target angle"));
+        if ( abs(ellipseArc.getAngle(p) - M_PI/4.0) > Frackit::Precision<ctype>::angular() )
+            throw std::runtime_error(std::string("Wrong point angle"));
+
         // check contains() queries
         if (!ellipseArc.contains(source))
             throw std::runtime_error(std::string("Source contains() query failed"));
@@ -89,7 +97,6 @@ int main()
             throw std::runtime_error(std::string("Arc2 is not a full ellipse"));
 
         // check arc length computation
-        using std::abs;
         const ctype eps = f*Frackit::Precision<ctype>::confusion();
         if ( abs(Frackit::computeLength(fullArc1) - Frackit::computeLength(ellipse)) > eps )
             throw std::runtime_error(std::string("Full arc 1 does not have correct length"));
@@ -112,7 +119,7 @@ int main()
                     if (a1 == a2) continue;
 
                     const auto arc = EllipseArc(c, c.getPointFromAngle(a1), c.getPointFromAngle(a2));
-                    const auto deltaAngle = a2 < a1 ? 2.0*M_PI - (a1 - a2) : a2 - a1;
+                    const auto deltaAngle = a2 < a1 ? 2.0*M_PI - (a1 - a2) : a2 - a1;;
 
                     if ( abs(Frackit::computeLength(arc) - deltaAngle*f) > eps )
                         throw std::runtime_error("Wrong arc length");
