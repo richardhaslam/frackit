@@ -65,11 +65,13 @@
 
 // internal geometry classes
 #include <frackit/geometry/ellipse.hh>
+#include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
 
 #include "gputilities.hh"
+#include "geomutilities.hh"
 
 namespace Frackit {
 namespace OCCUtilities {
@@ -123,6 +125,11 @@ namespace OCCUtilities {
         TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(gpEllipse);
         return BRepBuilderAPI_MakeWire(edge);
     }
+
+    //! get the BRep of a 3-dimensional ellipse arc
+    template<class ctype>
+    TopoDS_Edge getShape(const EllipseArc<ctype, 3>& arc)
+    { return BRepBuilderAPI_MakeWire( getGeomHandle(arc) ); }
 
     //! get the BRep of a disk
     template<class ctype>
