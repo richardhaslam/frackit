@@ -166,8 +166,10 @@ intersect_cylinderSurface_disk(const CylinderSurface<ctype>& cylSurface,
                 auto curve = OCCUtilities::getGeomHandle(edge);
                 GeomAPI_ProjectPointOnCurve c1OnCurve(center1, curve);
                 GeomAPI_ProjectPointOnCurve c2OnCurve(center2, curve);
-                if (c1OnCurve.LowerDistance() < eps) { resultArcIndex = 1; break; }
-                if (c2OnCurve.LowerDistance() < eps) { resultArcIndex = 2; break; }
+
+                assert(c1OnCurve.NbPoints() > 0 || c2OnCurve.NbPoints() > 0);
+                if (c1OnCurve.NbPoints() > 0 && c1OnCurve.LowerDistance() < eps) { resultArcIndex = 1; break; }
+                if (c2OnCurve.NbPoints() > 0 && c2OnCurve.LowerDistance() < eps) { resultArcIndex = 2; break; }
             }
 
             assert(resultArcIndex != 0);
