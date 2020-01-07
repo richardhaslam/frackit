@@ -141,7 +141,7 @@ namespace OCCUtilities {
     //! get the BRep of a 3-dimensional ellipse arc
     template<class ctype>
     TopoDS_Edge getShape(const EllipseArc<ctype, 3>& arc)
-    { return BRepBuilderAPI_MakeWire( getGeomHandle(arc) ); }
+    { return BRepBuilderAPI_MakeEdge( getGeomHandle(arc) ); }
 
     //! get the BRep of a disk
     template<class ctype>
