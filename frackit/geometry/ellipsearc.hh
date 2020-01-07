@@ -27,7 +27,6 @@
 
 #include <frackit/precision/precision.hh>
 #include "ellipse.hh"
-#include "vector.hh"
 
 namespace Frackit {
 
@@ -71,7 +70,7 @@ public:
     , source_(source)
     , target_(target)
     {
-        const auto eps = ellipse.minorAxisLength()*Precision<ctype>::confusion();
+        const auto eps = ellipse.majorAxisLength()*Precision<ctype>::confusion();
         assert(ParentType::contains(source, eps));
         assert(ParentType::contains(target, eps));
 
