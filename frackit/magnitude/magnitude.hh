@@ -33,6 +33,13 @@
 namespace Frackit {
 
 /*!
+ * \brief Returns the magnitude of zero-dimensional geometries (points)
+ */
+template<class Geometry, std::enable_if_t<Geometry::myDimension() == 0, int> = 0>
+typename Geometry::ctype computeMagnitude(const Geometry& geometry)
+{ return 0.0; }
+
+/*!
  * \brief Returns the length of one-dimensional geometries
  */
 template<class Geometry, std::enable_if_t<Geometry::myDimension() == 1, int> = 0>
