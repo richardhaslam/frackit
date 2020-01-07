@@ -35,6 +35,9 @@ struct EmptyIntersection
     static constexpr int worldDimension() { return wd; }
 
     static std::string name() { return "EmptyIntersection"; }
+
+    //! Export coordinate type for compatibility
+    using ctype = double;
 };
 
 } // end namespace Frackit
