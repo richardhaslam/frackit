@@ -27,10 +27,10 @@
 #include <vector>
 #include <algorithm>
 
-#include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 
 #include <frackit/occ/breputilities.hh>
+#include <frackit/occ/geomutilities.hh>
 #include <frackit/occ/gputilities.hh>
 
 #include <frackit/geometry/disk.hh>
@@ -163,10 +163,7 @@ intersect_cylinderSurface_disk(const CylinderSurface<ctype>& cylSurface,
             unsigned int resultArcIndex = 0;
             for (const auto& edge : wireEdges)
             {
-                // get unbounded curve and parameter bounds (umin, umax), then trim
-                Standard_Real uMin, uMax;
-                Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, uMin, uMax);
-                curve = new Geom_TrimmedCurve(curve, uMin, uMax);
+                auto curve = OCCUtilities::getGeomHandle(edge);
                 GeomAPI_ProjectPointOnCurve c1OnCurve(center1, curve);
                 GeomAPI_ProjectPointOnCurve c2OnCurve(center2, curve);
                 if (c1OnCurve.LowerDistance() < eps) { resultArcIndex = 1; break; }
