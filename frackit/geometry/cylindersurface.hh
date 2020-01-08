@@ -24,6 +24,7 @@
 #define FRACKIT_CYLINDER_SURFACE_HH
 
 #include <cmath>
+#include <cassert>
 
 #include <frackit/precision/precision.hh>
 #include "point.hh"
@@ -32,6 +33,7 @@
 #include "vector.hh"
 #include "circle.hh"
 #include "cylinder.hh"
+#include "plane.hh"
 
 namespace Frackit {
 
@@ -60,6 +62,7 @@ public:
     using Direction = Frackit::Direction<ctype, 3>;
     using Circle = Frackit::Circle<ctype, 3>;
     using Cylinder = Frackit::Cylinder<ctype>;
+    using Plane = Frackit::Plane<ctype, 3>;
 
     /*!
      * \brief \todo TODO doc me.
@@ -90,6 +93,11 @@ public:
     const Direction& direction() const { return bottom_.normal(); }
 
     //! \todo TODO doc me.
+    ctype height() const { return height_; }
+    //! \todo TODO doc me.
+    ctype radius() const { return bottom_.radius(); }
+
+    //! \todo TODO doc me.
     const Circle& upperBoundingCircle() const { return top_; }
     //! \todo TODO doc me.
     const Circle& lowerBoundingCircle() const { return bottom_; }
@@ -98,10 +106,14 @@ public:
     //! \todo TODO doc me.
     Cylinder cylinder() const { return Cylinder(bottom_, height_); }
 
-    //! \todo TODO doc me.
-    ctype height() const { return height_; }
-    //! \todo TODO doc me.
-    ctype radius() const { return bottom_.radius(); }
+    //! \todo TODO doc me
+    //! \todo note on tangent plane on top/bottom
+    Plane getTangentPlane(const Point& p) const
+    {
+        assert(contains(p, Precision<ctype>::confusion()*0.5*(radius() + height())));
+        Direction n( Vector(centerSegment().supportingLine().projection(p), p) );
+        return Plane(p, n);
+    }
 
     //! Returns true if a point lies on the surface (given tolerance)
     //! \todo note about choice of eps
