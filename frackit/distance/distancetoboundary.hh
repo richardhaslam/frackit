@@ -24,11 +24,13 @@
 #ifndef FRACKIT_DISTANCE_TO_BOUNDARY_HH
 #define FRACKIT_DISTANCE_TO_BOUNDARY_HH
 
+#include <algorithm>
 #include <Extrema_ExtAlgo.hxx>
 #include <Extrema_ExtFlag.hxx>
 
 #include <frackit/precision/precision.hh>
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/cylindersurface.hh>
 
 #include "distance.hh"
 
@@ -70,7 +72,8 @@ template<class Geo, class ctype>
 Impl::PCT<Geo, Disk<ctype>>
 computeDistanceToBoundary(const Geo& geo,
                           const Disk<ctype>& disk,
-                          Impl::PCT<Geo, Disk<ctype>> deflection = Precision<Impl::PCT<Geo, Disk<ctype>>>::confusion(),
+                          Impl::PCT<Geo, Disk<ctype>> deflection
+                            = Precision<Impl::PCT<Geo, Disk<ctype>>>::confusion(),
                           Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                           Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
 {
@@ -79,6 +82,37 @@ computeDistanceToBoundary(const Geo& geo,
                            deflection,
                            extFlag,
                            extAlgo);
+}
+
+/*!
+ * \brief Compute the distance of a geometry
+ *        to the bounding circles of a cylinder surface.
+ * \param geo The geometry
+ * \param cylSurface The cylinder surface
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class Geo, class ctype>
+Impl::PCT<Geo, CylinderSurface<ctype>>
+computeDistanceToBoundary(const Geo& geo,
+                          const CylinderSurface<ctype>& cylSurface,
+                          Impl::PCT<Geo, CylinderSurface<ctype>> deflection
+                            = Precision<Impl::PCT<Geo, CylinderSurface<ctype>>>::confusion(),
+                          Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                          Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{
+    using std::min;
+    return min(computeDistance(OCCUtilities::getShape(geo),
+                               OCCUtilities::getShape(cylSurface.lowerBoundingCircle()),
+                               deflection,
+                               extFlag,
+                               extAlgo),
+               computeDistance(OCCUtilities::getShape(geo),
+                               OCCUtilities::getShape(cylSurface.upperBoundingCircle()),
+                               deflection,
+                               extFlag,
+                               extAlgo));
 }
 
 } // end namespace Frackit
