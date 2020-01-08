@@ -153,17 +153,17 @@ public:
         if (!checkIs && !useMinDistance_)
             return true;
 
-        const auto is = !useIntersectionEps_ ? intersect(geo1, geo2)
-                                             : intersect(geo1, geo2, intersectionEps_);
+        const auto isection = !useIntersectionEps_ ? intersect(geo1, geo2)
+                                                   : intersect(geo1, geo2, intersectionEps_);
 
-        if ( !IntersectionPredicates::isEmpty(is) )
+        if ( !IntersectionPredicates::isEmpty(isection) )
         {
             // magnitude constraint
-            if ( useMinIsMagnitude_ && !ConstraintImpl::isAdmissibleMagnitude(is, minIsMagnitude_) )
+            if ( useMinIsMagnitude_ && !ConstraintImpl::isAdmissibleMagnitude(isection, minIsMagnitude_) )
                 return false;
 
             // angle constraint
-            if ( useMinIsAngle_ && IntersectionPredicates::angle(geo1, geo2) < minIsAngle_ )
+            if ( useMinIsAngle_ && IntersectionPredicates::angle(geo1, geo2, isection) < minIsAngle_ )
                 return false;
 
             // constraint on distance of intersection to geometry boundaries
@@ -171,14 +171,9 @@ public:
                 return true;
 
             using namespace ConstraintImpl;
-            if (!std::visit([&] (auto&& is)
-                            { return isAdmissibleDistanceToBoundary(is, geo1, minIsDistance_); },
-                            is))
+            if (!isAdmissibleDistanceToBoundary(isection, geo1, minIsDistance_))
                 return false;
-
-            return std::visit([&] (auto&& is)
-                              { return isAdmissibleDistanceToBoundary(is, geo2, minIsDistance_); },
-                              is);
+            return isAdmissibleDistanceToBoundary(isection, geo2, minIsDistance_);
         }
 
         // no intersection - check distance constraint
