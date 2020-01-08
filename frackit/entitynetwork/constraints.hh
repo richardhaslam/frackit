@@ -148,9 +148,8 @@ public:
 
         const auto is = !useIntersectionEps_ ? intersect(geo1, geo2)
                                              : intersect(geo1, geo2, intersectionEps_);
-        const auto isEmpty = IntersectionPredicates::isEmpty(is);
 
-        if ( !isEmpty )
+        if ( !IntersectionPredicates::isEmpty(is) )
         {
             // magnitude constraint
             if ( useMinIsMagnitude_ && !isAdmissibleMagnitude_(is) )
@@ -173,8 +172,10 @@ public:
         }
 
         // no intersection - check distance constraint
-        else
-            return computeDistance(geo1, geo1, false) >= minDistance_;
+        else if (useMinDistance_)
+            return computeDistance(geo1, geo2) >= minDistance_;
+
+        return true;
     }
 
     /*!
