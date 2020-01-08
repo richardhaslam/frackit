@@ -29,6 +29,7 @@
 #include <frackit/precision/defaultepsilon.hh>
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/cylindersurface.hh>
 
 #include "pointongeometry.hh"
 
@@ -59,9 +60,22 @@ template<class ctype1, int wd, class ctype2>
 bool pointOnGeometryBoundary(const Point<ctype1, wd>& p,
                              const Disk<ctype2>& disk,
                              ctype2 eps)
+{ return pointOnGeometry(p, disk.boundingEllipse(), eps); }
+
+/*!
+ * \brief Evaluate if a point lies on the boundary of a cylinder surface.
+ * \param p The point
+ * \param cylSurface The cylinder surface
+ * \param eps Epsilon value to be used for the check
+ */
+template<class ctype1, int wd, class ctype2>
+bool pointOnGeometryBoundary(const Point<ctype1, wd>& p,
+                             const CylinderSurface<ctype2>& cylSurface,
+                             ctype2 eps)
 {
-    static_assert(wd == Disk<ctype2>::worldDimension(), "World dimension mismatch");
-    return pointOnGeometry(p, disk.boundingEllipse(), eps);
+    if (pointOnGeometry(p, cylSurface.upperBoundingCircle(), eps))
+        return true;
+    return pointOnGeometry(p, cylSurface.lowerBoundingCircle(), eps);
 }
 
 /*!
