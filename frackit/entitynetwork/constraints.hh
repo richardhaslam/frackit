@@ -29,11 +29,12 @@
 #include <vector>
 
 #include <frackit/distance/distance.hh>
-#include <frackit/distance/distancetoboundary.hh>
-
 #include <frackit/magnitude/magnitude.hh>
 #include <frackit/intersection/intersect.hh>
 #include <frackit/intersection/intersectionpredicates.hh>
+
+#include "impl_admissiblemagnitude.hh"
+#include "impl_distancetoboundary.hh"
 
 namespace Frackit {
 
@@ -41,10 +42,16 @@ namespace Frackit {
  * \brief Class which defines and checks constraints on
  *        the geometric relationships between entities of
  *        a network. As constraints one can define:
- *        - minimum distance
+ *        - minimum distance between entities
  *        - minimum intersection angle
  *        - minimum intersection magnitude
- *        - minimum distance between the intersection and an entity boundary
+ *        - minimum distance between the intersection and entity boundaries
+ * \note For the evaluation of the distance between the boundary of entity
+ *       intersections and the entity boundaries, only those boundary parts
+ *       of the intersection geometry are considered that to not intersect
+ *       themselves with the boundary of an entity, as this would return
+ *       zero distance. However, this case is admissible, only small features
+ *       related to the non-intersecting boundaries are of interest here.
  * \tparam ST The type used for the scalar constraint values
  */
 template<class ST = double>
@@ -152,7 +159,7 @@ public:
         if ( !IntersectionPredicates::isEmpty(is) )
         {
             // magnitude constraint
-            if ( useMinIsMagnitude_ && !isAdmissibleMagnitude_(is) )
+            if ( useMinIsMagnitude_ && !ConstraintImpl::isAdmissibleMagnitude(is, minIsMagnitude_) )
                 return false;
 
             // angle constraint
@@ -163,12 +170,15 @@ public:
             if ( !useMinIsDistance_ )
                 return true;
 
-            bool isAdmissible;
-            std::visit([&] (auto&& is) { isAdmissible = isAdmissibleDistanceToBoundary_(is, geo1); }, is);
-            if (!isAdmissible)
+            using namespace ConstraintImpl;
+            if (!std::visit([&] (auto&& is)
+                            { return isAdmissibleDistanceToBoundary(is, geo1, minIsDistance_); },
+                            is))
                 return false;
 
-            return std::visit([&] (auto&& is) { return isAdmissibleDistanceToBoundary_(is, geo2); }, is);
+            return std::visit([&] (auto&& is)
+                              { return isAdmissibleDistanceToBoundary(is, geo2, minIsDistance_); },
+                              is);
         }
 
         // no intersection - check distance constraint
@@ -209,57 +219,6 @@ private:
 
     Scalar intersectionEps_;  //! Tolerance value to be used for intersections
     bool useIntersectionEps_; //! Stores wether or not a user-defined epsilon value was set
-
-    //! \todo TODO Doc me.
-    template<class T>
-    bool isAdmissibleMagnitude_(const std::vector<T>& intersection)
-    {
-        return std::all_of(intersection.begin(),
-                           intersection.end(),
-                           [&] (const auto& is) { return isAdmissibleMagnitude_(is); });
-    }
-
-    //! \todo TODO Doc me.
-    template<class... T>
-    bool isAdmissibleMagnitude_(const std::variant<T...>& intersection)
-    { return std::visit([&] (auto&& is) { return isAdmissibleMagnitude_(is); }, intersection); }
-
-    //! \todo TODO Doc me.
-    template<class Geo>
-    bool isAdmissibleMagnitude_(const Geo& isGeometry) const
-    {
-        // zero dimensional (point) intersections fulfill any magnitude constraint
-        if (Geo::myDimension() == 0) return true;
-        // empty intersections fulfill any magnitude constraint
-        if (IsEmptyIntersection<Geo>::value) return true;
-        // any other intersection geometry
-        return computeMagnitude(isGeometry) >= minIsMagnitude_;
-    }
-
-    //! \todo TODO Doc me.
-    template<class T, class Geo>
-    bool isAdmissibleDistanceToBoundary_(const std::vector<T>& intersection, const Geo& geo)
-    {
-        return std::all_of(intersection.begin(),
-                           intersection.end(),
-                           [&] (const auto& is) { return isAdmissibleDistanceToBoundary_(is, geo); });
-    }
-
-    //! \todo TODO Doc me.
-    template<class... T, class Geo>
-    bool isAdmissibleDistanceToBoundary_(const std::variant<T...>& intersection, const Geo& geo)
-    { return std::visit([&] (auto&& is) { return isAdmissibleDistanceToBoundary_(is, geo); }, intersection); }
-
-    //! \todo TODO Doc me.
-    template<class IsGeom, class Geo>
-    bool isAdmissibleDistanceToBoundary_(const IsGeom& isGeometry, const Geo& geometry) const
-    {
-        // empty intersections fulfill the distance constraint
-        if (IsEmptyIntersection<Geo>::value)
-            return true;
-
-        return computeDistanceToBoundary(isGeometry, geometry) >= minIsDistance_;
-    }
 };
 
 } // end namespace Frackit
