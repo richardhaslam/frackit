@@ -36,6 +36,8 @@
 
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/segment.hh>
+#include <frackit/geometry/ellipsearc.hh>
+#include <frackit/geometry/ellipse.hh>
 
 namespace Frackit {
 namespace ConstraintImpl {
@@ -79,17 +81,60 @@ namespace ConstraintImpl {
     }
 
     /*!
-     * \brief Overload for point intersections.
-     *        Points that lie on the boundary of the entity are considered
-     *        to fulfill the distance constraint.
+     * \brief Overload for segment intersections.
      */
     template<class ctype, int wd, class Geo, class ctype2>
     bool isAdmissibleDistanceToBoundary(const Segment<ctype, wd>& seg,
                                         const Geo& entity,
                                         ctype2 threshold)
     {
-        return isAdmissibleDistanceToBoundary(seg.source(), entity, threshold)
-               && isAdmissibleDistanceToBoundary(seg.target(), entity, threshold);
+        if (!isAdmissibleDistanceToBoundary(seg.source(), entity, threshold))
+            return false;
+        return isAdmissibleDistanceToBoundary(seg.target(), entity, threshold);
+    }
+
+    /*!
+     * \brief Overload for ellipse arc intersections.
+     */
+    template<class ctype, int wd, class Geo, class ctype2>
+    bool isAdmissibleDistanceToBoundary(const EllipseArc<ctype, wd>& arc,
+                                        const Geo& entity,
+                                        ctype2 threshold)
+    {
+        const auto sourceOnBound = pointOnGeometryBoundary(arc.source(), entity);
+        const auto targetOnBound = pointOnGeometryBoundary(arc.target(), entity);
+
+        // if any of the two rouches the boundary, only check source or target
+        if (sourceOnBound || targetOnBound)
+        {
+            if (!sourceOnBound
+                && computeDistanceToBoundary(arc.source(), entity) < threshold)
+                return false;
+            if (!targetOnBound
+                && computeDistanceToBoundary(arc.target(), entity) < threshold)
+                return false;
+            return true;
+        }
+
+        // otherwise check a number of points along the arc
+        std::vector<ctype> params({0.0, 0.25, 0.5, 0.75, 1.0});
+        return std::all_of(params.begin(),
+                           params.end(),
+                           [&] (auto param) { return computeDistanceToBoundary(arc.getPoint(param), entity) >= threshold; });
+    }
+
+    /*!
+     * \brief Overload for ellipse intersections on cylinder surfaces.
+     */
+    template<class ctype, int wd, class ctype2, class ctype3>
+    bool isAdmissibleDistanceToBoundary(const Ellipse<ctype, wd>& arc,
+                                        const CylinderSurface<ctype2>& entity,
+                                        ctype3 threshold)
+    {
+        // for this we would first have to intersect the ellipse with the
+        // upper and lower bounding circles to make sure there is no intersection
+        // point!
+        throw std::runtime_error(std::string("TODO: IMPLEMENT"));
     }
 
     /*!
@@ -101,7 +146,7 @@ namespace ConstraintImpl {
                                         ctype threshold)
     {
         return std::visit([&] (auto&& is)
-                          { return isAdmissibleDistanceToBoundary_(is, entity, threshold); },
+                          { return isAdmissibleDistanceToBoundary(is, entity, threshold); },
                           intersection);
     }
 
