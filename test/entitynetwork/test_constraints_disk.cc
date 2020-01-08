@@ -1,7 +1,7 @@
 #include <cmath>
 #include <string>
 #include <stdexcept>
-#include <BRepTools.hxx>
+
 #include <frackit/geometry/disk.hh>
 #include <frackit/entitynetwork/constraints.hh>
 
