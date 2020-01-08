@@ -73,7 +73,13 @@ computeDistanceToBoundary(const Geo& geo,
                           Impl::PCT<Geo, Disk<ctype>> deflection = Precision<Impl::PCT<Geo, Disk<ctype>>>::confusion(),
                           Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                           Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
-{ return computeDistance(OCCUtilities::getShape(geo), OCCUtilities::getShape(disk.boundingEllipse())); }
+{
+    return computeDistance(OCCUtilities::getShape(geo),
+                           OCCUtilities::getShape(disk.boundingEllipse()),
+                           deflection,
+                           extFlag,
+                           extAlgo);
+}
 
 } // end namespace Frackit
 
