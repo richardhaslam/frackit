@@ -38,11 +38,6 @@ typename Geometry::ctype computeArea(const Geometry& geometry)
 
 //! \todo TODO doc me.
 template<class ctype>
-ctype computeArea(const Disk<ctype>& disk)
-{ return M_PI*disk.majorAxisLength()*disk.minorAxisLength(); }
-
-//! \todo TODO doc me.
-template<class ctype>
 ctype computeArea(const CylinderSurface<ctype>& cylSurface)
 { return 2.0*M_PI*cylSurface.radius()*cylSurface.height(); }
 

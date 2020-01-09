@@ -72,6 +72,12 @@ public:
 
     //! \todo TODO doc me.
     static std::string name() { return "Disk"; }
+    //! \todo TODO doc me.
+    ctype area() const
+    {
+        return M_PI*this->majorAxisLength()
+                   *this->minorAxisLength();
+    }
 
     /*!
      * \brief Returns true if a point is on the disk
