@@ -23,6 +23,8 @@
 #ifndef FRACKIT_MATH_HH
 #define FRACKIT_MATH_HH
 
+#include <cmath>
+
 #include <frackit/geometry/vector.hh>
 #include <frackit/precision/precision.hh>
 
@@ -70,6 +72,20 @@ bool isRightHandSystem(const Vector<ctype, 3>& v1,
                                               *v3.length()*Precision<ctype>::confusion());
     return boxProduct(v1, v2, v3) > 0.0;
 }
+
+/*!
+ * \brief \todo TODO doc me.
+ */
+template<class ctype>
+ctype toDegrees(const ctype radians)
+{ return radians*180.0/M_PI; }
+
+/*!
+ * \brief \todo TODO doc me.
+ */
+template<class ctype>
+ctype toRadians(const ctype degrees)
+{ return degrees*M_PI/180.0; }
 
 } // end namespace Frackit
 
