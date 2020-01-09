@@ -79,7 +79,8 @@ public:
 
     //! Constructs the direction vector
     Direction direction() const { return Vector(source(), target()); }
-
+    //! Returns the length of the segment
+    ctype length() { return Vector(source(), target()).length(); }
     //! Constructs an object for the supporting line
     Line supportingLine() const
     { return Line(source(), direction()); }

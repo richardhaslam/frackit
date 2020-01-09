@@ -70,13 +70,6 @@ ctype computeLength(const Vector<ctype, worldDim>& vec)
 { return vec.length(); }
 
 /*!
- * \brief Returns the length of a segment
- */
-template<class ctype, int worldDim>
-ctype computeLength(const Segment<ctype, worldDim>& seg)
-{ return computeLength(Vector<ctype, worldDim>(seg.source(), seg.target())); }
-
-/*!
  * \brief Returns the length of a circle (circumference).
  */
 template<class ctype, int worldDim>
