@@ -12,5 +12,6 @@ line.hh
 plane.hh
 point.hh
 segment.hh
+triangle.hh
 vector.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/geometry)
