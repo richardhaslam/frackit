@@ -66,6 +66,7 @@ class GeometrySampler< Disk<ctype>, T >
 public:
     //! export underlying geometry type
     using Disk = Frackit::Disk<ctype>;
+    using Geometry = Disk;
 
     //! export traits class
     using Traits = T;
