@@ -41,6 +41,14 @@ Vector<ctype, 3> crossProduct(const Vector<ctype, 3>& v1,
 }
 
 /*!
+ * \todo TODO doc me.
+ */
+template <class ctype>
+ctype crossProduct(const Vector<ctype, 2>& v1,
+                   const Vector<ctype, 2>& v2)
+{ return v1.x()*v2.y() - v1.y()*v2.x(); }
+
+/*!
  * \brief \todo TODO doc me.
  */
 template<class ctype>
