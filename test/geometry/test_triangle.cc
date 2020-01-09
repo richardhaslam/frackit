@@ -31,6 +31,17 @@ int main()
             throw std::runtime_error(std::string("Unexpected length of edge 2"));
         if ( abs(triangle.area() - 0.5*f*f) > eps*eps )
             throw std::runtime_error(std::string("Unexpected triangle area"));
+
+        // check if points are on supporting plane
+        const auto plane = triangle.supportingPlane();
+        if (!plane.contains(triangle.corner(0), eps))
+            throw std::runtime_error(std::string("Point 0 not on support plane"));
+        if (!plane.contains(triangle.corner(1), eps))
+            throw std::runtime_error(std::string("Point 1 not on support plane"));
+        if (!plane.contains(triangle.corner(2), eps))
+            throw std::runtime_error(std::string("Point 2 not on support plane"));
+        if (plane.contains(Point(0.0, 0.0, 1e-6*f), eps))
+            throw std::runtime_error(std::string("Point should not be on plane"));
     }
 
     std::cout << "All tests passed" << std::endl;
