@@ -53,8 +53,8 @@ struct PointSamplerTraits<ctype, 3>
  * \brief \todo TODO Doc me.
  */
 template< class Geometry,
-          class Traits = PointSamplerTraits<typename Geometry::ctype,
-                                            Geometry::worldDimension()> >
+          class T = PointSamplerTraits<typename Geometry::ctype,
+                                       Geometry::worldDimension()> >
 class GeometryPointSampler;
 
 //
@@ -99,8 +99,8 @@ class GeometryPointSampler;
 /*!
  * \brief \todo TODO Doc me.
  */
-template<class ctype, class Traits>
-class GeometryPointSampler< Cylinder<ctype>, Traits >
+template<class ctype, class T>
+class GeometryPointSampler< Cylinder<ctype>, T >
 {
     using Disk = typename Cylinder<ctype>::Disk;
     using Vector = Frackit::Vector<ctype, 3>;
@@ -108,6 +108,9 @@ class GeometryPointSampler< Cylinder<ctype>, Traits >
 public:
     //! export resulting point type
     using Point = typename Cylinder<ctype>::Point;
+
+    //! export traits class
+    using Traits = T;
 
     /*!
      * \brief \todo TODO Doc me.
