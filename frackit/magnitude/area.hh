@@ -32,6 +32,11 @@
 namespace Frackit {
 
 //! \todo TODO doc me.
+template<class Geometry>
+typename Geometry::ctype computeArea(const Geometry& geometry)
+{ return geometry.area(); }
+
+//! \todo TODO doc me.
 template<class ctype>
 ctype computeArea(const Disk<ctype>& disk)
 { return M_PI*disk.majorAxisLength()*disk.minorAxisLength(); }
