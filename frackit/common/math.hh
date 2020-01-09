@@ -24,6 +24,7 @@
 #define FRACKIT_MATH_HH
 
 #include <cmath>
+#include <vector>
 
 #include <frackit/geometry/vector.hh>
 #include <frackit/precision/precision.hh>
