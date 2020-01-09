@@ -42,6 +42,14 @@ int main()
             throw std::runtime_error(std::string("Point 2 not on support plane"));
         if (plane.contains(Point(0.0, 0.0, 1e-6*f), eps))
             throw std::runtime_error(std::string("Point should not be on plane"));
+
+        // check contains() query
+        if (!triangle.contains(Point(0.5*f, 0.0, 0.0), eps))
+            throw std::runtime_error(std::string("contains() query 1 failed"));
+        if (!triangle.contains(Point(0.5*f, 1e-6*f, 0.0), eps))
+            throw std::runtime_error(std::string("contains() query 2 failed"));
+        if (triangle.contains(Point(0.5*f, -1e-6*f, 0.0), eps))
+            throw std::runtime_error(std::string("contains() query 3 failed"));
     }
 
     std::cout << "All tests passed" << std::endl;
