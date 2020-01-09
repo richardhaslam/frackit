@@ -92,6 +92,8 @@ public:
     const Point& center() const { return center_; }
     //! \todo TODO doc me.
     const Direction& normal() const { return normal_; }
+    //! \todo TODO doc me.
+    Plane supportingPlane() const { return Plane(corner(0), normal()); }
 
     //! \todo TODO doc me.
     static constexpr std::size_t numCorners() { return 3; }
@@ -117,8 +119,31 @@ public:
         }
     }
 
-    //! \todo TODO doc me.
-    Plane supportingPlane() const { return Plane(corner(0), normal()); }
+    //! Returns true if a point lies on the triangle
+    //! \todo TODO note on eps
+    bool contains(const Point& p, ctype eps, bool checkIfOnPlane = true) const
+    {
+        if (checkIfOnPlane)
+            if (!supportingPlane().contains(p, eps))
+                return false;
+
+        // sum up the areas of sub-triangles with the given point
+        ctype otherArea(0.0);
+        otherArea += Triangle<ctype, 3>(corners_[0], corners_[1], p).area();
+        otherArea += Triangle<ctype, 3>(corners_[1], corners_[2], p).area();
+        otherArea += Triangle<ctype, 3>(corners_[2], corners_[0], p).area();
+
+        // if area is equal to the triangle area, point is on it
+        return abs(area() - otherArea) < eps*eps;
+    }
+
+    //! Returns true if a point lies on the triangle
+    bool contains(const Point& p,  bool checkIfOnPlane = true) const
+    {
+        auto eps = Precision<ctype>::confusion();
+        eps *= Vector(corner(0), corner(3)).length();
+        return contains(p, eps);
+    }
 
 private:
     std::array<Point, 3> corners_;
