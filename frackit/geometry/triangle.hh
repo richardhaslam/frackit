@@ -40,26 +40,29 @@ namespace Frackit {
  * \brief \todo TODO doc me.
  */
 template<class CT, int worldDim>
-class Triangle
-{
-    static_assert(worldDim == 3 || worldDim == 2,
-                  "Invalid world dimension provided");
+class Triangle;
 
-    using Vector = Frackit::Vector<CT, worldDim>;
-    using Direction = Frackit::Direction<CT, worldDim>;
+/*!
+ * \brief \todo TODO doc me.
+ */
+template<class CT>
+class Triangle<CT, 3>
+{
+    using Vector = Frackit::Vector<CT, 3>;
+    using Direction = Frackit::Direction<CT, 3>;
 
 public:
     //! export dimensionality
     static constexpr int myDimension() { return 2; };
-    static constexpr int worldDimension() { return worldDim; };
+    static constexpr int worldDimension() { return 3; };
 
     //! export type used for coordinates
     using ctype = CT;
 
     //! export underlying geometry types
-    using Point = Frackit::Point<ctype, worldDim>;
-    using Segment = Frackit::Segment<ctype, worldDim>;
-    using Plane = Frackit::Plane<ctype, worldDim>;
+    using Point = Frackit::Point<ctype, 3>;
+    using Segment = Frackit::Segment<ctype, 3>;
+    using Plane = Frackit::Plane<ctype, 3>;
 
     /*!
      * \brief \todo TODO doc me.
@@ -72,22 +75,13 @@ public:
     {
         const auto x = 1.0/3.0*(p1.x() + p2.x() + p3.x());
         const auto y = 1.0/3.0*(p1.y() + p2.y() + p3.y());
-        if constexpr(worldDim == 3)
-        {
-            const auto z = 1.0/3.0*(p1.z() + p2.z() + p3.z());
-            center_ = Point(x, y, z);
+        const auto z = 1.0/3.0*(p1.z() + p2.z() + p3.z());
+        center_ = Point(x, y, z);
 
-            const auto normalVec = crossProduct(Vector(p1, p2),
-                                                Vector(p1, p3));
-            normal_ = Direction( normalVec );
-            area_ = 0.5*normalVec.length();
-        }
-        else
-        {
-            center_ = Point(x, y);
-            area_ = 0.5*crossProduct(Vector(p1, p2),
-                                     Vector(p1, p3));
-        }
+        const auto normalVec = crossProduct(Vector(p1, p2),
+                                            Vector(p1, p3));
+        normal_ = Direction( normalVec );
+        area_ = 0.5*normalVec.length();
     }
 
     //! \todo TODO doc me.
