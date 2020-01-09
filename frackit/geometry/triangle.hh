@@ -32,6 +32,7 @@
 #include "segment.hh"
 #include "vector.hh"
 #include "direction.hh"
+#include "plane.hh"
 
 namespace Frackit {
 
@@ -58,6 +59,7 @@ public:
     //! export underlying geometry types
     using Point = Frackit::Point<ctype, worldDim>;
     using Segment = Frackit::Segment<ctype, worldDim>;
+    using Plane = Frackit::Plane<ctype, worldDim>;
 
     /*!
      * \brief \todo TODO doc me.
@@ -120,6 +122,9 @@ public:
             default: throw std::runtime_error(std::string("Invalid edge index"));
         }
     }
+
+    //! \todo TODO doc me.
+    Plane supportingPlane() const { return Plane(corner(0), normal()); }
 
 private:
     std::array<Point, 3> corners_;
