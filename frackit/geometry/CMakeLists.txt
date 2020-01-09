@@ -11,6 +11,7 @@ ellipticalgeometry.hh
 line.hh
 plane.hh
 point.hh
+quadrilateral.hh
 segment.hh
 triangle.hh
 vector.hh
