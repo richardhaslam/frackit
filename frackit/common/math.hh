@@ -87,6 +87,60 @@ template<class ctype>
 ctype toRadians(const ctype degrees)
 { return degrees*M_PI/180.0; }
 
+/*!
+ * \brief \todo TODO doc me. Cite Wiki entry.
+ */
+template<class ctype>
+void rotate(Vector<ctype, 3>& v,
+            const Direction<ctype, 3>& axis,
+            const ctype angle)
+{
+    using std::sin;
+    using std::cos;
+
+    const auto cosPhi = cos(angle);
+    const auto sinPhi = sin(angle);
+
+    Vector<ctype, 3> Rx(cosPhi + axis.x()*axis.x()*(1.0 - cosPhi),
+                        axis.x()*axis.y()*(1.0 - cosPhi) - axis.z()*sinPhi,
+                        axis.x()*axis.z()*(1.0 - cosPhi) - axis.y()*sinPhi);
+    Vector<ctype, 3> Ry(axis.y()*axis.x()*(1.0 - cosPhi) + axis.z()*sinPhi,
+                        cosPhi + axis.y()*axis.y()*(1.0 - cosPhi),
+                        axis.y()*axis.z()*(1.0 - cosPhi) - axis.x()*sinPhi);
+    Vector<ctype, 3> Rz(axis.z()*axis.x()*(1.0 - cosPhi) - axis.y()*sinPhi,
+                        axis.z()*axis.y()*(1.0 - cosPhi) + axis.x()*sinPhi,
+                        cosPhi + axis.z()*axis.z()*(1.0 - cosPhi));
+    v = Vector<ctype, 3>(Rx*v, Ry*v, Rz*v);
+}
+
+/*!
+ * \brief \todo TODO doc me. Cite Wiki entry.
+ */
+template<class ctype>
+void rotate(std::vector<Vector<ctype, 3>>& vectors,
+            const Direction<ctype, 3>& axis,
+            const ctype angle)
+{
+    using std::sin;
+    using std::cos;
+
+    const auto cosPhi = cos(angle);
+    const auto sinPhi = sin(angle);
+
+    Vector<ctype, 3> Rx(cosPhi + axis.x()*axis.x()*(1.0 - cosPhi),
+                        axis.x()*axis.y()*(1.0 - cosPhi) - axis.z()*sinPhi,
+                        axis.x()*axis.z()*(1.0 - cosPhi) - axis.y()*sinPhi);
+    Vector<ctype, 3> Ry(axis.y()*axis.x()*(1.0 - cosPhi) + axis.z()*sinPhi,
+                        cosPhi + axis.y()*axis.y()*(1.0 - cosPhi),
+                        axis.y()*axis.z()*(1.0 - cosPhi) - axis.x()*sinPhi);
+    Vector<ctype, 3> Rz(axis.z()*axis.x()*(1.0 - cosPhi) - axis.y()*sinPhi,
+                        axis.z()*axis.y()*(1.0 - cosPhi) + axis.x()*sinPhi,
+                        cosPhi + axis.z()*axis.z()*(1.0 - cosPhi));
+
+    for (auto& v : vectors)
+        v = Vector<ctype, 3>(Rx*v, Ry*v, Rz*v);
+}
+
 } // end namespace Frackit
 
 #endif // FRACKIT_MATH_HH
