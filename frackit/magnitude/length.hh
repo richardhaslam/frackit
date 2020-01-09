@@ -42,6 +42,15 @@
 namespace Frackit {
 
 /*!
+ * \brief Returns the length of a geometry.
+ * \note This is the default overload trying to get
+ *       the length from the geometry itself.
+ */
+template<class Geometry>
+typename Geometry::ctype computeLength(const Geometry& geom)
+{ return geom.length(); }
+
+/*!
  * \brief Returns the length of a curve of the Geom package.
  */
 template<class ctype = double>
