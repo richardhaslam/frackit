@@ -131,6 +131,8 @@ public:
     ctype height() const { return height_; }
     //! \todo TODO doc me.
     ctype radius() const { return bottom_.majorAxisLength(); }
+    //! \todo TODO doc me.
+    ctype volume() const { return M_PI*this->radius()*this->radius()*this->height(); }
 
     //! Returns true if a point lies inside the cylinder (given tolerance)
     //! \todo note about choice of eps

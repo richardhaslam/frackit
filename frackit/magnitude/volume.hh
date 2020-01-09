@@ -30,11 +30,6 @@
 
 namespace Frackit {
 
-//! \todo TODO doc me.
-template<class ctype>
-ctype computeVolume(const Cylinder<ctype>& cylinder)
-{ return M_PI*cylinder.radius()*cylinder.radius()*cylinder.height(); }
-
 } // end namespace Frackit
 
 #endif // FRACKIT_MAGNITUDE_VOLUME_HH
