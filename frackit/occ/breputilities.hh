@@ -129,6 +129,9 @@ namespace OCCUtilities {
                                               bottom.radius(),
                                               lateral.height(),
                                               2.0*M_PI);
+        makeCylinder.Build();
+        if (!makeCylinder.IsDone())
+            throw std::runtime_error(std::string("Could not build cylinder"));
         return TopoDS::Solid(makeCylinder.Shape());
     }
 
@@ -144,6 +147,9 @@ namespace OCCUtilities {
                                               bottom.radius(),
                                               cylSurface.height(),
                                               2.0*M_PI);
+        makeCylinder.Build();
+        if (!makeCylinder.IsDone())
+            throw std::runtime_error(std::string("Could not build cylinder"));
         return makeCylinder.Cylinder().LateralFace();
     }
 
