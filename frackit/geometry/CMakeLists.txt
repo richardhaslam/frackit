@@ -1,4 +1,5 @@
 install(FILES
+box.hh
 circle.hh
 CMakeLists.txt
 cylinder.hh
