@@ -26,6 +26,11 @@
 
 #include <type_traits>
 
+#include <gp_Pnt.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
+
+#include <frackit/precision/precision.hh>
 #include "length.hh"
 #include "area.hh"
 #include "volume.hh"
@@ -59,6 +64,22 @@ typename Geometry::ctype computeMagnitude(const Geometry& geometry)
 template<class Geometry, std::enable_if_t<Geometry::myDimension() == 3, int> = 0>
 typename Geometry::ctype computeMagnitude(const Geometry& geometry)
 { return computeVolume(geometry); }
+
+/*!
+ * \brief Returns the length of a BRep edge
+ */
+template<class ctype = double>
+ctype computeMagnitude(const TopoDS_Edge& edge)
+{ return computeLength(edge); }
+
+/*!
+ * \brief Returns the area of a BRep face
+ */
+template<class ctype = double>
+ctype computeMagnitude(const TopoDS_Face& face,
+                       ctype eps = Precision<ctype>::confusion(),
+                       const gp_Pnt& loc = gp_Pnt())
+{ return computeArea(face, eps, loc); }
 
 } // end namespace Frackit
 
