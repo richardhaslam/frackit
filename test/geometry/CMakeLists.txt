@@ -11,5 +11,6 @@ frackit_add_test(NAME test_disk SOURCES test_disk.cc LABELS geometry)
 frackit_add_test(NAME test_ellipsearc SOURCES test_ellipsearc.cc LABELS geometry)
 frackit_add_test(NAME test_triangle SOURCES test_triangle.cc LABELS geometry)
 frackit_add_test(NAME test_quadrilateral SOURCES test_quadrilateral.cc LABELS geometry)
+frackit_add_test(NAME test_box SOURCES test_box.cc LABELS geometry)
 
 set(CMAKE_BUILD_TYPE Debug)
