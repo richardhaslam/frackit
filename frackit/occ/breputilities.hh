@@ -265,6 +265,16 @@ namespace OCCUtilities {
         return wires;
     }
 
+    //! Get the solids of a shape
+    template<class Shape>
+    std::vector<TopoDS_Solid> getSolids(const Shape& shape)
+    {
+        std::vector<TopoDS_Solid> solids;
+        for (TopExp_Explorer explorer(shape, TopAbs_SOLID); explorer.More(); explorer.Next())
+            solids.push_back(TopoDS::Solid(explorer.Current()));
+        return solids;
+    }
+
     //! Convenience function to get the shape resulting from the cut of an object with a tool
     template<class ctype>
     TopoDS_Shape cut(const TopoDS_Shape& object, const TopoDS_Shape& tool, ctype eps)
