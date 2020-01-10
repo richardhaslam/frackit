@@ -26,8 +26,14 @@
 
 #include <cmath>
 
+#include <gp_Pnt.hxx>
+#include <TopoDS_Face.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/precision/precision.hh>
 
 namespace Frackit {
 
@@ -40,6 +46,17 @@ typename Geometry::ctype computeArea(const Geometry& geometry)
 template<class ctype>
 ctype computeArea(const CylinderSurface<ctype>& cylSurface)
 { return 2.0*M_PI*cylSurface.radius()*cylSurface.height(); }
+
+//! \todo TODO doc me.
+template<class ctype = double>
+ctype computeArea(const TopoDS_Face& face,
+                  ctype eps = Precision<ctype>::confusion(),
+                  const gp_Pnt& loc = gp_Pnt())
+{
+    GProp_GProps gprops(loc);
+    BRepGProp::SurfaceProperties(face, gprops, eps);
+    return gprops.Mass();
+}
 
 } // end namespace Frackit
 
