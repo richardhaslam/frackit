@@ -81,6 +81,15 @@ ctype computeMagnitude(const TopoDS_Face& face,
                        const gp_Pnt& loc = gp_Pnt())
 { return computeArea(face, eps, loc); }
 
+/*!
+ * \brief Returns the area of a BRep solid
+ */
+template<class ctype = double>
+ctype computeMagnitude(const TopoDS_Solid& solid,
+                       ctype eps = Precision<ctype>::confusion(),
+                       const gp_Pnt& loc = gp_Pnt())
+{ return computeVolume(solid, eps, loc); }
+
 } // end namespace Frackit
 
 #endif // FRACKIT_MAGNITUDE_HH
