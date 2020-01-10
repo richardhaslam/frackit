@@ -33,7 +33,7 @@
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylindersurface.hh>
-#include <frackit/magnitude/length.hh>
+
 #include "precision.hh"
 
 namespace Frackit {
@@ -52,7 +52,7 @@ typename Geometry::ctype defaultEpsilon(const Geometry& geom)
  */
 template<class ctype, int worldDim>
 ctype defaultEpsilon(const Segment<ctype, worldDim>& seg)
-{ return Precision<ctype>::confusion()*computeLength(seg); }
+{ return Precision<ctype>::confusion()*seg.length(); }
 
 /*!
  * \brief Default epsilon for operations on circles.
