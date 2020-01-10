@@ -215,6 +215,13 @@ namespace OCCUtilities {
         return TopoDS::Solid(makeBox.Shape());
     }
 
+    //! get the BRep of shapes (for compatibilty reasons)
+    const TopoDS_Vertex& getShape(const TopoDS_Vertex& v) { return v; }
+    const TopoDS_Edge& getShape(const TopoDS_Edge& e) { return e; }
+    const TopoDS_Face& getShape(const TopoDS_Face& f) { return f; }
+    const TopoDS_Wire& getShape(const TopoDS_Wire& w) { return w; }
+    const TopoDS_Solid& getShape(const TopoDS_Solid& s) { return s; }
+
     //! Get the vertices of a shape
     template<class Shape>
     std::vector<TopoDS_Vertex> getVertices(const Shape& shape)
