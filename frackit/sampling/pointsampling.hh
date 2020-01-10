@@ -27,6 +27,7 @@
 #include <random>
 
 #include <frackit/geometry/cylinder.hh>
+#include <frackit/geometry/box.hh>
 #include <frackit/geometry/vector.hh>
 
 namespace Frackit {
