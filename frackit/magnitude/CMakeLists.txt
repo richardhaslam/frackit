@@ -1,5 +1,6 @@
 install(FILES
 area.hh
+containedmagnitude.hh
 length.hh
 magnitude.hh
 volume.hh
