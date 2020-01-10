@@ -57,44 +57,47 @@ template< class Geometry,
                                        Geometry::worldDimension()> >
 class GeometryPointSampler;
 
-//
-// /*!
-//  * \brief \todo TODO Doc me.
-//  */
-// template<class Scalar>
-// class GeometryPointSampler< Box<Scalar> >
-// {
-//
-// public:
-//     //! export resulting point type
-//     using Point = typename Box<Scalar>::Point;
-//
-//     /*!
-//      * \brief \todo TODO Doc me.
-//      */
-//     GeometryPointSampler(const Box<Scalar>& box)
-//     : generator_(std::random_device{}())
-//     , p_x_(box.xMin(), box.xMax())
-//     , p_y_(box.yMin(), box.yMax())
-//     , p_z_(box.zMin(), box.zMax())
-//     {}
-//
-//     /*!
-//      * \brief \todo TODO Doc me.
-//      */
-//     Point operator() ()
-//     {
-//         return Point( {p_x_(generator_),
-//                        p_y_(generator_),
-//                        p_z_(generator_)} );
-//     }
-//
-//  private:
-//      std::default_random_engine generator_;
-//      std::uniform_real_distribution<Scalar> p_x_;
-//      std::uniform_real_distribution<Scalar> p_y_;
-//      std::uniform_real_distribution<Scalar> p_z_;
-// };
+
+/*!
+ * \brief \todo TODO Doc me.
+ */
+template<class Scalar, class T>
+class GeometryPointSampler< Box<Scalar>, T >
+{
+
+public:
+    //! export resulting point type
+    using Point = typename Box<Scalar>::Point;
+
+    //! export traits class
+    using Traits = T;
+
+    /*!
+     * \brief \todo TODO Doc me.
+     */
+    GeometryPointSampler(const Box<Scalar>& box)
+    : generator_(std::random_device{}())
+    , p_x_(box.xMin(), box.xMax())
+    , p_y_(box.yMin(), box.yMax())
+    , p_z_(box.zMin(), box.zMax())
+    {}
+
+    /*!
+     * \brief \todo TODO Doc me.
+     */
+    Point operator() ()
+    {
+        return Point( {p_x_(generator_),
+                       p_y_(generator_),
+                       p_z_(generator_)} );
+    }
+
+ private:
+    std::default_random_engine generator_;
+    typename Traits::DistributionX p_x_;
+    typename Traits::DistributionY p_y_;
+    typename Traits::DistributionZ p_z_;
+};
 
 /*!
  * \brief \todo TODO Doc me.
