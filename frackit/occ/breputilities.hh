@@ -63,6 +63,7 @@
 
 // BRep primitives and operations
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
 
 // internal geometry classes
 #include <frackit/geometry/circle.hh>
@@ -71,6 +72,7 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/box.hh>
 
 #include "gputilities.hh"
 #include "geomutilities.hh"
@@ -198,6 +200,19 @@ namespace OCCUtilities {
         TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(ellipse);
         TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edge);
         return BRepBuilderAPI_MakeFace(wire);
+    }
+
+    //! get the BRep of a box
+    template<class ctype>
+    TopoDS_Solid getShape(const Box<ctype>& box)
+    {
+        const gp_Pnt pMin(box.xMin(), box.yMin(), box.zMin());
+        const gp_Pnt pMax(box.xMax(), box.yMax(), box.zMax());
+        BRepPrimAPI_MakeBox makeBox(pMin, pMax);
+        makeBox.Build();
+        if (!makeBox.IsDone())
+            throw std::runtime_error(std::string("Could not build box"));
+        return TopoDS::Solid(makeBox.Shape());
     }
 
     //! Get the vertices of a shape
