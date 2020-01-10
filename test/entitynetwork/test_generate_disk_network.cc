@@ -6,9 +6,10 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
 
-#include <frackit/common/math.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/precision/defaultepsilon.hh>
+#include <frackit/magnitude/containedmagnitude.hh>
+#include <frackit/occ/breputilities.hh>
 
 #include <frackit/sampling/pointsampling.hh>
 #include <frackit/sampling/geometrysampling.hh>
@@ -125,8 +126,9 @@ int main()
         // enforce constraints w.r.t. the domain boundaries
         if (!constraintsOnDomain.evaluate(domain.lateralFace(), disk)) continue;
 
-        // reject if intersection with domain is too small (here: 0.1m²)
-        const auto containedVol = disk.area(); // TODO !!! computeContainedVolume(disk, pointSampleBox);
+        // reject if intersection with domain is too small (here: 0.2m²)
+        const auto containedArea = computeContainedMagnitude(disk, domain);
+        if (containedArea < 0.1) continue;
 
         // if we get here, the disk is admissible
         diskSetSelf.push_back(std::move(disk));
@@ -136,7 +138,7 @@ int main()
         else accepted_1++;
 
         // compute new density (use minimum w.r.t. domain/network volume)
-        currentDiskArea += containedVol;
+        currentDiskArea += containedArea;
         currentDensity = currentDiskArea/domain.volume();
         std::cout << "  "   << std::setw(18) << std::setfill(' ')
                             << std::to_string(diskSet1.size() + diskSet2.size()) + std::string(9, ' ')
