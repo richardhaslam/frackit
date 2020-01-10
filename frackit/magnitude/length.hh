@@ -27,6 +27,8 @@
 #include <cmath>
 
 #include <Standard_Handle.hxx>
+#include <TopoDS_Edge.hxx>
+
 #include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
@@ -61,6 +63,13 @@ ctype computeLength(const Handle(Geom_Curve)& curve)
     GeomAdaptor_Curve adaptorCurve(curve, uMin, uMax);
     return GCPnts_AbscissaPoint::Length(adaptorCurve, uMin, uMax);
 }
+
+/*!
+ * \brief Returns the length of a BRep edge.
+ */
+template<class ctype = double>
+ctype computeLength(const TopoDS_Edge& edge)
+{ return computeLength(OCCUtilities::getGeomHandle(edge)); }
 
 /*!
  * \brief Returns the length of a vector
