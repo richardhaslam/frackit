@@ -27,6 +27,7 @@
 
 #include <type_traits>
 
+#include <frackit/precision/defaultepsilon.hh>
 #include <frackit/occ/breputilities.hh>
 #include "magnitude.hh"
 
