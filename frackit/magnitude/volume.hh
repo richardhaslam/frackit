@@ -26,9 +26,25 @@
 
 #include <cmath>
 
+#include <gp_Pnt.hxx>
+#include <TopoDS_Solid.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+
 #include <frackit/geometry/cylinder.hh>
 
 namespace Frackit {
+
+//! \todo TODO doc me.
+template<class ctype = double>
+ctype computeVolume(const TopoDS_Solid& solid,
+                    ctype eps = Precision<ctype>::confusion(),
+                    const gp_Pnt& loc = gp_Pnt())
+{
+    GProp_GProps gprops(loc);
+    BRepGProp::VolumeProperties(solid, gprops, eps);
+    return gprops.Mass();
+}
 
 } // end namespace Frackit
 
