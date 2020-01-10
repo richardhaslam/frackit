@@ -13,8 +13,8 @@ frackit_add_test(NAME test_constraints_cylindersurface
                  LABELS entitynetwork constraints)
 
 # test disk network creation (in cylinder)
-frackit_add_test(NAME test_generate_disk_network
-                 SOURCES test_generate_disk_network.cc
+frackit_add_test(NAME test_generate_disk_network_cylinder
+                 SOURCES test_generate_disk_network_cylinder.cc
                  LABELS entitynetwork sampling)
 
 set(CMAKE_BUILD_TYPE Debug)
