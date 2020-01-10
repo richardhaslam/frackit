@@ -33,6 +33,7 @@
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/box.hh>
 
 #include "precision.hh"
 
@@ -86,6 +87,16 @@ ctype defaultEpsilon(const CylinderSurface<ctype>& cylSurface)
 {
     return Precision<ctype>::confusion()
            *0.5*(cylSurface.radius() + cylSurface.height());
+}
+
+/*!
+ * \brief Default epsilon for operations on boxes.
+ */
+template<class ctype>
+ctype defaultEpsilon(const Box<ctype>& box)
+{
+    const Segment<ctype, 3> diagSegment(box.corner(0), box.corner(7));
+    return Precision<ctype>::confusion()*diagSegment.length();
 }
 
 } // end namespace Frackit
