@@ -55,7 +55,10 @@
 #include <BRepAlgoAPI_Cut.hxx>
 
 // converter between BRep and TopoDS
+#include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <BRepBndLib.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
@@ -273,6 +276,18 @@ namespace OCCUtilities {
         for (TopExp_Explorer explorer(shape, TopAbs_SOLID); explorer.More(); explorer.Next())
             solids.push_back(TopoDS::Solid(explorer.Current()));
         return solids;
+    }
+
+    //! Get bounding box
+    template<class Shape, class ctype = double>
+    Box<ctype> getBoundingBox(const Shape& shape)
+    {
+        Bnd_Box bndBox;
+        BRepBndLib::Add(shape, bndBox);
+
+        ctype xMin, yMin, zMin, xMax, yMax, zMax;
+        bndBox.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+        return Box<ctype>(xMin, yMin, zMin, xMax, yMax, zMax);
     }
 
     //! Convenience function to get the shape resulting from the cut of an object with a tool
