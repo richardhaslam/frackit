@@ -28,6 +28,9 @@
 #ifndef FRACKIT_DEFAULT_EPSILON_HH
 #define FRACKIT_DEFAULT_EPSILON_HH
 
+#include <TopoDS_Shape.hxx>
+
+#include <frackit/occ/breputilities.hh>
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/circle.hh>
 #include <frackit/geometry/ellipse.hh>
@@ -97,6 +100,17 @@ ctype defaultEpsilon(const Box<ctype>& box)
 {
     const Segment<ctype, 3> diagSegment(box.corner(0), box.corner(7));
     return Precision<ctype>::confusion()*diagSegment.length();
+}
+
+/*!
+ * \brief Default epsilon for operations on shapes.
+ */
+template<class ctype = double>
+ctype defaultEpsilon(const TopoDS_Shape& shape)
+{
+    const auto bbox = OCCUtilities::getBoundingBox(shape);
+    const auto diagonalSeg = Segment<ctype, 3>(bbox.corner(0), bbox.corner(7));
+    return diagonalSeg.length()*Precision<ctype>::confusion();
 }
 
 } // end namespace Frackit
