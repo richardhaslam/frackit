@@ -38,6 +38,7 @@
 #include "algo_disk_line.hh"
 #include "algo_disk_disk.hh"
 #include "algo_cylsurface_disk.hh"
+#include "algo_shell_disk.hh"
 
 namespace Frackit {
 
@@ -174,6 +175,28 @@ template<class ctype>
 Intersection< Disk<ctype>, CylinderSurface<ctype> >
 intersect(const Disk<ctype>& disk, const CylinderSurface<ctype>& cylSurface, ctype eps)
 { return intersect(cylSurface, disk, eps); }
+
+/*!
+ * \brief Intersect a disk and the boundary (TopoDS_Shell) of a solid.
+ * \param disk The disk
+ * \param shell The shell of a solid
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Disk<ctype>, TopoDS_Shell >
+intersect(const Disk<ctype>& disk, const TopoDS_Shell& shell, ctype eps)
+{ return IntersectionAlgorithms::intersect_shell_disk(shell, disk, eps); }
+
+/*!
+ * \brief Intersect the boundary (TopoDS_Shell) of a solid and a disk.
+ * \param shell The shell of a solid
+ * \param disk The disk
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< TopoDS_Shell, Disk<ctype> >
+intersect(const TopoDS_Shell& shell, const Disk<ctype>& disk, ctype eps)
+{ return intersect(disk, shell, eps); }
 
 } // end namespace Frackit
 
