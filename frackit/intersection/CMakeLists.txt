@@ -5,6 +5,7 @@ algo_disk_line.hh
 algo_plane_line.hh
 algo_plane_plane.hh
 algo_segment_segment.hh
+algo_shell_disk.hh
 emptyintersection.hh
 intersect.hh
 intersectionpredicates.hh
