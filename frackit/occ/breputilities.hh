@@ -39,6 +39,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Shape.hxx>
@@ -266,6 +267,16 @@ namespace OCCUtilities {
         for (TopExp_Explorer explorer(shape, TopAbs_WIRE); explorer.More(); explorer.Next())
             wires.push_back(TopoDS::Wire(explorer.Current()));
         return wires;
+    }
+
+    //! Get the shells of a shape
+    template<class Shape>
+    std::vector<TopoDS_Shell> getShells(const Shape& shape)
+    {
+        std::vector<TopoDS_Shell> shells;
+        for (TopExp_Explorer explorer(shape, TopAbs_SHELL); explorer.More(); explorer.Next())
+            shells.push_back(TopoDS::Shell(explorer.Current()));
+        return shells;
     }
 
     //! Get the solids of a shape
