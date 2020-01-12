@@ -1,6 +1,7 @@
 #include <TopExp.hxx>
 
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/box.hh>
 #include <frackit/magnitude/length.hh>
 #include <frackit/magnitude/area.hh>
 #include <frackit/precision/precision.hh>
