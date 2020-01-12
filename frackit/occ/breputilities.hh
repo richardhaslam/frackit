@@ -74,6 +74,7 @@
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
@@ -189,6 +190,24 @@ namespace OCCUtilities {
     template<class ctype>
     TopoDS_Edge getShape(const EllipseArc<ctype, 3>& arc)
     { return BRepBuilderAPI_MakeEdge( getGeomHandle(arc) ); }
+
+    //! get the BRep of a quadrilateral in 3d space
+    template<class ctype>
+    TopoDS_Face getShape(const Quadrilateral<ctype, 3>& quad)
+    {
+        const auto v1 = getShape(quad.corner(0));
+        const auto v2 = getShape(quad.corner(1));
+        const auto v3 = getShape(quad.corner(2));
+        const auto v4 = getShape(quad.corner(3));
+
+        TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(v1, v2);
+        TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(v2, v4);
+        TopoDS_Edge e3 = BRepBuilderAPI_MakeEdge(v4, v3);
+        TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(v3, v1);
+
+        TopoDS_Wire wire = BRepBuilderAPI_MakeWire(e1, e2, e3, e4);
+        return BRepBuilderAPI_MakeFace(wire);
+    }
 
     //! get the BRep of a disk
     template<class ctype>
