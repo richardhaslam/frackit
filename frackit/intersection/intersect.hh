@@ -23,6 +23,9 @@
 #ifndef FRACKIT_INTERSECT_HH
 #define FRACKIT_INTERSECT_HH
 
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+
 // Geometries of intersections
 #include <frackit/geometry/line.hh>
 #include <frackit/geometry/segment.hh>
@@ -39,6 +42,7 @@
 #include "algo_disk_disk.hh"
 #include "algo_cylsurface_disk.hh"
 #include "algo_shell_disk.hh"
+#include "algo_face_disk.hh"
 
 namespace Frackit {
 
@@ -197,6 +201,28 @@ template<class ctype>
 Intersection< TopoDS_Shell, Disk<ctype> >
 intersect(const TopoDS_Shell& shell, const Disk<ctype>& disk, ctype eps)
 { return intersect(disk, shell, eps); }
+
+/*!
+ * \brief Intersect a disk and a face shape.
+ * \param disk The disk
+ * \param face The face shape
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Disk<ctype>, TopoDS_Face >
+intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
+{ return IntersectionAlgorithms::intersect_face_disk(face, disk, eps); }
+
+/*!
+ * \brief Intersect a face shape and a disk.
+ * \param face The face shape
+ * \param disk The disk
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< TopoDS_Face, Disk<ctype> >
+intersect(const TopoDS_Face& face, const Disk<ctype>& disk, ctype eps)
+{ return intersect(disk, face, eps); }
 
 } // end namespace Frackit
 

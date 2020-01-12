@@ -168,6 +168,23 @@ struct IntersectionTraits< Disk<ctype>, TopoDS_Shell >
 : public IntersectionTraits< TopoDS_Shell, Disk<ctype> >
 {};
 
+//! \todo TODO Doc me.
+template<class ctype>
+struct IntersectionTraits< TopoDS_Face, Disk<ctype> >
+{
+    using BaseType = std::variant< Point<ctype, 3>,
+                                   TopoDS_Edge,
+                                   TopoDS_Face,
+                                   EmptyIntersection<3> >;
+    using type = std::vector<BaseType>;
+};
+
+//! \todo TODO Doc me.
+template<class ctype>
+struct IntersectionTraits< Disk<ctype>, TopoDS_Face >
+: public IntersectionTraits< TopoDS_Face, Disk<ctype> >
+{};
+
 } // end namespace Frackit
 
 #endif // FRACKIT_INTERSECTION_TRAITS_HH
