@@ -37,6 +37,7 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Geom_Surface.hxx>
 
 // Shapes from the TopoDS package
 #include <TopoDS_Edge.hxx>
@@ -88,6 +89,10 @@ namespace OCCUtilities {
         // return trimmed curve
         return new Geom_TrimmedCurve(curve, uMin, uMax);
     }
+
+    //! returns a Geom_Surface handle for a face
+    Handle(Geom_Surface) getGeomHandle(const TopoDS_Face& face)
+    { return BRep_Tool::Surface(face); }
 
 } // end namespace OCCUtilities
 } // end namespace Frackit
