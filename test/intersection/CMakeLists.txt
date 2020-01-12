@@ -27,7 +27,12 @@ frackit_add_test(NAME test_cylindersurface_disk_intersection
                  SOURCES test_cylindersurface_disk_intersection.cc
                  LABELS intersection)
 
-# cylinder shell - disk
+# face - disk
+frackit_add_test(NAME test_disk_face_intersection
+                 SOURCES test_disk_face_intersection.cc
+                 LABELS intersection)
+
+# shell - disk
 frackit_add_test(NAME test_disk_shell_intersection
                  SOURCES test_disk_shell_intersection.cc
                  LABELS intersection)
