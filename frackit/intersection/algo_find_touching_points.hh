@@ -25,6 +25,7 @@
 #define FRACKIT_FIND_TOUCHING_POINTS_HH
 
 #include <algorithm>
+#include <stdexcept>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
@@ -56,49 +57,25 @@ find_touching_points(const TopoDS_Face& face,
 
     // cut the wire by the shape and check if new edges were created
     const auto faceWires = OCCUtilities::getWires(face);
-
-    assert(faceWires.size() == 1);
-    const auto wireVertices = OCCUtilities::getVertices(faceWires[0]);
-    const auto wireEdges = OCCUtilities::getEdges(faceWires[0]);
+    if (faceWires.size() != 1)
+        throw std::runtime_error(std::string("Algorithm expects face bounded by a single wire"));
 
     const auto wireCut = OCCUtilities::cut(faceWires[0], shape, eps);
-    const auto wireCutEdges = OCCUtilities::getEdges(wireCut);
 
-    // there are touching points
-    if (wireCutEdges.size() > wireEdges.size())
+    // detect all points on the wire cut that are on the shape
+    const auto wireCutVertices = OCCUtilities::getVertices(wireCut);
+    for (const auto& v : wireCutVertices)
     {
-        std::vector<Point<ctype, 3>> isPoints;
-        std::vector<Point<ctype, 3>> wirePoints;
-        for (const auto& v : wireVertices)
+        const auto pointIS = OCCUtilities::intersect(v, shape, eps);
+        const auto pointISPoints = OCCUtilities::getVertices(pointIS);
+
+        assert(pointISPoints.size() <= 1);
+        if (!pointISPoints.empty())
         {
-            // if the point on the uncut face is contained in the
-            // shape, directly add it to the intersection points
-            const auto pointIS = OCCUtilities::intersect(v, shape, eps);
-            const auto pointISPoints = OCCUtilities::getVertices(pointIS);
-
-            if (pointISPoints.empty())
-                wirePoints.push_back(OCCUtilities::point(v));
-            else
-            {
-                assert(pointISPoints.size() == 1);
-                const auto p = OCCUtilities::point(v);
-                if (!hasPoint(p, isPoints))
-                    isPoints.push_back(p);
-            }
+            auto p = OCCUtilities::point(v);
+            if (!hasPoint(p, result))
+                result.emplace_back(std::move(p));
         }
-
-        // find newly created poitns
-        const auto wireCutVertices = OCCUtilities::getVertices(wireCut);
-        for (const auto& v : wireCutVertices)
-        {
-            const auto p = OCCUtilities::point(v);
-            if (!hasPoint(p, wirePoints))
-                if (!hasPoint(p, isPoints))
-                    isPoints.push_back(p);
-        }
-
-        for (auto& p : isPoints)
-            result.emplace_back(std::move(p));
     }
 
     return result;
