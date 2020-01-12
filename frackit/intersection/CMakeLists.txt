@@ -2,6 +2,8 @@ install(FILES
 algo_cylsurface_disk.hh
 algo_disk_disk.hh
 algo_disk_line.hh
+algo_face_disk.hh
+algo_find_touching_points.hh
 algo_plane_line.hh
 algo_plane_plane.hh
 algo_segment_segment.hh

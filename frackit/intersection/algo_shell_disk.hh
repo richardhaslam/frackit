@@ -34,13 +34,14 @@
 #include <frackit/precision/precision.hh>
 #include <frackit/occ/breputilities.hh>
 
+#include "algo_find_touching_points.hh"
 #include "intersectiontraits.hh"
 #include "emptyintersection.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect two planes
+//! Intersect a shell and a disk
 //! The result can be:
 //! - a point
 //! - one or more egdges
@@ -65,70 +66,19 @@ intersect_shell_disk(const TopoDS_Shell& shell,
     const auto containedFaces = OCCUtilities::getFaces(containedShape);
     assert(containedFaces.size() <= 1);
 
-    // lambda to detect if a point is in a vector of points
-    auto hasPoint = [&] (const auto& p, const auto& pointVec)
-    { return std::any_of(pointVec.begin(),
-                         pointVec.end(),
-                         [&] (const auto& pw) { return p.isEqual(pw, eps); }); };
-
-    // lambda to find touching points of the disk with the shell
-    auto getTouchingPoints = [&] () -> ResultType
+    // only touching points are possible
+    if (containedFaces.size() == 0)
     {
-        const auto diskWires = OCCUtilities::getWires(diskFace);
-
-        assert(diskWires.size() == 1);
-        const auto wireVertices = OCCUtilities::getVertices(diskWires[0]);
-        const auto wireEdges = OCCUtilities::getEdges(diskWires[0]);
-
-        const auto wireCut = OCCUtilities::cut(diskWires[0], shell, eps);
-        const auto wireCutEdges = OCCUtilities::getEdges(wireCut);
-
-        // there are touching points
-        if (wireCutEdges.size() > wireEdges.size())
+        auto isPoints = find_touching_points(diskFace, shell, eps);
+        if (!isPoints.empty())
         {
-            std::vector<Point<ctype, 3>> isPoints;
-            std::vector<Point<ctype, 3>> wirePoints;
-            for (const auto& v : wireVertices)
-            {
-                // if this point is contained in the shell,
-                // directly add it to the intersection points
-                const auto pointIS = OCCUtilities::intersect(v, shell, eps);
-                const auto pointISPoints = OCCUtilities::getVertices(pointIS);
-
-                if (pointISPoints.empty())
-                    wirePoints.push_back(OCCUtilities::point(v));
-                else
-                {
-                    assert(pointISPoints.size() == 1);
-                    const auto p = OCCUtilities::point(v);
-                    if (!hasPoint(p, isPoints))
-                        isPoints.push_back(p);
-                }
-            }
-
-            // find newly created poitns
-            const auto wireCutVertices = OCCUtilities::getVertices(wireCut);
-            for (const auto& v : wireCutVertices)
-            {
-                const auto p = OCCUtilities::point(v);
-                if (!hasPoint(p, wirePoints))
-                    if (!hasPoint(p, isPoints))
-                        isPoints.push_back(p);
-            }
-
             ResultType result;
-            for (auto& p : isPoints)
+            for (auto&& p : isPoints)
                 result.emplace_back(std::move(p));
             return result;
         }
-
-        // no intersection
-        return ResultType({ EmptyIntersection<3>() });
-    };
-
-    // only touching points are possible
-    if (containedFaces.size() == 0)
-        return getTouchingPoints();
+        return ResultType({EmptyIntersection<3>()});
+    }
 
     // detect intersection face
     const auto& containedFace = containedFaces[0];
@@ -151,7 +101,17 @@ intersect_shell_disk(const TopoDS_Shell& shell,
 
     // no intersection -> there might still be touching points
     if (shellIsEdges.empty())
-        return getTouchingPoints();
+    {
+        auto isPoints = find_touching_points(diskFace, shell, eps);
+        if (!isPoints.empty())
+        {
+            ResultType result;
+            for (auto&& p : isPoints)
+                result.emplace_back(std::move(p));
+            return result;
+        }
+        return ResultType({EmptyIntersection<3>()});
+    }
 
     // intersection edges
     ResultType result;
