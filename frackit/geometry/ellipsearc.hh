@@ -124,9 +124,9 @@ public:
     }
 
     //! Returns true if a point is on the arc
-    //! \todo note about choice of eps
+    //! \todo note about choice of eps (ANGULAR EPS HERE)
     bool contains(const Point& p, bool checkIfOnEllipse = true) const
-    { return contains(p, this->majorAxisLength()*Precision<ctype>::confusion(), checkIfOnEllipse); }
+    { return contains(p, Precision<ctype>::angular(), checkIfOnEllipse); }
 
     //! Returns the point on the arc for the given parameter
     //! \note It has to be 0.0 <= param <= 1.0, where 0.0
