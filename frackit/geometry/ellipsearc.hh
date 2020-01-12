@@ -118,9 +118,9 @@ public:
 
         const auto angle = this->getAngle(p, checkIfOnEllipse);
         if (sourceAngle_ > targetAngle_)
-            return angle >= sourceAngle_ || angle <= targetAngle_;
+            return angle >= sourceAngle_ - eps || angle <= targetAngle_ + eps;
         else
-            return angle >= sourceAngle_ && angle <= targetAngle_;
+            return angle >= sourceAngle_ - eps && angle <= targetAngle_ + eps;
     }
 
     //! Returns true if a point is on the arc
