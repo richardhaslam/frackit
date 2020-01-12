@@ -31,7 +31,6 @@
 #include <BRepBuilderAPI_MakeSolid.hxx>
 
 #include <frackit/geometry/disk.hh>
-#include <frackit/precision/precision.hh>
 #include <frackit/occ/breputilities.hh>
 
 #include "algo_find_touching_points.hh"
