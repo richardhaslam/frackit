@@ -27,6 +27,9 @@
 #include <vector>
 #include <algorithm>
 
+#include <BRep_Tool.hxx>
+#include <TopExp.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 
 #include <frackit/occ/breputilities.hh>
@@ -36,8 +39,8 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylindersurface.hh>
 
-#include <frackit/intersection/intersectiontraits.hh>
-#include <frackit/intersection/emptyintersection.hh>
+#include "intersectiontraits.hh"
+#include "emptyintersection.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
@@ -72,27 +75,35 @@ intersect_cylinderSurface_disk(const CylinderSurface<ctype>& cylSurface,
     auto containedFaces = OCCUtilities::getFaces(containedFaceShape);
     assert(containedFaces.size() <= 1);
 
-    // intersect the disk boundary with the cylinder surface (detect touching points)
-    const auto ellipseShape = OCCUtilities::getShape(disk.boundingEllipse());
-    const auto ellipseCut = OCCUtilities::cut(ellipseShape, cylLateralFace, 0.1*eps);
-    const auto ellipseCutVertices = OCCUtilities::getVertices(ellipseCut);
+    // detect possible touching points
+    const auto diskWires = OCCUtilities::getWires(diskFace);
+
+    assert(diskWires.size() == 1);
+    const auto diskWireCut = OCCUtilities::cut(diskWires[0], cylLateralFace, eps*0.1);
+    const auto diskWireCutVertices = OCCUtilities::getVertices(diskWireCut);
+
+    std::vector<Point> touchCandidates;
+    touchCandidates.reserve(diskWireCutVertices.size());
+    for (const auto& v : diskWireCutVertices)
+    {
+        const auto p = OCCUtilities::point(v);
+        if (cylSurface.contains(p, eps))
+            if (std::none_of(touchCandidates.begin(),
+                             touchCandidates.end(),
+                             [&p, eps] (const auto& tp) { return tp.isEqual(p, eps); }))
+                touchCandidates.emplace_back(std::move(p));
+    }
 
     // only touching points are possible
-    if (containedFaces.size() == 0)
+    if (containedFaces.empty())
     {
-        // find vertices on surface (avoid duplicates)
-        std::vector<Point> touchingPoints;
-        for (const auto& v : ellipseCutVertices)
-        {
-            auto p = OCCUtilities::point(v);
-            if (cylSurface.contains(p, eps)
-                && std::none_of(touchingPoints.begin(),
-                                touchingPoints.end(),
-                                [&p, eps] (const auto& pnt) { return pnt.isEqual(p, eps); }))
-                touchingPoints.emplace_back(std::move(p));
-        }
+        if (touchCandidates.empty())
+            return ResultType({ EmptyIntersection<3>() });
 
-        return ResultType({touchingPoints.begin(), touchingPoints.end()});
+        ResultType result;
+        for (auto& p : touchCandidates)
+            result.emplace_back(std::move(p));
+        return result;
     }
 
     // there are intersection edges, get orientation of the geometries
@@ -137,31 +148,29 @@ intersect_cylinderSurface_disk(const CylinderSurface<ctype>& cylSurface,
     std::vector<Segment> isSegments;
     for (const auto& wire : wiresOnCylSurface)
     {
-        const auto wireEdges = OCCUtilities::getEdges(wire);
-        const auto corners = OCCUtilities::getBoundaryVertices(wireEdges);
-
-        const auto& c1 = corners.first[1] == 0 ? TopExp::FirstVertex(wireEdges[corners.first[0]])
-                                               : TopExp::LastVertex(wireEdges[corners.first[0]]);
-        const auto& c2 = corners.second[1] == 0 ? TopExp::FirstVertex(wireEdges[corners.second[0]])
-                                                : TopExp::LastVertex(wireEdges[corners.second[0]]);
-        const auto p1 = OCCUtilities::point(c1);
-        const auto p2 = OCCUtilities::point(c2);
-
-        // if both corners are the same the full ellipse is the intersection
-        if (p1.isEqual(p2, eps))
+        if (BRep_Tool::IsClosed(wire))
             return ResultType({ infEllipse });
+
+        // find corners of the arc that this wire describes
+        TopoDS_Vertex v1, v2;
+        TopExp::Vertices(wire, v1, v2);
+        assert(!v1.IsNull());
+        assert(!v2.IsNull());
+        assert(!v1.IsSame(v2));
+
+        const auto p1 = OCCUtilities::point(v1);
+        const auto p2 = OCCUtilities::point(v2);
 
         if (!diskIsParallel)
         {
-            // get corners of the wire
+            // select the arc whose center is on the set of given edges
             EllipseArc arc1(infEllipse, p1, p2);
             EllipseArc arc2(infEllipse, p2, p1);
             const auto center1 = OCCUtilities::point(arc1.getPoint(0.5));
             const auto center2 = OCCUtilities::point(arc2.getPoint(0.5));
 
-            // select the arc whose center is on the set of given edges
             unsigned int resultArcIndex = 0;
-            for (const auto& edge : wireEdges)
+            for (const auto& edge : OCCUtilities::getEdges(wire))
             {
                 auto curve = OCCUtilities::getGeomHandle(edge);
                 GeomAPI_ProjectPointOnCurve c1OnCurve(center1, curve);
@@ -179,32 +188,21 @@ intersect_cylinderSurface_disk(const CylinderSurface<ctype>& cylSurface,
             isSegments.emplace_back(p1, p2);
     }
 
-    // There might still be intersection points (avoid duplicates!)
-    std::vector<Point> isPoints;
-    if (wiresOnCylSurface.size() < 2)
+    // (Maybe) add touching points
+    ResultType result;
+    for (auto& p : touchCandidates)
     {
-        for (const auto& v : ellipseCutVertices)
-        {
-            auto p = OCCUtilities::point(v);
-            if (cylSurface.contains(p, eps))
-            {
-                const auto onSeg = std::any_of(isSegments.begin(),
-                                               isSegments.end(),
-                                               [&p, eps] (const auto& seg) { return seg.contains(p, eps); });
-                const auto onArc = std::any_of(isArcs.begin(),
-                                               isArcs.end(),
-                                               [&p, eps] (const auto& arc) { return arc.contains(p, eps); });
-                if (!onSeg && !onArc && std::none_of(isPoints.begin(),
-                                                     isPoints.end(),
-                                                     [&p, eps] (const auto isP) { return isP.isEqual(p, eps); }))
-                        isPoints.emplace_back(std::move(p));
-            }
-        }
+        const auto onSeg = std::any_of(isSegments.begin(),
+                                       isSegments.end(),
+                                       [&p, eps] (const auto& seg) { return seg.contains(p, eps); });
+        const auto onArc = std::any_of(isArcs.begin(),
+                                       isArcs.end(),
+                                       [&p, eps] (const auto& arc) { return arc.contains(p, eps); });
+        if (!onSeg && !onArc)
+            result.emplace_back(std::move(p));
     }
 
-    ResultType result;
-    for (auto&& p : isPoints)
-        result.emplace_back(std::move(p));
+    // add segments and arcs
     for (auto&& s : isSegments)
         result.emplace_back(std::move(s));
     for (auto&& arc : isArcs)
