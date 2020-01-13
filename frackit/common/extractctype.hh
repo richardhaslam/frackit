@@ -28,7 +28,9 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <Standard.hxx>
 
@@ -65,10 +67,26 @@ struct CoordinateTypeTraits<TopoDS_Edge>
 {};
 
 /*!
+ * \brief Specialization for Brep wires.
+ */
+template<>
+struct CoordinateTypeTraits<TopoDS_Wire>
+: public CoordinateTypeTraits<TopoDS_Shape>
+{};
+
+/*!
  * \brief Specialization for Brep faces.
  */
 template<>
 struct CoordinateTypeTraits<TopoDS_Face>
+: public CoordinateTypeTraits<TopoDS_Shape>
+{};
+
+/*!
+ * \brief Specialization for Brep shells.
+ */
+template<>
+struct CoordinateTypeTraits<TopoDS_Shell>
 : public CoordinateTypeTraits<TopoDS_Shape>
 {};
 
