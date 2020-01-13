@@ -46,7 +46,8 @@ namespace Impl {
     // of the types used for coordinates of two geometries.
     // This makes the code below more readable in some places
     template<class Geom1, class Geom2>
-    using PCT = PromotedType<typename Geom1::ctype, typename Geom2::ctype>;
+    using PCT = PromotedType<typename Geom1::ctype,
+                             typename Geom2::ctype>;
 }
 
 /*!
@@ -89,6 +90,40 @@ computeDistance(const Geom1& geo1,
                 Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                 Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
 { return computeDistance(OCCUtilities::getShape(geo1), OCCUtilities::getShape(geo2)); }
+
+/*!
+ * \brief Overload for one of the geometries being a shape object.
+ * \param shape The shape of one geometry
+ * \param geo The second geometry
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class Geom>
+typename Geom::ctype
+computeDistance(const TopoDS_Shape& shape,
+                const Geom& geo,
+                typename Geom::ctype deflection = Precision<typename Geom::ctype>::confusion(),
+                Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{ return computeDistance(shape, OCCUtilities::getShape(geo)); }
+
+/*!
+ * \brief Overload for one of the geometries being a shape object.
+ * \param geo The second geometry
+ * \param shape The shape of one geometry
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class Geom>
+typename Geom::ctype
+computeDistance(const Geom& geo,
+                const TopoDS_Shape& shape,
+                typename Geom::ctype deflection = Precision<typename Geom::ctype>::confusion(),
+                Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{ return computeDistance(OCCUtilities::getShape(geo), shape); }
 
 /*!
  * \brief Returns the euclidian distance between two points.
