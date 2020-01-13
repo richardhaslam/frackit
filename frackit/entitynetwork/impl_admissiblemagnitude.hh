@@ -32,7 +32,6 @@
 #include <TopoDS_Solid.hxx>
 
 #include <frackit/magnitude/magnitude.hh>
-#include <frackit/intersection/intersectiontraits.hh>
 
 namespace Frackit {
 namespace ConstraintImpl {
