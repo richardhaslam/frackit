@@ -32,7 +32,16 @@
 #include <type_traits>
 #include <limits>
 
+#include <gp_Pnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <TopoDS_Face.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+
 #include <frackit/common/promotedtype.hh>
+#include <frackit/common/extractctype.hh>
+#include <frackit/precision/defaultepsilon.hh>
+
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/ellipse.hh>
@@ -41,6 +50,11 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/line.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/name.hh>
+
+#include <frackit/occ/gputilities.hh>
+#include <frackit/occ/geomutilities.hh>
+#include <frackit/occ/breputilities.hh>
 
 #include "emptyintersection.hh"
 #include "intersectiontraits.hh"
@@ -87,9 +101,10 @@ template<class Geo1, class Geo2, class IsGeometry>
 double angle(const Geo1& geo1, const Geo2& geo2, const IsGeometry& isGeom)
 {
     std::string msg = "IntersectionPredicates::angle() not implemented for ";
-    msg += "\"" + Geo1::name() + "\"";
+    msg += "\"" + geometryName(geo1) + "\"";
     msg += " and ";
-    msg += "\"" + Geo2::name() + "\"";
+    msg += "\"" + geometryName(geo2) + "\" and the intersection geometry ";
+    msg += "\"" + geometryName(isGeom) + "\"";
     throw std::runtime_error( msg );
 }
 
@@ -264,24 +279,116 @@ angle(const CylinderSurface<ctype1>& cylSurface,
       const Ellipse<ctype3, wd>& isEllipse)
 { return angle(disk, cylSurface, isEllipse); }
 
+/*!
+ * \brief Returns the angle in which a disk intersects a TopoDS_Face in a point.
+ */
+template<class ctype, class ctype2>
+ctype angle(const Disk<ctype>& disk,
+            const TopoDS_Face& face,
+            const Point<ctype2, 3>& isPoint)
+{
+    // get the parameters of this point on the face via orthogonal projection
+    const auto geomSurface = OCCUtilities::getGeomHandle(face);
+    GeomAPI_ProjectPointOnSurf projection(OCCUtilities::point(isPoint), geomSurface);
+    assert(projection.LowerDistance() < defaultEpsilon(face));
+
+    ctype paramU, paramV;
+    projection.LowerDistanceParameters(paramU, paramV);
+
+    // construct the tangent plane of the face in the point
+    gp_Pnt p;
+    gp_Vec baseVec1, baseVec2;
+    geomSurface->D1(projection, paramV, p, baseVec1, baseVec2);
+
+    const auto base1 = OCCUtilities::vector(baseVec1);
+    const auto base2 = OCCUtilities::vector(baseVec2);
+    const Direction<ctype, 3> normal(crossProduct(base1, base2));
+    const Plane<ctype, 3> tangentPlane(isPoint, normal);
+    return angle(disk.supportingPlane(), tangentPlane);
+}
+
+/*!
+ * \brief Overload with swapped arguments.
+ */
+template<class ctype, class ctype2>
+ctype angle(const TopoDS_Face& face,
+            const Disk<ctype>& disk,
+            const Point<ctype2, 3>& isPoint)
+{ return angle(disk, face, isPoint); }
+
+/*!
+ * \brief Returns the angle in which a disk intersects a TopoDS_Face in an edge.
+ * \todo TODO: can we improve this instead of only checking the corners?
+ */
+template<class ctype>
+ctype angle(const Disk<ctype>& disk,
+            const TopoDS_Face& face,
+            const TopoDS_Edge& isEdge)
+{
+    // compute the angle at several sample points along the edge and take minimum
+    const auto edgeHandle = OCCUtilities::getGeomHandle(isEdge);
+    const auto deltaParam = edgeHandle->LastParameter() - edgeHandle->FirstParameter();
+
+    using std::min;
+    ctype resultAngle = std::numeric_limits<ctype>::max();
+    std::vector<ctype> paramFactors({0.0, 0.25, 0.5, 0.75, 1.0});
+    for (auto f : paramFactors)
+    {
+        const auto param = edgeHandle->FirstParameter() + f*deltaParam;
+        const auto isPoint = OCCUtilities::point(edgeHandle->Value(param));
+        resultAngle = min(resultAngle, angle(disk, face, isPoint));
+    }
+
+    return resultAngle;
+}
+
+/*!
+ * \brief Overload with swapped arguments.
+ */
+template<class ctype>
+ctype angle(const TopoDS_Face& face,
+            const Disk<ctype>& disk,
+            const TopoDS_Edge& isEdge)
+{ return angle(disk, face, isEdge); }
+
+/*!
+ * \brief Returns the angle in which a disk intersects a TopoDS_Face in a face.
+ */
+template<class ctype>
+ctype angle(const Disk<ctype>& disk,
+            const TopoDS_Face& face,
+            const TopoDS_Face& isFace)
+{ return 0.0; }
+
+/*!
+ * \brief Overload with swapped arguments.
+ */
+template<class ctype>
+ctype angle(const TopoDS_Face& face,
+            const Disk<ctype>& disk,
+            const TopoDS_Face& isFace)
+{ return angle(disk, face, isFace); }
+
 //! Overload for intersection variant
 template<class Geo1, class Geo2, class... T>
-PromotedType<typename Geo1::ctype, typename Geo2::ctype>
-angle(const Geo1& geo1,
-      const Geo2& geo2,
-      const std::variant<T...>& intersection)
+auto angle(const Geo1& geo1,
+           const Geo2& geo2,
+           const std::variant<T...>& intersection)
 { return std::visit([&] (auto&& is) { return angle(geo1, geo2, is); }, intersection); }
 
 //! Overload for general intersections containing possibly various types
 template<class Geo1, class Geo2, class T>
-PromotedType<typename Geo1::ctype, typename Geo2::ctype>
+PromotedType< typename CoordinateTypeTraits<Geo1>::type,
+              typename CoordinateTypeTraits<Geo2>::type >
 angle(const Geo1& geo1,
       const Geo2& geo2,
       const std::vector<T>& intersections)
 {
-    using std::min;
-    using ctype = PromotedType<typename Geo1::ctype, typename Geo2::ctype>;
+    using ctype1 = typename CoordinateTypeTraits<Geo1>::type;
+    using ctype2 = typename CoordinateTypeTraits<Geo2>::type;
+    using ctype = PromotedType<ctype1, ctype2>;
 
+    using std::min;
     ctype result = std::numeric_limits<ctype>::max();
     for (const auto& is : intersections)
         result = min(result, angle(geo1, geo2, is));
