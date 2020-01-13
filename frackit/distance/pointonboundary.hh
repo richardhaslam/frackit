@@ -26,10 +26,16 @@
 
 #include <string>
 
+#include <BRepTools.hxx>
+#include <TopoDS_Face.hxx>
+
+#include <frackit/common/extractdimension.hh>
 #include <frackit/precision/defaultepsilon.hh>
+
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/name.hh>
 
 #include "pointongeometry.hh"
 
@@ -44,9 +50,9 @@ namespace Frackit {
 template<class ctype1, int wd, class Geo, class ctype2>
 bool pointOnGeometryBoundary(const Point<ctype1, wd>& p, const Geo& geo, ctype2 eps)
 {
-    static_assert(wd == Geo::worldDimension(), "World dimension mismatch");
+    static_assert(wd == DimensionalityTraits<Geo>::geomDim, "World dimension mismatch");
     std::string msg = "Point on boundary not implemented for ";
-    msg += "\"" + Geo::name() + "\" \n";
+    msg += "\"" + geometryName(geo) + "\" \n";
     throw std::runtime_error(msg);
 }
 
@@ -77,6 +83,18 @@ bool pointOnGeometryBoundary(const Point<ctype1, wd>& p,
         return true;
     return pointOnGeometry(p, cylSurface.lowerBoundingCircle(), eps);
 }
+
+/*!
+ * \brief Evaluate if a point lies on the boundary of a face shape.
+ * \param p The point
+ * \param face The face shape
+ * \param eps Epsilon value to be used for the check
+ */
+template<class ctype1, class ctype2>
+bool pointOnGeometryBoundary(const Point<ctype1, 3>& p,
+                             const TopoDS_Face& face,
+                             ctype2 eps)
+{ return pointOnGeometry(p, BRepTools::OuterWire(face)); }
 
 /*!
  * \brief Evaluate if a point lies on the boundary of a geometry.
