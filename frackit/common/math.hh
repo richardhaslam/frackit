@@ -23,8 +23,11 @@
 #ifndef FRACKIT_MATH_HH
 #define FRACKIT_MATH_HH
 
+#include <cmath>
+#include <vector>
+
 #include <frackit/geometry/vector.hh>
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 
 namespace Frackit {
 
@@ -39,6 +42,14 @@ Vector<ctype, 3> crossProduct(const Vector<ctype, 3>& v1,
              v1.z()*v2.x() - v1.x()*v2.z(),
              v1.x()*v2.y() - v1.y()*v2.x() };
 }
+
+/*!
+ * \todo TODO doc me.
+ */
+template <class ctype>
+ctype crossProduct(const Vector<ctype, 2>& v1,
+                   const Vector<ctype, 2>& v2)
+{ return v1.x()*v2.y() - v1.y()*v2.x(); }
 
 /*!
  * \brief \todo TODO doc me.
@@ -57,8 +68,78 @@ bool isRightHandSystem(const Vector<ctype, 3>& v1,
                        const Vector<ctype, 3>& v2,
                        const Vector<ctype, 3>& v3)
 {
-    assert(std::abs(boxProduct(v1, v2, v3)) > Precision<ctype>::confusion());
+    assert(std::abs(boxProduct(v1, v2, v3)) > v1.length()*Precision<ctype>::confusion()
+                                              *v2.length()*Precision<ctype>::confusion()
+                                              *v3.length()*Precision<ctype>::confusion());
     return boxProduct(v1, v2, v3) > 0.0;
+}
+
+/*!
+ * \brief \todo TODO doc me.
+ */
+template<class ctype>
+ctype toDegrees(const ctype radians)
+{ return radians*180.0/M_PI; }
+
+/*!
+ * \brief \todo TODO doc me.
+ */
+template<class ctype>
+ctype toRadians(const ctype degrees)
+{ return degrees*M_PI/180.0; }
+
+/*!
+ * \brief \todo TODO doc me. Cite Wiki entry.
+ */
+template<class ctype>
+void rotate(Vector<ctype, 3>& v,
+            const Direction<ctype, 3>& axis,
+            const ctype angle)
+{
+    using std::sin;
+    using std::cos;
+
+    const auto cosPhi = cos(angle);
+    const auto sinPhi = sin(angle);
+
+    Vector<ctype, 3> Rx(cosPhi + axis.x()*axis.x()*(1.0 - cosPhi),
+                        axis.x()*axis.y()*(1.0 - cosPhi) - axis.z()*sinPhi,
+                        axis.x()*axis.z()*(1.0 - cosPhi) - axis.y()*sinPhi);
+    Vector<ctype, 3> Ry(axis.y()*axis.x()*(1.0 - cosPhi) + axis.z()*sinPhi,
+                        cosPhi + axis.y()*axis.y()*(1.0 - cosPhi),
+                        axis.y()*axis.z()*(1.0 - cosPhi) - axis.x()*sinPhi);
+    Vector<ctype, 3> Rz(axis.z()*axis.x()*(1.0 - cosPhi) - axis.y()*sinPhi,
+                        axis.z()*axis.y()*(1.0 - cosPhi) + axis.x()*sinPhi,
+                        cosPhi + axis.z()*axis.z()*(1.0 - cosPhi));
+    v = Vector<ctype, 3>(Rx*v, Ry*v, Rz*v);
+}
+
+/*!
+ * \brief \todo TODO doc me. Cite Wiki entry.
+ */
+template<class ctype>
+void rotate(std::vector<Vector<ctype, 3>>& vectors,
+            const Direction<ctype, 3>& axis,
+            const ctype angle)
+{
+    using std::sin;
+    using std::cos;
+
+    const auto cosPhi = cos(angle);
+    const auto sinPhi = sin(angle);
+
+    Vector<ctype, 3> Rx(cosPhi + axis.x()*axis.x()*(1.0 - cosPhi),
+                        axis.x()*axis.y()*(1.0 - cosPhi) - axis.z()*sinPhi,
+                        axis.x()*axis.z()*(1.0 - cosPhi) - axis.y()*sinPhi);
+    Vector<ctype, 3> Ry(axis.y()*axis.x()*(1.0 - cosPhi) + axis.z()*sinPhi,
+                        cosPhi + axis.y()*axis.y()*(1.0 - cosPhi),
+                        axis.y()*axis.z()*(1.0 - cosPhi) - axis.x()*sinPhi);
+    Vector<ctype, 3> Rz(axis.z()*axis.x()*(1.0 - cosPhi) - axis.y()*sinPhi,
+                        axis.z()*axis.y()*(1.0 - cosPhi) + axis.x()*sinPhi,
+                        cosPhi + axis.z()*axis.z()*(1.0 - cosPhi));
+
+    for (auto& v : vectors)
+        v = Vector<ctype, 3>(Rx*v, Ry*v, Rz*v);
 }
 
 } // end namespace Frackit

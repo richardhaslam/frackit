@@ -1,5 +1,8 @@
 #include <frackit/geometry/disk.hh>
-#include <frackit/geometry/cylindricalsurface.hh>
+#include <frackit/geometry/ellipsearc.hh>
+#include <frackit/geometry/cylindersurface.hh>
+
+#include <frackit/magnitude/length.hh>
 #include <frackit/intersection/intersect.hh>
 #include <frackit/intersection/intersectionresult.hh>
 
@@ -31,7 +34,7 @@ void checkResultGeometry(const Frackit::Segment<CT, wd>& segment, IntersectionTy
 {
     std::cout << "Found intersection segment with corners "
               << segment.source() << " - " << segment.target()
-              << " and length " << segment.length() << std::endl;
+              << " and length " << Frackit::computeLength(segment) << std::endl;
     if (expected != IntersectionType::segment)
         throw std::runtime_error(std::string("Got an unexpected segment intersection"));
 }
@@ -74,14 +77,17 @@ void checkResultGeometry(const std::vector<IS>& intersections, IntersectionType 
 int main()
 {
     using ctype = double;
-    using CylinderSurface = Frackit::CylindricalSurface<ctype>;
+    using CylinderSurface = Frackit::CylinderSurface<ctype>;
+    using Segment = typename CylinderSurface::Segment;
     using Disk = Frackit::Disk<ctype>;
     using Point = typename Disk::Point;
     using Direction = typename Disk::Direction;
+    using Ellipse = typename Disk::Ellipse;
     using Vector = typename Direction::Vector;
+    using EllipseArc = Frackit::EllipseArc<ctype, 3>;
 
-    // TODO: DOES NOT WORK FOR OTHER SCALES!!
-    std::vector<ctype> scales({1.0});
+    // OCC seems to fail below 1e-3 :(
+    std::vector<ctype> scales({1.0e-3, 1.0, 1.0e3});
     for (auto f : scales)
     {
         std::cout << "\nChecking scale factor " << f << std::endl;
@@ -91,12 +97,18 @@ int main()
         Vector e3(0.0, 0.0, 1.0);
         CylinderSurface cylSurface(0.5*f, f);
 
+        // epsilon for floating point comparison
+        const ctype eps = Frackit::Precision<ctype>::confusion()*0.5*f;
+
         // disk that touches the cylinder surface in one point
         auto result = intersect(cylSurface, Disk(Point(-1.0*f, 0.0, 0.0), e1, e2, 0.5*f, 0.25*f));
         if (result.size() > 1)
             throw std::runtime_error(std::string("1: More than one intersection found"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::point); }, variant);
+        const auto p1 = std::get<Point>(result[0]);
+        if (!p1.isEqual(Point({-0.5*f, 0.0, 0.0}), eps))
+            throw std::runtime_error(std::string("Unexpected point 1"));
         std::cout << "Test passed" << std::endl;
 
         // disk that describes a horizontal cross-section (circle) of the surface
@@ -105,6 +117,14 @@ int main()
             throw std::runtime_error(std::string("2: More than one intersection found"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipse); }, variant);
+        const auto ellipse1 = std::get<Ellipse>(result[0]);
+        using std::abs;
+        if (abs(Vector(ellipse1.normal())*e1) > eps)
+            throw std::runtime_error(std::string("Unexpected normal direction of ellipse 1"));
+        if (abs(Vector(ellipse1.normal())*e2) > eps)
+            throw std::runtime_error(std::string("Unexpected normal direction of ellipse 1"));
+        if (abs(1.0 - abs(Vector(ellipse1.normal())*e3)) > eps)
+            throw std::runtime_error(std::string("Unexpected normal direction of ellipse 1"));
         std::cout << "Test passed" << std::endl;
 
         // disk that describes a vertical cross-section of the surface (two segments)
@@ -113,6 +133,20 @@ int main()
             throw std::runtime_error(std::string("3: Did not find two intersection geometries"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::segment); }, variant);
+        if ( abs(Frackit::computeLength(std::get<Segment>(result[0])) - cylSurface.height()) > eps )
+            throw std::runtime_error(std::string("Unexpected segment height (test 3)"));
+        if ( abs(Frackit::computeLength(std::get<Segment>(result[1])) - cylSurface.height()) > eps )
+            throw std::runtime_error(std::string("Unexpected segment height (test 3)"));
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<Segment>(is).getPoint(0.5).isEqual(Point(0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected segment (test 3)"));
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<Segment>(is).getPoint(0.5).isEqual(Point(-0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected segment (test 3)"));
         std::cout << "Test passed" << std::endl;
 
         // disk that touches the cylinder surface in one point (opposite side)
@@ -121,10 +155,12 @@ int main()
             throw std::runtime_error(std::string("4: More than one intersection found"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::point); }, variant);
+        if (!std::get<Point>(result[0]).isEqual(Point({0.5*f, 0.0, 0.0}), eps))
+            throw std::runtime_error(std::string("Unexpected point (test 4)"));
         std::cout << "Test passed" << std::endl;
 
         // no intersection
-        result = intersect(cylSurface, Disk(Point(1.0*f + 1e-5*f, 0.0, 0.0), e1, e2, 0.5*f, 0.25*f));
+        result = intersect(cylSurface, Disk(Point(1.0*f + 1e-3*f, 0.0, 0.0), e1, e2, 0.5*f, 0.25*f));
         if (result.size() > 1)
             throw std::runtime_error(std::string("5: More than one intersection found"));
         for (const auto& variant : result)
@@ -137,6 +173,8 @@ int main()
             throw std::runtime_error(std::string("6: More than one intersection found"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipseArc); }, variant);
+        if (!std::get<EllipseArc>(result[0]).getPoint(0.5).isEqual(Point({0.5*f, 0.0, 0.5*f}), eps))
+            throw std::runtime_error(std::string("Unexpected ellipse arc (test 6)"));
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects on two sides
@@ -145,62 +183,121 @@ int main()
             throw std::runtime_error(std::string("7: Did not find two intersections"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipseArc); }, variant);
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<EllipseArc>(is).getPoint(0.5).isEqual(Point(0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected ellipse arc (test 7)"));
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<EllipseArc>(is).getPoint(0.5).isEqual(Point(-0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected ellipse arc (test 7)"));
         std::cout << "Test passed" << std::endl;
 
         // same as the previous test but with an inclined disk
         const auto e11 = Direction(Vector(1.0, 0.0, -0.3));
         const auto e21 = Direction(Vector(0.0, 1.0, 0.0));
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e11, e21, 0.75*f, 0.25*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e11, e21, 0.75*f, 0.25*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("8: Did not find two intersections"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipseArc); }, variant);
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<EllipseArc>(is).getPoint(0.5).isEqual(Point(0.5*f, 0.0, 0.5*f - 0.3*0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected ellipse arc (test 8)"));
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<EllipseArc>(is).getPoint(0.5).isEqual(Point(-0.5*f, 0.0, 0.5*f + 0.3*0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected ellipse arc (test 8)"));
         std::cout << "Test passed" << std::endl;
 
         // disk that is much bigger, intersection an ellipse
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e11, e21, 2.0*f, 2.0*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e11, e21, 2.0*f, 2.0*f));
         if (result.size() > 1)
             throw std::runtime_error(std::string("9: Found more than one intersection"));
+        std::cout << "Checking test 9" << std::endl;
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipse); }, variant);
+        if (!std::get<Ellipse>(result[0]).getPoint(0.0).isEqual(Point({-0.5*f, 0.0, 0.5*f + 0.3*0.5*f}), eps))
+            throw std::runtime_error(std::string("Unexpected ellipse (test 9)"));
+        if (!std::get<Ellipse>(result[0]).getPoint(0.5).isEqual(Point({0.5*f, 0.0, 0.5*f - 0.3*0.5*f}), eps))
+            throw std::runtime_error(std::string("Unexpected ellipse (test 9)"));
         std::cout << "Test passed" << std::endl;
 
         // disk that touches in two points
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e1, e2, 0.5*f, 0.12*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e1, e2, 0.5*f, 0.12*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("10: Did not find two intersections"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::point); }, variant);
+        if (!std::get<Point>(result[0]).isEqual(Point({0.5*f, 0.0, 0.5*f}), eps))
+            throw std::runtime_error(std::string("Unexpected point 10"));
+        if (!std::get<Point>(result[1]).isEqual(Point({-0.5*f, 0.0, 0.5*f}), eps))
+            throw std::runtime_error(std::string("Unexpected point 10"));
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects in two short segments
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e1, e3, 0.6*f, 0.12*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e1, e3, 0.6*f, 0.12*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("11: Did not find two intersections"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::segment); }, variant);
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<Segment>(is).getPoint(0.5).isEqual(Point(0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected segment center (test 11)"));
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<Segment>(is).getPoint(0.5).isEqual(Point(-0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected segment center (test 11)"));
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects in two short arcs
         const auto e22 = Direction(Vector(0.0, 1.0, 0.3));
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e1, e22, 0.6*f, 0.12*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e1, e22, 0.6*f, 0.12*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("12: Did not find two intersections"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipseArc); }, variant);
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<EllipseArc>(is).getPoint(0.5).isEqual(Point(0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected ellipse arc (test 12)"));
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<EllipseArc>(is).getPoint(0.5).isEqual(Point(0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected ellipse arc (test 12)"));
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects in two long arcs
         const auto e23 = Direction(Vector(0.0, 0.3, 1.0));
-        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5), e1, e23, 2.0*f, 2.0*f));
+        result = intersect(cylSurface, Disk(Point(0.0, 0.0, 0.5*f), e1, e23, 2.0*f, 2.0*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("13: Did not find two intersections"));
         for (const auto& variant : result)
             std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipseArc); }, variant);
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<EllipseArc>(is).getPoint(0.5).isEqual(Point(0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected ellipse arc (test 13)"));
+        if (std::count_if(result.begin(),
+                          result.end(),
+                          [f, eps] (const auto& is)
+                          { return std::get<EllipseArc>(is).getPoint(0.5).isEqual(Point(0.5*f, 0.0, 0.5*f), eps); }) != 1)
+            throw std::runtime_error(std::string("Unexpected ellipse arc (test 13)"));
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects in one segment and one point
-        result = intersect(cylSurface, Disk(Point(0.5*f, 0.0, 0.5), e1, e3, f, 0.2*f));
+        result = intersect(cylSurface, Disk(Point(0.5*f, 0.0, 0.5*f), e1, e3, f, 0.2*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("14: Did not find two intersections"));
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::point); }, result[0]);
@@ -208,7 +305,7 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects in one arc and one point
-        result = intersect(cylSurface, Disk(Point(0.5*f, 0.0, 0.5), e1, e22, f, 0.2*f));
+        result = intersect(cylSurface, Disk(Point(0.5*f, 0.0, 0.5*f), e1, e22, f, 0.2*f));
         if (result.size() != 2)
             throw std::runtime_error(std::string("15: Did not find two intersections"));
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::point); }, result[0]);
@@ -220,6 +317,14 @@ int main()
         result = intersect(cylSurface, Disk(Point(0.0, 0.0, 1.25*f), e1, e24, 2.0*f, 2.0*f));
         if (result.size() != 1)
             throw std::runtime_error(std::string("16: Did not find a single intersections"));
+        if (abs(std::get<EllipseArc>(result[0]).source().z() - f) > eps)
+            throw std::runtime_error(std::string("Unexpected ellipse arc"));
+        if (abs(std::get<EllipseArc>(result[0]).target().z() - f) > eps)
+            throw std::runtime_error(std::string("Unexpected ellipse arc"));
+        if (abs(std::get<EllipseArc>(result[0]).getPoint(0.5).x()) > eps)
+            throw std::runtime_error(std::string("Unexpected ellipse arc"));
+        if (abs(std::get<EllipseArc>(result[0]).getPoint(0.5).y() + 0.5*f) > eps)
+            throw std::runtime_error(std::string("Unexpected ellipse arc"));
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipseArc); }, result[0]);
         std::cout << "Test passed" << std::endl;
 
@@ -230,13 +335,21 @@ int main()
         result = intersect(cylSurface, cuttingDisk);
         if (result.size() != 1)
             throw std::runtime_error(std::string("17: Did not find a single intersections"));
+        if (abs(std::get<EllipseArc>(result[0]).source().z() - f) > eps)
+            throw std::runtime_error(std::string("Unexpected ellipse arc"));
+        if (abs(std::get<EllipseArc>(result[0]).target().z() - f) > eps)
+            throw std::runtime_error(std::string("Unexpected ellipse arc"));
+        if (abs(std::get<EllipseArc>(result[0]).getPoint(0.5).x()) > eps)
+            throw std::runtime_error(std::string("Unexpected ellipse arc"));
+        if (abs(std::get<EllipseArc>(result[0]).getPoint(0.5).y() + 0.5*f) > eps)
+            throw std::runtime_error(std::string("Unexpected ellipse arc"));
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipseArc); }, result[0]);
+        std::cout << "Test passed" << std::endl;
 
         // the arc is completely on the ellipse boundary
         const auto& arc = std::get<Frackit::EllipseArc<ctype, 3>>(result[0]);
         const auto& arcEllipse = arc.supportingEllipse();
         const auto& be = cuttingDisk.boundingEllipse();
-        const auto eps = be.minorAxisLength()*Frackit::Precision<ctype>::confusion();
 
         std::vector<ctype> params({0.0, 0.25, 0.5, 0.75, 1.0});
         for (auto param : params)

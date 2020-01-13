@@ -20,35 +20,71 @@
  * \file
  * \brief \todo TODO doc me.
  */
-#ifndef FRACKIT_GEOMETRY_PRECISION_HH
-#define FRACKIT_GEOMETRY_PRECISION_HH
+#ifndef FRACKIT_GEOMETRY_NAME_HH
+#define FRACKIT_GEOMETRY_NAME_HH
 
-// standard tolerances for floating point comparison
-#include <Precision.hxx>
+#include <stdexcept>
+#include <string>
+
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Shape.hxx>
 
 namespace Frackit {
 
-//! Alias for the OpenCascade Precision class
-using OCCPrecision = Precision;
+/*!
+ * \brief \todo TODO doc me.
+ */
+template<class Geo>
+std::string geometryName(const Geo& geo)
+{ return Geo::name(); }
 
-//! \todo TODO doc me.
-template<class ctype>
-struct Precision
-{
-    /*!
-     * \brief \todo TODO doc me.
-     */
-    static ctype confusion() { return OCCPrecision::Confusion(); }
+/*!
+ * \brief \todo TODO doc me.
+ */
+std::string geometryName(const TopoDS_Solid& s)
+{ return "TopoDS_Solid"; }
 
-    /*!
-     * \brief Tolerance value to be used for angle comparisons.
-     *        For example, to determine if two vectors are parallel.
-     * \note OpenCascade defines an angular precision of 1e-12, but
-     *       in unit tests we saw that this might be too restrictive.
-     */
-    static ctype angular() { return OCCPrecision::Angular()*1e2; }
-};
+/*!
+ * \brief \todo TODO doc me.
+ */
+std::string geometryName(const TopoDS_Shell& s)
+{ return "TopoDS_Shell"; }
+
+/*!
+ * \brief \todo TODO doc me.
+ */
+std::string geometryName(const TopoDS_Face& f)
+{ return "TopoDS_Face"; }
+
+/*!
+ * \brief \todo TODO doc me.
+ */
+std::string geometryName(const TopoDS_Wire& w)
+{ return "TopoDS_Wire"; }
+
+/*!
+ * \brief \todo TODO doc me.
+ */
+std::string geometryName(const TopoDS_Edge& e)
+{ return "TopoDS_Edge"; }
+
+/*!
+ * \brief \todo TODO doc me.
+ */
+std::string geometryName(const TopoDS_Vertex& v)
+{ return "TopoDS_Vertex"; }
+
+/*!
+ * \brief \todo TODO doc me.
+ */
+std::string geometryName(const TopoDS_Shape& v)
+{ return "TopoDS_Shape"; }
 
 } // end namespace Frackit
 
-#endif // FRACKIT_GEOMETRY_PRECISION_HH
+#endif // FRACKIT_GEOMETRY_NAME_HH

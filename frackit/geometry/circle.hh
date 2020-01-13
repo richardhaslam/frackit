@@ -18,28 +18,31 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class describing a circle.
  */
 #ifndef FRACKIT_CIRCLE_HH
 #define FRACKIT_CIRCLE_HH
 
 #include <cmath>
-#include <frackit/common/math.hh>
-#include <frackit/geometry/precision.hh>
 
-#include "vector.hh"
+#include <frackit/common/math.hh>
+#include <frackit/precision/precision.hh>
+
 #include "ellipticalgeometry.hh"
+#include "vector.hh"
 
 namespace Frackit {
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class describing a circle
+ * \tparam ctype The type used for coordinates.
+ * \tparam wd the space dimension.
  */
 template<class ctype, int wd>
 class Circle;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class describing a circle in 3d space.
  */
 template<class ctype>
 class Circle<ctype, /*worldDim=*/3>
@@ -75,8 +78,6 @@ public:
 
     //! \todo TODO doc me.
     ctype radius() const { return this->majorAxisLength(); }
-    //! \todo TODO doc me.
-    ctype length() const { return 2.0*M_PI*radius(); }
 
     //! \todo TODO doc me.
     //! \todo note about choice of eps

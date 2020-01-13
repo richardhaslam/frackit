@@ -1,6 +1,20 @@
 install(FILES
+box.hh
+circle.hh
+CMakeLists.txt
+cylinder.hh
+cylindersurface.hh
+direction.hh
+disk.hh
+ellipsearc.hh
+ellipse.hh
+ellipticalgeometry.hh
 line.hh
+name.hh
+plane.hh
 point.hh
+quadrilateral.hh
 segment.hh
+triangle.hh
 vector.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/geometry)

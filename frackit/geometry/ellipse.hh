@@ -25,7 +25,7 @@
 
 #include <cmath>
 
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 #include "ellipticalgeometry.hh"
 #include "vector.hh"
 
@@ -63,12 +63,7 @@ public:
     //! \todo TODO doc me.
     static std::string name() { return "Ellipse"; }
 
-    //! \todo TODO doc me.
-    ctype length() const
-    { return M_PI*(this->majorAxisLength() + this->minorAxisLength()); }
-
     //! Returns true if a point is on the ellipse
-    //! \todo note about choice of eps
     bool contains(const Point& p, ctype eps, bool checkIfOnPlane = true) const
     {
         if (checkIfOnPlane)
@@ -86,16 +81,9 @@ public:
         return abs(x*x/(a*a) + y*y/(b*b) - 1.0) < eps;
     }
 
-    //! Returns true if a point is on the ellipse
-    //! \todo note about choice of eps
+    //! Returns true if a point is on the ellipse (default epsilon)
     bool contains(const Point& p, bool checkIfOnPlane = true) const
-    {
-        using std::min;
-        auto eps = min(this->majorAxisLength(), this->minorAxisLength());
-        eps *= Precision<ctype>::confusion();
-
-        return contains(p, eps, checkIfOnPlane);
-    }
+    { return contains(p, this->majorAxisLength()*Precision<ctype>::confusion(), checkIfOnPlane); }
 
     //! Returns the point on the arc for the given parameter
     //! \note It has to be 0.0 <= param <= 1.0, where 0.0
@@ -126,8 +114,27 @@ public:
         return result;
     }
 
-protected:
-    //! Returns the angle corresponding to a point on the ellipse
+    /*!
+     * \brief Returns the parameter associated with the given point
+     *        on the ellipse. This parameter describes the fraction
+     *        of the ellipse curve that lies between the major axis
+     *        and the point.
+     * \param p The point on the ellipse
+     * \param checkIfOnEllipse If set to false, it is not checked if the
+     *                         provided point actually is on the ellipse.
+     * \returns Returns the parameter 0 <= param <= 1.0 along the ellipse
+     */
+    ctype getParam(const Point& p, bool checkIfOnEllipse = true) const
+    { return getAngle(p, checkIfOnEllipse)/(2.0*M_PI); }
+
+    /*!
+     * \brief Returns the angle for which the given point on the ellipse
+     *        can be computed on the basis of its parametrization.
+     * \param p The point on the ellipse
+     * \param checkIfOnEllipse If set to false, it is not checked if the
+     *                         provided point actually is on the ellipse.
+     * \returns Returns the ellipse angle 0 <= angle <= 2.0*Pi
+     */
     ctype getAngle(const Point& p, bool checkIfOnEllipse = true) const
     {
         if (checkIfOnEllipse)
@@ -139,21 +146,19 @@ protected:
         const auto y = d*Vector(this->minorAxis());
 
         using std::abs;
-        if (abs(x) < Precision<ctype>::angular())
-        {
-            if (std::signbit(y)) return 3.0*M_PI/2.0;
-            else return M_PI/2.0;
-        }
+        if (abs(x) < this->majorAxisLength()*Precision<ctype>::confusion())
+            return std::signbit(y) ? 3.0*M_PI/2.0 : M_PI/2.0;
+        if (abs(y) < this->minorAxisLength()*Precision<ctype>::confusion())
+            return std::signbit(x) ? M_PI : 0.0;
 
-        if (abs(y) < Precision<ctype>::angular())
-        {
-            if (std::signbit(x)) return M_PI;
-            else return 0.0;
-        }
+        const auto ratio = this->majorAxisLength()/this->minorAxisLength();
+        const auto isNegX = std::signbit(x);
+        const auto isNegY = std::signbit(y);
 
-        using std::acos;
-        if (y > 0.0) return acos(x/d.length());
-        else return 2.0*M_PI - acos(x/d.length());
+        using std::atan;
+        if (!isNegY && !isNegX) return atan(y*ratio/x);
+        else if (isNegY && !isNegX) return 2.0*M_PI + atan(y*ratio/x);
+        else return M_PI + atan(y*ratio/x);
     }
 };
 

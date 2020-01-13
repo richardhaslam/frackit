@@ -20,22 +20,30 @@
  * \file
  * \brief \todo TODO doc me.
  */
-#ifndef FRACKIT_UTILITIES_HH
-#define FRACKIT_UTILITIES_HH
+#ifndef FRACKIT_BREP_UTILITIES_HH
+#define FRACKIT_BREP_UTILITIES_HH
 
+#include <vector>
 #include <algorithm>
 #include <stdexcept>
+
+// Handle class used by OpenCascade
+#include <Standard_Handle.hxx>
 
 // objects from geometric processors package
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Ax2.hxx>
+#include <gp_Elips.hxx>
 
 // shape classes from TopoDS package
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 // explorer for shape objects
 #include <TopExp.hxx>
@@ -48,75 +56,95 @@
 #include <BRepAlgoAPI_Cut.hxx>
 
 // converter between BRep and TopoDS
+#include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 
 // BRep primitives and operations
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
 
 // internal geometry classes
-#include <frackit/geometry/point.hh>
+#include <frackit/geometry/circle.hh>
+#include <frackit/geometry/ellipse.hh>
+#include <frackit/geometry/ellipsearc.hh>
+#include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylinder.hh>
-#include <frackit/geometry/cylindricalsurface.hh>
-#include <frackit/geometry/precision.hh>
+#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/box.hh>
+
+#include "gputilities.hh"
+#include "geomutilities.hh"
 
 namespace Frackit {
-
-// utility functions for communication with OpenCascade
 namespace OCCUtilities {
-
-    //! converts an n-d point into a 3d point
-    template<class ctype, int dim>
-    Point<ctype, 3> convertTo3d(const Point<ctype, dim>& p)
-    {
-        static_assert(dim <= 3 && dim != 0, "Only 0 < dim <= 3 supported");
-        if (dim == 1) return Point<ctype, 3>(p.x(), 0.0, 0.0);
-        else if (dim == 2) return Point<ctype, 3>(p.x(), p.y(), 0.0);
-        else if (dim == 3) return p;
-    }
-
-    //! converts a point to an object from the geometric processors package
-    template<class ctype, int dim>
-    gp_Pnt point(const Point<ctype, dim>& p)
-    {
-        static_assert(dim <= 3 && dim != 0, "Only 0 < dim <= 3 supported");
-        if (dim == 1) return gp_Pnt(p.x(), 0.0, 0.0);
-        else if (dim == 2) return gp_Pnt(p.x(), p.y(), 0.0);
-        else if (dim == 3) return gp_Pnt(p.x(), p.y(), p.z());
-    }
-
-    //! casts a point from the geometric processors package
-    Point<double, 3> point(const gp_Pnt& p)
-    { return {p.X(), p.Y(), p.Z()}; }
 
     //! converts a vertex shape into a point
     Point<double, 3> point(const TopoDS_Vertex& v)
     { return point(BRep_Tool::Pnt(v)); }
 
-    //! converts an internal direction into gp direction object
-    template<class ctype, int dim>
-    gp_Dir direction(const Direction<ctype, dim>& dir)
+    //! Create an edge shape from two points
+    template<class ctype, int worldDim>
+    TopoDS_Edge makeEdge(const Point<ctype, worldDim>& source,
+                         const Point<ctype, worldDim>& target)
     {
-        static_assert(dim <= 3 && dim != 0, "Only 0 < dim <= 3 supported");
-        if (dim == 1) return gp_Dir(dir.x(), 0.0, 0.0);
-        else if (dim == 2) return gp_Dir(dir.x(), dir.y(), 0.0);
-        else if (dim == 3) return gp_Dir(dir.x(), dir.y(), dir.z());
+        // create TopoDS_Edge of the segment
+        BRepBuilderAPI_MakeEdge segment(point(source), point(target));
+        segment.Build();
+        if (!segment.IsDone())
+            throw std::runtime_error("Could not create segment edge");
+        return TopoDS::Edge(segment.Shape());
     }
 
-    //! converts a gp direction object into an internal one
-    template<class ctype = double, int dim = 3>
-    Direction<ctype, dim> direction(const gp_Dir& dir)
+    //! get the BRep of a geometry (overloads provided)
+    template<class Geo>
+    TopoDS_Shape getShape(const Geo& p)
+    { throw std::runtime_error(std::string("getShape() not implemented for " + Geo::name())); }
+
+    //! get the BRep of a point
+    template<class ctype, int worldDim>
+    TopoDS_Vertex getShape(const Point<ctype, worldDim>& p)
     {
-        static_assert(dim == 3, "Currently only dim == 3 supported");
-        using Vector = Frackit::Vector<ctype, dim>;
-        return Direction<ctype, dim>(Vector(dir.X(), dir.Y(), dir.Z()));
+        BRepBuilderAPI_MakeVertex vertex(point(p));
+        vertex.Build();
+        if (!vertex.IsDone())
+            throw std::runtime_error("Could not create vertex shape");
+        return TopoDS::Vertex(vertex.Shape());
+    }
+
+    //! get the BRep of a segment
+    template<class ctype, int worldDim>
+    TopoDS_Edge getShape(const Segment<ctype, worldDim>& segment)
+    { return makeEdge(segment.source(), segment.target()); }
+
+    //! get the BRep of a cylinder
+    template<class ctype>
+    TopoDS_Solid getShape(const Cylinder<ctype>& cylinder)
+    {
+        const auto& lateral = cylinder.lateralFace();
+        const auto& bottom = lateral.lowerBoundingCircle();
+        auto axis = direction(bottom.normal());
+        auto base1 = direction(bottom.base1());
+        auto center = point(bottom.center());
+        BRepPrimAPI_MakeCylinder makeCylinder(gp_Ax2(center, axis, base1),
+                                              bottom.radius(),
+                                              lateral.height(),
+                                              2.0*M_PI);
+        makeCylinder.Build();
+        if (!makeCylinder.IsDone())
+            throw std::runtime_error(std::string("Could not build cylinder"));
+        return TopoDS::Solid(makeCylinder.Shape());
     }
 
     //! get the BRep of a lateral cylinder surface
     template<class ctype>
-    TopoDS_Face getShape(const CylindricalSurface<ctype>& cylSurface)
+    TopoDS_Face getShape(const CylinderSurface<ctype>& cylSurface)
     {
         const auto& bottom = cylSurface.lowerBoundingCircle();
         auto axis = direction(bottom.normal());
@@ -126,7 +154,59 @@ namespace OCCUtilities {
                                               bottom.radius(),
                                               cylSurface.height(),
                                               2.0*M_PI);
+        makeCylinder.Build();
+        if (!makeCylinder.IsDone())
+            throw std::runtime_error(std::string("Could not build cylinder"));
         return makeCylinder.Cylinder().LateralFace();
+    }
+
+    //! get the BRep of a 3-dimensional ellipse
+    template<class ctype>
+    TopoDS_Wire getShape(const Ellipse<ctype, 3>& ellipse)
+    {
+        gp_Dir normal = direction(ellipse.normal());
+        gp_Dir majorAx = direction(ellipse.majorAxis());
+        gp_Pnt center = point(ellipse.center());
+        gp_Elips gpEllipse(gp_Ax2(center, normal, majorAx),
+                           ellipse.majorAxisLength(),
+                           ellipse.minorAxisLength());
+
+        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(gpEllipse);
+        return BRepBuilderAPI_MakeWire(edge);
+    }
+
+    //! get the BRep of a 3-dimensional circle
+    template<class ctype>
+    TopoDS_Wire getShape(const Circle<ctype, 3>& circ)
+    {
+        return getShape(Ellipse<ctype, 3>(circ.center(),
+                                          circ.base1(),
+                                          circ.base2(),
+                                          circ.radius(),
+                                          circ.radius()));
+    }
+
+    //! get the BRep of a 3-dimensional ellipse arc
+    template<class ctype>
+    TopoDS_Edge getShape(const EllipseArc<ctype, 3>& arc)
+    { return BRepBuilderAPI_MakeEdge( getGeomHandle(arc) ); }
+
+    //! get the BRep of a quadrilateral in 3d space
+    template<class ctype>
+    TopoDS_Face getShape(const Quadrilateral<ctype, 3>& quad)
+    {
+        const auto v1 = getShape(quad.corner(0));
+        const auto v2 = getShape(quad.corner(1));
+        const auto v3 = getShape(quad.corner(2));
+        const auto v4 = getShape(quad.corner(3));
+
+        TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(v1, v2);
+        TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(v2, v4);
+        TopoDS_Edge e3 = BRepBuilderAPI_MakeEdge(v4, v3);
+        TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(v3, v1);
+
+        TopoDS_Wire wire = BRepBuilderAPI_MakeWire(e1, e2, e3, e4);
+        return BRepBuilderAPI_MakeFace(wire);
     }
 
     //! get the BRep of a disk
@@ -144,6 +224,26 @@ namespace OCCUtilities {
         TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edge);
         return BRepBuilderAPI_MakeFace(wire);
     }
+
+    //! get the BRep of a box
+    template<class ctype>
+    TopoDS_Solid getShape(const Box<ctype>& box)
+    {
+        const gp_Pnt pMin(box.xMin(), box.yMin(), box.zMin());
+        const gp_Pnt pMax(box.xMax(), box.yMax(), box.zMax());
+        BRepPrimAPI_MakeBox makeBox(pMin, pMax);
+        makeBox.Build();
+        if (!makeBox.IsDone())
+            throw std::runtime_error(std::string("Could not build box"));
+        return TopoDS::Solid(makeBox.Shape());
+    }
+
+    //! get the BRep of shapes (for compatibilty reasons)
+    const TopoDS_Vertex& getShape(const TopoDS_Vertex& v) { return v; }
+    const TopoDS_Edge& getShape(const TopoDS_Edge& e) { return e; }
+    const TopoDS_Face& getShape(const TopoDS_Face& f) { return f; }
+    const TopoDS_Wire& getShape(const TopoDS_Wire& w) { return w; }
+    const TopoDS_Solid& getShape(const TopoDS_Solid& s) { return s; }
 
     //! Get the vertices of a shape
     template<class Shape>
@@ -188,17 +288,36 @@ namespace OCCUtilities {
         return wires;
     }
 
-    //! Create an edge shape from two points
-    template<class ctype, int dim>
-    TopoDS_Edge makeEdge(const Point<ctype, dim>& source,
-                         const Point<ctype, dim>& target)
+    //! Get the shells of a shape
+    template<class Shape>
+    std::vector<TopoDS_Shell> getShells(const Shape& shape)
     {
-        // create TopoDS_Edge of the segment
-        BRepBuilderAPI_MakeEdge segment(point(source), point(target));
-        segment.Build();
-        if (!segment.IsDone())
-            throw std::runtime_error("Could not create segment edge");
-        return TopoDS::Edge(segment.Shape());
+        std::vector<TopoDS_Shell> shells;
+        for (TopExp_Explorer explorer(shape, TopAbs_SHELL); explorer.More(); explorer.Next())
+            shells.push_back(TopoDS::Shell(explorer.Current()));
+        return shells;
+    }
+
+    //! Get the solids of a shape
+    template<class Shape>
+    std::vector<TopoDS_Solid> getSolids(const Shape& shape)
+    {
+        std::vector<TopoDS_Solid> solids;
+        for (TopExp_Explorer explorer(shape, TopAbs_SOLID); explorer.More(); explorer.Next())
+            solids.push_back(TopoDS::Solid(explorer.Current()));
+        return solids;
+    }
+
+    //! Get bounding box
+    template<class Shape, class ctype = double>
+    Box<ctype> getBoundingBox(const Shape& shape)
+    {
+        Bnd_Box bndBox;
+        BRepBndLib::Add(shape, bndBox);
+
+        ctype xMin, yMin, zMin, xMax, yMax, zMax;
+        bndBox.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+        return Box<ctype>(xMin, yMin, zMin, xMax, yMax, zMax);
     }
 
     //! Convenience function to get the shape resulting from the cut of an object with a tool
@@ -227,6 +346,25 @@ namespace OCCUtilities {
             throw std::runtime_error(std::string("Common operation failed"));
 
         return common.Shape();
+    }
+
+    //! Convenience function to get the shape resulting from the fragmentation of a set of objects
+    template<class ctype>
+    TopoDS_Shape fragment(const std::vector<TopoDS_Shape>& objects, ctype eps)
+    {
+        TopTools_ListOfShape shapes;
+        for (const auto& shape : objects)
+            shapes.Append(shape);
+
+        BRepAlgoAPI_BuilderAlgo fragments;
+        fragments.SetRunParallel(false);
+        fragments.SetArguments(shapes);
+        fragments.SetFuzzyValue(eps);
+        fragments.Build();
+        if (!fragments.IsDone())
+            throw std::runtime_error(std::string("Could not perform segment fragmentation"));
+
+        return fragments.Shape();
     }
 
     /*!
@@ -361,8 +499,6 @@ namespace OCCUtilities {
     { return getBoundaryVertices(edges, getConnectivityInfo(edges)); }
 
 } // end namespace OCCUtilities
-
-
 } // end namespace Frackit
 
-#endif // FRACKIT_UTILITIES_HH
+#endif // FRACKIT_BREP_UTILITIES_HH

@@ -23,29 +23,27 @@
 #ifndef FRACKIT_ELLIPSE_ARC_HH
 #define FRACKIT_ELLIPSE_ARC_HH
 
-#include <cmath>
-#include <stdexcept>
+#include <cassert>
 
-#include "precision.hh"
+#include <frackit/precision/precision.hh>
 #include "ellipse.hh"
-#include "vector.hh"
 
 namespace Frackit {
 
 /*!
  * \brief \todo TODO doc me.
  */
-template<class Scalar, int worldDim>
+template<class CT, int worldDim>
 class EllipseArc;
 
 /*!
  * \brief \todo TODO doc me.
  */
-template<class Scalar>
-class EllipseArc<Scalar, /*worldDim=*/3>
-: public Ellipse<Scalar, /*worldDim=*/3>
+template<class CT>
+class EllipseArc<CT, /*worldDim=*/3>
+: public Ellipse<CT, /*worldDim=*/3>
 {
-    using ParentType = Frackit::Ellipse<Scalar, /*worldDim=*/3>;
+    using ParentType = Frackit::Ellipse<CT, /*worldDim=*/3>;
 
 public:
     //! export dimensionality
@@ -72,7 +70,7 @@ public:
     , source_(source)
     , target_(target)
     {
-        const auto eps = ellipse.minorAxisLength()*Precision<ctype>::confusion();
+        const auto eps = ellipse.majorAxisLength()*Precision<ctype>::confusion();
         assert(ParentType::contains(source, eps));
         assert(ParentType::contains(target, eps));
 
@@ -98,23 +96,17 @@ public:
     const Point& source() const { return source_; }
     //! \todo TODO doc me.
     const Point& target() const { return target_; }
+    //! \todo TODO doc me.
+    const ctype sourceAngleOnEllipse() const { return sourceAngle_; }
+    //! \todo TODO doc me.
+    const ctype targetAngleOnEllipse() const { return targetAngle_; }
 
     //! Returns true if the arc describes a full ellipse
     bool isFullEllipse() const { return isFullEllipse_; }
 
-    //! \todo TODO doc me.
-    ctype length() const
-    { throw std::runtime_error( std::string("NotImplemented: Length of ellipse arc") ); }
-
     //! Return the ellipse that supports this arc
-    Ellipse supportingEllipse() const
-    {
-        return Ellipse(this->center(),
-                       this->majorAxis(),
-                       this->minorAxis(),
-                       this->majorAxisLength(),
-                       this->minorAxisLength());
-    }
+    const Ellipse& supportingEllipse() const
+    {  return static_cast<const Ellipse&>(*this); }
 
     //! Returns true if a point is on the arc
     //! \todo note about choice of eps
@@ -126,21 +118,15 @@ public:
 
         const auto angle = this->getAngle(p, checkIfOnEllipse);
         if (sourceAngle_ > targetAngle_)
-            return angle >= sourceAngle_ || angle <= targetAngle_;
+            return angle >= sourceAngle_ - eps || angle <= targetAngle_ + eps;
         else
-            return angle >= sourceAngle_ && angle <= targetAngle_;
+            return angle >= sourceAngle_ - eps && angle <= targetAngle_ + eps;
     }
 
     //! Returns true if a point is on the arc
-    //! \todo note about choice of eps
+    //! \todo note about choice of eps (ANGULAR EPS HERE)
     bool contains(const Point& p, bool checkIfOnEllipse = true) const
-    {
-        using std::min;
-        auto eps = min(this->majorAxisLength(), this->minorAxisLength());
-        eps *= Precision<ctype>::confusion();
-
-        return contains(p, eps, checkIfOnEllipse);
-    }
+    { return contains(p, Precision<ctype>::angular(), checkIfOnEllipse); }
 
     //! Returns the point on the arc for the given parameter
     //! \note It has to be 0.0 <= param <= 1.0, where 0.0

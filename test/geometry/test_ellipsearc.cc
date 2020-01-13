@@ -3,7 +3,8 @@
 #include <cmath>
 #include <vector>
 
-#include <frackit/geometry/precision.hh>
+#include <frackit/magnitude/length.hh>
+#include <frackit/precision/precision.hh>
 #include <frackit/geometry/ellipsearc.hh>
 
 //! test some functionality of ellipse arcs
@@ -38,6 +39,16 @@ int main()
             throw std::runtime_error(std::string("Unexpected source point"));
         if (!target.isEqual(Point(0.0, minAxis, 0.0), f*Frackit::Precision<ctype>::confusion()))
             throw std::runtime_error(std::string("Unexpected source point"));
+
+        using std::abs;
+        if ( abs(ellipseArc.getAngle(source)) > Frackit::Precision<ctype>::angular() )
+            throw std::runtime_error(std::string("Wrong source angle"));
+        if ( abs(ellipseArc.getAngle(target) - M_PI/2.0) > Frackit::Precision<ctype>::angular() )
+            throw std::runtime_error(std::string("Wrong target angle"));
+        if ( abs(ellipseArc.getAngle(p) - M_PI/4.0) > Frackit::Precision<ctype>::angular() )
+            throw std::runtime_error(std::string("Wrong point angle"));
+        if ( abs(ellipseArc.getParam(p) - 1.0/8.0) > Frackit::Precision<ctype>::confusion() )
+            throw std::runtime_error(std::string("Wrong point param"));
 
         // check contains() queries
         if (!ellipseArc.contains(source))
@@ -86,6 +97,36 @@ int main()
         EllipseArc fullArc2(ellipse, p, p);
         if (!fullArc2.isFullEllipse())
             throw std::runtime_error(std::string("Arc2 is not a full ellipse"));
+
+        // check arc length computation
+        const ctype eps = f*Frackit::Precision<ctype>::confusion();
+        if ( abs(Frackit::computeLength(fullArc1) - Frackit::computeLength(ellipse)) > eps )
+            throw std::runtime_error(std::string("Full arc 1 does not have correct length"));
+        if ( abs(Frackit::computeLength(fullArc2) - Frackit::computeLength(ellipse)) > eps )
+            throw std::runtime_error(std::string("Full arc 2 does not have correct length"));
+
+        // create circular arcs to test lengths on various orientations
+        std::vector<Ellipse> circles;
+        circles.emplace_back(Point(0.0, 0.0, 0.0), e1, e2, f, f);
+        circles.emplace_back(Point(0.0, 0.0, 0.0), e1, Vector(0.0, 1.0, 1.0), f, f);
+        circles.emplace_back(Point(0.0, 0.0, 0.0), Vector(1.0, 0.0, 1.0), e2, f, f);
+        circles.emplace_back(Point(0.0, 0.0, 0.0), Vector(1.0, 1.0, 1.0), Vector(-1.0, 1.0, 0.0), f, f);
+
+        std::vector<ctype> angles({0.0, M_PI/4.0, M_PI/2.0, 3.0*M_PI/4.0, M_PI, 3.0*M_PI/2.0});
+        for (const auto& c : circles)
+        {
+            for (auto a1 : angles)
+                for (auto a2 : angles)
+                {
+                    if (a1 == a2) continue;
+
+                    const auto arc = EllipseArc(c, c.getPointFromAngle(a1), c.getPointFromAngle(a2));
+                    const auto deltaAngle = a2 < a1 ? 2.0*M_PI - (a1 - a2) : a2 - a1;;
+
+                    if ( abs(Frackit::computeLength(arc) - deltaAngle*f) > eps )
+                        throw std::runtime_error("Wrong arc length");
+                }
+        }
     }
 
     std::cout << "All tests passed" << std::endl;

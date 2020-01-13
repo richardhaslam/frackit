@@ -25,19 +25,19 @@
 
 #include <cmath>
 
-#include "precision.hh"
+#include <frackit/precision/precision.hh>
 #include "point.hh"
 #include "segment.hh"
 #include "direction.hh"
 #include "vector.hh"
 #include "circle.hh"
 #include "disk.hh"
-#include "cylindricalsurface.hh"
+#include "cylindersurface.hh"
 
 namespace Frackit {
 
 // forward declaration
-template<class CT> class CylindricalSurface;
+template<class CT> class CylinderSurface;
 
 /*!
  * \brief \todo TODO doc me.
@@ -61,7 +61,7 @@ public:
     using Direction = Frackit::Direction<ctype, 3>;
     using Circle = Frackit::Circle<ctype, 3>;
     using Disk = Frackit::Disk<ctype>;
-    using CylindricalSurface = Frackit::CylindricalSurface<ctype>;
+    using CylinderSurface = Frackit::CylinderSurface<ctype>;
 
     /*!
      * \brief \todo TODO doc me.
@@ -96,13 +96,13 @@ public:
     , bottom_(bottom)
     {
         using std::abs;
-        const auto eps = bottom.minorAxisLength()*Precision<ctype>::confusion();
+        const auto eps = bottom.majorAxisLength()*Precision<ctype>::confusion();
         if (abs(bottom.majorAxisLength() - bottom.minorAxisLength()) > eps)
             throw std::runtime_error(std::string("Cylinder requires circular disks as base"));
     }
 
     //! \todo TODO doc me.
-    static std::string name() { return "CylindricalSurface"; }
+    static std::string name() { return "Cylinder"; }
 
     //! \todo TODO doc me.
     const Direction& base1() const { return bottom_.majorAxis(); }
@@ -117,11 +117,11 @@ public:
     const Disk& bottomFace() const { return bottom_; }
 
     //! \todo TODO doc me.
-    CylindricalSurface lateralFace() const
+    CylinderSurface lateralFace() const
     {
-        return CylindricalSurface(Circle(bottom_.center(),
-                                         bottom_.normal(),
-                                         bottom_.majorAxisLength()), height());
+        return CylinderSurface(Circle(bottom_.center(),
+                                      bottom_.normal(),
+                                      bottom_.majorAxisLength()), height());
     }
 
     //! \todo TODO doc me.
@@ -132,7 +132,7 @@ public:
     //! \todo TODO doc me.
     ctype radius() const { return bottom_.majorAxisLength(); }
     //! \todo TODO doc me.
-    ctype volume() const { return M_PI*radius()*radius()*height(); }
+    ctype volume() const { return M_PI*this->radius()*this->radius()*this->height(); }
 
     //! Returns true if a point lies inside the cylinder (given tolerance)
     //! \todo note about choice of eps
@@ -150,11 +150,7 @@ public:
     //! Returns true if a point lies inside the cylinder (default tolerance)
     //! \todo note about choice of eps
     bool contains(const Point& p) const
-    {
-        using std::min;
-        const auto lengthScale = min(radius(), height());
-        return contains( p, Precision<ctype>::confusion()*lengthScale );
-    }
+    { return contains( p, Precision<ctype>::confusion()*0.5*(radius() + height()) ); }
 
 private:
     //! \todo TODO doc me

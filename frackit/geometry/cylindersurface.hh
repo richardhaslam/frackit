@@ -20,29 +20,31 @@
  * \file
  * \brief \todo TODO doc me.
  */
-#ifndef FRACKIT_CYLINDRICAL_SURFACE_HH
-#define FRACKIT_CYLINDRICAL_SURFACE_HH
+#ifndef FRACKIT_CYLINDER_SURFACE_HH
+#define FRACKIT_CYLINDER_SURFACE_HH
 
 #include <cmath>
+#include <cassert>
 
-#include "precision.hh"
+#include <frackit/precision/precision.hh>
 #include "point.hh"
 #include "segment.hh"
 #include "direction.hh"
 #include "vector.hh"
 #include "circle.hh"
 #include "cylinder.hh"
+#include "plane.hh"
 
 namespace Frackit {
 
-// forward declaration
+//! Forward declaration
 template<class CT> class Cylinder;
 
 /*!
  * \brief \todo TODO doc me.
  */
 template<class CT>
-class CylindricalSurface
+class CylinderSurface
 {
     using Vector = typename Frackit::Direction<CT, 3>::Vector;
 
@@ -60,11 +62,12 @@ public:
     using Direction = Frackit::Direction<ctype, 3>;
     using Circle = Frackit::Circle<ctype, 3>;
     using Cylinder = Frackit::Cylinder<ctype>;
+    using Plane = Frackit::Plane<ctype, 3>;
 
     /*!
      * \brief \todo TODO doc me.
      */
-    CylindricalSurface(ctype radius, ctype height)
+    CylinderSurface(ctype radius, ctype height)
     : height_(height)
     , top_(Point({0.0, 0.0, height}), Direction(Vector(0.0, 0.0, 1.0)), radius)
     , bottom_(Point({0.0, 0.0, 0.0}), Direction(Vector(0.0, 0.0, 1.0)), radius)
@@ -73,7 +76,7 @@ public:
     /*!
      * \brief \todo TODO doc me.
      */
-    CylindricalSurface(const Circle& bottom, ctype height)
+    CylinderSurface(const Circle& bottom, ctype height)
     : height_(height)
     , top_(makeTopCircle_(bottom))
     , bottom_(bottom)
@@ -90,6 +93,11 @@ public:
     const Direction& direction() const { return bottom_.normal(); }
 
     //! \todo TODO doc me.
+    ctype height() const { return height_; }
+    //! \todo TODO doc me.
+    ctype radius() const { return bottom_.radius(); }
+
+    //! \todo TODO doc me.
     const Circle& upperBoundingCircle() const { return top_; }
     //! \todo TODO doc me.
     const Circle& lowerBoundingCircle() const { return bottom_; }
@@ -98,12 +106,14 @@ public:
     //! \todo TODO doc me.
     Cylinder cylinder() const { return Cylinder(bottom_, height_); }
 
-    //! \todo TODO doc me.
-    ctype height() const { return height_; }
-    //! \todo TODO doc me.
-    ctype radius() const { return bottom_.radius(); }
-    //! \todo TODO doc me.
-    ctype area() const { return 2.0*M_PI*radius()*height(); }
+    //! \todo TODO doc me
+    //! \todo note on tangent plane on top/bottom
+    Plane getTangentPlane(const Point& p) const
+    {
+        assert(contains(p, Precision<ctype>::confusion()*0.5*(radius() + height())));
+        Direction n( Vector(centerSegment().supportingLine().projection(p), p) );
+        return Plane(p, n);
+    }
 
     //! Returns true if a point lies on the surface (given tolerance)
     //! \todo note about choice of eps
@@ -122,11 +132,7 @@ public:
     //! Returns true if a point lies on the surface (default tolerance)
     //! \todo note about choice of eps
     bool contains(const Point& p) const
-    {
-        using std::min;
-        const auto lengthScale = min(radius(), height());
-        return contains( p, Precision<ctype>::confusion()*lengthScale );
-    }
+    { return contains( p, Precision<ctype>::confusion()*0.5*(radius() + height()) ); }
 
 private:
     //! \todo TODO doc me
@@ -150,4 +156,4 @@ private:
 
 } // end namespace Frackit
 
-#endif // FRACKIT_CYLINDRICAL_SURFACE_HH
+#endif // FRACKIT_CYLINDER_SURFACE_HH

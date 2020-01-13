@@ -1,2 +1,6 @@
-add_subdirectory(intersection)
+add_subdirectory(distance)
+add_subdirectory(entitynetwork)
 add_subdirectory(geometry)
+add_subdirectory(intersection)
+add_subdirectory(magnitude)
+add_subdirectory(sampling)

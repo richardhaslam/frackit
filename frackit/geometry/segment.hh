@@ -23,8 +23,7 @@
 #ifndef FRACKIT_GEOMETRY_SEGMENT_HH
 #define FRACKIT_GEOMETRY_SEGMENT_HH
 
-#include <cmath>
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 
 #include "point.hh"
 #include "vector.hh"
@@ -78,11 +77,10 @@ public:
     //! \todo TODO doc me.
     const Point& target() const { return target_; }
 
-    //! \todo TODO doc me.
-    ctype length() const { return Vector(source(), target()).length(); }
     //! Constructs the direction vector
     Direction direction() const { return Vector(source(), target()); }
-
+    //! Returns the length of the segment
+    ctype length() const { return Vector(source(), target()).length(); }
     //! Constructs an object for the supporting line
     Line supportingLine() const
     { return Line(source(), direction()); }
@@ -116,7 +114,23 @@ public:
     //! Returns true if a point lies on the segment
     //! \todo note about choice of eps
     bool contains(const Point& p, bool checkIfOnLine = true) const
-    { return contains(p, length()*Precision<ctype>::confusion(), checkIfOnLine); }
+    {
+        const auto length = Vector(source(), target()).length();
+        return contains(p, Precision<ctype>::confusion()*length, checkIfOnLine);
+    }
+
+    //! Returns the point on the segment for the given parameter
+    //! \note It has to be 0.0 <= param <= 1.0, where 0.0
+    //!       corresponds to the source and 1.0 to the target.
+    Point getPoint(ctype param) const
+    {
+        assert(param >= 0.0 && param <= 1.0);
+
+        auto d = Vector(source(), target());
+        d *= param;
+
+        return source() + d;
+    }
 
 private:
     Point source_;

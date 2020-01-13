@@ -26,7 +26,7 @@
 #include <cassert>
 
 #include <frackit/common/math.hh>
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 
 #include "point.hh"
 #include "vector.hh"
@@ -153,7 +153,7 @@ public:
             d /= length;
 
         using std::abs;
-        return abs(d*Vector(normal_)) < eps;
+        return abs(d*Vector(normal_)) < Precision<ctype>::confusion();
     }
 
 private:

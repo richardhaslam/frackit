@@ -25,7 +25,7 @@
 
 #include <cmath>
 
-#include <frackit/geometry/precision.hh>
+#include <frackit/precision/precision.hh>
 #include "ellipticalgeometry.hh"
 #include "ellipse.hh"
 #include "vector.hh"
@@ -64,18 +64,20 @@ public:
      */
     Disk(const Ellipse& ellipse)
     : ParentType(ellipse.center(),
-                 ellipse.majorAxisLength(),
-                 ellipse.minorAxisLength(),
                  ellipse.majorAxis(),
-                 ellipse.minorAxis())
+                 ellipse.minorAxis(),
+                 ellipse.majorAxisLength(),
+                 ellipse.minorAxisLength())
     {}
 
     //! \todo TODO doc me.
     static std::string name() { return "Disk"; }
-
     //! \todo TODO doc me.
     ctype area() const
-    { return M_PI*this->majorAxisLength()*this->minorAxisLength(); }
+    {
+        return M_PI*this->majorAxisLength()
+                   *this->minorAxisLength();
+    }
 
     /*!
      * \brief Returns true if a point is on the disk
@@ -109,12 +111,22 @@ public:
      * \todo note about choice of eps
      */
     bool contains(const Point& p, bool checkIfOnPlane = true) const
-    {
-        using std::min;
-        auto eps = min(this->majorAxisLength(), this->minorAxisLength());
-        eps *= Precision<ctype>::confusion();
+    { return contains(p, Precision<ctype>::confusion(), checkIfOnPlane); }
 
-        return contains(p, eps, checkIfOnPlane);
+    /*!
+     * \brief Returns the point on the disk for the given parameters
+     * \param param1 The first parameter (angular fraction -> 0 <= param1 <= 1)
+     * \param param2 The second parameter (radial fraction -> 0 <= param1 <= 1.0)
+     */
+    Point getPoint(ctype param1, ctype param2) const
+    {
+        assert(param1 >= 0.0 && param1 <= 1.0);
+        assert(param2 >= 0.0 && param2 <= 1.0);
+
+        const auto p = boundingEllipse().getPoint(param1);
+        Vector d(this->center(), p);
+        d *= param2;
+        return p + d;
     }
 
     //! Returns the ellipse describing the disk's boundary
