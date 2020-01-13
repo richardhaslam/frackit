@@ -25,12 +25,15 @@
 #define FRACKIT_DISTANCE_TO_BOUNDARY_HH
 
 #include <algorithm>
+
 #include <Extrema_ExtAlgo.hxx>
 #include <Extrema_ExtFlag.hxx>
+#include <BRepTools.hxx>
 
 #include <frackit/precision/precision.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/name.hh>
 
 #include "distance.hh"
 
@@ -54,9 +57,9 @@ computeDistanceToBoundary(const Geo1& geo1,
                           Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
 {
     std::string msg = "Distance to boundary computation not implemented for ";
-    msg += "\"" + Geo1::name() + "\"";
+    msg += "\"" + geometryName(geo1) + "\"";
     msg += " and ";
-    msg += "\"" + Geo2::name() + "\"";
+    msg += "\"" + geometryName(geo1)  + "\"";
 }
 
 /*!
@@ -113,6 +116,77 @@ computeDistanceToBoundary(const Geo& geo,
                                deflection,
                                extFlag,
                                extAlgo));
+}
+
+/*!
+ * \brief Compute the distance of a shape
+ *        to the bounding ellipse of a disk.
+ * \param shape The shape
+ * \param disk The disk
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class ctype>
+ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
+                                const Disk<ctype>& disk,
+                                ctype deflection = Precision<ctype>::confusion(),
+                                Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                                Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{
+    return computeDistance(shape,
+                           OCCUtilities::getShape(disk.boundingEllipse()),
+                           deflection,
+                           extFlag,
+                           extAlgo);
+}
+
+/*!
+ * \brief Compute the distance of a shape
+ *        to the boundary of a TopoDS_Face.
+ * \param shape The shape
+ * \param face The TopoDS_Face
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class ctype = double>
+ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
+                                const TopoDS_Face& face,
+                                ctype deflection = Precision<ctype>::confusion(),
+                                Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                                Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{
+    return computeDistance(shape,
+                           BRepTools::OuterWire(face),
+                           deflection,
+                           extFlag,
+                           extAlgo);
+}
+
+/*!
+ * \brief Compute the distance of a geometry
+ *        to the boundary of a TopoDS_Face.
+ * \param geo The geometry
+ * \param face The TopoDS_Face
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class Geo>
+typename Geo::ctype
+computeDistanceToBoundary(const Geo& geo,
+                          const TopoDS_Face& face,
+                          typename Geo::ctype deflection
+                          = Precision<typename Geo::ctype>::confusion(),
+                          Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                          Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{
+    return computeDistance(OCCUtilities::getShape(geo),
+                           BRepTools::OuterWire(face),
+                           deflection,
+                           extFlag,
+                           extAlgo);
 }
 
 } // end namespace Frackit
