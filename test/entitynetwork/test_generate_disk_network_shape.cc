@@ -115,8 +115,8 @@ int main(int argc, char** argv)
 
     ctype currentDensity = 0.0;
     ctype currentDiskArea = 0.0;
-    const std::size_t numTargetEntities_1 = 6;
-    const std::size_t numTargetEntities_2 = 6;
+    const std::size_t numTargetEntities_1 = 3;
+    const std::size_t numTargetEntities_2 = 3;
     while (accepted_1 != numTargetEntities_1 || accepted_2 != numTargetEntities_2)
     {
         bool createSecondary = randomNumber()%2;
