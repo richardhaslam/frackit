@@ -117,6 +117,21 @@ struct DimensionalityTraits<TopoDS_Solid>
     static constexpr int geomDim = 3;
 };
 
+/*!
+ * \brief Free function to return the dimension of a geometry.
+ */
+template<class Geom>
+constexpr int getDimension(const Geom& g)
+{ return DimensionalityTraits<Geom>::geomDim; }
+
+/*!
+ * \brief Free function to return the dimension of the space
+ *        in which a geometry is described in.
+ */
+template<class Geom>
+constexpr int getWorldDimension(const Geom& g)
+{ return DimensionalityTraits<Geom>::worldDim; }
+
 } // end namespace Frackit
 
 #endif // FRACKIT_COMMON_EXTRACT_DIMENSION_HH
