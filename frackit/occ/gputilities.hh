@@ -26,10 +26,12 @@
 // objects from geometric processors package
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Vec.hxx>
 
 // internal geometry classes
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/direction.hh>
+#include <frackit/geometry/vector.hh>
 
 namespace Frackit {
 namespace OCCUtilities {
@@ -75,6 +77,14 @@ namespace OCCUtilities {
         static_assert(dim == 3, "Currently only dim == 3 supported");
         using Vector = Frackit::Vector<ctype, dim>;
         return Direction<ctype, dim>(Vector(dir.X(), dir.Y(), dir.Z()));
+    }
+
+    //! converts a gp vector object into an internal one
+    template<class ctype = double, int dim = 3>
+    Vector<ctype, dim> vector(const gp_Vec& v)
+    {
+        static_assert(dim == 3, "Currently only dim == 3 supported");
+        return Vector<ctype, dim>(v.X(), v.Y(), v.Z());
     }
 
 } // end namespace OCCUtilities
