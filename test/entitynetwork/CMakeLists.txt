@@ -21,7 +21,7 @@ frackit_add_test(NAME test_generate_disk_network_cylinder
 frackit_add_test(NAME test_generate_disk_network_shape
                  SOURCES test_generate_disk_network_shape.cc
                  LABELS entitynetwork sampling
-                 COMPILE_DEFINITIONS BREPFILE="${CMAKE_SOURCE_DIR}/test/entitynetwork/box.brep"
+                 COMPILE_DEFINITIONS BREPFILE="${CMAKE_SOURCE_DIR}/test/entitynetwork/layer.brep"
                  COMMAND ./test_generate_disk_network_shape)
 
 set(CMAKE_BUILD_TYPE Debug)

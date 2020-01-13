@@ -44,8 +44,10 @@ int main(int argc, char** argv)
 
     assert(solids.size() == 1);
     const auto& domain = solids[0];
-    const auto domainFaces = OCCUtilities::getFaces(domain);
     const auto domainVolume = computeMagnitude(domain);
+    const auto domainShells = OCCUtilities::getShells(domain);
+    assert(domainShells.size() == 1);
+    const auto domainShellFaces = OCCUtilities::getFaces(domainShells[0]);
 
     // create the disk samplers
     using ctype = double;
@@ -57,18 +59,18 @@ int main(int argc, char** argv)
     PointSampler pointSampler(OCCUtilities::getBoundingBox(domain));
 
     // sampler for disks of orientation 1
-    DiskSampler diskSampler_1(std::normal_distribution<ctype>(0.35, 0.1),
-                              std::normal_distribution<ctype>(0.225, 0.05),
-                              std::normal_distribution<ctype>(toRadians(25.0), toRadians(5.0)),
-                              std::normal_distribution<ctype>(toRadians(0.0),  toRadians(5.0)),
-                              std::normal_distribution<ctype>(toRadians(45.0), toRadians(5.0)));
+    DiskSampler diskSampler_1(std::normal_distribution<ctype>(40.0, 6.5),
+                              std::normal_distribution<ctype>(20.0, 4.5),
+                              std::normal_distribution<ctype>(toRadians(0.0), toRadians(5.0)),
+                              std::normal_distribution<ctype>(toRadians(0.0), toRadians(5.0)),
+                              std::normal_distribution<ctype>(toRadians(0.0), toRadians(5.0)));
 
     // sampler for disks of orientation 1
-    DiskSampler diskSampler_2(std::normal_distribution<ctype>(0.35, 0.1),
-                              std::normal_distribution<ctype>(0.225, 0.05),
-                              std::normal_distribution<ctype>(toRadians(-35.0), toRadians(5.0)),
-                              std::normal_distribution<ctype>(toRadians(0.0),   toRadians(5.0)),
-                              std::normal_distribution<ctype>(toRadians(-45.0), toRadians(5.0)));
+    DiskSampler diskSampler_2(std::normal_distribution<ctype>(40.0, 6.5),
+                              std::normal_distribution<ctype>(20.0, 4.5),
+                              std::normal_distribution<ctype>(toRadians(45.0), toRadians(5.0)),
+                              std::normal_distribution<ctype>(toRadians(0.0),  toRadians(5.0)),
+                              std::normal_distribution<ctype>(toRadians(0.0),  toRadians(5.0)));
 
     //! containers to store created entities
     std::vector<Disk> diskSet1;
@@ -80,22 +82,22 @@ int main(int argc, char** argv)
     Frackit::EntityNetworkConstraints<ctype> constraintsOnDomain;
 
     // constraints among disks of the same set
-    constraintsOnSelf.setMinDistance(0.1);
+    constraintsOnSelf.setMinDistance(10.0);
     constraintsOnSelf.setMinIntersectingAngle(toRadians(45.0));
-    constraintsOnSelf.setMinIntersectionMagnitude(0.01);
-    constraintsOnSelf.setMinIntersectionDistance(0.05);
+    constraintsOnSelf.setMinIntersectionMagnitude(2.5);
+    constraintsOnSelf.setMinIntersectionDistance(2.0);
 
     // constraints with the other disk set
-    constraintsOnOther.setMinDistance(0.01);
-    constraintsOnOther.setMinIntersectingAngle(toRadians(15.0));
-    constraintsOnOther.setMinIntersectionMagnitude(0.01);
-    constraintsOnOther.setMinIntersectionDistance(0.05);
+    constraintsOnOther.setMinDistance(2.5);
+    constraintsOnOther.setMinIntersectingAngle(toRadians(10.0));
+    constraintsOnOther.setMinIntersectionMagnitude(10.0);
+    constraintsOnOther.setMinIntersectionDistance(2.0);
 
-    // constraints with the other disk set
-    constraintsOnDomain.setMinDistance(0.01);
-    constraintsOnDomain.setMinIntersectingAngle(toRadians(15.0));
-    constraintsOnDomain.setMinIntersectionMagnitude(0.01);
-    constraintsOnDomain.setMinIntersectionDistance(0.05);
+    // constraints with the domain
+    constraintsOnDomain.setMinDistance(2.5);
+    constraintsOnDomain.setMinIntersectingAngle(toRadians(5.0));
+    constraintsOnDomain.setMinIntersectionMagnitude(20.0);
+    constraintsOnDomain.setMinIntersectionDistance(2.0);
 
     //! create pseudo-random number generator to select set during creation
     std::default_random_engine randomNumber{std::random_device{}()};
@@ -113,8 +115,8 @@ int main(int argc, char** argv)
 
     ctype currentDensity = 0.0;
     ctype currentDiskArea = 0.0;
-    const std::size_t numTargetEntities_1 = 5;
-    const std::size_t numTargetEntities_2 = 5;
+    const std::size_t numTargetEntities_1 = 6;
+    const std::size_t numTargetEntities_2 = 6;
     while (accepted_1 != numTargetEntities_1 || accepted_2 != numTargetEntities_2)
     {
         bool createSecondary = randomNumber()%2;
@@ -138,17 +140,16 @@ int main(int argc, char** argv)
         // enforce constraints w.r.t. to the other disk set
         if (!constraintsOnOther.evaluate(diskSetOther, disk)) continue;
 
-        // // enforce constraints w.r.t. the domain boundaries
-        // TODO: INTERSECTION ALGOS WITH SHAPE CLASSES
-        // bool violates = false;
-        // for (const auto& face : domainFaces)
-        //     if (!constraintsOnDomain.evaluate(face, disk))
-        //     { violates = true; break; }
-        // if (violates) continue;
+        // enforce constraints w.r.t. the domain boundaries
+        bool violates = false;
+        for (const auto& face : domainShellFaces)
+            if (!constraintsOnDomain.evaluate(face, disk))
+            { violates = true; break; }
+        if (violates) continue;
 
         // reject if intersection with domain is too small (here: 0.2m²)
         const auto containedArea = computeContainedMagnitude(disk, domain);
-        if (containedArea < 0.1) continue;
+        if (containedArea < 20.0*10.0*M_PI/5.0) continue;
 
         // if we get here, the disk is admissible
         diskSetSelf.push_back(std::move(disk));
