@@ -26,6 +26,11 @@
 #include <variant>
 #include <vector>
 
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Solid.hxx>
+
 #include <frackit/magnitude/magnitude.hh>
 #include <frackit/intersection/intersectiontraits.hh>
 
@@ -45,6 +50,34 @@ namespace ConstraintImpl {
         // any other intersection geometry
         return computeMagnitude(isGeometry) >= threshold;
     }
+
+    /*!
+     * \brief Evaluates if the magnitude of a vertex shape is above a given threshold.
+     */
+    template<class ctype>
+    bool isAdmissibleMagnitude(const TopoDS_Vertex& isVertex, ctype threshold)
+    { return true; }
+
+    /*!
+     * \brief Evaluates if the magnitude of an edge is above a given threshold.
+     */
+    template<class ctype>
+    bool isAdmissibleMagnitude(const TopoDS_Edge& isEdge, ctype threshold)
+    { return computeMagnitude(isEdge) >= threshold; }
+
+    /*!
+     * \brief Evaluates if the magnitude of a face is above a given threshold.
+     */
+    template<class ctype>
+    bool isAdmissibleMagnitude(const TopoDS_Face& isFace, ctype threshold)
+    { return computeMagnitude(isFace) >= threshold; }
+
+    /*!
+     * \brief Evaluates if the magnitude of a solid is above a given threshold.
+     */
+    template<class ctype>
+    bool isAdmissibleMagnitude(const TopoDS_Solid& isSolid, ctype threshold)
+    { return computeMagnitude(isSolid) >= threshold; }
 
     /*!
     * \brief Overload for an std::variant
