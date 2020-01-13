@@ -37,15 +37,17 @@
 namespace Frackit {
 
 /*!
-* \brief Traits class to extract the coordinate type from a geometry.
-*/
+ * \brief Traits class to extract the coordinate type from a geometry.
+ * \note This is the specialization used for internal geometry types
+ *       which carry the information of the coordinate type themselves.
+ */
 template<class Geom>
 struct CoordinateTypeTraits
 { using type = typename Geom::ctype; };
 
 /*!
-* \brief Specialization for Brep shapes.
-*/
+ * \brief Specialization for Brep shapes.
+ */
 template<>
 struct CoordinateTypeTraits<TopoDS_Shape>
 { using type = Standard_Real; };
