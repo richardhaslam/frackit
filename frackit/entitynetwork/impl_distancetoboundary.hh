@@ -27,6 +27,8 @@
 #include <variant>
 #include <vector>
 
+#include <TopExp.hxx>
+
 #include <frackit/distance/distance.hh>
 #include <frackit/distance/distancetoboundary.hh>
 #include <frackit/distance/pointonboundary.hh>
@@ -38,6 +40,7 @@
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/ellipse.hh>
+#include <frackit/geometry/name.hh>
 
 namespace Frackit {
 namespace ConstraintImpl {
@@ -50,9 +53,9 @@ namespace ConstraintImpl {
     bool isAdmissibleDistanceToBoundary(const IsGeom& is, const Geo& entity, ctype threshold)
     {
         std::string msg = "Distance to boundary not implemented for intersection geometry ";
-        msg += "\"" + IsGeom::name() + "\"";
+        msg += "\"" + geometryName(is) + "\"";
         msg += " and entity geometry ";
-        msg += "\"" + Geo::name() + "\"";
+        msg += "\"" + geometryName(entity) + "\"";
         throw std::runtime_error(std::string(msg));
     }
 
@@ -136,6 +139,54 @@ namespace ConstraintImpl {
         // point!
         throw std::runtime_error(std::string("TODO: IMPLEMENT"));
     }
+
+    /*!
+     * \brief Overload for edge intersections on disks.
+     */
+    template<class ctype, class ctype2>
+    bool isAdmissibleDistanceToBoundary(const TopoDS_Edge& edge,
+                                        const Disk<ctype>& entity,
+                                        ctype2 threshold)
+    {
+        const auto p1 = OCCUtilities::point( TopExp::FirstVertex(edge) );
+        const auto p2 = OCCUtilities::point( TopExp::LastVertex(edge) );
+        if (!isAdmissibleDistanceToBoundary(p1, entity, threshold))
+            return false;
+        return isAdmissibleDistanceToBoundary(p2, entity, threshold);
+    }
+
+    /*!
+     * \brief Overload for face intersections on disks.
+     */
+    template<class ctype, class ctype2>
+    bool isAdmissibleDistanceToBoundary(const TopoDS_Face& face,
+                                        const Disk<ctype>& entity,
+                                        ctype2 threshold)
+    { throw std::runtime_error(std::string("NotImplemented: face-entity boundary distance")); }
+
+    /*!
+     * \brief Overload for edge intersections on faces.
+     */
+    template<class ctype>
+    bool isAdmissibleDistanceToBoundary(const TopoDS_Edge& edge,
+                                        const TopoDS_Face& entity,
+                                        ctype threshold)
+    {
+        const auto p1 = OCCUtilities::point( TopExp::FirstVertex(edge) );
+        const auto p2 = OCCUtilities::point( TopExp::LastVertex(edge) );
+        if (!isAdmissibleDistanceToBoundary(p1, entity, threshold))
+            return false;
+        return isAdmissibleDistanceToBoundary(p2, entity, threshold);
+    }
+
+    /*!
+     * \brief Overload for face intersections on faces.
+     */
+    template<class ctype>
+    bool isAdmissibleDistanceToBoundary(const TopoDS_Face& face,
+                                        const TopoDS_Face& entity,
+                                        ctype threshold)
+    { throw std::runtime_error(std::string("NotImplemented: face-entity boundary distance")); }
 
     /*!
      * \brief Overload for std::variant.
