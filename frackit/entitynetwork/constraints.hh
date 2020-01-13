@@ -71,7 +71,10 @@ public:
     , useMinDistance_(false),    useMinIsAngle_(false)
     , useMinIsMagnitude_(false), useMinIsDistance_(false)
     , intersectionEps_(),        useIntersectionEps_(false)
-    {}
+    {
+        // per default, we do not allow equi-dimensional intersections
+        allowEquiDimIS_ = false;
+    }
 
     /*!
      * \brief The constructor defining all constraints
@@ -90,7 +93,10 @@ public:
     , useMinDistance_(false),          useMinIsAngle_(false)
     , useMinIsMagnitude_(false),       useMinIsDistance_(false)
     , intersectionEps_(),              useIntersectionEps_(false)
-    {}
+    {
+        // per default, we do not allow equi-dimensional intersections
+        allowEquiDimIS_ = false;
+    }
 
     //! Set the constraint for the minimum distance between entities
     void setMinDistance(Scalar minDistance)
@@ -139,6 +145,15 @@ public:
     //! Reactivate the use of the default epsilon
     void setDefaultIntersectionEpsilon()
     { useIntersectionEps_ = false; }
+
+    /*!
+     * \brief Define if intersections that have the same dimension
+     *        as the entites are admissible. For example, two-dimensional
+     *        surface intersections as intersections between disks.
+     * \param value the flag to be set (true/false)
+     */
+    void allowEquiDimensionalIntersections(bool value)
+    { allowEquiDimIS_ = value; }
 
     /*!
      * \brief Check if a pair of geometries fulfills the constraints
@@ -211,6 +226,7 @@ private:
     bool useMinIsAngle_;
     bool useMinIsMagnitude_;
     bool useMinIsDistance_;
+    bool allowEquiDimIS_;
 
     Scalar intersectionEps_;  //! Tolerance value to be used for intersections
     bool useIntersectionEps_; //! Stores wether or not a user-defined epsilon value was set
