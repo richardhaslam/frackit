@@ -10,6 +10,7 @@ ellipsearc.hh
 ellipse.hh
 ellipticalgeometry.hh
 line.hh
+name.hh
 plane.hh
 point.hh
 quadrilateral.hh
