@@ -33,6 +33,7 @@
 #include <frackit/intersection/intersect.hh>
 #include <frackit/intersection/intersectionpredicates.hh>
 
+#include "impl_admissibledimension.hh"
 #include "impl_admissiblemagnitude.hh"
 #include "impl_distancetoboundary.hh"
 
@@ -164,6 +165,10 @@ public:
     template<class Geo1, class Geo2>
     bool evaluate(const Geo1& geo1, const Geo2& geo2)
     {
+        static constexpr int dim = DimensionalityTraits<Geo1>::geomDim;
+        static_assert(dim == DimensionalityTraits<Geo2>::geomDim,
+                      "We expect entities to be of same dimension");
+
         const bool checkIs = useMinIsMagnitude_ || useMinIsAngle_ || useMinIsDistance_;
         if (!checkIs && !useMinDistance_)
             return true;
@@ -173,6 +178,10 @@ public:
 
         if ( !IntersectionPredicates::isEmpty(isection) )
         {
+            // check  if dimensionality constraint is violated
+            if (!allowEquiDimIS_ && !ConstraintImpl::isAdmissibleDimension(isection, dim-1))
+                return false;
+
             // magnitude constraint
             if ( useMinIsMagnitude_ && !ConstraintImpl::isAdmissibleMagnitude(isection, minIsMagnitude_) )
                 return false;
