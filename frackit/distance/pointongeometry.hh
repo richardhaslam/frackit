@@ -23,8 +23,13 @@
 #ifndef FRACKIT_POINT_ON_GEOMETRY_HH
 #define FRACKIT_POINT_ON_GEOMETRY_HH
 
+#include <TopoDS_Shape.hxx>
+
+#include <frackit/common/extractdimension.hh>
 #include <frackit/precision/defaultepsilon.hh>
 #include <frackit/geometry/point.hh>
+
+#include "distance.hh"
 
 namespace Frackit {
 
@@ -38,8 +43,21 @@ namespace Frackit {
 template<class ctype1, int wd, class Geo, class ctype2>
 bool pointOnGeometry(const Point<ctype1, wd>& p, const Geo& geo, ctype2 eps)
 {
-    static_assert(wd == Geo::worldDimension(), "World dimension mismatch");
+    static_assert(wd == DimensionalityTraits<Geo>::geomDim, "World dimension mismatch");
     return geo.contains(p, eps);
+}
+
+/*!
+ * \brief Evaluate if a point lies on a shape.
+ * \param p The point
+ * \param shape The shape
+ * \param eps Epsilon value to be used for the check
+ */
+template<class ctype1, class Shape, class ctype2>
+bool pointOnGeometry(const Point<ctype1, 3>& p, const Shape& shape, ctype2 eps)
+{
+    const auto distance = computeDistance(p, shape);
+    return distance < eps;
 }
 
 /*!
