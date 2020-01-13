@@ -1,0 +1,93 @@
+#include <stdexcept>
+#include <string>
+#include <cmath>
+#include <vector>
+
+#include <frackit/geometry/precision.hh>
+#include <frackit/geometry/ellipsearc.hh>
+
+//! test some functionality of ellipse arcs
+int main()
+{
+    using ctype = double;
+
+    using EllipseArc = Frackit::EllipseArc<ctype, 3>;
+    using Ellipse = typename EllipseArc::Ellipse;
+    using Point = typename EllipseArc::Point;
+    using Direction = typename EllipseArc::Direction;
+    using Vector = typename Direction::Vector;
+
+    std::vector<ctype> scales({1e-5, 1, 1e5});
+    for (auto f : scales)
+    {
+        std::cout << "Checking scale factor " << f << std::endl;
+        const auto majAxis = f;
+        const auto minAxis = 0.5*f;
+
+        Vector e1(1.0, 0.0, 0.0);
+        Vector e2(0.0, 1.0, 0.0);
+        Ellipse ellipse(Point(0.0, 0.0, 0.0), e1, e2, majAxis, minAxis);
+
+        const auto p = ellipse.getPointFromAngle(M_PI/4.0);
+        const auto source = ellipse.getPointFromAngle(0.0);
+        const auto target = ellipse.getPointFromAngle(M_PI/2.0);
+        EllipseArc ellipseArc(ellipse, source, target);
+
+        // check validity of source and target points
+        if (!source.isEqual(Point(majAxis, 0.0, 0.0), f*Frackit::Precision<ctype>::confusion()))
+            throw std::runtime_error(std::string("Unexpected source point"));
+        if (!target.isEqual(Point(0.0, minAxis, 0.0), f*Frackit::Precision<ctype>::confusion()))
+            throw std::runtime_error(std::string("Unexpected source point"));
+
+        // check contains() queries
+        if (!ellipseArc.contains(source))
+            throw std::runtime_error(std::string("Source contains() query failed"));
+        if (!ellipseArc.contains(source, false))
+            throw std::runtime_error(std::string("Source contains() query failed"));
+
+        if (!ellipseArc.contains(target))
+            throw std::runtime_error(std::string("Target contains() query failed"));
+        if (!ellipseArc.contains(target, false))
+            throw std::runtime_error(std::string("Target contains() query failed"));
+
+        if (!ellipseArc.contains(p))
+            throw std::runtime_error(std::string("Point contains() query failed"));
+        if (!ellipseArc.contains(p, false))
+            throw std::runtime_error(std::string("Point contains() query failed"));
+
+        // check points which are slightly outside
+        const auto p2 = ellipse.getPointFromAngle(M_PI/2.0 + 1e-4);
+        const auto p3 = ellipse.getPointFromAngle(2.0*M_PI - 1e-4);
+        if (ellipseArc.contains(p2))
+            throw std::runtime_error(std::string("P2 contains() query failed"));
+        if (ellipseArc.contains(p2, false))
+            throw std::runtime_error(std::string("P2 contains() query failed"));
+        if (ellipseArc.contains(p3))
+            throw std::runtime_error(std::string("P3 contains() query failed"));
+        if (ellipseArc.contains(p3, false))
+            throw std::runtime_error(std::string("P3 contains() query failed"));
+
+        // check points which are slightly outside
+        if (!ellipseArc.contains(ellipseArc.getPoint(0.0)))
+            throw std::runtime_error(std::string("contains() query with computed point 1 failed"));
+        if (!ellipseArc.contains(ellipseArc.getPoint(0.25)))
+            throw std::runtime_error(std::string("contains() query with computed point 2 failed"));
+        if (!ellipseArc.contains(ellipseArc.getPoint(0.5)))
+            throw std::runtime_error(std::string("contains() query with computed point 3 failed"));
+        if (!ellipseArc.contains(ellipseArc.getPoint(0.75)))
+            throw std::runtime_error(std::string("contains() query with computed point 4 failed"));
+        if (!ellipseArc.contains(ellipseArc.getPoint(1.0)))
+            throw std::runtime_error(std::string("contains() query with computed point 5 failed"));
+
+        // create arcs describing a full ellipse
+        EllipseArc fullArc1(ellipse, source, source);
+        if (!fullArc1.isFullEllipse())
+            throw std::runtime_error(std::string("Arc1 is not a full ellipse"));
+        EllipseArc fullArc2(ellipse, p, p);
+        if (!fullArc2.isFullEllipse())
+            throw std::runtime_error(std::string("Arc2 is not a full ellipse"));
+    }
+
+    std::cout << "All tests passed" << std::endl;
+    return 0;
+}
