@@ -20,7 +20,7 @@
 
 #include <frackit/entitynetwork/constraints.hh>
 
-//! create a disk network embedded in a cylinder
+//! create a disk network embedded in a solid shape
 int main(int argc, char** argv)
 {
     //! print welcome message
