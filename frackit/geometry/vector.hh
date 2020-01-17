@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Classes that implement vectors in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_VECTOR_HH
 #define FRACKIT_GEOMETRY_VECTOR_HH
@@ -36,12 +36,23 @@
 
 namespace Frackit {
 
-// Forward declarations
+/*!
+ * \brief Class that implements vectors in
+ *        a coordinate space of dimension wd
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the coordinate space.
+ * \note Specializations for different space dimensions
+ *       are provided below.
+ */
+template<class CT, int wd>
+class Vector;
+
+// Forward declarations of other geometry classes
 template<class CT, int wd> class Point;
-template<class CT, int wd> class Vector;
 template<class CT, int wd> class Direction;
 
-    namespace Impl {
+// namespace with implementation details
+namespace Impl {
 
     /*!
      * \brief Computes the scalar product between two 1d vectors.
@@ -228,7 +239,7 @@ template<class CT, int wd> class Direction;
         // storage of the coordinates
         std::array<ctype, wd> coordinates_;
     };
-    } // end namespace Impl
+} // end namespace Impl
 
 /*!
  * \brief Vector class implementation.
