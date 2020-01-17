@@ -66,6 +66,14 @@ public:
         if (zMax_ < zMin_) throw std::runtime_error( std::string("Could not construct box: zmax < zMin!") );
     }
 
+    /*!
+     * \brief Construct a box from the minimum/maximum corner points.
+     */
+    Box(const Point& pMin, const Point& pMax)
+    : Box(pMin.x(), pMin.y(), pMin.z(),
+          pMax.x(), pMax.y(), pMax.z())
+    {}
+
     //! \todo TODO doc me.
     static std::string name() { return "Box"; }
     //! \todo TODO doc me.
