@@ -19,7 +19,7 @@
 /*!
  * \file
  * \brief Contains functionality for computing the
- *        length of one-dimensional geometries.
+ *        lengths of one-dimensional geometries.
  */
 #ifndef FRACKIT_MAGNITUDE_LENGTH_HH
 #define FRACKIT_MAGNITUDE_LENGTH_HH
@@ -38,7 +38,6 @@
 #include <frackit/geometry/circle.hh>
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
-#include <frackit/geometry/segment.hh>
 
 namespace Frackit {
 
