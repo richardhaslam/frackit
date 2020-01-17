@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class used to define empty intersection.
  */
 #ifndef FRACKIT_EMPTY_INTERSECTION_HH
 #define FRACKIT_EMPTY_INTERSECTION_HH
@@ -27,17 +27,25 @@
 
 namespace Frackit {
 
-//! \todo TODO Doc me.
-template<int wd>
+/*!
+ * \brief Class used to define empty intersection.
+ * \tparam wd The dimension of the coordinate space.
+ * \tparam CT The type used for coordinates
+ */
+template<int wd = 3, class CT = double>
 struct EmptyIntersection
 {
+    //! Technically, this does not have a defined dimension
     static constexpr int myDimension() { return 0; }
+
+    //! Return the dimension of the coordinate space
     static constexpr int worldDimension() { return wd; }
 
+    //! Return the name of this geometry
     static std::string name() { return "EmptyIntersection"; }
 
     //! Export coordinate type for compatibility
-    using ctype = double;
+    using ctype = CT;
 };
 
 } // end namespace Frackit
