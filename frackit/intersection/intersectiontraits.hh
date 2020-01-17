@@ -18,7 +18,8 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Traits class to define the type resulting
+ *        from the intersection between different geometries.
  */
 #ifndef FRACKIT_INTERSECTION_TRAITS_HH
 #define FRACKIT_INTERSECTION_TRAITS_HH
@@ -56,15 +57,23 @@ template<int wd>
 struct IsEmptyIntersection<EmptyIntersection<wd>>
 { static constexpr bool value = true; };
 
-//! \todo TODO Doc me.
+/*!
+ * \brief Traits class to define the result of the
+ *        intersection operation between two geometries.
+ * \tparam Geometry1 The first geometry
+ * \tparam Geometry2 The second geometry
+ * \note Overloads for different geometry pairs are provided below.
+ */
 template<class Geometry1, class Geometry2>
 struct IntersectionTraits;
 
-//! Convenience alias to obtain intersection type
+/*!
+ * \brief Convenience alias to obtain the intersection type
+ */
 template<class Geometry1, class Geometry2>
 using Intersection = typename IntersectionTraits<Geometry1, Geometry2>::type;
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of two segments
 template<class ctype, int wd>
 struct IntersectionTraits< Segment<ctype, wd>, Segment<ctype, wd> >
 {
@@ -73,7 +82,7 @@ struct IntersectionTraits< Segment<ctype, wd>, Segment<ctype, wd> >
                                EmptyIntersection<wd> >;
 };
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of two planes
 template<class ctype>
 struct IntersectionTraits< Plane<ctype, 3>, Plane<ctype, 3> >
 {
@@ -82,7 +91,7 @@ struct IntersectionTraits< Plane<ctype, 3>, Plane<ctype, 3> >
                                EmptyIntersection<3> >;
 };
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a plane and a line
 template<class ctype>
 struct IntersectionTraits< Plane<ctype, 3>, Line<ctype, 3> >
 {
@@ -91,13 +100,13 @@ struct IntersectionTraits< Plane<ctype, 3>, Line<ctype, 3> >
                                EmptyIntersection<3> >;
 };
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a line and a plane
 template<class ctype>
 struct IntersectionTraits< Line<ctype, 3>, Plane<ctype, 3> >
 : public IntersectionTraits< Plane<ctype, 3>, Line<ctype, 3> >
 {};
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a disk and a line
 template<class ctype>
 struct IntersectionTraits< Disk<ctype>, Line<ctype, 3> >
 {
@@ -109,13 +118,13 @@ struct IntersectionTraits< Disk<ctype>, Line<ctype, 3> >
                                EmptyIntersection<wd> >;
 };
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a line and a disk
 template<class ctype>
 struct IntersectionTraits< Line<ctype, 3>, Disk<ctype> >
 : public IntersectionTraits< Disk<ctype>, Line<ctype, 3> >
 {};
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a disk and a disk
 template<class ctype>
 struct IntersectionTraits< Disk<ctype>, Disk<ctype> >
 {
@@ -128,7 +137,7 @@ struct IntersectionTraits< Disk<ctype>, Disk<ctype> >
                                EmptyIntersection<wd> >;
 };
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a cylinder surface and a disk
 template<class ctype>
 struct IntersectionTraits< CylinderSurface<ctype>, Disk<ctype> >
 {
@@ -145,13 +154,13 @@ struct IntersectionTraits< CylinderSurface<ctype>, Disk<ctype> >
     using type = std::vector<BaseType>;
 };
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a disk and a cylinder surface
 template<class ctype>
 struct IntersectionTraits< Disk<ctype>, CylinderSurface<ctype> >
 : public IntersectionTraits< CylinderSurface<ctype>, Disk<ctype> >
 {};
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a shell and a disk
 template<class ctype>
 struct IntersectionTraits< TopoDS_Shell, Disk<ctype> >
 {
@@ -162,13 +171,13 @@ struct IntersectionTraits< TopoDS_Shell, Disk<ctype> >
     using type = std::vector<BaseType>;
 };
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a disk and a shell
 template<class ctype>
 struct IntersectionTraits< Disk<ctype>, TopoDS_Shell >
 : public IntersectionTraits< TopoDS_Shell, Disk<ctype> >
 {};
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a face and a disk
 template<class ctype>
 struct IntersectionTraits< TopoDS_Face, Disk<ctype> >
 {
@@ -179,7 +188,7 @@ struct IntersectionTraits< TopoDS_Face, Disk<ctype> >
     using type = std::vector<BaseType>;
 };
 
-//! \todo TODO Doc me.
+//! Result type of the intersection of a disk and a face
 template<class ctype>
 struct IntersectionTraits< Disk<ctype>, TopoDS_Face >
 : public IntersectionTraits< TopoDS_Face, Disk<ctype> >
