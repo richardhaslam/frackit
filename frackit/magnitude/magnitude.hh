@@ -74,6 +74,11 @@ ctype computeMagnitude(const TopoDS_Edge& edge)
 
 /*!
  * \brief Returns the area of a BRep face
+ * \param face The face
+ * \param eps Tolerance value to be used
+ * \param loc A location; defaults to the origin, however,
+ *            higher precision is achieved if a point close
+ *            to the actual face is chosen.
  */
 template<class ctype = double>
 ctype computeMagnitude(const TopoDS_Face& face,
@@ -82,7 +87,12 @@ ctype computeMagnitude(const TopoDS_Face& face,
 { return computeArea(face, eps, loc); }
 
 /*!
- * \brief Returns the area of a BRep solid
+ * \brief Returns the volume of a BRep solid
+ * \param solid The solid
+ * \param eps Tolerance value to be used
+ * \param loc A location; defaults to the origin, however,
+ *            higher precision is achieved if a point close
+ *            to the actual solid is chosen.
  */
 template<class ctype = double>
 ctype computeMagnitude(const TopoDS_Solid& solid,
