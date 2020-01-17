@@ -42,12 +42,6 @@ template<class Geometry>
 typename Geometry::ctype computeArea(const Geometry& geometry)
 { return geometry.area(); }
 
-//! \todo TODO doc me.
-template<class ctype>
-ctype computeArea(const CylinderSurface<ctype>& cylSurface)
-{ return 2.0*M_PI*cylSurface.radius()*cylSurface.height(); }
-
-//! \todo TODO doc me.
 template<class ctype = double>
 ctype computeArea(const TopoDS_Face& face,
                   ctype eps = Precision<ctype>::confusion(),
