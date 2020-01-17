@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class that implements directions (unit vectors).
  */
 #ifndef FRACKIT_GEOMETRY_DIRECTION_HH
 #define FRACKIT_GEOMETRY_DIRECTION_HH
