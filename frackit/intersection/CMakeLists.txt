@@ -11,6 +11,5 @@ algo_shell_disk.hh
 emptyintersection.hh
 intersect.hh
 intersectionpredicates.hh
-intersectionresult.hh
 intersectiontraits.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/intersection)

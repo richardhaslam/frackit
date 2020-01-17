@@ -1,6 +1,5 @@
 #include <frackit/geometry/plane.hh>
 #include <frackit/intersection/intersect.hh>
-#include <frackit/intersection/intersectionresult.hh>
 
 enum IntersectionType { line, plane, empty };
 
