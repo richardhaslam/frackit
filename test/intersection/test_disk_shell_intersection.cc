@@ -8,7 +8,6 @@
 #include <frackit/occ/breputilities.hh>
 
 #include <frackit/intersection/intersect.hh>
-#include <frackit/intersection/intersectionresult.hh>
 
 enum IntersectionType { point, edge, face, empty };
 

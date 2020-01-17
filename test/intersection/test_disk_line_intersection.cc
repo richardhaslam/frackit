@@ -1,7 +1,6 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/magnitude/length.hh>
 #include <frackit/intersection/intersect.hh>
-#include <frackit/intersection/intersectionresult.hh>
 
 enum IntersectionType { point, segment, empty };
 
