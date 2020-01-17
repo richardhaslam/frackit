@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class that implements elliptical disks in 3d space.
  */
 #ifndef FRACKIT_DISK_HH
 #define FRACKIT_DISK_HH
@@ -33,7 +33,7 @@
 namespace Frackit {
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements elliptical disks in 3d space.
  */
 template<class CT>
 class Disk
@@ -59,8 +59,7 @@ public:
     using ParentType::ParentType;
 
     /*!
-     * \brief \todo TODO doc me.
-     * \todo check if points are on ellipse
+     * \brief Constructor from an ellipse
      */
     Disk(const Ellipse& ellipse)
     : ParentType(ellipse.center(),
@@ -70,9 +69,9 @@ public:
                  ellipse.minorAxisLength())
     {}
 
-    //! \todo TODO doc me.
+    //! Return the name of this geometry
     static std::string name() { return "Disk"; }
-    //! \todo TODO doc me.
+    //! Return the disk area
     ctype area() const
     {
         return M_PI*this->majorAxisLength()
@@ -85,7 +84,9 @@ public:
      * \param eps The tolerance to be used
      * \param checkIfOnPlane Flag that can be set to false in case
      *                       it is known that the point is in-plane.
-     * \todo note about choice of eps
+     * \note It is recommended to use epsilon values independent of
+     *       the size of the disk here, as the coordinates are normalized
+     *       by the minor & major axis lengths.
      */
     bool contains(const Point& p, ctype eps, bool checkIfOnPlane = true) const
     {
@@ -108,7 +109,7 @@ public:
      * \param p The point to be checked
      * \param checkIfOnPlane Flag that can be set to false in case
      *                       it is known that the point is in-plane.
-     * \todo note about choice of eps
+     * \note This overload uses a default epsilon.
      */
     bool contains(const Point& p, bool checkIfOnPlane = true) const
     { return contains(p, Precision<ctype>::confusion(), checkIfOnPlane); }
