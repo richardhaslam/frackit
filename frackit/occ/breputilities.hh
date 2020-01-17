@@ -18,7 +18,10 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Contains utility functionality for
+ *        operations on objects of the BRep package
+ *        as well as parsing internal geometries into
+ *        BRep representations.
  */
 #ifndef FRACKIT_BREP_UTILITIES_HH
 #define FRACKIT_BREP_UTILITIES_HH

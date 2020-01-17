@@ -18,7 +18,9 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Contains utility functionality related
+ *        to objects & algorithms related to the
+ *        Geometry package in OpenCascade.
  */
 #ifndef FRACKIT_GP_UTILITIES_HH
 #define FRACKIT_GP_UTILITIES_HH
@@ -35,16 +37,6 @@
 
 namespace Frackit {
 namespace OCCUtilities {
-
-    //! converts an n-d point into a 3d point
-    template<class ctype, int dim>
-    Point<ctype, 3> convertTo3d(const Point<ctype, dim>& p)
-    {
-        static_assert(dim <= 3 && dim != 0, "Only 0 < dim <= 3 supported");
-        if (dim == 1) return Point<ctype, 3>(p.x(), 0.0, 0.0);
-        else if (dim == 2) return Point<ctype, 3>(p.x(), p.y(), 0.0);
-        else if (dim == 3) return p;
-    }
 
     //! converts a point to an object from the geometric processors package
     template<class ctype, int dim>
