@@ -18,7 +18,9 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Contains utility functionality related
+ *        to objects & algorithms related to the
+ *        Geometry package in OpenCascade.
  */
 #ifndef FRACKIT_GP_UTILITIES_HH
 #define FRACKIT_GP_UTILITIES_HH
