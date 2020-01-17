@@ -31,13 +31,11 @@ int main()
     using Disk = Disk<ctype>;
     using Domain = Cylinder<ctype>;
 
-    using DiskSampler = GeometrySampler<Disk>;
-    using PointSampler = GeometryPointSampler<Domain>;
-
     Domain domain(0.5, 1.0);
-    PointSampler pointSampler(domain);
+    auto pointSampler = makeUniformPointSampler(domain);
 
     // sampler for disks of orientation 1
+    using DiskSampler = GeometrySampler<Disk>;
     DiskSampler diskSampler_1(std::normal_distribution<ctype>(0.35, 0.1),
                               std::normal_distribution<ctype>(0.225, 0.05),
                               std::normal_distribution<ctype>(toRadians(25.0), toRadians(5.0)),

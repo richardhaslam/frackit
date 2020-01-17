@@ -7,6 +7,7 @@
 #include <TopoDS_Compound.hxx>
 
 #include <frackit/sampling/pointsampling.hh>
+#include <frackit/geometry/point.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/occ/breputilities.hh>
 
@@ -17,13 +18,12 @@ int main()
 
     using namespace Frackit;
     using Cylinder = Cylinder<ctype>;
-    using CylPointSampler = GeometryPointSampler<Cylinder>;
 
     Cylinder cylinder(0.5, 1.0);
-    CylPointSampler cylPointSampler(cylinder);
+    auto cylPointSampler = makeUniformPointSampler(cylinder);
 
     // sample 500 points
-    std::array<typename CylPointSampler::Point, 500> points;
+    std::array<Frackit::Point<ctype, 3>, 500> points;
     for (unsigned int i = 0; i < 500; ++i)
         points[i] = cylPointSampler();
 
