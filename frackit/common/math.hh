@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Define some mathematical functions
  */
 #ifndef FRACKIT_MATH_HH
 #define FRACKIT_MATH_HH
@@ -32,7 +32,8 @@
 namespace Frackit {
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Returns the vector resulting from the cross product
+ *        of two 3-dimensional vectors.
  */
 template<class ctype>
 Vector<ctype, 3> crossProduct(const Vector<ctype, 3>& v1,
@@ -44,7 +45,8 @@ Vector<ctype, 3> crossProduct(const Vector<ctype, 3>& v1,
 }
 
 /*!
- * \todo TODO doc me.
+ * \brief Returns the scalar resulting from the cross product
+ *        of two 2-dimensional vectors.
  */
 template <class ctype>
 ctype crossProduct(const Vector<ctype, 2>& v1,
@@ -52,7 +54,8 @@ ctype crossProduct(const Vector<ctype, 2>& v1,
 { return v1.x()*v2.y() - v1.y()*v2.x(); }
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Returns the scalar resulting from the box product
+ *        of three 3-dimensional vectors.
  */
 template<class ctype>
 ctype boxProduct(const Vector<ctype, 3>& v1,
@@ -61,7 +64,8 @@ ctype boxProduct(const Vector<ctype, 3>& v1,
 { return v1*crossProduct(v2, v3); }
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Returns true if the given 3-dimensional
+ *        vectors form a right-hand system.
  */
 template<class ctype>
 bool isRightHandSystem(const Vector<ctype, 3>& v1,
@@ -75,21 +79,26 @@ bool isRightHandSystem(const Vector<ctype, 3>& v1,
 }
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Converts a given angle in radians to degrees.
  */
 template<class ctype>
 ctype toDegrees(const ctype radians)
 { return radians*180.0/M_PI; }
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Converts a given angle in degrees to radians.
  */
 template<class ctype>
 ctype toRadians(const ctype degrees)
 { return degrees*M_PI/180.0; }
 
 /*!
- * \brief \todo TODO doc me. Cite Wiki entry.
+ * \brief Rotate a vector around an axis by a given angle.
+ * \param v The vector to be rotated
+ * \param axis The rotation axis
+ * \param angle The rotation angle
+ * \note The rotation matrix is taken from:
+ *       https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
  */
 template<class ctype>
 void rotate(Vector<ctype, 3>& v,
@@ -115,7 +124,15 @@ void rotate(Vector<ctype, 3>& v,
 }
 
 /*!
- * \brief \todo TODO doc me. Cite Wiki entry.
+ * \brief Rotate several vectors around an axis by a given angle.
+ * \param vectors The vectors to be rotated
+ * \param axis The rotation axis
+ * \param angle The rotation angle
+ * \note This overload is more efficient than calling the overload
+ *       for a single vector several times, as the rotation matrix
+ *       is only constructed once!
+ * \note The rotation matrix is taken from:
+ *       https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
  */
 template<class ctype>
 void rotate(std::vector<Vector<ctype, 3>>& vectors,
