@@ -18,13 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Forward declaration of sampler classes used to
- *        randomly generate geometries. The sampler class
- *        is specialized for different geometries, and the
- *        required probability distribution functions are
- *        injected via corresponding traits classes.
- *        A default traits class should be provided by each
- *        sampler implementation.
+ * \brief Class to randomly generate geometries.
  */
 #ifndef FRACKIT_GEOMETRY_SAMPLING_HH
 #define FRACKIT_GEOMETRY_SAMPLING_HH
@@ -34,7 +28,16 @@ namespace Frackit {
 //! Forward declaration of the default traits
 template<class Geometry> struct DefaultSamplerTraits;
 
-//! Forward declaration of the sampler class
+/*!
+ * \file
+ * \brief Forward declaration of sampler classes used to
+ *        randomly generate geometries. The sampler class
+ *        is specialized for different geometries, and the
+ *        required probability distribution functions are
+ *        injected via corresponding traits classes.
+ *        A default traits class should be provided by each
+ *        sampler implementation.
+ */
 template<class Geometry, class T = DefaultSamplerTraits<Geometry>>
 struct GeometrySampler;
 

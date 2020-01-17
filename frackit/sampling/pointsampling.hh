@@ -18,11 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Class to randomly generate points within geometries.
- *        The type of distribution functions to be used can be
- *        provided via a traits class, where a distribution for
- *        each coordinate of the geometry's local coordinate system
- *        is expected.
+ * \brief Class to randomly generate points, sampled on geometries.
  */
 #ifndef FRACKIT_POINT_SAMPLING_HH
 #define FRACKIT_POINT_SAMPLING_HH
