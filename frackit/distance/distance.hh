@@ -89,7 +89,13 @@ computeDistance(const Geom1& geo1,
                 Impl::PCT<Geom1, Geom2> deflection = Precision<Impl::PCT<Geom1, Geom2>>::confusion(),
                 Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                 Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
-{ return computeDistance(OCCUtilities::getShape(geo1), OCCUtilities::getShape(geo2)); }
+{
+    return computeDistance(OCCUtilities::getShape(geo1),
+                           OCCUtilities::getShape(geo2),
+                           deflection,
+                           extFlag,
+                           extAlgo);
+}
 
 /*!
  * \brief Overload for one of the geometries being a shape object.
@@ -106,7 +112,7 @@ computeDistance(const TopoDS_Shape& shape,
                 typename Geom::ctype deflection = Precision<typename Geom::ctype>::confusion(),
                 Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                 Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
-{ return computeDistance(shape, OCCUtilities::getShape(geo)); }
+{ return computeDistance(shape, OCCUtilities::getShape(geo), deflection, extFlag, extAlgo); }
 
 /*!
  * \brief Overload for one of the geometries being a shape object.
@@ -123,10 +129,12 @@ computeDistance(const Geom& geo,
                 typename Geom::ctype deflection = Precision<typename Geom::ctype>::confusion(),
                 Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                 Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
-{ return computeDistance(OCCUtilities::getShape(geo), shape); }
+{ return computeDistance(OCCUtilities::getShape(geo), shape, deflection, extFlag, extAlgo); }
 
 /*!
  * \brief Returns the euclidian distance between two points.
+ * \param p1 The first point
+ * \param p2 The second point
  */
 template<class ctype1, class ctype2, int worldDim>
 PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p1,
