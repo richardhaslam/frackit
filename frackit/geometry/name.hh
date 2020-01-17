@@ -18,7 +18,9 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Utility functionality to get the name of geometries.
+ *        This provides an interface that is compatible also
+ *        with classes from the BRep package.
  */
 #ifndef FRACKIT_GEOMETRY_NAME_HH
 #define FRACKIT_GEOMETRY_NAME_HH
@@ -37,50 +39,51 @@
 namespace Frackit {
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Return the name of an internal geometry class.
+ * \note Here, we simply forward to the name() function of the geometries
  */
 template<class Geo>
 std::string geometryName(const Geo& geo)
 { return Geo::name(); }
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Return the name for a TopoDS_Solid.
  */
 std::string geometryName(const TopoDS_Solid& s)
 { return "TopoDS_Solid"; }
 
 /*!
- * \brief \todo TODO doc me.
+* \brief Return the name for a TopoDS_Shell.
  */
 std::string geometryName(const TopoDS_Shell& s)
 { return "TopoDS_Shell"; }
 
 /*!
- * \brief \todo TODO doc me.
+* \brief Return the name for a TopoDS_Face.
  */
 std::string geometryName(const TopoDS_Face& f)
 { return "TopoDS_Face"; }
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Return the name for a TopoDS_Wire.
  */
 std::string geometryName(const TopoDS_Wire& w)
 { return "TopoDS_Wire"; }
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Return the name for a TopoDS_Edge.
  */
 std::string geometryName(const TopoDS_Edge& e)
 { return "TopoDS_Edge"; }
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Return the name for a TopoDS_Vertex.
  */
 std::string geometryName(const TopoDS_Vertex& v)
 { return "TopoDS_Vertex"; }
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Return the name for a TopoDS_Shape.
  */
 std::string geometryName(const TopoDS_Shape& v)
 { return "TopoDS_Shape"; }
