@@ -39,7 +39,6 @@
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/segment.hh>
-#include <frackit/geometry/vector.hh>
 
 namespace Frackit {
 
@@ -70,13 +69,6 @@ ctype computeLength(const Handle(Geom_Curve)& curve)
 template<class ctype = double>
 ctype computeLength(const TopoDS_Edge& edge)
 { return computeLength(OCCUtilities::getGeomHandle(edge)); }
-
-/*!
- * \brief Returns the length of a vector
- */
-template<class ctype, int worldDim>
-ctype computeLength(const Vector<ctype, worldDim>& vec)
-{ return vec.length(); }
 
 /*!
  * \brief Returns the length of a circle (circumference).
