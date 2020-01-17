@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Classes that implement points in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_POINT_HH
 #define FRACKIT_GEOMETRY_POINT_HH
