@@ -18,7 +18,8 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Contains functionality to compute the
+ *        intersections between geometries.
  */
 #ifndef FRACKIT_INTERSECT_HH
 #define FRACKIT_INTERSECT_HH
