@@ -44,6 +44,7 @@ template<class CT> class Cylinder;
 /*!
  * \brief Class that describes the lateral
  *        surface of a cylinder in 3d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class CylinderSurface

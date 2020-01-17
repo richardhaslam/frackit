@@ -34,6 +34,7 @@ namespace Frackit {
 
 /*!
  * \brief Class that implements elliptical disks in 3d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class Disk

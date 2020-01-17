@@ -40,6 +40,7 @@ class Direction;
 
 /*!
  * \brief Direction class implementation in 1d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class Direction<CT, 1>
@@ -87,6 +88,7 @@ private:
 
 /*!
  * \brief Direction class implementation in 2d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class Direction<CT, 2>
@@ -138,6 +140,7 @@ private:
 
 /*!
  * \brief Direction class implementation in 3d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class Direction<CT, 3>

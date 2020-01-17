@@ -44,6 +44,7 @@ class Circle;
 
 /*!
  * \brief Class describing a circle in 3d space.
+ * \tparam ctype The type used for coordinates
  */
 template<class ctype>
 class Circle<ctype, /*worldDim=*/3>

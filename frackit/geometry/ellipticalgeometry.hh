@@ -43,6 +43,8 @@ template<class CT, int wd> class Plane;
 /*!
  * \brief Base class for elliptical geometries
  *        in a space with dimension worldDim.
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the space
  */
 template<class CT, int worldDim>
 class EllipticalGeometry;
@@ -50,6 +52,7 @@ class EllipticalGeometry;
 /*!
  * \brief Base class for ellipticcal geometries
  *        in three-dimensional space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class EllipticalGeometry<CT, /*worldDim=*/3>

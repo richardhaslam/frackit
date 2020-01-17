@@ -33,12 +33,15 @@ namespace Frackit {
 /*!
  * \brief Class that implements ellipse arcs in a
  *        space with the dimension worldDim.
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the space
  */
 template<class CT, int worldDim>
 class EllipseArc;
 
 /*!
  * \brief Class that implements ellipse arcs in 3 space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class EllipseArc<CT, /*worldDim=*/3>
