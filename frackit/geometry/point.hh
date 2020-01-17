@@ -36,7 +36,9 @@ namespace Frackit {
 // Forwad declaration
 template<class CT, int wd> class Vector;
 
-    namespace Impl {
+// Hide implementation from Doxygen
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Impl {
 
     /*!
      * \brief Base class for Point implementations.
@@ -110,7 +112,8 @@ template<class CT, int wd> class Vector;
     private:
         std::array<ctype, wd> coordinates_;
     };
-    } // end namespace Impl
+} // end namespace Impl
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 /*!
  * \brief Point class implementation.

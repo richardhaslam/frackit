@@ -51,6 +51,9 @@ class Vector;
 template<class CT, int wd> class Point;
 template<class CT, int wd> class Direction;
 
+// Hide implementation from Doxygen
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 // namespace with implementation details
 namespace Impl {
 
@@ -240,6 +243,7 @@ namespace Impl {
         std::array<ctype, wd> coordinates_;
     };
 } // end namespace Impl
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 /*!
  * \brief Vector class implementation.
