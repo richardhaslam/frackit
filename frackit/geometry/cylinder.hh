@@ -18,10 +18,10 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class that describes a cylinder in 3d space.
  */
-#ifndef FRACKIT_CYLINDER_HH
-#define FRACKIT_CYLINDER_HH
+#ifndef FRACKIT_GEOMETRY_CYLINDER_HH
+#define FRACKIT_GEOMETRY_CYLINDER_HH
 
 #include <cmath>
 
@@ -40,7 +40,8 @@ namespace Frackit {
 template<class CT> class CylinderSurface;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that describes a cylinder in 3d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class Cylinder
@@ -64,7 +65,9 @@ public:
     using CylinderSurface = Frackit::CylinderSurface<ctype>;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor.
+     * \param radius The cylinder radius
+     * \param height The cylinder height.
      */
     Cylinder(ctype radius, ctype height)
     : height_(height)
@@ -79,7 +82,10 @@ public:
     {}
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor.
+     * \param bottom The circle describing the
+     *               rim of the bottom boundary
+     * \param height The cylinder height.
      */
     Cylinder(const Circle& bottom, ctype height)
     : Cylinder(Disk(bottom.center(),
@@ -88,11 +94,13 @@ public:
     {}
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor.
+     * \param bottom The disk describing the bottom boundary
+     * \param height The cylinder height.
      */
     Cylinder(const Disk& bottom, ctype height)
     : height_(height)
-    , top_(makeTopDisk_(bottom))
+    , top_(makeTopDisk_(bottom, height))
     , bottom_(bottom)
     {
         using std::abs;
@@ -101,22 +109,23 @@ public:
             throw std::runtime_error(std::string("Cylinder requires circular disks as base"));
     }
 
-    //! \todo TODO doc me.
+    //! Return the name of the geometry
     static std::string name() { return "Cylinder"; }
 
-    //! \todo TODO doc me.
+    //! Return the first basis vector of the cylinder (horizontal axis)
     const Direction& base1() const { return bottom_.majorAxis(); }
-    //! \todo TODO doc me.
+    //! Return the second basis vector of the cylinder (horizontal axis)
     const Direction& base2() const { return bottom_.minorAxis(); }
-    //! \todo TODO doc me.
+    //! Return the third basis vector of the cylinder (vertical axis)
+    const Direction& base3() const { return direction(); }
+    //! Return the vertical axis of the cylinder
     const Direction& direction() const { return bottom_.normal(); }
 
-    //! \todo TODO doc me.
+    //! Return the top bounding face
     const Disk& topFace() const { return top_; }
-    //! \todo TODO doc me.
+    //! Return the bottom bounding face
     const Disk& bottomFace() const { return bottom_; }
-
-    //! \todo TODO doc me.
+    //! Return the lateral surface
     CylinderSurface lateralFace() const
     {
         return CylinderSurface(Circle(bottom_.center(),
@@ -124,18 +133,22 @@ public:
                                       bottom_.majorAxisLength()), height());
     }
 
-    //! \todo TODO doc me.
-    Segment centerSegment() const { return Segment(bottom_.center(), top_.center()); }
+    //! Return the segment describing the center of the cylinder
+    Segment centerSegment() const
+    { return Segment(bottom_.center(), top_.center()); }
 
-    //! \todo TODO doc me.
+    //! Return the height of the cylinder.
     ctype height() const { return height_; }
-    //! \todo TODO doc me.
+    //! Return the radius of the cylinder.
     ctype radius() const { return bottom_.majorAxisLength(); }
-    //! \todo TODO doc me.
+    //! Return the volume of the cylinder.
     ctype volume() const { return M_PI*this->radius()*this->radius()*this->height(); }
 
-    //! Returns true if a point lies inside the cylinder (given tolerance)
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point lies within the cylinder.
+     * \param p The point to be checked
+     * \param eps The epsilon (tolerance) value to be used
+     */
     bool contains(const Point& p, ctype eps) const
     {
         const auto segment = centerSegment();
@@ -147,17 +160,20 @@ public:
         return Vector(proj, p).length() <= radius();
     }
 
-    //! Returns true if a point lies inside the cylinder (default tolerance)
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point lies within the cylinder.
+     * \param p The point to be checked
+     * \note This overload uses a default epsilon.
+     */
     bool contains(const Point& p) const
     { return contains( p, Precision<ctype>::confusion()*0.5*(radius() + height()) ); }
 
 private:
-    //! \todo TODO doc me
-    Disk makeTopDisk_(const Disk& bottom)
+    //! Creates the top disk for the given bottom and height
+    Disk makeTopDisk_(const Disk& bottom, ctype height)
     {
         auto n = Vector(bottom.normal());
-        n *= height_;
+        n *= height;
 
         auto topCenter = bottom.center();
         topCenter += n;
@@ -176,4 +192,4 @@ private:
 
 } // end namespace Frackit
 
-#endif // FRACKIT_CYLINDER_HH
+#endif // FRACKIT_GEOMETRY_CYLINDER_HH

@@ -165,8 +165,8 @@ public:
     template<class Geo1, class Geo2>
     bool evaluate(const Geo1& geo1, const Geo2& geo2)
     {
-        static constexpr int dim = DimensionalityTraits<Geo1>::geomDim;
-        static_assert(dim == DimensionalityTraits<Geo2>::geomDim,
+        static constexpr int dim = DimensionalityTraits<Geo1>::geometryDimension();
+        static_assert(dim == DimensionalityTraits<Geo2>::geometryDimension(),
                       "We expect entities to be of same dimension");
 
         const bool checkIs = useMinIsMagnitude_ || useMinIsAngle_ || useMinIsDistance_;

@@ -81,6 +81,10 @@ ctype computeDistance(const TopoDS_Shape& shape1,
  * \param deflection The epsilon used in the BrepExtrema command
  * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
  * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ * \note This overload fails if the provided geometry types do not export
+ *       the type "ctype" as the promoted type, i.e. the call to Impl::PCT<,>
+ *       requires that. Overloads for one of the geometries being a class of
+ *       the TopoDS package are provided below.
  */
 template<class Geom1, class Geom2>
 Impl::PCT<Geom1, Geom2>
@@ -89,7 +93,13 @@ computeDistance(const Geom1& geo1,
                 Impl::PCT<Geom1, Geom2> deflection = Precision<Impl::PCT<Geom1, Geom2>>::confusion(),
                 Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                 Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
-{ return computeDistance(OCCUtilities::getShape(geo1), OCCUtilities::getShape(geo2)); }
+{
+    return computeDistance(OCCUtilities::getShape(geo1),
+                           OCCUtilities::getShape(geo2),
+                           deflection,
+                           extFlag,
+                           extAlgo);
+}
 
 /*!
  * \brief Overload for one of the geometries being a shape object.
@@ -106,7 +116,7 @@ computeDistance(const TopoDS_Shape& shape,
                 typename Geom::ctype deflection = Precision<typename Geom::ctype>::confusion(),
                 Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                 Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
-{ return computeDistance(shape, OCCUtilities::getShape(geo)); }
+{ return computeDistance(shape, OCCUtilities::getShape(geo), deflection, extFlag, extAlgo); }
 
 /*!
  * \brief Overload for one of the geometries being a shape object.
@@ -123,10 +133,12 @@ computeDistance(const Geom& geo,
                 typename Geom::ctype deflection = Precision<typename Geom::ctype>::confusion(),
                 Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                 Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
-{ return computeDistance(OCCUtilities::getShape(geo), shape); }
+{ return computeDistance(OCCUtilities::getShape(geo), shape, deflection, extFlag, extAlgo); }
 
 /*!
  * \brief Returns the euclidian distance between two points.
+ * \param p1 The first point
+ * \param p2 The second point
  */
 template<class ctype1, class ctype2, int worldDim>
 PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p1,
@@ -135,6 +147,8 @@ PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p1,
 
 /*!
  * \brief Returns the euclidian distance between a point and a line.
+ * \param p The point
+ * \param line The line
  */
 template<class ctype1, class ctype2, int worldDim>
 PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p,
@@ -143,6 +157,8 @@ PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p,
 
 /*!
  * \brief Returns the euclidian distance between a line and a point.
+ * \param line The line
+ * \param p The point
  */
 template<class ctype1, class ctype2, int worldDim>
 PromotedType<ctype1, ctype2> computeDistance(const Line<ctype1, worldDim>& line,
@@ -150,7 +166,9 @@ PromotedType<ctype1, ctype2> computeDistance(const Line<ctype1, worldDim>& line,
 { return computeDistance(p, line); }
 
 /*!
- * \brief Returns the euclidian distance between a point and a segmennt.
+ * \brief Returns the euclidian distance between a point and a segment.
+ * \param p The point
+ * \param seg The segment
  */
 template<class ctype1, class ctype2, int worldDim>
 PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p,
@@ -171,6 +189,8 @@ PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p,
 
 /*!
  * \brief Returns the euclidian distance between a segment and a point.
+ * \param seg The segment
+ * \param p The point
  */
 template<class ctype1, class ctype2, int worldDim>
 PromotedType<ctype1, ctype2> computeDistance(const Segment<ctype1, worldDim>& seg,

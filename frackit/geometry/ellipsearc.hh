@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class that implements ellipse arcs in n-dimensional space.
  */
 #ifndef FRACKIT_ELLIPSE_ARC_HH
 #define FRACKIT_ELLIPSE_ARC_HH
@@ -31,13 +31,17 @@
 namespace Frackit {
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements ellipse arcs in a
+ *        space with the dimension worldDim.
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the space
  */
 template<class CT, int worldDim>
 class EllipseArc;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements ellipse arcs in 3 space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class EllipseArc<CT, /*worldDim=*/3>
@@ -58,7 +62,10 @@ public:
     using Ellipse = ParentType;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor.
+     * \param ellipse The supporting ellipse.
+     * \param source The source point on the ellipse.
+     * \param target The target point on the ellipse.
      * \note if source and target points are the same
      *       (within the precision), we create a full
      *       ellipse instead of zero-length arc.
@@ -89,16 +96,16 @@ public:
         }
     }
 
-    //! \todo TODO doc me.
+    //! Return the name of this geometry
     static std::string name() { return "EllipseArc"; }
 
-    //! \todo TODO doc me.
+    //! Return the source point of the arc
     const Point& source() const { return source_; }
-    //! \todo TODO doc me.
+    //! Return the target point of the arc
     const Point& target() const { return target_; }
-    //! \todo TODO doc me.
+    //! Return the angle of the source point in the ellipse-local coordinate system
     const ctype sourceAngleOnEllipse() const { return sourceAngle_; }
-    //! \todo TODO doc me.
+    //! Return the angle of the target point in the ellipse-local coordinate system
     const ctype targetAngleOnEllipse() const { return targetAngle_; }
 
     //! Returns true if the arc describes a full ellipse
@@ -108,8 +115,14 @@ public:
     const Ellipse& supportingEllipse() const
     {  return static_cast<const Ellipse&>(*this); }
 
-    //! Returns true if a point is on the arc
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point is on the ellipse arc
+     * \param p The point to be checked
+     * \param eps The tolerance to be used
+     * \param checkIfOnEllipse Flag that can be set to false in case
+     *                        it is known that the point is on the ellipse.
+     * \note An angular epsilon value should be chosen
+     */
     bool contains(const Point& p, ctype eps, bool checkIfOnEllipse = true) const
     {
         if (checkIfOnEllipse)
@@ -123,8 +136,13 @@ public:
             return angle >= sourceAngle_ - eps && angle <= targetAngle_ + eps;
     }
 
-    //! Returns true if a point is on the arc
-    //! \todo note about choice of eps (ANGULAR EPS HERE)
+    /*!
+     * \brief Returns true if a point is on the ellipse arc
+     * \param p The point to be checked
+     * \param checkIfOnEllipse Flag that can be set to false in case
+     *                        it is known that the point is on the ellipse.
+     * \note This overload selects a default epsilon
+     */
     bool contains(const Point& p, bool checkIfOnEllipse = true) const
     { return contains(p, Precision<ctype>::angular(), checkIfOnEllipse); }
 

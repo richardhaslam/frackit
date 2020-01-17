@@ -18,10 +18,10 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Classes that implement ellipses in n-dimensional space.
  */
-#ifndef FRACKIT_ELLIPSE_HH
-#define FRACKIT_ELLIPSE_HH
+#ifndef FRACKIT_GEOMETRY_ELLIPSE_HH
+#define FRACKIT_GEOMETRY_ELLIPSE_HH
 
 #include <cmath>
 
@@ -31,13 +31,17 @@
 
 namespace Frackit {
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements an ellipse in a
+ *        space with the dimension worldDim.
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the space
  */
 template<class CT, int worldDim>
 class Ellipse;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements an ellipse in 3d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class Ellipse<CT, /*worldDim=*/3>
@@ -63,7 +67,16 @@ public:
     //! \todo TODO doc me.
     static std::string name() { return "Ellipse"; }
 
-    //! Returns true if a point is on the ellipse
+    /*!
+     * \brief Returns true if a point is on the ellipse
+     * \param p The point to be checked
+     * \param eps The tolerance to be used
+     * \param checkIfOnPlane Flag that can be set to false in case
+     *                       it is known that the point is in-plane.
+     * \note It is recommended to use epsilon values independent of
+     *       the size of the disk here, as the coordinates are normalized
+     *       by the minor & major axis lengths.
+     */
     bool contains(const Point& p, ctype eps, bool checkIfOnPlane = true) const
     {
         if (checkIfOnPlane)
@@ -81,21 +94,37 @@ public:
         return abs(x*x/(a*a) + y*y/(b*b) - 1.0) < eps;
     }
 
-    //! Returns true if a point is on the ellipse (default epsilon)
+    /*!
+     * \brief Returns true if a point is on the ellipse
+     * \param p The point to be checked
+     * \param checkIfOnPlane Flag that can be set to false in case
+     *                       it is known that the point is in-plane.
+     * \note This overload uses a default epsilon.
+     */
     bool contains(const Point& p, bool checkIfOnPlane = true) const
-    { return contains(p, this->majorAxisLength()*Precision<ctype>::confusion(), checkIfOnPlane); }
+    { return contains(p, Precision<ctype>::confusion(), checkIfOnPlane); }
 
-    //! Returns the point on the arc for the given parameter
-    //! \note It has to be 0.0 <= param <= 1.0, where 0.0
-    //!       corresponds to the source and 1.0 to the target.
+    /*!
+     * \brief Returns the point on the ellipse for the given parameter
+     * \param param The parameter (0.0 <= param <= 1.0)
+     * \note param = 0.0 corresponds to the point on the ellipse
+     *       for an angle of 0 w.r.t. the ellipse-local coordinate
+     *       system consisting of the major and minor axes.
+     *       Similarly, param = 1.0 corresponds to 2*Pi.
+     */
     Point getPoint(ctype param) const
     {
         assert(param >= 0.0 && param <= 1.0);
         return getPointFromAngle(2.0*M_PI*param);
     }
 
-    //! Returns the point on the ellipse for a given angle
-    //! \todo mention positive angle requirement
+    /*!
+     * \brief Returns the point on the ellipse for a given angle
+     * \param angle The angle in radians
+     * \note The angle is to be understood with respect to the
+     *       ellipse local coordinate system consisting of the
+     *       major and minor axes.
+     */
     Point getPointFromAngle(ctype angle) const
     {
         assert(!std::signbit(angle));
@@ -164,4 +193,4 @@ public:
 
 } // end namespace Frackit
 
-#endif // FRACKIT_ELLIPSE_HH
+#endif // FRACKIT_GEOMETRY_ELLIPSE_HH

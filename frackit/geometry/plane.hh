@@ -18,10 +18,10 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Classes that implement planes in n-dimensional space.
  */
-#ifndef FRACKIT_PLANE_HH
-#define FRACKIT_PLANE_HH
+#ifndef FRACKIT_GEOMETRY_PLANE_HH
+#define FRACKIT_GEOMETRY_PLANE_HH
 
 #include <cassert>
 
@@ -36,13 +36,17 @@
 namespace Frackit {
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements a plane
+ *        in a coordinate space with dimension wd.
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the coordinate space
  */
 template<class CT, int wd>
 class Plane;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Implementation of a plane in 3d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class Plane<CT, 3>
@@ -64,7 +68,9 @@ public:
     using Segment = Frackit::Segment<ctype, 3>;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor
+     * \param p A point on the plane
+     * \param normal The normal of the plane
      */
     template<class C>
     Plane(const Frackit::Point<C, 3>& p,
@@ -77,7 +83,10 @@ public:
     }
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor from three points.
+     * \param p1 The first point on the plane
+     * \param p2 The second point on the plane
+     * \param p3 The third point on the plane
      */
     Plane(const Point& p1, const Point& p2, const Point& p3)
     : supportPoint_(p1)
@@ -88,7 +97,12 @@ public:
     }
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor specifying the
+     *        basis vectors of the plane.
+     * \param p A point on the plane
+     * \param base1 First in-plane basis unit vector
+     * \param base2 Second in-plane basis unit vector
+     * \param normal The unit vector normal to the plane
      */
     Plane(const Point& p,
           const Direction& base1,
@@ -103,15 +117,15 @@ public:
         assert( std::abs(Vector(base1)*Vector(normal)) < 1e-6 );
     }
 
-    //! \todo TODO doc me.
+    //! Return the name of this geometry
     static std::string name() { return "Plane"; }
-    //! \todo TODO doc me.
+    //! Return the supporting point of the plane
     const Point& supportingPoint() const { return supportPoint_; }
-    //! \todo TODO doc me.
+    //! Return the unit normal vector
     const Direction& normal() const { return normal_; }
-    //! \todo TODO doc me.
+    //! Return the first in-plane basis vector
     const Direction& base1() const { return base1_; }
-    //! \todo TODO doc me.
+    //! Return the second in-plane basis vector
     const Direction& base2() const { return base2_; }
 
     //! Returns the projection of a point p onto the plane
@@ -143,8 +157,11 @@ public:
                        projection(s.target()));
     }
 
-    //! Returns true if a point lies on the plane
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point is on the plane
+     * \param p The point to be checked
+     * \param eps The tolerance to be used
+     */
     bool contains(const Point& p, ctype eps = Precision<ctype>::confusion()) const
     {
         auto d = Vector(supportPoint_, p);
@@ -165,4 +182,4 @@ private:
 
 } // end namespace Frackit
 
-#endif // FRACKIT_PLANE_HH
+#endif // FRACKIT_GEOMETRY_PLANE_HH

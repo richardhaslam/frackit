@@ -44,18 +44,20 @@ namespace Frackit {
 template<class Geom>
 struct DimensionalityTraits
 {
-    static constexpr int geomDim = Geom::myDimension();
-    static constexpr int worldDim = Geom::worldDimension();
+    static constexpr int geometryDimension() { return Geom::myDimension(); }
+    static constexpr int worldDimension() { return Geom::worldDimension(); }
 };
 
 /*!
  * \brief Specialization for Brep shapes.
+ * \note The shape base class TopoDS_Shape cannot be associated
+ *       with a geometry dimension. Therefore, this traits specialization
+ *       does not implement the function geometryDimension(). Thus, if
+ *       called this will provoke a compiler error.
  */
 template<>
 struct DimensionalityTraits<TopoDS_Shape>
-{
-    static constexpr int worldDim = 3;
-};
+{ static constexpr int worldDimension() { return 3; } };
 
 /*!
  * \brief Specialization for Brep vertices.
@@ -63,9 +65,7 @@ struct DimensionalityTraits<TopoDS_Shape>
 template<>
 struct DimensionalityTraits<TopoDS_Vertex>
 : public DimensionalityTraits<TopoDS_Shape>
-{
-    static constexpr int geomDim = 0;
-};
+{ static constexpr int geometryDimension() { return 0; } };
 
 /*!
  * \brief Specialization for Brep edges.
@@ -73,9 +73,7 @@ struct DimensionalityTraits<TopoDS_Vertex>
 template<>
 struct DimensionalityTraits<TopoDS_Edge>
 : public DimensionalityTraits<TopoDS_Shape>
-{
-    static constexpr int geomDim = 1;
-};
+{ static constexpr int geometryDimension() { return 1; } };
 
 /*!
  * \brief Specialization for Brep wires.
@@ -83,9 +81,7 @@ struct DimensionalityTraits<TopoDS_Edge>
 template<>
 struct DimensionalityTraits<TopoDS_Wire>
 : public DimensionalityTraits<TopoDS_Shape>
-{
-    static constexpr int geomDim = 1;
-};
+{ static constexpr int geometryDimension() { return 1; } };
 
 /*!
  * \brief Specialization for Brep faces.
@@ -93,9 +89,7 @@ struct DimensionalityTraits<TopoDS_Wire>
 template<>
 struct DimensionalityTraits<TopoDS_Face>
 : public DimensionalityTraits<TopoDS_Shape>
-{
-    static constexpr int geomDim = 2;
-};
+{ static constexpr int geometryDimension() { return 2; } };
 
 /*!
  * \brief Specialization for Brep shells.
@@ -103,9 +97,7 @@ struct DimensionalityTraits<TopoDS_Face>
 template<>
 struct DimensionalityTraits<TopoDS_Shell>
 : public DimensionalityTraits<TopoDS_Shape>
-{
-    static constexpr int geomDim = 2;
-};
+{ static constexpr int geometryDimension() { return 2; } };
 
 /*!
  * \brief Specialization for Brep solids.
@@ -113,16 +105,14 @@ struct DimensionalityTraits<TopoDS_Shell>
 template<>
 struct DimensionalityTraits<TopoDS_Solid>
 : public DimensionalityTraits<TopoDS_Shape>
-{
-    static constexpr int geomDim = 3;
-};
+{ static constexpr int geometryDimension() { return 3; } };
 
 /*!
  * \brief Free function to return the dimension of a geometry.
  */
 template<class Geom>
 constexpr int getDimension(const Geom& g)
-{ return DimensionalityTraits<Geom>::geomDim; }
+{ return DimensionalityTraits<Geom>::geometryDimension(); }
 
 /*!
  * \brief Free function to return the dimension of the space
@@ -130,7 +120,7 @@ constexpr int getDimension(const Geom& g)
  */
 template<class Geom>
 constexpr int getWorldDimension(const Geom& g)
-{ return DimensionalityTraits<Geom>::worldDim; }
+{ return DimensionalityTraits<Geom>::worldDimension(); }
 
 } // end namespace Frackit
 

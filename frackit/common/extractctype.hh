@@ -47,6 +47,8 @@ struct CoordinateTypeTraits
 
 /*!
  * \brief Specialization for Brep shapes.
+ * \note OpenCascade defines the alias Standard_Real
+ *       which, in the default configuration, is double.
  */
 template<>
 struct CoordinateTypeTraits<TopoDS_Shape>

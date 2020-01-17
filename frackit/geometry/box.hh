@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class that implements axis-aligned boxes in 3d space.
  */
 #ifndef FRACKIT_GEOMETRY_BOX_HH
 #define FRACKIT_GEOMETRY_BOX_HH
@@ -33,7 +33,8 @@
 namespace Frackit {
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements axis-aligned boxes in 3d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class Box
@@ -53,7 +54,7 @@ public:
     using Segment = Frackit::Segment<ctype, 3>;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Construct a box from the minimum/maximum coordinates.
      */
     Box(ctype xmin, ctype ymin, ctype zmin,
         ctype xmax, ctype ymax, ctype zmax)
@@ -66,22 +67,30 @@ public:
         if (zMax_ < zMin_) throw std::runtime_error( std::string("Could not construct box: zmax < zMin!") );
     }
 
-    //! \todo TODO doc me.
+    /*!
+     * \brief Construct a box from the minimum/maximum corner points.
+     */
+    Box(const Point& pMin, const Point& pMax)
+    : Box(pMin.x(), pMin.y(), pMin.z(),
+          pMax.x(), pMax.y(), pMax.z())
+    {}
+
+    //! Return the name of this geometry.
     static std::string name() { return "Box"; }
-    //! \todo TODO doc me.
+    //! Return the x-coordinate of the first corner.
     ctype xMin() const { return xMin_; }
-    //! \todo TODO doc me.
+    //! Return the y-coordinate of the first corner.
     ctype yMin() const { return yMin_; }
-    //! \todo TODO doc me.
+    //! Return the z-coordinate of the first corner.
     ctype zMin() const { return zMin_; }
-    //! \todo TODO doc me.
+    //! Return the x-coordinate of the last corner.
     ctype xMax() const { return xMax_; }
-    //! \todo TODO doc me.
+    //! Return the y-coordinate of the last corner.
     ctype yMax() const { return yMax_; }
-    //! \todo TODO doc me.
+    //! Return the z-coordinate of the last corner.
     ctype zMax() const { return zMax_; }
 
-    //! \todo TODO doc me.
+    //! Return the volume of the box
     ctype volume() const
     {
         return (xMax() - xMin())
@@ -89,11 +98,11 @@ public:
                *(zMax() - zMin());
     }
 
-    //! \todo TODO doc me.
+    //! Return the number of corners
     static constexpr std::size_t numCorners()
     { return 8; }
 
-    //! \todo TODO doc me.
+    //! Return the corner for the given index
     Point corner(unsigned int cornerIdx) const
     {
         assert(cornerIdx < numCorners());
@@ -111,11 +120,11 @@ public:
         }
     }
 
-    //! \todo TODO doc me.
+    //! Return the number of edges.
     static constexpr std::size_t numEdges()
     { return 12; }
 
-    //! \todo TODO doc me.
+    //! Return the edge for the given index
     Segment edge(unsigned int edgeIdx) const
     {
         assert(edgeIdx < numEdges());
@@ -137,11 +146,11 @@ public:
         }
     }
 
-    //! \todo TODO doc me.
+    //! Return the number of faces
     static constexpr std::size_t numFaces()
     { return 6; }
 
-    //! \todo TODO doc me.
+    //! Return the face for the given index
     Quadrilateral face(unsigned int faceIdx) const
     {
         assert(faceIdx < numFaces());
@@ -157,7 +166,11 @@ public:
         }
     }
 
-    //! Returns true if a point lies within the box
+    /*!
+     * \brief Returns true if a point lies within the box.
+     * \param p The point to be checked
+     * \param eps The epsilon (tolerance) value to be used
+     */
     bool contains(const Point& p, ctype eps) const
     {
         return p.x() > xMin() - eps && p.x() < xMax() + eps
@@ -165,7 +178,11 @@ public:
                && p.z() > zMin() - eps && p.z() < zMax() + eps;
     }
 
-    //! Returns true if a point lies within the box
+    /*!
+     * \brief Returns true if a point lies within the box.
+     * \param p The point to be checked
+     * \note This overload uses a default epsilon.
+     */
     bool contains(const Point& p) const
     {
         auto eps = Precision<ctype>::confusion();

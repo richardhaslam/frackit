@@ -18,7 +18,8 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class that describes the lateral
+ *        surface of a cylinder in 3d space.
  */
 #ifndef FRACKIT_CYLINDER_SURFACE_HH
 #define FRACKIT_CYLINDER_SURFACE_HH
@@ -41,7 +42,9 @@ namespace Frackit {
 template<class CT> class Cylinder;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that describes the lateral
+ *        surface of a cylinder in 3d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class CylinderSurface
@@ -65,7 +68,9 @@ public:
     using Plane = Frackit::Plane<ctype, 3>;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor.
+     * \param radius The cylinder radius
+     * \param height The cylinder height.
      */
     CylinderSurface(ctype radius, ctype height)
     : height_(height)
@@ -74,40 +79,58 @@ public:
     {}
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor.
+     * \param bottom The circle describing the
+     *               rim of the bottom boundary
+     * \param height The cylinder height.
      */
     CylinderSurface(const Circle& bottom, ctype height)
     : height_(height)
-    , top_(makeTopCircle_(bottom))
+    , top_(makeTopCircle_(bottom, height))
     , bottom_(bottom)
     {}
 
-    //! \todo TODO doc me.
+    //! Return the name of this geometry.
     static std::string name() { return "CylindricalSurface"; }
 
-    //! \todo TODO doc me.
+    //! Return the first basis vector (horizontal axis of the cylinder)
     const Direction& base1() const { return bottom_.base1(); }
-    //! \todo TODO doc me.
+    //! Return the second basis vector (horizontal axis of the cylinder)
     const Direction& base2() const { return bottom_.base2(); }
-    //! \todo TODO doc me.
+    //! Return the third basis vector (vertical axis of the cylinder)
+    const Direction& base3() const { return direction(); }
+    //! Return the vertical axis of the cylinder
     const Direction& direction() const { return bottom_.normal(); }
 
-    //! \todo TODO doc me.
+    //! Return the height of the cylinder
     ctype height() const { return height_; }
-    //! \todo TODO doc me.
+    //! Return the radius of the cylinder
     ctype radius() const { return bottom_.radius(); }
 
-    //! \todo TODO doc me.
+    //! Return the circle describing the top boundary of this surface
     const Circle& upperBoundingCircle() const { return top_; }
-    //! \todo TODO doc me.
+    //! Return the circle describing the bottom boundary of this surface
     const Circle& lowerBoundingCircle() const { return bottom_; }
-    //! \todo TODO doc me.
-    Segment centerSegment() const { return Segment(bottom_.center(), top_.center()); }
-    //! \todo TODO doc me.
-    Cylinder cylinder() const { return Cylinder(bottom_, height_); }
 
-    //! \todo TODO doc me
-    //! \todo note on tangent plane on top/bottom
+    //! Return the segment describing the center of the cylinder
+    Segment centerSegment() const
+    { return Segment(bottom_.center(), top_.center()); }
+
+    //! Return the cylinder that we are is the lateral surface of
+    Cylinder cylinder() const
+    { return Cylinder(bottom_, height_); }
+
+    /*!
+     * \brief Returns the plane that describes the
+     *        tangent in a point p.
+     * \param p The point at which to compute the tangent plane.
+     * \note This function does not check if the point lies on
+     *       the cylinder surface.
+     * \note If the point lies on the upper or lower rim of the
+     *       cylinder surface, the tangent plane is not uniquely
+     *       defined. Here, we always return the tangent of the
+     *       infinite cylinder surface.
+     */
     Plane getTangentPlane(const Point& p) const
     {
         assert(contains(p, Precision<ctype>::confusion()*0.5*(radius() + height())));
@@ -115,8 +138,11 @@ public:
         return Plane(p, n);
     }
 
-    //! Returns true if a point lies on the surface (given tolerance)
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point lies on the surface.
+     * \param p The point to be checked
+     * \param eps The epsilon (tolerance) value to be used
+     */
     bool contains(const Point& p, ctype eps) const
     {
         const auto segment = centerSegment();
@@ -129,17 +155,20 @@ public:
         return abs(Vector(proj, p).length() - radius()) < eps;
     }
 
-    //! Returns true if a point lies on the surface (default tolerance)
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point lies on the surface.
+     * \param p The point to be checked
+     * \note This overload uses a default epsilon.
+     */
     bool contains(const Point& p) const
     { return contains( p, Precision<ctype>::confusion()*0.5*(radius() + height()) ); }
 
 private:
-    //! \todo TODO doc me
-    Circle makeTopCircle_(const Circle& bottom)
+    //! Creates the top circle for the given bottom and height
+    Circle makeTopCircle_(const Circle& bottom, ctype height)
     {
         auto n = Vector(bottom.normal());
-        n *= height_;
+        n *= height;
 
         auto topCenter = bottom.center();
         topCenter += n;

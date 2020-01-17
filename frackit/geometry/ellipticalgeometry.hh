@@ -41,13 +41,18 @@ template<class CT, int wd> class Vector;
 template<class CT, int wd> class Plane;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Base class for elliptical geometries
+ *        in a space with dimension worldDim.
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the space
  */
 template<class CT, int worldDim>
 class EllipticalGeometry;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Base class for ellipticcal geometries
+ *        in three-dimensional space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class EllipticalGeometry<CT, /*worldDim=*/3>
@@ -66,7 +71,12 @@ public:
     EllipticalGeometry() = default;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor.
+     * \param center The center of the ellipse
+     * \param majAxis The major axis
+     * \param minAxis The minor axis
+     * \param majAxisLength The major axis length
+     * \param minAxisLength The minor axis length
      */
     EllipticalGeometry(const Point& center,
                        const Direction& majAxis,
@@ -84,22 +94,22 @@ public:
         normal_ = Direction( crossProduct(Vector(majAxis), Vector(minAxis)) );
     }
 
-    //! \todo TODO doc me.
+    //! Return the center of the ellipse
     const Point& center() const { return center_; }
 
-    //! \todo TODO doc me.
+    //! Return the major axis
     const Direction& majorAxis() const { return majorAxis_; }
-    //! \todo TODO doc me.
+    //! Return the minor axis
     const Direction& minorAxis() const { return minorAxis_; }
-    //! \todo TODO doc me.
+    //! Return the normal vector of the supporting plane
     const Direction& normal() const { return normal_; }
 
-    //! \todo TODO doc me.
+    //! Return the major axis length
     ctype majorAxisLength() const { return majorAxisLength_; }
-    //! \todo TODO doc me.
+    //! Return the minor axis length
     ctype minorAxisLength() const { return minorAxisLength_; }
 
-    //! \todo TODO doc me.
+    //! Return the plane the ellipse is embedded in
     Plane supportingPlane() const
     {
         return Plane(center(),

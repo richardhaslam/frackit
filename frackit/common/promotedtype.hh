@@ -35,7 +35,7 @@ namespace Frackit {
 template<class T1, class T2>
 struct PromotionTraits
 {
-  typedef decltype(std::declval<T1>()+std::declval<T2>()) PromotedType;
+    using PromotedType = decltype(std::declval<T1>()+std::declval<T2>());
 };
 
 // Specialization for the case of two equal types

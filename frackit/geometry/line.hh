@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Classes that implements lines in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_LINE_HH
 #define FRACKIT_GEOMETRY_LINE_HH
@@ -36,7 +36,10 @@ template<class CT, int wd> class Point;
 template<class CT, int wd> class Direction;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements a line in
+ *        a space with dimension wd.
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the coordinate space
  */
 template<class CT, int wd>
 class Line
@@ -56,18 +59,20 @@ public:
     using Direction = typename Frackit::Direction<ctype, wd>;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor.
+     * \param p A point on the line
+     * \param dir The direction of the line
      */
     Line(const Point& p, const Direction& dir)
     : supportPoint_(p)
     , direction_(dir)
     {}
 
-    //! \todo TODO doc me.
+    //! Return the name of this geometry
     static std::string name() { return "Line"; }
-    //! \todo TODO doc me.
+    //! Return the supporting point of the line
     const Point& supportingPoint() const { return supportPoint_; }
-    //! \todo TODO doc me.
+    //! Return the direction of the line
     const Direction& direction() const { return direction_; }
 
     //! Returns the projection of p onto the line
@@ -82,11 +87,19 @@ public:
         return result;
     }
 
-    //! Returns true if a point lies on the line
+    /*!
+     * \brief Returns true if a point is on the line
+     * \param p The point to be checked
+     * \param eps The tolerance to be used (given in unit of a length)
+     */
     bool contains(const Point& p, ctype eps) const
     { return Vector(p, projection(p)).squaredLength() < eps*eps; }
 
-    //! Returns true if a point lies on the line (default eps)
+    /*!
+     * \brief Returns true if a point is on the line
+     * \param p The point to be checked
+     * \note This overload uses a default epsilon (tolerance)
+     */
     bool contains(const Point& p) const
     { return contains(p, Precision<ctype>::confusion()); }
 

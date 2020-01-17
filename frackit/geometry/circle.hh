@@ -18,7 +18,8 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Class describing a circle.
+ * \brief Classes describing circles in n-dimensional space.
+ * \note For the moment, only circles in three-dimensional space are implemented.
  */
 #ifndef FRACKIT_CIRCLE_HH
 #define FRACKIT_CIRCLE_HH
@@ -43,6 +44,7 @@ class Circle;
 
 /*!
  * \brief Class describing a circle in 3d space.
+ * \tparam ctype The type used for coordinates
  */
 template<class ctype>
 class Circle<ctype, /*worldDim=*/3>
@@ -61,7 +63,10 @@ public:
     using typename ParentType::Direction;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief The constructor.
+     * \param center The center point of the circle
+     * \param normal The normal direction of the plane
+     *               the circle is embedded in
      */
     Circle(const Point& center,
            const Direction& normal,
@@ -69,18 +74,21 @@ public:
     : ParentType(makeBaseGeometry_(center, normal, radius))
     {}
 
-    //! \todo TODO doc me.
+    //! Return the name of this geometry
     static std::string name() { return "Circle"; }
 
-    //! \todo TODO doc me.
+    //! Return the basis vectors of the circle
     const Direction& base1() const { return this->majorAxis(); }
     const Direction& base2() const { return this->minorAxis(); }
 
-    //! \todo TODO doc me.
+    //! Return the radius of the circle
     ctype radius() const { return this->majorAxisLength(); }
 
-    //! \todo TODO doc me.
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point lies on the circle.
+     * \param p The point to be checked
+     * \param eps The epsilon (tolerance) value to be used
+     */
     bool contains(const Point& p, ctype eps) const
     {
         if (!this->supportingPlane().contains(p, eps))
@@ -90,8 +98,11 @@ public:
         return abs(Vector(p, this->center()).length() - radius()) < eps;
     }
 
-    //! \todo TODO doc me.
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point lies on the circle.
+     * \param p The point to be checked
+     * \note This overload uses a default epsilon.
+     */
     bool contains(const Point& p) const
     { return contains(p, Precision<ctype>::confusion()*radius()); }
 
