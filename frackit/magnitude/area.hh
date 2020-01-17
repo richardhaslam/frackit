@@ -19,7 +19,7 @@
 /*!
  * \file
  * \brief Contains functionality for computing the
- *        area of two-dimensional geometries.
+ *        areas of two-dimensional geometries.
  */
 #ifndef FRACKIT_MAGNITUDE_AREA_HH
 #define FRACKIT_MAGNITUDE_AREA_HH
@@ -31,23 +31,26 @@
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
 
-#include <frackit/geometry/disk.hh>
-#include <frackit/geometry/cylindersurface.hh>
 #include <frackit/precision/precision.hh>
 
 namespace Frackit {
 
-//! \todo TODO doc me.
+/*!
+ * \brief Returns the area of an internal geometry
+ *        that has an area() function available.
+ */
 template<class Geometry>
 typename Geometry::ctype computeArea(const Geometry& geometry)
 { return geometry.area(); }
 
-//! \todo TODO doc me.
-template<class ctype>
-ctype computeArea(const CylinderSurface<ctype>& cylSurface)
-{ return 2.0*M_PI*cylSurface.radius()*cylSurface.height(); }
-
-//! \todo TODO doc me.
+/*!
+ * \brief Returns the area of a TopoDS_Face.
+ * \param face The face
+ * \param eps Tolerance value to be used
+ * \param loc A location; defaults to the origin, however,
+ *            higher precision is achieved if a point close
+ *            to the actual face is chosen.
+ */
 template<class ctype = double>
 ctype computeArea(const TopoDS_Face& face,
                   ctype eps = Precision<ctype>::confusion(),

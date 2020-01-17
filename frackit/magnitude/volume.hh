@@ -31,11 +31,18 @@
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
 
-#include <frackit/geometry/cylinder.hh>
+#include <frackit/precision/precision.hh>
 
 namespace Frackit {
 
-//! \todo TODO doc me.
+/*!
+ * \brief Returns the volume of a TopoDS_Solid.
+ * \param solid The solid
+ * \param eps Tolerance value to be used
+ * \param loc A location; defaults to the origin, however,
+ *            higher precision is achieved if a point close
+ *            to the actual solid is chosen.
+ */
 template<class ctype = double>
 ctype computeVolume(const TopoDS_Solid& solid,
                     ctype eps = Precision<ctype>::confusion(),
