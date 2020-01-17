@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Classes that implement quadrilaterals in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_QUADRILATERAL_HH
 #define FRACKIT_GEOMETRY_QUADRILATERAL_HH
@@ -39,13 +39,21 @@
 namespace Frackit {
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements a quadrilateral
+ *        in a coordinate space with the dimension worldDim.
+ * \tparam CT The type used for coordinates
+ * \tparam worldDim The dimension of the coordinate space
  */
 template<class CT, int worldDim>
 class Quadrilateral;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Implementation of a quadrilateral in 3d space.
+ * \tparam CT The type used for coordinates
+ * \note This class describes planar quadrilaterals.
+ *       Curved quadrilaterals are not supported.
+ *       Upon construction it is checked if the provided
+ *       corners lie on a common plane.
  */
 template<class CT>
 class Quadrilateral<CT, 3>
@@ -101,21 +109,21 @@ public:
         area_ = Triangle(p0, p1, p3).area() + Triangle(p0, p3, p2).area();
     }
 
-    //! \todo TODO doc me.
+    //! Return the name of this geometry
     static std::string name() { return "Quadrilateral"; }
 
-    //! \todo TODO doc me.
+    //! Return the number of corners
     static constexpr std::size_t numCorners() { return 4; }
-    //! \todo TODO doc me.
+    //! Return the i-th corner
     const Point& corner(unsigned int i) const
     {
         assert(i < numCorners());
         return corners_[i];
     }
 
-    //! \todo TODO doc me.
+    //! Return the number of edges
     static constexpr std::size_t numEdges() { return 4; }
-    //! \todo TODO doc me.
+    //! Return the i-th edge
     Segment edge(unsigned int i) const
     {
         assert(i < numEdges());
@@ -129,12 +137,19 @@ public:
         }
     }
 
-    //! \todo TODO doc me.
+    //! Return the plane this quadrilateral is embedded in
     const Plane& supportingPlane() const { return supportPlane_; }
-    //! \todo TODO doc me.
+    //! Return the area of the quadrilateral
     ctype area() const { return area_; }
 
-    //! Returns true if a point lies on the quadrilateral
+    /*!
+     * \brief Returns true if a point is on the quadrilateral
+     * \param p The point to be checked
+     * \param eps The tolerance to be used
+     * \param checkIfOnPlane This can be set to false in case one
+     *                       knows that the point lies on the supporting
+     *                       plane in order to skip this check at this point.
+     */
     bool contains(const Point& p, ctype eps, bool checkIfOnPlane = true) const
     {
         if (checkIfOnPlane)
@@ -152,7 +167,14 @@ public:
         return abs(area() - otherArea) < eps*eps;
     }
 
-    //! Returns true if a point lies on the quadrilateral
+    /*!
+     * \brief Returns true if a point is on the quadrilateral
+     * \param p The point to be checked
+     * \param checkIfOnPlane This can be set to false in case one
+     *                       knows that the point lies on the supporting
+     *                       plane in order to skip this check at this point.
+     * \note This overload uses a default epsilon
+     */
     bool contains(const Point& p,  bool checkIfOnPlane = true) const
     {
         auto eps = Precision<ctype>::confusion();
