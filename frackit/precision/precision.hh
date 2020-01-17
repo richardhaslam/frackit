@@ -23,7 +23,7 @@
 #ifndef FRACKIT_PRECISION_HH
 #define FRACKIT_PRECISION_HH
 
-// standard tolerances for floating point comparison
+// Standard tolerances for floating point comparison in OpenCascade
 #include <Precision.hxx>
 
 namespace Frackit {
