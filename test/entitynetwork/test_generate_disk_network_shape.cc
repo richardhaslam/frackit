@@ -53,10 +53,9 @@ int main(int argc, char** argv)
     using ctype = double;
     using Disk = Disk<ctype>;
     using DiskSampler = GeometrySampler<Disk>;
-    using PointSampler = GeometryPointSampler< Box<ctype> >;
 
     // sample points within bounding box of domain
-    PointSampler pointSampler(OCCUtilities::getBoundingBox(domain));
+    auto pointSampler = makeUniformPointSampler(OCCUtilities::getBoundingBox(domain));
 
     // sampler for disks of orientation 1
     DiskSampler diskSampler_1(std::normal_distribution<ctype>(40.0, 6.5),

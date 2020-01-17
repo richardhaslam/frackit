@@ -21,11 +21,10 @@ int main()
     using namespace Frackit;
     using Cylinder = Cylinder<ctype>;
     using Disk = Disk<ctype>;
-    using CylPointSampler = GeometryPointSampler<Cylinder>;
     using DiskSampler = GeometrySampler<Disk>;
 
     Cylinder cylinder(0.5, 1.0);
-    CylPointSampler cylPointSampler(cylinder);
+    auto cylPointSampler = makeUniformPointSampler(cylinder);
     DiskSampler diskSampler(std::normal_distribution<ctype>(0.5, 0.05),
                             std::normal_distribution<ctype>(0.25, 0.025),
                             std::normal_distribution<ctype>(toRadians(45.0),toRadians(10.0)),
