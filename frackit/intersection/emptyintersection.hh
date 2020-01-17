@@ -48,6 +48,19 @@ struct EmptyIntersection
     using ctype = CT;
 };
 
+/*!
+ * \brief Traits class to identify empty intersections
+ * \tparam IsGeometry The geometry type of an intersection
+ */
+template<class IsGeometry>
+struct IsEmptyIntersection
+{ static constexpr bool value = false; };
+
+//! Specialization for the empty intersection class
+template<int wd>
+struct IsEmptyIntersection<EmptyIntersection<wd>>
+{ static constexpr bool value = true; };
+
 } // end namespace Frackit
 
 #endif // FRACKIT_EMPTY_INTERSECTION_HH
