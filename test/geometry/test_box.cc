@@ -19,7 +19,15 @@ int main()
         Box box(0.0, 0.0, 0.0, f, f, f);
         const auto eps = defaultEpsilon(box);
 
+        // also, test construction from corner points
+        Point pMin(0.0, 0.0, 0.0);
+        Point pMax(f,   f,   f  );
+        Box box2(pMin, pMax);
+
         using std::abs;
+        if ( abs(box.volume() - box2.volume()) > eps*eps*eps )
+            throw std::runtime_error(std::string("Construction from point led to different box"));
+
         if ( abs(box.volume() - f*f*f) > eps*eps*eps)
             throw std::runtime_error(std::string("Unexpected box volume"));
 
