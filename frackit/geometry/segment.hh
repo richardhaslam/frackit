@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class that describes a segment in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_SEGMENT_HH
 #define FRACKIT_GEOMETRY_SEGMENT_HH
@@ -39,7 +39,10 @@ template<class CT, int wd> class Direction;
 template<class CT, int wd> class Line;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that describes a segment in a
+ *        coordinate space of dimension wd.
+ * \tparam CT The type used for coordinates.
+ * \tparam wd The dimension of the coordinate space.
  */
 template<class CT, int wd>
 class Segment
@@ -63,18 +66,20 @@ public:
     Segment() = default;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Construct a segment from its corners.
+     * \param source The first corner of the segment
+     * \param target The second corner of the segment
      */
     Segment(const Point& source, const Point& target)
     : source_(source)
     , target_(target)
     {}
 
-    //! \todo TODO doc me.
+    //! Return the name of this geometry
     static std::string name() { return "Segment"; }
-    //! \todo TODO doc me.
+    //! Return the first corner of the segment
     const Point& source() const { return source_; }
-    //! \todo TODO doc me.
+    //! Return the second corner of the segment
     const Point& target() const { return target_; }
 
     //! Constructs the direction vector
@@ -85,8 +90,14 @@ public:
     Line supportingLine() const
     { return Line(source(), direction()); }
 
-    //! Returns true if a point lies on the segment
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point is on the quadrilateral
+     * \param p The point to be checked
+     * \param eps The tolerance to be used
+     * \param checkIfOnLine This can be set to false in case one
+     *                      knows that the point lies on the supporting
+     *                      line in order to skip this check at this point.
+     */
     bool contains(const Point& p, ctype eps, bool checkIfOnLine = true) const
     {
         const auto line = supportingLine();
@@ -111,8 +122,14 @@ public:
         return false;
     }
 
-    //! Returns true if a point lies on the segment
-    //! \todo note about choice of eps
+    /*!
+     * \brief Returns true if a point is on the quadrilateral
+     * \param p The point to be checked
+     * \param checkIfOnLine This can be set to false in case one
+     *                      knows that the point lies on the supporting
+     *                      line in order to skip this check at this point.
+     * \note This overload uses a default epsilon
+     */
     bool contains(const Point& p, bool checkIfOnLine = true) const
     {
         const auto length = Vector(source(), target()).length();
