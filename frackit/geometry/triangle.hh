@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief \todo TODO doc me.
+ * \brief Class that implements triangles in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_TRIANGLE_HH
 #define FRACKIT_GEOMETRY_TRIANGLE_HH
@@ -37,13 +37,17 @@
 namespace Frackit {
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements triangles
+ *        in a space of dimension worldDim
+ * \tparam CT The type used for coordinates
+ * \tparam worldDim The dimension of the coordinate space
  */
 template<class CT, int worldDim>
 class Triangle;
 
 /*!
- * \brief \todo TODO doc me.
+ * \brief Class that implements triangles in 3d space.
+ * \tparam CT The type used for coordinates
  */
 template<class CT>
 class Triangle<CT, 3>
@@ -65,7 +69,10 @@ public:
     using Plane = Frackit::Plane<ctype, 3>;
 
     /*!
-     * \brief \todo TODO doc me.
+     * \brief Constructor from the corners.
+     * \param p1 The first corner point
+     * \param p2 The second corner point
+     * \param p3 The third corner point
      */
     Triangle(const Point& p1,
              const Point& p2,
@@ -84,29 +91,29 @@ public:
         area_ = 0.5*normalVec.length();
     }
 
-    //! \todo TODO doc me.
+    //! Return the name of the geometry
     static std::string name() { return "Triangle"; }
-    //! \todo TODO doc me.
+    //! Return the triangle area
     ctype area() const { return area_; }
-    //! \todo TODO doc me.
+    //! Return center of the triangle
     const Point& center() const { return center_; }
-    //! \todo TODO doc me.
+    //! Return the unit normal vector
     const Direction& normal() const { return normal_; }
-    //! \todo TODO doc me.
+    //! Return the plane this quadrilateral is embedded in
     Plane supportingPlane() const { return Plane(corner(0), normal()); }
 
-    //! \todo TODO doc me.
+    //! Return the number of corners
     static constexpr std::size_t numCorners() { return 3; }
-    //! \todo TODO doc me.
+    //! Return the i-th corner
     const Point& corner(unsigned int i) const
     {
         assert(i < numCorners());
         return corners_[i];
     }
 
-    //! \todo TODO doc me.
+    //! Return the number of edges
     static constexpr std::size_t numEdges() { return 3; }
-    //! \todo TODO doc me.
+    //! Return the i-th edge
     Segment edge(unsigned int i) const
     {
         assert(i < numEdges());
@@ -119,8 +126,14 @@ public:
         }
     }
 
-    //! Returns true if a point lies on the triangle
-    //! \todo TODO note on eps
+    /*!
+     * \brief Returns true if a point is on the triangle
+     * \param p The point to be checked
+     * \param eps The tolerance to be used
+     * \param checkIfOnPlane This can be set to false in case one
+     *                       knows that the point lies on the supporting
+     *                       plane in order to skip this check at this point.
+     */
     bool contains(const Point& p, ctype eps, bool checkIfOnPlane = true) const
     {
         if (checkIfOnPlane)
@@ -137,7 +150,14 @@ public:
         return abs(area() - otherArea) < eps*eps;
     }
 
-    //! Returns true if a point lies on the triangle
+    /*!
+     * \brief Returns true if a point is on the triangle
+     * \param p The point to be checked
+     * \param checkIfOnPlane This can be set to false in case one
+     *                       knows that the point lies on the supporting
+     *                       plane in order to skip this check at this point.
+     * \note This overload uses a default epsilon
+     */
     bool contains(const Point& p,  bool checkIfOnPlane = true) const
     {
         auto eps = Precision<ctype>::confusion();
