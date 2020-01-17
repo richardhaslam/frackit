@@ -149,6 +149,8 @@ ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
  * \param deflection The epsilon used in the BrepExtrema command
  * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
  * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ * \note This only computes the distance to the outer wire of the face.
+ *       Thus, this assumes faces that do not have a whole inside.
  */
 template<class ctype = double>
 ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
