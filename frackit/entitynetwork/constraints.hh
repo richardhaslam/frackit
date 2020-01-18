@@ -31,6 +31,7 @@
 #include <frackit/distance/distance.hh>
 #include <frackit/magnitude/magnitude.hh>
 #include <frackit/intersection/intersect.hh>
+#include <frackit/intersection/emptyintersection.hh>
 #include <frackit/intersection/intersectionpredicates.hh>
 
 #include "impl_admissibledimension.hh"
@@ -176,7 +177,7 @@ public:
         const auto isection = !useIntersectionEps_ ? intersect(geo1, geo2)
                                                    : intersect(geo1, geo2, intersectionEps_);
 
-        if ( !IntersectionPredicates::isEmpty(isection) )
+        if ( !isEmptyIntersection(isection) )
         {
             // check  if dimensionality constraint is violated
             if (!allowEquiDimIS_ && !ConstraintImpl::isAdmissibleDimension(isection, dim-1))

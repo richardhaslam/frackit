@@ -24,6 +24,7 @@
 #define FRACKIT_EMPTY_INTERSECTION_HH
 
 #include <string>
+#include <variant>
 
 namespace Frackit {
 
@@ -60,6 +61,33 @@ struct IsEmptyIntersection
 template<int wd>
 struct IsEmptyIntersection<EmptyIntersection<wd>>
 { static constexpr bool value = true; };
+
+/*!
+ * \brief Returns true if a geometry describes an empty intersection.
+ * \tparam IsGeometry the geometry of an intersection
+ */
+template<class IsGeometry>
+constexpr bool isEmptyIntersection(const IsGeometry& is)
+{ return IsEmptyIntersection<IsGeometry>::value; }
+
+/*!
+ * \brief Overload for intersection variant
+ */
+template<class... T>
+bool isEmptyIntersection(const std::variant<T...>& intersection)
+{ return std::visit([&] (auto&& is) { return isEmptyIntersection(is); }, intersection); }
+
+/*!
+ * \brief Overload for general intersections possibly
+ *        containing possibly various types.
+ */
+template<class Geo>
+bool isEmptyIntersection(const std::vector<Geo>& intersections)
+{
+    return std::all_of(intersections.begin(),
+                       intersections.end(),
+                       [&] (const auto& is) { return isEmptyIntersection(is); } );
+}
 
 } // end namespace Frackit
 
