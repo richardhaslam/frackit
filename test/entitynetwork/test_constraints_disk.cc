@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/cylinder.hh>
 #include <frackit/entitynetwork/constraints.hh>
 
 //! test the constraints for entity networks of disks
@@ -85,6 +86,25 @@ int main()
     if (constraints.evaluate(mainDisk, disk9))
         throw std::runtime_error(std::string("Did not detect intersection angle violation"));
     std::cout << "Test 9 passed" << std::endl;
+
+    // Test constraints w.r.t. cylinder
+    Frackit::Cylinder<ctype> cylinder(0.5, 1.0);
+    Disk disk10(Point(0.0, 0.0, 0.5), e1, e2, 2.0, 2.0);
+    if (!constraints.evaluate(cylinder.lateralFace(), disk10))
+        throw std::runtime_error(std::string("False positive intersection distance violation"));
+    std::cout << "Test 10 passed" << std::endl;
+
+    // violates intersection distance constraint
+    Disk disk11(Point(0.0, 0.0, 0.951), e1, e2, 2.0, 2.0);
+    if (constraints.evaluate(cylinder.lateralFace(), disk11))
+        throw std::runtime_error(std::string("Did not detect intersection distance violation"));
+    std::cout << "Test 11 passed" << std::endl;
+
+    // just doesn't violate intersection distance constraint
+    Disk disk12(Point(0.0, 0.0, 0.849), e1, e2, 2.0, 2.0);
+    if (!constraints.evaluate(cylinder.lateralFace(), disk12))
+        throw std::runtime_error(std::string("False positive intersection distance violation"));
+    std::cout << "Test 12 passed" << std::endl;
 
     std::cout << "All tests passed" << std::endl;
     return 0;
