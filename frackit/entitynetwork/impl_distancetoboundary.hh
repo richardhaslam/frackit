@@ -33,8 +33,9 @@
 #include <frackit/distance/distancetoboundary.hh>
 #include <frackit/distance/pointonboundary.hh>
 
+#include <frackit/occ/breputilities.hh>
 #include <frackit/magnitude/magnitude.hh>
-#include <frackit/intersection/intersectiontraits.hh>
+#include <frackit/intersection/emptyintersection.hh>
 
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/segment.hh>
@@ -129,16 +130,11 @@ namespace ConstraintImpl {
     /*!
      * \brief Overload for ellipse intersections on cylinder surfaces.
      */
-    template<class ctype, int wd, class ctype2, class ctype3>
-    bool isAdmissibleDistanceToBoundary(const Ellipse<ctype, wd>& arc,
-                                        const CylinderSurface<ctype2>& entity,
-                                        ctype3 threshold)
-    {
-        // for this we would first have to intersect the ellipse with the
-        // upper and lower bounding circles to make sure there is no intersection
-        // point!
-        throw std::runtime_error(std::string("TODO: IMPLEMENT"));
-    }
+    template<class ctype, int wd, class Geo, class ctype2>
+    bool isAdmissibleDistanceToBoundary(const Ellipse<ctype, wd>& ellipse,
+                                        const Geo& entity,
+                                        ctype2 threshold)
+    { return computeDistanceToBoundary(ellipse, entity) >= threshold; }
 
     /*!
      * \brief Overload for edge intersections on disks.
