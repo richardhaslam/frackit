@@ -18,8 +18,8 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Contains functionality to determine predicates
- *        of intersections between geometries.
+ * \brief Class that contains functionality to determine
+ *        predicates of intersections between geometries.
  */
 #ifndef FRACKIT_INTERSECTION_PREDICATES_HH
 #define FRACKIT_INTERSECTION_PREDICATES_HH
@@ -30,7 +30,6 @@
 #include <variant>
 #include <vector>
 #include <stdexcept>
-#include <type_traits>
 #include <limits>
 
 #include <gp_Pnt2d.hxx>
@@ -69,16 +68,9 @@ namespace IntersectionPredicates {
  *        describes an empty intersection.
  * \tparam IsGeometry the geometry of an intersection
  */
-template<class IsGeometry,
-         std::enable_if_t<!IsEmptyIntersection<IsGeometry>::value, int> = 0>
+template<class IsGeometry>
 constexpr bool isEmpty(const IsGeometry& is)
-{ return false; }
-
-//! Overload for empty intersections
-template<class IsGeometry,
-         std::enable_if_t<IsEmptyIntersection<IsGeometry>::value, int> = 0>
-constexpr bool isEmpty(const IsGeometry& is)
-{ return true; }
+{ return IsEmptyIntersection<IsGeometry>::value; }
 
 //! Overload for intersection variant
 template<class... T>
