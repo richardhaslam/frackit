@@ -43,6 +43,21 @@
 namespace Frackit {
 
 /*!
+ * \brief Forward declaration of the constraints class.
+ */
+template<class ST = double,
+         class AE = IntersectionAngle<ST> >
+class EntityNetworkConstraints;
+
+/*!
+ * \brief Convenience function to construct an instance
+ *        of the constraints class using the default engines
+ */
+template<class ST = double>
+EntityNetworkConstraints<ST> makeDefaultConstraints()
+{ return EntityNetworkConstraints<ST>(IntersectionAngle<ST>()); }
+
+/*!
  * \brief Class which defines and checks constraints on
  *        the geometric relationships between entities of
  *        a network. As constraints one can define:
@@ -57,10 +72,12 @@ namespace Frackit {
  *       zero distance. However, this case is admissible, only small features
  *       related to the non-intersecting boundaries are of interest here.
  * \tparam ST The type used for the scalar constraint values
- * \tparam AE The engine used for angle computations between intersecting geometries
+ * \tparam AE The engine used for angle computations between intersecting geometries.
+ *            This engine is required  to return the angle between geometries when
+ *            the operator() is called with the two geometries and the intersection
+ *            result as arguments.
  */
-template<class ST = double,
-         class AE = IntersectionAngle<ST> >
+template<class ST, class AE>
 class EntityNetworkConstraints
 {
 
@@ -72,36 +89,16 @@ public:
     using AngleComputationEngine = AE;
 
     /*!
-     * \brief Default constructor, deactivates all constraints.
+     * \brief The constructor.
+     * \param angleEngine An instance of the engine used for angle computations.
      */
-    EntityNetworkConstraints()
-    : minDistance_(),            minIsAngle_()
+    EntityNetworkConstraints(const AngleComputationEngine& angleEngine)
+    : angleEngine_(angleEngine)
+    , minDistance_(),            minIsAngle_()
     , minIsMagnitude_(),         minIsDistance_()
     , useMinDistance_(false),    useMinIsAngle_(false)
     , useMinIsMagnitude_(false), useMinIsDistance_(false)
     , intersectionEps_(),        useIntersectionEps_(false)
-    {
-        // per default, we do not allow equi-dimensional intersections
-        allowEquiDimIS_ = false;
-    }
-
-    /*!
-     * \brief The constructor defining all constraints
-     * \param minDistance Minimum distance allowed between two (non-intersecting) entities
-     * \param minIsAngle Minimum angle in which two entities are allowed to intersect
-     * \param minIsMagnitude Minimum magnitude of intersection allowed
-     * \param minIsDistance Minimum distance of an intersection to intersecting entity boundaries
-     * \note The default epsilon is set to be used for intersection computations
-     */
-    EntityNetworkConstraints(Scalar minDistance,
-                             Scalar minIsAngle,
-                             Scalar minIsMagnitude,
-                             Scalar minIsDistance)
-    : minDistance_(minDistance),       minIsAngle_(minIsAngle)
-    , minIsMagnitude_(minIsMagnitude), minIsDistance_(minIsDistance)
-    , useMinDistance_(false),          useMinIsAngle_(false)
-    , useMinIsMagnitude_(false),       useMinIsDistance_(false)
-    , intersectionEps_(),              useIntersectionEps_(false)
     {
         // per default, we do not allow equi-dimensional intersections
         allowEquiDimIS_ = false;
@@ -163,6 +160,13 @@ public:
      */
     void allowEquiDimensionalIntersections(bool value)
     { allowEquiDimIS_ = value; }
+
+    /*!
+     * \brief Set the engine used for angle computations
+     * \param angleEngine An instance of the engine
+     */
+    void setAngleComputationEngine(const AngleComputationEngine& angleEngine)
+    { angleEngine_ = angleEngine; }
 
     /*!
      * \brief Check if a pair of geometries fulfills the constraints
@@ -233,6 +237,8 @@ public:
     }
 
 private:
+    AngleComputationEngine angleEngine_; //! Algorithms to compute angles between intersecting geometries
+
     Scalar minDistance_;    //!< Minimum distance allowed between two entities
     Scalar minIsAngle_;     //!< Minimum angle in which two entities are allowed to intersect
     Scalar minIsMagnitude_; //!< Minimum magnitude of the intersection geometry
@@ -248,7 +254,6 @@ private:
     Scalar intersectionEps_;  //! Tolerance value to be used for intersections
     bool useIntersectionEps_; //! Stores wether or not a user-defined epsilon value was set
 
-    AngleComputationEngine angleEngine_; //! Algorithms to compute angles between intersecting geometries
 };
 
 } // end namespace Frackit
