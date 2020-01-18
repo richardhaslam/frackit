@@ -55,7 +55,7 @@ template<class CT, int wd> class Direction;
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 // namespace with implementation details
-namespace Impl {
+namespace VectorImpl {
 
     /*!
      * \brief Computes the scalar product between two 1d vectors.
@@ -127,123 +127,123 @@ namespace Impl {
     template<class CT1, class CT2>
     Vector<CT1, 3> subtractVectors(const Vector<CT1, 3>& v1, const Vector<CT2, 3>& v2)
     { return {v1.x()-v2.x(), v1.y()-v2.y(), v1.z()-v2.z()}; }
+} // end namespace VectorImpl
+#endif // DOXYGEN_SHOULD_SKIP_THIS
+
+/*!
+ * \brief Base class of the dimension-specific Vector implementations.
+ * \tparam Impl The actual vector class implementation
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the space
+ */
+template<class Impl, class CoordType, int wd>
+class VectorBase
+{
+
+public:
+    //! export dimensionality
+    static constexpr int myDimension() { return 1; };
+    static constexpr int worldDimension() { return wd; };
+
+    //! export type used for coordinates
+    using ctype = CoordType;
+
+    //! export underlying point type
+    using Point = typename Frackit::Point<ctype, wd>;
+    using Vector = typename Frackit::Vector<ctype, wd>;
+    using Direction = typename Frackit::Direction<ctype, wd>;
 
     /*!
-     * \brief Base class of the dimension-specific Vector implementations.
-     * \tparam Impl The actual vector class implementation
-     * \tparam CT The type used for coordinates
-     * \tparam wd The dimension of the space
+     * \brief Constructs a vector from a single scalar value
+     *        assigning this value to each coordinate direction.
+     * \param value The coordinate value
      */
-    template<class Impl, class CoordType, int wd>
-    class VectorBase
+    VectorBase(ctype value = 0.0)
     {
+        std::fill(coordinates_.begin(), coordinates_.end(), value);
+    }
 
-    public:
-        //! export dimensionality
-        static constexpr int myDimension() { return 1; };
-        static constexpr int worldDimension() { return wd; };
+    /*!
+     * \brief Constructs a vector from an initializer list.
+     * \param l The initializer list containing the coordinates
+     */
+    VectorBase(const std::initializer_list<ctype>& l)
+    {
+        const auto minSize = std::min(static_cast<std::size_t>(wd), l.size());
+        std::copy_n( l.begin(), minSize, coordinates_.begin() );
+    }
 
-        //! export type used for coordinates
-        using ctype = CoordType;
+    //! Return the name of this geometry class
+    static std::string name()
+    { return "Vector"; }
 
-        //! export underlying point type
-        using Point = typename Frackit::Point<ctype, wd>;
-        using Vector = typename Frackit::Vector<ctype, wd>;
-        using Direction = typename Frackit::Direction<ctype, wd>;
+    //! Return the squared length of the vector
+    ctype squaredLength() const
+    {
+        ctype result = 0;
+        for (unsigned int i = 0; i < wd; ++i)
+            result += coordinates_[i]*coordinates_[i];
+        return result;
+    }
 
-        /*!
-         * \brief Constructs a vector from a single scalar value
-         *        assigning this value to each coordinate direction.
-         * \param value The coordinate value
-         */
-        VectorBase(ctype value = 0.0)
-        {
-            std::fill(coordinates_.begin(), coordinates_.end(), value);
-        }
+    //! Return the length of the vector
+    ctype length() const
+    {
+        using std::sqrt;
+        return sqrt(squaredLength());
+    }
 
-        /*!
-         * \brief Constructs a vector from an initializer list.
-         * \param l The initializer list containing the coordinates
-         */
-        VectorBase(const std::initializer_list<ctype>& l)
-        {
-            const auto minSize = std::min(static_cast<std::size_t>(wd), l.size());
-            std::copy_n( l.begin(), minSize, coordinates_.begin() );
-        }
+    //! Scalar product with another vector
+    template<class CT>
+    ctype operator*(const Frackit::Vector<CT, wd>& other) const
+    { return VectorImpl::scalarProduct(asImp_(), other); }
 
-        //! Return the name of this geometry class
-        static std::string name()
-        { return "Vector"; }
+    //! Add vector to this one
+    template<class CT>
+    Impl operator+(const Frackit::Vector<CT, wd>& other) const
+    { return VectorImpl::sumVectors(asImp_(), other); }
 
-        //! Return the squared length of the vector
-        ctype squaredLength() const
-        {
-            ctype result = 0;
-            for (unsigned int i = 0; i < wd; ++i)
-                result += coordinates_[i]*coordinates_[i];
-            return result;
-        }
+    //! Subtract vector from this one
+    template<class CT>
+    Impl operator-(const Frackit::Vector<CT, wd>& other) const
+    { return VectorImpl::subtractVectors(asImp_(), other); }
 
-        //! Return the length of the vector
-        ctype length() const
-        {
-            using std::sqrt;
-            return sqrt(squaredLength());
-        }
+    //! Product of this vector with a scalar
+    template<class CT>
+    Impl& operator*=(CT value)
+    {
+        for (auto& coord : coordinates_)
+            coord *= value;
+        return asImp_();
+    }
 
-        //! Scalar product with another vector
-        template<class CT>
-        ctype operator*(const Frackit::Vector<CT, wd>& other) const
-        { return scalarProduct(asImp_(), other); }
+    //! Division of this vector with a scalar
+    template<class CT>
+    Impl& operator/=(CT value)
+    {
+        for (auto& coord : coordinates_)
+            coord /= value;
+        return asImp_();
+    }
 
-        //! Add vector to this one
-        template<class CT>
-        Impl operator+(const Frackit::Vector<CT, wd>& other) const
-        { return sumVectors(asImp_(), other); }
+protected:
+    //! Provide access to the coordinates of the vector
+    ctype operator[] (unsigned int coordIdx) const
+    { return coordinates_[coordIdx]; }
 
-        //! Subtract vector from this one
-        template<class CT>
-        Impl operator-(const Frackit::Vector<CT, wd>& other) const
-        { return subtractVectors(asImp_(), other); }
+    //! Provide access to the coordinates of the vector
+    std::array<ctype, wd>& data()
+    { return coordinates_; }
 
-        //! Product of this vector with a scalar
-        template<class CT>
-        Impl& operator*=(CT value)
-        {
-            for (auto& coord : coordinates_)
-                coord *= value;
-            return asImp_();
-        }
+    //! Returns the implementation (static polymorphism)
+    Impl &asImp_() { return *static_cast<Impl*>(this); }
+    //! \copydoc asImp_()
+    const Impl &asImp_() const { return *static_cast<const Impl*>(this); }
 
-        //! Division of this vector with a scalar
-        template<class CT>
-        Impl& operator/=(CT value)
-        {
-            for (auto& coord : coordinates_)
-                coord /= value;
-            return asImp_();
-        }
-
-    protected:
-        //! Provide access to the coordinates of the vector
-        ctype operator[] (unsigned int coordIdx) const
-        { return coordinates_[coordIdx]; }
-
-        //! Provide access to the coordinates of the vector
-        std::array<ctype, wd>& data()
-        { return coordinates_; }
-
-        //! Returns the implementation (static polymorphism)
-        Impl &asImp_() { return *static_cast<Impl*>(this); }
-        //! \copydoc asImp_()
-        const Impl &asImp_() const { return *static_cast<const Impl*>(this); }
-
-    private:
-        // storage of the coordinates
-        std::array<ctype, wd> coordinates_;
-    };
-} // end namespace Impl
-#endif // DOXYGEN_SHOULD_SKIP_THIS
+private:
+    // storage of the coordinates
+    std::array<ctype, wd> coordinates_;
+};
 
 /*!
  * \brief Vector class implementation.
@@ -258,10 +258,10 @@ class Vector;
  */
 template<class CT>
 class Vector<CT, 1>
-: public Impl::VectorBase< Vector<CT, 1>, CT, 1 >
+: public VectorBase< Vector<CT, 1>, CT, 1 >
 {
     using ThisType = Vector<CT, 1>;
-    using ParentType = Impl::VectorBase<ThisType, CT, 1>;
+    using ParentType = VectorBase<ThisType, CT, 1>;
 
 public:
     //! pull up base class' constructors
@@ -305,10 +305,10 @@ public:
  */
 template<class CT>
 class Vector<CT, 2>
-: public Impl::VectorBase< Vector<CT, 2>, CT, 2 >
+: public VectorBase< Vector<CT, 2>, CT, 2 >
 {
     using ThisType = Vector<CT, 2>;
-    using ParentType = Impl::VectorBase<ThisType, CT, 2>;
+    using ParentType = VectorBase<ThisType, CT, 2>;
 
 public:
     //! pull up base class' constructors
@@ -356,10 +356,10 @@ public:
  */
 template<class CT>
 class Vector<CT, 3>
-: public Impl::VectorBase< Vector<CT, 3>, CT, 3 >
+: public VectorBase< Vector<CT, 3>, CT, 3 >
 {
     using ThisType = Vector<CT, 3>;
-    using ParentType = Impl::VectorBase<ThisType, CT, 3>;
+    using ParentType = VectorBase<ThisType, CT, 3>;
 
 public:
     //! pull up base class' constructors
