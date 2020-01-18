@@ -10,6 +10,7 @@ algo_segment_segment.hh
 algo_shell_disk.hh
 emptyintersection.hh
 intersect.hh
+intersectionangle.hh
 intersectionpredicates.hh
 intersectiontraits.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/intersection)
