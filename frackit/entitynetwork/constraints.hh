@@ -32,7 +32,9 @@
 #include <frackit/magnitude/magnitude.hh>
 #include <frackit/intersection/intersect.hh>
 #include <frackit/intersection/emptyintersection.hh>
-#include <frackit/intersection/intersectionpredicates.hh>
+
+// default engines to be used for intersection angles, etc.
+#include <frackit/intersection/intersectionangle.hh>
 
 #include "impl_admissibledimension.hh"
 #include "impl_admissiblemagnitude.hh"
@@ -55,14 +57,19 @@ namespace Frackit {
  *       zero distance. However, this case is admissible, only small features
  *       related to the non-intersecting boundaries are of interest here.
  * \tparam ST The type used for the scalar constraint values
+ * \tparam AE The engine used for angle computations between intersecting geometries
  */
-template<class ST = double>
+template<class ST = double,
+         class AE = IntersectionAngle<ST> >
 class EntityNetworkConstraints
 {
 
 public:
     //! Export type used for constraints
     using Scalar = ST;
+
+    //! Exort the engine used for angle computations
+    using AngleComputationEngine = AE;
 
     /*!
      * \brief Default constructor, deactivates all constraints.
@@ -188,7 +195,7 @@ public:
                 return false;
 
             // angle constraint
-            if ( useMinIsAngle_ && IntersectionPredicates::angle(geo1, geo2, isection) < minIsAngle_ )
+            if ( useMinIsAngle_ && angleEngine_(geo1, geo2, isection) < minIsAngle_ )
                 return false;
 
             // constraint on distance of intersection to geometry boundaries
@@ -240,6 +247,8 @@ private:
 
     Scalar intersectionEps_;  //! Tolerance value to be used for intersections
     bool useIntersectionEps_; //! Stores wether or not a user-defined epsilon value was set
+
+    AngleComputationEngine angleEngine_; //! Algorithms to compute angles between intersecting geometries
 };
 
 } // end namespace Frackit
