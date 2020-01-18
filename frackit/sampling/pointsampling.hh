@@ -159,7 +159,7 @@ public:
     {}
 
     /*!
-     * \brief \todo TODO Doc me.
+     * \brief Sample a point from the distributions.
      */
     Point operator() ()
     {
@@ -176,7 +176,7 @@ public:
 };
 
 /*!
- * \brief \todo TODO Doc me.
+ * \brief Specialization of the sampler class for cylinders.
  */
 template<class ctype, class T>
 class GeometryPointSampler< Cylinder<ctype>, T >

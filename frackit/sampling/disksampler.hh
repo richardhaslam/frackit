@@ -120,7 +120,10 @@ public:
     {}
 
     /*!
-     * \brief \todo TODO Doc me.
+     * \brief Generate a random disk.
+     * \param pointSampler Point sampler class to
+     *                     randomly sample a point used
+     *                     as the center of the disk.
      */
     template<class PointSampler>
     Disk operator() (PointSampler& pointSampler)

@@ -407,11 +407,12 @@ public:
 };
 
 /*!
- * \brief \todo TODO Doc me.
- *  \relates Vector
+ * \brief Creates a vector that is
+ *        orthogonal to the provided vector.
+ * \relates Vector
  *
- *  \param v a vector
- *  \returns a vector orthogonal to v
+ * \param v a vector
+ * \returns a vector orthogonal to v
  */
 template<class ctype>
 Vector<ctype, 3> makeOrthogonalVector(const Vector<ctype, 3>& v)

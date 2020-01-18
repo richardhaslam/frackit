@@ -64,7 +64,7 @@ public:
     //! pull up base class' constructor
     using ParentType::ParentType;
 
-    //! \todo TODO doc me.
+    //! Return the name of this geometry
     static std::string name() { return "Ellipse"; }
 
     /*!
