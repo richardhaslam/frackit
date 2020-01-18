@@ -22,7 +22,7 @@ int main()
     const Vector e3(0.0, 0.0, 1.0);
 
     // Define constraints
-    auto constraints = Frackit::makeDefaultConstraints<ctype>();
+    Frackit::EntityNetworkConstraints<ctype> constraints;
     constraints.setMinDistance(0.1);
     constraints.setMinIntersectingAngle(M_PI/4.0);
     constraints.setMinIntersectionMagnitude(0.05);

@@ -27,6 +27,7 @@
 #include <stdexcept>
 #include <variant>
 #include <vector>
+#include <type_traits>
 
 #include <frackit/distance/distance.hh>
 #include <frackit/magnitude/magnitude.hh>
@@ -87,6 +88,17 @@ public:
 
     //! Exort the engine used for angle computations
     using AngleComputationEngine = AE;
+
+    /*!
+     * \brief Default constructor.
+     * \note This is only available if the engines are default constructible
+     */
+    EntityNetworkConstraints()
+    {
+        static_assert(std::is_default_constructible<AE>::value,
+                      "Angle computation engine not default constructible. "
+                      "Use constructor taking the engines as arguments instead");
+    }
 
     /*!
      * \brief The constructor.
