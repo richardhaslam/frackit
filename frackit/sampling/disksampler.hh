@@ -18,12 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Class to randomly generate disks in three-
- *        dimensional space. Generation is done on the
- *        basis of probability distribution functions
- *        provided among construction. The type of
- *        distribution function used in the sampler
- *        class can be defined by passing a traits class.
+ * \brief Class to randomly generate disks in three-dimensional space.
  */
 #ifndef FRACKIT_DISK_SAMPLER_HH
 #define FRACKIT_DISK_SAMPLER_HH
@@ -125,7 +120,10 @@ public:
     {}
 
     /*!
-     * \brief \todo TODO Doc me.
+     * \brief Generate a random disk.
+     * \param pointSampler Point sampler class to
+     *                     randomly sample a point used
+     *                     as the center of the disk.
      */
     template<class PointSampler>
     Disk operator() (PointSampler& pointSampler)

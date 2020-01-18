@@ -36,81 +36,78 @@ namespace Frackit {
 // Forwad declaration
 template<class CT, int wd> class Vector;
 
-    namespace Impl {
+/*!
+ * \brief Base class for Point implementations.
+ * \tparam Impl The actual vector class implementation
+ * \tparam CT The type used for coordinates
+ * \tparam wd The dimension of the space
+ */
+template<class Impl, class CT, int wd>
+class PointBase
+{
+
+public:
+    //! export dimensionality
+    static constexpr int myDimension() { return 0; };
+    static constexpr int worldDimension() { return wd; };
+
+    //! export type used for coordinates
+    using ctype = CT;
 
     /*!
-     * \brief Base class for Point implementations.
-     * \tparam Impl The actual vector class implementation
-     * \tparam CT The type used for coordinates
-     * \tparam wd The dimension of the space
+     * \brief Default constructor. Creates a point at the origin.
      */
-    template<class Impl, class CT, int wd>
-    class PointBase
+    PointBase()
     {
+        std::fill(coordinates_.begin(), coordinates_.end(), 0.0);
+    }
 
-    public:
-        //! export dimensionality
-        static constexpr int myDimension() { return 0; };
-        static constexpr int worldDimension() { return wd; };
+    /*!
+     * \brief Construction from an initializer list.
+     * \param l The initializer list containing the coordinates
+     */
+    PointBase(const std::initializer_list<CT>& l)
+    {
+        const auto minDim = std::min(static_cast<std::size_t>(wd), l.size());
+        std::copy_n( l.begin(), minDim, coordinates_.begin());
+    }
 
-        //! export type used for coordinates
-        using ctype = CT;
+    //! Return the name of this geometry class
+    static std::string name()
+    { return "Point"; }
 
-        /*!
-         * \brief Default constructor. Creates a point at the origin.
-         */
-        PointBase()
-        {
-            std::fill(coordinates_.begin(), coordinates_.end(), 0.0);
-        }
+    //! Returns true if the given point is equal to this one
+    bool isEqual(const Impl& other, ctype eps) const
+    { return Vector<ctype, wd>(asImp_(), other).squaredLength() < eps*eps; }
 
-        /*!
-         * \brief Construction from an initializer list.
-         * \param l The initializer list containing the coordinates
-         */
-        PointBase(const std::initializer_list<CT>& l)
-        {
-            const auto minDim = std::min(static_cast<std::size_t>(wd), l.size());
-            std::copy_n( l.begin(), minDim, coordinates_.begin());
-        }
+    //! Returns true if the given point is equal to this one (default eps)
+    bool isEqual(const Impl& other) const
+    {
+        const auto scale = Vector<ctype, wd>(Impl(), asImp_()).length();
+        const auto eps = Precision<ctype>::confusion()*scale;
+        return isEqual(other, eps);
+    }
 
-        //! Return the name of this geometry class
-        static std::string name()
-        { return "Point"; }
+protected:
+    //! Provide access to the underlying coordinates
+    ctype operator[] (unsigned int i) const
+    {
+        assert(i < coordinates_.size());
+        return coordinates_[i];
+    }
 
-        //! Returns true if the given point is equal to this one
-        bool isEqual(const Impl& other, ctype eps) const
-        { return Vector<ctype, wd>(asImp_(), other).squaredLength() < eps*eps; }
+    //! Provide access to the coordinate storage
+    std::array<ctype, wd>& coordinates()
+    { return coordinates_; }
 
-        //! Returns true if the given point is equal to this one (default eps)
-        bool isEqual(const Impl& other) const
-        {
-            const auto scale = Vector<ctype, wd>(Impl(), asImp_()).length();
-            const auto eps = Precision<ctype>::confusion()*scale;
-            return isEqual(other, eps);
-        }
+    //! Returns the implementation (static polymorphism)
+    Impl &asImp_() { return *static_cast<Impl*>(this); }
+    //! \copydoc asImp_()
+    const Impl &asImp_() const { return *static_cast<const Impl*>(this); }
 
-    protected:
-        //! Provide access to the underlying coordinates
-        ctype operator[] (unsigned int i) const
-        {
-            assert(i < coordinates_.size());
-            return coordinates_[i];
-        }
-
-        //! Provide access to the coordinate storage
-        std::array<ctype, wd>& coordinates()
-        { return coordinates_; }
-
-        //! Returns the implementation (static polymorphism)
-        Impl &asImp_() { return *static_cast<Impl*>(this); }
-        //! \copydoc asImp_()
-        const Impl &asImp_() const { return *static_cast<const Impl*>(this); }
-
-    private:
-        std::array<ctype, wd> coordinates_;
-    };
-    } // end namespace Impl
+private:
+    std::array<ctype, wd> coordinates_;
+};
 
 /*!
  * \brief Point class implementation.
@@ -125,10 +122,10 @@ class Point;
  */
 template<class CT>
 class Point<CT, 1>
-: public Impl::PointBase< Point<CT, 1>, CT, 1 >
+: public PointBase< Point<CT, 1>, CT, 1 >
 {
     using ThisType = Point<CT, 1>;
-    using ParentType = Impl::PointBase<ThisType, CT, 1>;
+    using ParentType = PointBase<ThisType, CT, 1>;
 
 public:
     //! pull up base class' constructors
@@ -182,10 +179,10 @@ public:
  */
 template<class CT>
 class Point<CT, 2>
-: public Impl::PointBase< Point<CT, 2>, CT, 2 >
+: public PointBase< Point<CT, 2>, CT, 2 >
 {
     using ThisType = Point<CT, 2>;
-    using ParentType = Impl::PointBase<ThisType, CT, 2>;
+    using ParentType = PointBase<ThisType, CT, 2>;
 
 public:
     //! pull up base class' constructors
@@ -244,10 +241,10 @@ public:
  */
 template<class CT>
 class Point<CT, 3>
-: public Impl::PointBase< Point<CT, 3>, CT, 3 >
+: public PointBase< Point<CT, 3>, CT, 3 >
 {
     using ThisType = Point<CT, 3>;
-    using ParentType = Impl::PointBase<ThisType, CT, 3>;
+    using ParentType = PointBase<ThisType, CT, 3>;
 
 public:
     //! pull up base class' constructors
