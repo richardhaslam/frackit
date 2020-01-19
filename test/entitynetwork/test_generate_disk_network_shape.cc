@@ -76,9 +76,9 @@ int main(int argc, char** argv)
     std::vector<Disk> diskSet2;
 
     //! enforce some constraints on the network
-    Frackit::EntityNetworkConstraints<ctype> constraintsOnSelf;
-    Frackit::EntityNetworkConstraints<ctype> constraintsOnOther;
-    Frackit::EntityNetworkConstraints<ctype> constraintsOnDomain;
+    auto constraintsOnSelf = makeDefaultConstraints<ctype>();
+    auto constraintsOnOther = makeDefaultConstraints<ctype>();
+    auto constraintsOnDomain = makeDefaultConstraints<ctype>();
 
     // constraints among disks of the same set
     constraintsOnSelf.setMinDistance(10.0);
