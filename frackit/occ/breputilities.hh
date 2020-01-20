@@ -55,6 +55,7 @@
 
 // Algorithm for boolean operations on shapes
 #include <BRepAlgoAPI_BuilderAlgo.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 
@@ -365,9 +366,29 @@ namespace OCCUtilities {
         fragments.SetFuzzyValue(eps);
         fragments.Build();
         if (!fragments.IsDone())
-            throw std::runtime_error(std::string("Could not perform segment fragmentation"));
+            throw std::runtime_error(std::string("Could not perform fragmentation"));
 
         return fragments.Shape();
+    }
+
+    //! Convenience function to get the shape resulting from the union of a set of objects
+    template<class ctype>
+    TopoDS_Shape fuse(const std::vector<TopoDS_Shape>& objects, ctype eps)
+    {
+        TopTools_ListOfShape shapes;
+        for (const auto& shape : objects)
+            shapes.Append(shape);
+
+        BRepAlgoAPI_Fuse fuse;
+        fuse.SetRunParallel(false);
+        fuse.SetArguments(shapes);
+        fuse.SetTools(shapes);
+        fuse.SetFuzzyValue(eps);
+        fuse.Build();
+        if (!fuse.IsDone())
+            throw std::runtime_error(std::string("Could not perform union"));
+
+        return fuse.Shape();
     }
 
     /*!
