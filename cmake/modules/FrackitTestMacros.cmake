@@ -88,4 +88,7 @@ function(frackit_add_test)
   foreach(label IN LISTS ADDTEST_LABELS)
     add_dependencies(build_${label}_tests ${ADDTEST_TARGET})
   endforeach()
+
+  # Set the labels on the test
+  set_tests_properties(${ADDTEST_NAME} PROPERTIES LABELS "${ADDTEST_LABELS}")
 endfunction(frackit_add_test)
