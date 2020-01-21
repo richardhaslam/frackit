@@ -29,6 +29,7 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
+#include <fstream>
 
 // Handle class used by OpenCascade
 #include <Standard_Handle.hxx>
@@ -64,6 +65,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
 #include <BRepBndLib.hxx>
+#include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
@@ -88,6 +90,18 @@
 
 namespace Frackit {
 namespace OCCUtilities {
+
+    /*!
+     * \brief Return the shape read from a .brep file.
+     * \param fileName The name of the .brep file
+     */
+    TopoDS_Shape readShape(const std::string& fileName)
+    {
+        TopoDS_Shape domainShape;
+        std::ifstream file(fileName);
+        BRepTools::Read(domainShape, file, BRep_Builder());
+        return domainShape;
+    }
 
     //! converts a vertex shape into a point
     Point<double, 3> point(const TopoDS_Vertex& v)
