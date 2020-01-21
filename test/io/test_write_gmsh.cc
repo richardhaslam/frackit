@@ -48,12 +48,12 @@ int main(int argc, char** argv)
     Domain domain2(Disk(Point(0.0, 0.0, 1.0), e1, e2, 1.0, 1.0), 1.0);
 
     ContainedEntityNetworkBuilder builder;
-    builder.addSubDomain(domain, Id(1));
+    builder.addConfiningSubDomain(domain, Id(1));
     builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 0.1), e1, e2, 1.0, 1.0),  Id(1));
     builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 0.5), e1, e3, 2.0, 2.0),  Id(1));
     builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 0.75), e1, e2, 1.0, 1.0), Id(1));
 
-    builder.addSubDomain(domain2, Id(2));
+    builder.addConfiningSubDomain(domain2, Id(2));
     builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 1.1), e1, e2, 1.0, 1.0),  Id(2));
     builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 1.5), e1, e3, 2.0, 2.0),  Id(2));
     builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 1.75), e1, e2, 1.0, 1.0), Id(2));
