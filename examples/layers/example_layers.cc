@@ -22,8 +22,8 @@
 #include <frackit/occ/breputilities.hh>
 
 // sampler for points and disks
-#include <frackit/sampling/pointsampling.hh>
-#include <frackit/sampling/geometrysampling.hh>
+#include <frackit/sampling/pointsampler.hh>
+#include <frackit/sampling/disksampler.hh>
 
 // constraints to be enforced on the network (distance, angles, etc.)
 #include <frackit/entitynetwork/constraints.hh>
@@ -78,7 +78,6 @@ int main(int argc, char** argv)
     //////////////////////////////////////////////////////////////////////
     using ctype = double;
     using Disk = Disk<ctype>;
-    using DiskSampler = GeometrySampler<Disk>;
 
     // sample points within bounding box of domain
     const auto domainBBox = OCCUtilities::getBoundingBox(networkDomain);
@@ -159,8 +158,8 @@ int main(int argc, char** argv)
         else if (createSecondary && accepted_2 == numTargetEntities_2)
             createSecondary = false;
 
-        auto disk = createSecondary ? diskSampler1(pointSampler)
-                                    : diskSampler2(pointSampler);
+        auto disk = createSecondary ? diskSampler1( pointSampler() )
+                                    : diskSampler2( pointSampler() );
         total++;
 
         // We don't want ellipses of too large aspect ratio

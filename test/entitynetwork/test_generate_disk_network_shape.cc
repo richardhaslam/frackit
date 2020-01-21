@@ -15,8 +15,8 @@
 #include <frackit/magnitude/containedmagnitude.hh>
 #include <frackit/occ/breputilities.hh>
 
-#include <frackit/sampling/pointsampling.hh>
-#include <frackit/sampling/geometrysampling.hh>
+#include <frackit/sampling/pointsampler.hh>
+#include <frackit/sampling/disksampler.hh>
 
 #include <frackit/entitynetwork/constraints.hh>
 
@@ -52,7 +52,6 @@ int main(int argc, char** argv)
     // create the disk samplers
     using ctype = double;
     using Disk = Disk<ctype>;
-    using DiskSampler = GeometrySampler<Disk>;
 
     // sample points within bounding box of domain
     auto pointSampler = makeUniformPointSampler(OCCUtilities::getBoundingBox(domain));
@@ -124,8 +123,8 @@ int main(int argc, char** argv)
         else if (createSecondary && accepted_2 == numTargetEntities_2)
             createSecondary = false;
 
-        auto disk = createSecondary ? diskSampler_1(pointSampler)
-                                    : diskSampler_2(pointSampler);
+        auto disk = createSecondary ? diskSampler_1( pointSampler() )
+                                    : diskSampler_2( pointSampler() );
         total++;
 
         // We don't want ellipses of too large aspect ratio

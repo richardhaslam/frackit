@@ -1,5 +1,6 @@
 install(FILES
 disksampler.hh
+geometrysampler.hh
 geometrysampling.hh
-pointsampling.hh
+pointsampler.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/sampling)

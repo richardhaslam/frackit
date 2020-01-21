@@ -10,8 +10,9 @@
 #include <frackit/common/math.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/occ/breputilities.hh>
-#include <frackit/sampling/geometrysampling.hh>
-#include <frackit/sampling/pointsampling.hh>
+
+#include <frackit/sampling/disksampler.hh>
+#include <frackit/sampling/pointsampler.hh>
 
 //! test random sampling of points on geometries
 int main()
@@ -21,7 +22,6 @@ int main()
     using namespace Frackit;
     using Cylinder = Cylinder<ctype>;
     using Disk = Disk<ctype>;
-    using DiskSampler = GeometrySampler<Disk>;
 
     Cylinder cylinder(0.5, 1.0);
     auto cylPointSampler = makeUniformPointSampler(cylinder);
@@ -34,7 +34,7 @@ int main()
     // sample 5 disks
     std::vector<Disk> disks;
     for (unsigned int i = 0; i < 5; ++i)
-        disks.emplace_back(diskSampler(cylPointSampler));
+        disks.emplace_back(diskSampler( cylPointSampler() ));
 
     // create a single compound and write to .brep file
     // build a single compound shape

@@ -18,31 +18,39 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Class to randomly generate geometries.
+ * \brief Class that defines the interface for
+ *        sampler classes of geometries.
  */
-#ifndef FRACKIT_GEOMETRY_SAMPLING_HH
-#define FRACKIT_GEOMETRY_SAMPLING_HH
+#ifndef FRACKIT_GEOMETRY_SAMPLER_HH
+#define FRACKIT_GEOMETRY_SAMPLER_HH
+
+#include <frackit/common/extractctype.hh>
+#include <frackit/common/extractdimension.hh>
+#include <frackit/geometry/point.hh>
 
 namespace Frackit {
 
-//! Forward declaration of the default traits
-template<class Geometry> struct DefaultSamplerTraits;
-
 /*!
- * \brief Forward declaration of sampler classes used to
- *        randomly generate geometries. The sampler class
- *        is specialized for different geometries, and the
- *        required probability distribution functions are
- *        injected via corresponding traits classes.
- *        A default traits class should be provided by each
- *        sampler implementation.
+ * \brief Interface for geometry sampler classes.
+ *        The interface is defined by a () operator that
+ *        receives a point, which is the point around which
+ *        the geometry is to be created, and it returns an
+ *        object of the geometry.
  */
-template<class Geometry, class T = DefaultSamplerTraits<Geometry>>
-class GeometrySampler;
+template<class Geometry>
+class GeometrySampler
+{
+    using ctype = typename CoordinateTypeTraits<Geometry>::type;
+    static constexpr int worldDim = DimensionalityTraits<Geometry>::worldDimension();
+
+public:
+    /*!
+     * \brief Creates an object of Geometry around the given point.
+     * \param point The point around which the geometry is to be created
+     */
+    virtual Geometry operator() (const Point<ctype, worldDim>& point) = 0;
+};
 
 } // end namespace Frackit
 
-// implementations of the sampler classes
-#include "disksampler.hh"
-
-#endif // FRACKIT_GEOMETRY_SAMPLING_HH
+#endif // FRACKIT_GEOMETRY_SAMPLER_HH
