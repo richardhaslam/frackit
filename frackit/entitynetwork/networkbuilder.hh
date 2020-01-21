@@ -233,7 +233,7 @@ protected:
             intersection.SetFuzzyValue(getEpsilon_());
             intersection.Build();
             if(!intersection.IsDone())
-                throw std::runtime_error(std::string("Could not confine network"));
+                throw std::runtime_error("Could not confine network");
 
             // keep track of original entity indices
             TopTools_ListOfShape newList;
@@ -242,7 +242,7 @@ protected:
             {
                 int entityIdx;
                 if (!fragmentMap.Find(it.Value(), entityIdx))
-                    throw std::runtime_error(std::string("Could not find entity index"));
+                    throw std::runtime_error("Could not find entity index");
 
                 // map all fragments to this new index
                 const bool isDeleted = intersection.IsDeleted(it.Value());
@@ -319,7 +319,7 @@ protected:
         fragmentAlgo.SetFuzzyValue(getEpsilon_());
         fragmentAlgo.Build();
         if(!fragmentAlgo.IsDone())
-            throw std::runtime_error(std::string("Could not perform fragmentation"));
+            throw std::runtime_error("Could not perform fragmentation");
 
         // map the resulting entities back to the original entity index
         std::unordered_map<std::size_t, TopTools_ListOfShape> newFragmentLists;
@@ -329,13 +329,13 @@ protected:
             // get subdomain index
             int subDomainIdx;
             if (!entityToSubDomainIndex.Find(it.Value(), subDomainIdx))
-                throw std::runtime_error(std::string("Could not find sub-domain index"));
+                throw std::runtime_error("Could not find sub-domain index");
 
             // get original entity index
             int entityIdx;
             const auto& map = networkFragmentMaps_.at(subDomainIdx);
             if (!map.Find(it.Value(), entityIdx))
-                throw std::runtime_error(std::string("Could not find original entity index"));
+                throw std::runtime_error("Could not find original entity index");
 
             // map all fragments to this new index
             const bool isDeleted = fragmentAlgo.IsDeleted(it.Value());
@@ -372,7 +372,7 @@ protected:
             // get subdomain index
             int subDomainIdx;
             if (!domainToSubDomainIndex.Find(it.Value(), subDomainIdx))
-                throw std::runtime_error(std::string("Could not find sub-domain index"));
+                throw std::runtime_error("Could not find sub-domain index");
 
             // store the fragments of this sub-domain
             const bool isDeleted = fragmentAlgo.IsDeleted(it.Value());

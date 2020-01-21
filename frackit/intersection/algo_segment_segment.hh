@@ -114,7 +114,7 @@ intersect_segment_segment(const Segment<ctype, wd>& segment1,
             }
         }
 
-        throw std::runtime_error(std::string("Could not find intersection point"));
+        throw std::runtime_error("Could not find intersection point");
     }
 
     // a pair of corners being equal is the last possible option

@@ -114,9 +114,9 @@ intersect_disk_disk(const Disk<ctype>& disk1,
 
     // if the result is a plane, find the intersection surface
     else if (std::holds_alternative<Plane<ctype, worldDim>>(planeIS))
-        throw std::runtime_error(std::string("NotImplemented: planar disk-disk intersections"));
+        throw std::runtime_error("NotImplemented: planar disk-disk intersections");
 
-    throw std::runtime_error(std::string("Unexpected plane-plane intersection result"));
+    throw std::runtime_error("Unexpected plane-plane intersection result");
 }
 
 } // end namespace IntersectionAlgorithms

@@ -57,7 +57,7 @@ namespace ConstraintImpl {
         msg += "\"" + geometryName(is) + "\"";
         msg += " and entity geometry ";
         msg += "\"" + geometryName(entity) + "\"";
-        throw std::runtime_error(std::string(msg));
+        throw std::runtime_error(msg);
     }
 
     /*!
@@ -158,7 +158,7 @@ namespace ConstraintImpl {
     bool isAdmissibleDistanceToBoundary(const TopoDS_Face& face,
                                         const Disk<ctype>& entity,
                                         ctype2 threshold)
-    { throw std::runtime_error(std::string("NotImplemented: face-entity boundary distance")); }
+    { throw std::runtime_error("NotImplemented: face-entity boundary distance"); }
 
     /*!
      * \brief Overload for edge intersections on faces.
@@ -182,7 +182,7 @@ namespace ConstraintImpl {
     bool isAdmissibleDistanceToBoundary(const TopoDS_Face& face,
                                         const TopoDS_Face& entity,
                                         ctype threshold)
-    { throw std::runtime_error(std::string("NotImplemented: face-entity boundary distance")); }
+    { throw std::runtime_error("NotImplemented: face-entity boundary distance"); }
 
     /*!
      * \brief Overload for std::variant.

@@ -32,22 +32,22 @@ int main()
     Point3 target(1.0, 1.0, 0.0);
 
     using Vector3 = typename Direction3::Vector;
-    if (Vector3(s1.source(), source).length() > 1e-7) throw std::runtime_error(std::string("Unexpected source 1"));
-    if (Vector3(s1.target(), target).length() > 1e-7) throw std::runtime_error(std::string("Unexpected target 1"));
+    if (Vector3(s1.source(), source).length() > 1e-7) throw std::runtime_error("Unexpected source 1");
+    if (Vector3(s1.target(), target).length() > 1e-7) throw std::runtime_error("Unexpected target 1");
 
-    if (Vector3(s2.source(), source).length() > 1e-7) throw std::runtime_error(std::string("Unexpected source 2"));
-    if (Vector3(s2.target(), target).length() > 1e-7) throw std::runtime_error(std::string("Unexpected target 2"));
+    if (Vector3(s2.source(), source).length() > 1e-7) throw std::runtime_error("Unexpected source 2");
+    if (Vector3(s2.target(), target).length() > 1e-7) throw std::runtime_error("Unexpected target 2");
 
-    if (Vector3(s3.source(), source).length() > 1e-7) throw std::runtime_error(std::string("Unexpected source 3"));
-    if (Vector3(s3.target(), target).length() > 1e-7) throw std::runtime_error(std::string("Unexpected target 3"));
+    if (Vector3(s3.source(), source).length() > 1e-7) throw std::runtime_error("Unexpected source 3");
+    if (Vector3(s3.target(), target).length() > 1e-7) throw std::runtime_error("Unexpected target 3");
 
     const auto p1 = plane1.projection(target);
     const auto p2 = plane2.projection(target);
     const auto p3 = plane3.projection(target);
 
-    if (Vector3(p1, Point3(1.0, 1.0, 0.0)).length() > 1e-7) throw std::runtime_error(std::string("Unexpected point projection 1"));
-    if (Vector3(p2, Point3(1.0, 1.0, 0.0)).length() > 1e-7) throw std::runtime_error(std::string("Unexpected point projection 2"));
-    if (Vector3(p3, Point3(1.0, 1.0, 0.0)).length() > 1e-7) throw std::runtime_error(std::string("Unexpected point projection 3"));
+    if (Vector3(p1, Point3(1.0, 1.0, 0.0)).length() > 1e-7) throw std::runtime_error("Unexpected point projection 1");
+    if (Vector3(p2, Point3(1.0, 1.0, 0.0)).length() > 1e-7) throw std::runtime_error("Unexpected point projection 2");
+    if (Vector3(p3, Point3(1.0, 1.0, 0.0)).length() > 1e-7) throw std::runtime_error("Unexpected point projection 3");
 
     std::cout << "All tests passed" << std::endl;
     return 0;
