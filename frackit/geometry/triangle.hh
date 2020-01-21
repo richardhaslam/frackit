@@ -122,7 +122,7 @@ public:
             case 0: return Segment(corners_[0], corners_[1]);
             case 1: return Segment(corners_[1], corners_[2]);
             case 2: return Segment(corners_[2], corners_[0]);
-            default: throw std::runtime_error(std::string("Invalid edge index"));
+            default: throw std::runtime_error("Invalid edge index");
         }
     }
 

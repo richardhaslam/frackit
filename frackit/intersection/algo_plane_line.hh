@@ -70,7 +70,7 @@ intersect_plane_line(const Plane<ctype, 3>& plane,
         Handle(Geom_Line) lineHandle = new Geom_Line(linePoint, lineDir);
         GeomAPI_IntCS interSection(lineHandle, planeHandle);
         if (!interSection.IsDone())
-            throw std::runtime_error(std::string("Could not perform disk-line intersection"));
+            throw std::runtime_error("Could not perform disk-line intersection");
 
         assert(interSection.NbSegments() == 0);
         assert(interSection.NbPoints() == 1);

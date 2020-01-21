@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     // brep file name is specified in CMakeLists.txt
     std::ifstream domainShapeFile(BREPFILE);
     if (!domainShapeFile)
-        throw std::runtime_error(std::string("Could not open shape file"));
+        throw std::runtime_error("Could not open shape file");
 
     TopoDS_Shape domainShape;
     BRepTools::Read(domainShape, domainShapeFile, BRep_Builder());

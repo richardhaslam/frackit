@@ -123,7 +123,7 @@ namespace OCCUtilities {
     //! get the BRep of a geometry (overloads provided)
     template<class Geo>
     TopoDS_Shape getShape(const Geo& p)
-    { throw std::runtime_error(std::string("getShape() not implemented for " + Geo::name())); }
+    { throw std::runtime_error("getShape() not implemented for " + Geo::name()); }
 
     //! get the BRep of a point
     template<class ctype, int worldDim>
@@ -156,7 +156,7 @@ namespace OCCUtilities {
                                               2.0*M_PI);
         makeCylinder.Build();
         if (!makeCylinder.IsDone())
-            throw std::runtime_error(std::string("Could not build cylinder"));
+            throw std::runtime_error("Could not build cylinder");
         return TopoDS::Solid(makeCylinder.Shape());
     }
 
@@ -174,7 +174,7 @@ namespace OCCUtilities {
                                               2.0*M_PI);
         makeCylinder.Build();
         if (!makeCylinder.IsDone())
-            throw std::runtime_error(std::string("Could not build cylinder"));
+            throw std::runtime_error("Could not build cylinder");
         return makeCylinder.Cylinder().LateralFace();
     }
 
@@ -252,7 +252,7 @@ namespace OCCUtilities {
         BRepPrimAPI_MakeBox makeBox(pMin, pMax);
         makeBox.Build();
         if (!makeBox.IsDone())
-            throw std::runtime_error(std::string("Could not build box"));
+            throw std::runtime_error("Could not build box");
         return TopoDS::Solid(makeBox.Shape());
     }
 
@@ -347,7 +347,7 @@ namespace OCCUtilities {
         cut.SetFuzzyValue(eps);
         cut.Build();
         if (!cut.IsDone())
-            throw std::runtime_error(std::string("Could not perform cut operation"));
+            throw std::runtime_error("Could not perform cut operation");
 
         return cut.Shape();
     }
@@ -361,7 +361,7 @@ namespace OCCUtilities {
         common.SetFuzzyValue(eps);
         common.Build();
         if (!common.IsDone())
-            throw std::runtime_error(std::string("Common operation failed"));
+            throw std::runtime_error("Common operation failed");
 
         return common.Shape();
     }
@@ -380,7 +380,7 @@ namespace OCCUtilities {
         fragments.SetFuzzyValue(eps);
         fragments.Build();
         if (!fragments.IsDone())
-            throw std::runtime_error(std::string("Could not perform fragmentation"));
+            throw std::runtime_error("Could not perform fragmentation");
 
         return fragments.Shape();
     }
@@ -400,7 +400,7 @@ namespace OCCUtilities {
         fuse.SetFuzzyValue(eps);
         fuse.Build();
         if (!fuse.IsDone())
-            throw std::runtime_error(std::string("Could not perform union"));
+            throw std::runtime_error("Could not perform union");
 
         return fuse.Shape();
     }

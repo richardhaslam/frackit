@@ -32,9 +32,9 @@ int main()
     const auto norm2 = sqrt(d2.x()*d2.x()+d2.y()*d2.y());
     const auto norm3 = sqrt(d3.x()*d3.x()+d3.y()*d3.y()+d3.z()*d3.z());
 
-    if (abs(1.0 - norm1) > 1e-6) throw std::runtime_error(std::string("1d direction is " + std::to_string(norm1) + ", not unity"));
-    if (abs(1.0 - norm2) > 1e-6) throw std::runtime_error(std::string("2d direction is " + std::to_string(norm2) + ", not unity"));
-    if (abs(1.0 - norm3) > 1e-6) throw std::runtime_error(std::string("3d direction is " + std::to_string(norm3) + ", not unity"));
+    if (abs(1.0 - norm1) > 1e-6) throw std::runtime_error("1d direction is " + std::to_string(norm1) + ", not unity");
+    if (abs(1.0 - norm2) > 1e-6) throw std::runtime_error("2d direction is " + std::to_string(norm2) + ", not unity");
+    if (abs(1.0 - norm3) > 1e-6) throw std::runtime_error("3d direction is " + std::to_string(norm3) + ", not unity");
 
     std::cout << d1 << std::endl;
     std::cout << d2 << std::endl;

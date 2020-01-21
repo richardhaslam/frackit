@@ -6,14 +6,14 @@ enum IntersectionType { line, plane, empty };
 template<class G>
 void checkResultGeometry(const G& geometry, IntersectionType expected)
 {
-    throw std::runtime_error(std::string("Unexpected intersection geometry"));
+    throw std::runtime_error("Unexpected intersection geometry");
 }
 
 void checkResultGeometry(const Frackit::EmptyIntersection<3>& empty, IntersectionType expected)
 {
     std::cout << "Found empty intersection" << std::endl;
     if (expected != IntersectionType::empty)
-        throw std::runtime_error(std::string("Got an unexpected empty intersection"));
+        throw std::runtime_error("Got an unexpected empty intersection");
 }
 
 template<class CT>
@@ -22,7 +22,7 @@ void checkResultGeometry(const Frackit::Line<CT, 3>& line, IntersectionType expe
     std::cout << "Found intersection line with support " << line.supportingPoint() << " "
               << "and direction " << Frackit::Vector<CT, 3>(line.direction()) << std::endl;
     if (expected != IntersectionType::line)
-        throw std::runtime_error(std::string("Got an unexpected line intersection"));
+        throw std::runtime_error("Got an unexpected line intersection");
 }
 
 template<class CT>
@@ -33,7 +33,7 @@ void checkResultGeometry(const Frackit::Plane<CT, 3>& plane, IntersectionType ex
               << "base2: " << Frackit::Vector<CT, 3>(plane.base2()) << ", "
               << "normal: " << Frackit::Vector<CT, 3>(plane.normal()) << std::endl;
     if (expected != IntersectionType::plane)
-        throw std::runtime_error(std::string("Got an unexpected plane intersection"));
+        throw std::runtime_error("Got an unexpected plane intersection");
 }
 
 template<class CT>
@@ -44,13 +44,13 @@ void checkLineOrientation(const Frackit::Line<CT, 3>& line)
 
     using std::abs;
     if ( abs(v1*v2) > 1e-7 )
-        throw std::runtime_error(std::string("Unexpected line orientation"));
+        throw std::runtime_error("Unexpected line orientation");
 }
 
 template<class G>
 void checkLineOrientation(const G& geometry)
 {
-    throw std::runtime_error(std::string("Line orientation check called with non-line geometry"));
+    throw std::runtime_error("Line orientation check called with non-line geometry");
 }
 
 //! test plane-plane intersections

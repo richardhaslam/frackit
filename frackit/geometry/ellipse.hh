@@ -168,7 +168,7 @@ public:
     {
         if (checkIfOnEllipse)
             if (!contains(p))
-                throw std::runtime_error(std::string("Point not on ellipse!"));
+                throw std::runtime_error("Point not on ellipse!");
 
         const auto d = Vector(this->center(), p);
         const auto x = d*Vector(this->majorAxis());

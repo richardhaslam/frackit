@@ -18,7 +18,7 @@ int main()
     const auto p32 = p3 + Frackit::Vector<ctype, 3>(1.0, 2.0, 3.0);
     p3 += Frackit::Vector<ctype, 3>(1.0, 2.0, 3.0);
     if (!p3.isEqual(p32))
-        throw std::runtime_error(std::string("p32 != p3"));
+        throw std::runtime_error("p32 != p3");
 
     return 0;
 }

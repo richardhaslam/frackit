@@ -58,7 +58,7 @@ find_touching_points(const TopoDS_Face& face,
     // cut the wire by the shape and check if new edges were created
     const auto faceWires = OCCUtilities::getWires(face);
     if (faceWires.size() != 1)
-        throw std::runtime_error(std::string("Algorithm expects face bounded by a single wire"));
+        throw std::runtime_error("Algorithm expects face bounded by a single wire");
 
     const auto wireCut = OCCUtilities::cut(faceWires[0], shape, eps);
 

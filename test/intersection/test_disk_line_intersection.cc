@@ -7,7 +7,7 @@ enum IntersectionType { point, segment, empty };
 template<class G>
 void checkResultGeometry(const G& geometry, IntersectionType expected)
 {
-    throw std::runtime_error(std::string("Unexpected intersection geometry"));
+    throw std::runtime_error("Unexpected intersection geometry");
 }
 
 template<int wd>
@@ -15,7 +15,7 @@ void checkResultGeometry(const Frackit::EmptyIntersection<wd>& empty, Intersecti
 {
     std::cout << "Found empty intersection" << std::endl;
     if (expected != IntersectionType::empty)
-        throw std::runtime_error(std::string("Got an unexpected empty intersection"));
+        throw std::runtime_error("Got an unexpected empty intersection");
 }
 
 template<class CT, int wd>
@@ -23,7 +23,7 @@ void checkResultGeometry(const Frackit::Point<CT, wd>& p, IntersectionType expec
 {
     std::cout << "Found intersection point at " << p << std::endl;
     if (expected != IntersectionType::point)
-        throw std::runtime_error(std::string("Got an unexpected point intersection"));
+        throw std::runtime_error("Got an unexpected point intersection");
 }
 
 template<class CT, int wd>
@@ -33,7 +33,7 @@ void checkResultGeometry(const Frackit::Segment<CT, wd>& segment, IntersectionTy
               << segment.source() << " - " << segment.target()
               << " and length " << Frackit::computeLength(segment) << std::endl;
     if (expected != IntersectionType::segment)
-        throw std::runtime_error(std::string("Got an unexpected segment intersection"));
+        throw std::runtime_error("Got an unexpected segment intersection");
 }
 
 //! test disk-disk intersections

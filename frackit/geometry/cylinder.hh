@@ -106,7 +106,7 @@ public:
         using std::abs;
         const auto eps = bottom.majorAxisLength()*Precision<ctype>::confusion();
         if (abs(bottom.majorAxisLength() - bottom.minorAxisLength()) > eps)
-            throw std::runtime_error(std::string("Cylinder requires circular disks as base"));
+            throw std::runtime_error("Cylinder requires circular disks as base");
     }
 
     //! Return the name of the geometry

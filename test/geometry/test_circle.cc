@@ -18,19 +18,19 @@ int main()
     // check normal vector
     using std::abs;
     if ( abs(abs(Vector(0.0, 0.0, 1.0)*Vector(circle.normal())) - 1.0) > 1e-7 )
-        throw std::runtime_error(std::string("Unexpected circle normal"));
+        throw std::runtime_error("Unexpected circle normal");
 
     // point that is just next to the circle
     if (circle.contains(Point(1.0 - 1e-6, 0.0, 0.0)))
-        throw std::runtime_error(std::string("False positive contains() result"));
+        throw std::runtime_error("False positive contains() result");
 
     // point that is just next to the circle
     if (circle.contains(Point(1.0 + 1e-6, 0.0, 0.0)))
-        throw std::runtime_error(std::string("False positive contains() result"));
+        throw std::runtime_error("False positive contains() result");
 
     // point that is on
     if (!circle.contains(Point(1.0, 0.0, 0.0)))
-        throw std::runtime_error(std::string("False negative contains() result"));
+        throw std::runtime_error("False negative contains() result");
 
     std::cout << "All tests passed" << std::endl;
     return 0;

@@ -57,7 +57,7 @@ intersect_shell_disk(const TopoDS_Shell& shell,
     BRepBuilderAPI_MakeSolid makeSolid(shell);
     makeSolid.Build();
     if (!makeSolid.IsDone())
-        throw std::runtime_error(std::string("Could not build solid"));
+        throw std::runtime_error("Could not build solid");
 
     const auto& solid = TopoDS::Solid(makeSolid.Shape());
     const auto& diskFace = OCCUtilities::getShape(disk);

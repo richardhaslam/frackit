@@ -17,35 +17,35 @@ int main()
     // check normal vector
     using std::abs;
     if ( abs(abs(Vector(0.0, 0.0, 1.0)*Vector(surface.direction())) - 1.0) > 1e-7 )
-        throw std::runtime_error(std::string("Unexpected direction"));
+        throw std::runtime_error("Unexpected direction");
 
     // test contains() functionality
     if (surface.contains(Point(0.0 - 1e-6, 0.0, 0.0)))
-        throw std::runtime_error(std::string("False positive contains() result"));
+        throw std::runtime_error("False positive contains() result");
 
     if (surface.contains(Point(0.0, 0.0, 2.0 + 1e-6)))
-        throw std::runtime_error(std::string("False positive contains() result"));
+        throw std::runtime_error("False positive contains() result");
 
     if (surface.contains(Point(0.0 + 1e-6, 0.0, 0.0)))
-        throw std::runtime_error(std::string("False positive contains() result"));
+        throw std::runtime_error("False positive contains() result");
 
     if (surface.contains(Point(0.0, 0.0, 2.0 - 1e-6)))
-        throw std::runtime_error(std::string("False positive contains() result"));
+        throw std::runtime_error("False positive contains() result");
 
     if (surface.contains(Point(1.0 + 1e-6, 0.0, 1.0)))
-        throw std::runtime_error(std::string("False positive contains() result"));
+        throw std::runtime_error("False positive contains() result");
 
     if (surface.contains(Point(1.0 - 1e-6, 0.0, 1.0)))
-        throw std::runtime_error(std::string("False positive contains() result"));
+        throw std::runtime_error("False positive contains() result");
 
     if (!surface.cylinder().contains(Point(1.0 - 1e-6, 0.0, 1.0)))
-        throw std::runtime_error(std::string("False positive contains() result on cylinder"));
+        throw std::runtime_error("False positive contains() result on cylinder");
 
     if (!surface.contains(Point(1.0, 0.0, 1.0)))
-        throw std::runtime_error(std::string("False negative contains() result"));
+        throw std::runtime_error("False negative contains() result");
 
     if (!surface.contains(Point(1.0, 0.0, 2.0)))
-        throw std::runtime_error(std::string("False negative contains() result"));
+        throw std::runtime_error("False negative contains() result");
 
     std::cout << "All tests passed" << std::endl;
     return 0;

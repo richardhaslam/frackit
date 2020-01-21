@@ -34,7 +34,7 @@ int main()
         // disk outside the box. Area should be zero.
         Disk disk(Point(1.5*f, 0.0, 0.5*f), e1, e2, 0.5*f, 0.5*f);
         if (computeContainedMagnitude(disk, box))
-            throw std::runtime_error(std::string("Test 1 failed"));
+            throw std::runtime_error("Test 1 failed");
         std::cout << "Test 1 passed" << std::endl;
 
         // disk area should be half of the original one.
@@ -42,7 +42,7 @@ int main()
         Disk disk2(Point(1.0*f, 0.5*f, 0.5*f), e1, e2, 0.5*f, 0.5*f);
         const auto eps = defaultEpsilon(disk2);
         if ( abs(computeContainedMagnitude(disk2, box) - 0.5*disk.area()) > eps*eps)
-            throw std::runtime_error(std::string("Test 2 failed"));
+            throw std::runtime_error("Test 2 failed");
         std::cout << "Test 2 passed" << std::endl;
     }
 

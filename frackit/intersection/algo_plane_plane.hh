@@ -74,7 +74,7 @@ intersect_plane_plane(const Plane<ctype, 3>& plane1,
     Handle(Geom_Plane) gpPlane2 = new Geom_Plane(c2, d2);
     GeomAPI_IntSS interSection(gpPlane1, gpPlane2, eps);
     if (!interSection.IsDone())
-        throw std::runtime_error(std::string("Could not perform plane-plane intersection"));
+        throw std::runtime_error("Could not perform plane-plane intersection");
 
     assert(interSection.NbLines() == 1);
     assert(!interSection.Line(1)->IsClosed());

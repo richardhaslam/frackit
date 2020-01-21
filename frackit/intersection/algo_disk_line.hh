@@ -117,10 +117,10 @@ intersect_disk_line(const Disk<ctype>& disk,
             }
         }
 
-        throw std::runtime_error(std::string("Unexpected code behaviour"));
+        throw std::runtime_error("Unexpected code behaviour");
     }
 
-    throw std::runtime_error(std::string("Unexpected Plane-Line intersection result"));
+    throw std::runtime_error("Unexpected Plane-Line intersection result");
 }
 
 } // end namespace IntersectionAlgorithms
