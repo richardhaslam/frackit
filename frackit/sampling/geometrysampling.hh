@@ -29,7 +29,6 @@ namespace Frackit {
 template<class Geometry> struct DefaultSamplerTraits;
 
 /*!
- * \file
  * \brief Forward declaration of sampler classes used to
  *        randomly generate geometries. The sampler class
  *        is specialized for different geometries, and the
