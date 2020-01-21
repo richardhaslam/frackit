@@ -7,4 +7,5 @@ entitynetworkinterface.hh
 impl_admissibledimension.hh
 impl_admissiblemagnitude.hh
 impl_distancetoboundary.hh
+networkbuilder.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/entitynetwork)
