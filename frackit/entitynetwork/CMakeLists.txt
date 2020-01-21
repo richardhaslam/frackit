@@ -1,6 +1,7 @@
 install(FILES
 constraints.hh
 containedentitynetworkinterface.hh
+entitynetwork.hh
 entitynetworkinterface.hh
 impl_admissibledimension.hh
 impl_admissiblemagnitude.hh
