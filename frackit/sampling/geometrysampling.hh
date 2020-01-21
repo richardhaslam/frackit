@@ -38,7 +38,7 @@ template<class Geometry> struct DefaultSamplerTraits;
  *        sampler implementation.
  */
 template<class Geometry, class T = DefaultSamplerTraits<Geometry>>
-struct GeometrySampler;
+class GeometrySampler;
 
 } // end namespace Frackit
 
