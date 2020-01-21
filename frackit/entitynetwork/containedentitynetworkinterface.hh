@@ -30,6 +30,8 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <frackit/common/id.hh>
+
 namespace Frackit {
 
 /*!
@@ -65,27 +67,27 @@ public:
     { return domainDimension_; }
 
     /*!
-     * \brief Returns the indices of defined the sub-domains
+     * \brief Returns the ids of defined the sub-domains
      */
-    virtual const std::vector<std::size_t>& subDomainIndices() const = 0;
+    virtual const std::vector<Id>& subDomainIds() const = 0;
 
     /*!
      * \brief Returns the fragments of a sub-domain
      * \param subDomainIdx The index of the sub-domain
      */
-    virtual const TopTools_ListOfShape& subDomainFragments(std::size_t subDomainIdx) const = 0;
+    virtual const TopTools_ListOfShape& subDomainFragments(Id subDomainId) const = 0;
 
     /*!
      * \brief Returns the entity fragments of the network defined for a sub-domain
      * \param subDomainIdx The index of the sub-domain
      */
-    virtual const TopTools_ListOfShape& subDomainEntityFragments(std::size_t subDomainIdx) const = 0;
+    virtual const TopTools_ListOfShape& subDomainEntityFragments(Id subDomainId) const = 0;
 
     /*!
      * \brief Returns the map which maps each fragment the network of a sub-domain to its primary entity index.
      * \param subDomainIdx The index of the sub-domain
      */
-    virtual const TopTools_DataMapOfShapeInteger& subDomainEntityFragmentsIndexMap(std::size_t subDomainIdx) const = 0;
+    virtual const TopTools_DataMapOfShapeInteger& subDomainEntityFragmentsIndexMap(Id subDomainId) const = 0;
 
 private:
     int entityDimension_;

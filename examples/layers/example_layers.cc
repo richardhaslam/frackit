@@ -213,13 +213,13 @@ int main(int argc, char** argv)
     ContainedEntityNetworkBuilder containedConfinedBuilder;
 
     // define sub-domains
-    containedConfinedBuilder.addSubDomain(solids[0],     /*subDomainIndex*/1);
-    containedConfinedBuilder.addSubDomain(networkDomain, /*subDomainIndex*/2);
-    containedConfinedBuilder.addSubDomain(solids[2],     /*subDomainIndex*/3);
+    containedConfinedBuilder.addConfiningSubDomain(solids[0],     Id(1));
+    containedConfinedBuilder.addConfiningSubDomain(networkDomain, Id(2));
+    containedConfinedBuilder.addConfiningSubDomain(solids[2],     Id(3));
 
     // define entity network for sub-domain 2
-    containedConfinedBuilder.addSubDomainEntities(diskSet1, 2);
-    containedConfinedBuilder.addSubDomainEntities(diskSet2, 2);
+    containedConfinedBuilder.addSubDomainEntities(diskSet1, Id(2));
+    containedConfinedBuilder.addSubDomainEntities(diskSet2, Id(2));
 
     // build network
     const auto containedConfinedNetwork = containedConfinedBuilder.build();
@@ -230,15 +230,13 @@ int main(int argc, char** argv)
     ContainedEntityNetworkBuilder containedUnconfinedBuilder;
 
     // define sub-domains
-    containedUnconfinedBuilder.addSubDomain(solids[0],     /*subDomainIndex*/1);
-    containedUnconfinedBuilder.addSubDomain(solids[2],     /*subDomainIndex*/3);
-    containedUnconfinedBuilder.addSubDomain(networkDomain,
-                                            /*subDomainIndex*/2,
-                                            /*confineEmbeddedNetwork*/false);
+    containedUnconfinedBuilder.addSubDomain(solids[0],     Id(1));
+    containedUnconfinedBuilder.addSubDomain(solids[2],     Id(3));
+    containedUnconfinedBuilder.addSubDomain(networkDomain, Id(2));
 
     // define entity network for sub-domain 2
-    containedUnconfinedBuilder.addSubDomainEntities(diskSet1, 2);
-    containedUnconfinedBuilder.addSubDomainEntities(diskSet2, 2);
+    containedUnconfinedBuilder.addSubDomainEntities(diskSet1, Id(2));
+    containedUnconfinedBuilder.addSubDomainEntities(diskSet2, Id(2));
 
     // build network
     const auto containedUnconfinedNetwork = containedUnconfinedBuilder.build();
@@ -251,13 +249,11 @@ int main(int argc, char** argv)
     EntityNetworkBuilder uncontainedConfinedBuilder;
 
     // define sub-domains
-    uncontainedConfinedBuilder.addSubDomain(networkDomain,
-                                            /*subDomainIndex*/1,
-                                            /*confineEmbeddedNetwork*/true);
+    uncontainedConfinedBuilder.addConfiningSubDomain(networkDomain, Id(1));
 
     // define entity network for sub-domain 2
-    uncontainedConfinedBuilder.addSubDomainEntities(diskSet1, 1);
-    uncontainedConfinedBuilder.addSubDomainEntities(diskSet2, 1);
+    uncontainedConfinedBuilder.addSubDomainEntities(diskSet1, Id(1));
+    uncontainedConfinedBuilder.addSubDomainEntities(diskSet2, Id(1));
 
     // build network
     const auto uncontainedConfinedNetwork = uncontainedConfinedBuilder.build();

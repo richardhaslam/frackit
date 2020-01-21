@@ -32,6 +32,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <frackit/common/id.hh>
 #include "containedentitynetworkinterface.hh"
 
 namespace Frackit {
@@ -67,43 +68,43 @@ public:
     , subDomainEntityFragments_(std::move(entityFragments))
     , subDomainEntityFragmentIndexMap_(std::move(entityFragmentMaps))
     {
-        subDomainIndices_.reserve(subDomainFragments_.size());
+        subDomainIds_.reserve(subDomainFragments_.size());
         for (const auto& sdDataPair : subDomainFragments_)
-            subDomainIndices_.push_back(sdDataPair.first);
+            subDomainIds_.emplace_back(sdDataPair.first);
     }
 
     /*!
-     * \brief Returns the indices of defined the sub-domains
+     * \brief Returns the ids of defined the sub-domains
      */
-    const std::vector<std::size_t>& subDomainIndices() const override
-    { return subDomainIndices_; }
+    const std::vector<Id>& subDomainIds() const override
+    { return subDomainIds_; }
 
     /*!
      * \brief Returns the fragments of a sub-domain
      * \param subDomainIdx The index of the sub-domain
      */
-    const TopTools_ListOfShape& subDomainFragments(std::size_t subDomainIdx) const override
-    { return subDomainFragments_.at(subDomainIdx); }
+    const TopTools_ListOfShape& subDomainFragments(Id subDomainId) const override
+    { return subDomainFragments_.at(subDomainId.get()); }
 
     /*!
      * \brief Returns the entity fragments of the network defined for a sub-domain
      * \param subDomainIdx The index of the sub-domain
      */
-    const TopTools_ListOfShape& subDomainEntityFragments(std::size_t subDomainIdx) const override
-    { return subDomainEntityFragments_.at(subDomainIdx); }
+    const TopTools_ListOfShape& subDomainEntityFragments(Id subDomainId) const override
+    { return subDomainEntityFragments_.at(subDomainId.get()); }
 
     /*!
      * \brief Returns the map which maps each fragment the network of a sub-domain to its primary entity index.
      * \param subDomainIdx The index of the sub-domain
      */
-    const TopTools_DataMapOfShapeInteger& subDomainEntityFragmentsIndexMap(std::size_t subDomainIdx) const override
-    { return subDomainEntityFragmentIndexMap_.at(subDomainIdx); }
+    const TopTools_DataMapOfShapeInteger& subDomainEntityFragmentsIndexMap(Id subDomainId) const override
+    { return subDomainEntityFragmentIndexMap_.at(subDomainId.get()); }
 
 private:
     std::unordered_map<std::size_t, TopTools_ListOfShape> subDomainFragments_;
     std::unordered_map<std::size_t, TopTools_ListOfShape> subDomainEntityFragments_;
     std::unordered_map<std::size_t, TopTools_DataMapOfShapeInteger> subDomainEntityFragmentIndexMap_;
-    std::vector<std::size_t> subDomainIndices_;
+    std::vector<Id> subDomainIds_;
 };
 
 } // end namespace Frackit

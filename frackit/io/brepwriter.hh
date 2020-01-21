@@ -127,12 +127,12 @@ private:
     void makeEntityMap_(const ContainedEntityNetwork& network)
     {
         std::size_t subNetworkOffset = 0;
-        for (auto idx : network.subDomainIndices())
+        for (const auto& id : network.subDomainIds())
         {
             // the map maps to the entity index within the sub-domain network
             // Therefore, we add the offset in order to ensure that we don't add
             // entities from another network to the same primary entity index
-            const auto& map = network.subDomainEntityFragmentsIndexMap(idx);
+            const auto& map = network.subDomainEntityFragmentsIndexMap(id);
             for (TopTools_DataMapIteratorOfDataMapOfShapeInteger it(map); it.More(); it.Next())
             {
                 allEntities_.Append(it.Key());
@@ -198,16 +198,16 @@ private:
      */
     void makeSubShapeMaps_(const ContainedEntityNetwork& network)
     {
-        for (auto idx : network.subDomainIndices())
+        for (auto id : network.subDomainIds())
         {
-            const auto& sdFragments = network.subDomainFragments(idx);
+            const auto& sdFragments = network.subDomainFragments(id);
             for (TopTools_ListIteratorOfListOfShape it(sdFragments); it.More(); it.Next())
-                addSolids_(it.Value(), idx);
+                addSolids_(it.Value(), id.get());
         }
 
-        for (auto idx : network.subDomainIndices())
+        for (auto id : network.subDomainIds())
         {
-            const auto& sdEntityFragments = network.subDomainEntityFragments(idx);
+            const auto& sdEntityFragments = network.subDomainEntityFragments(id);
             for (TopTools_ListIteratorOfListOfShape it(sdEntityFragments); it.More(); it.Next())
                 addFaces_(it.Value());
         }

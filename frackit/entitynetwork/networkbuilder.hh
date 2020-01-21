@@ -18,7 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief TODO
+ * \brief Contains builder classes for entity networks.
  */
 #ifndef FRACKIT_ENTITY_NETWORK_BUILDER_HH
 #define FRACKIT_ENTITY_NETWORK_BUILDER_HH
@@ -33,10 +33,12 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <frackit/occ/breputilities.hh>
+#include <frackit/common/id.hh>
 #include <frackit/common/extractdimension.hh>
+
 #include <frackit/precision/defaultepsilon.hh>
 #include <frackit/precision/precision.hh>
+#include <frackit/occ/breputilities.hh>
 
 #include "entitynetwork.hh"
 #include "containedentitynetwork.hh"
@@ -108,38 +110,53 @@ public:
     /*!
      * \brief Defines a sub-domain which potentially
      *        contains an embedded entity network.
+     *        Networks defined for this sub-domain
+     *        will not be confined by the sub-domain's
+     *        boundary.
      * \param domain The sub-domain geometry
-     * \param index The index to be used for this sub-domain
-     * \param boundsNetwork If set to true, the entity network
-     *                      defined for this sub-domain will be
-     *                      confined to it, cutting away entities
-     *                      or those parts of entities that lie outside.
+     * \param subDomainId The identifier (index) to be used for this sub-domain
      */
     template<class Domain>
-    void addSubDomain(const Domain& domain, std::size_t index, bool boundsNetwork = true)
+    void addSubDomain(const Domain& domain, Id subDomainId)
     {
         const auto domainDim = getDimension(domain);
         if (!networks_.empty() && domainDim <= entityDimension_)
             throw std::runtime_error("Sub-domain dimension must be greater than entity dimension");
         if (!subDomains_.empty() && domainDim != domainDimension_)
             throw std::runtime_error("Sub-domain dimension does not match to previously added");
-        if (subDomains_.find(index) != subDomains_.end())
-            throw std::runtime_error("Sub-domain index already taken!");
+        if (subDomains_.find(subDomainId.get()) != subDomains_.end())
+            throw std::runtime_error("Sub-domain id already taken!");
 
         domainDimension_ = domainDim;
-        subDomains_[index] = OCCUtilities::getShape(domain);
-        subDomainBoundsNetwork_[index] = boundsNetwork;
+        subDomains_[subDomainId.get()] = OCCUtilities::getShape(domain);
+        subDomainBoundsNetwork_[subDomainId.get()] = false;
+    }
+
+    /*!
+     * \brief Defines a sub-domain which potentially
+     *        contains an embedded entity network.
+     *        Using this interface, the sub-domain is
+     *        defined as confining, that is, the
+     *        network embedded in it will be confined
+     *        by the sub-domain's boundary.
+     * \param domain The sub-domain geometry
+     * \param subDomainId The identifier (index) to be used for this sub-domain
+     */
+    template<class Domain>
+    void addConfiningSubDomain(const Domain& domain, Id subDomainId)
+    {
+        addSubDomain(domain, subDomainId);
+        subDomainBoundsNetwork_[subDomainId.get()] = true;
     }
 
     /*!
      * \brief Adds an entity to the network embedded in
      *        the sub-domain with index subDomainIndex.
      * \param entity The entity geometry
-     * \param subDomainIndex The index of the sub-domain
-     *                       this entity is embedded in
+     * \param subDomainId The identifier (index) to be used for this sub-domain
      */
     template<class Entity>
-    void addSubDomainEntity(const Entity& entity, std::size_t subDomainIndex)
+    void addSubDomainEntity(const Entity& entity, Id subDomainId)
     {
         const auto entityDim = getDimension(entity);
         if (!networks_.empty() && getDimension(entity) != entityDimension_)
@@ -148,21 +165,20 @@ public:
             throw std::runtime_error("Entity dimension must be smaller than domain dimension");
 
         entityDimension_ = entityDim;
-        networks_[subDomainIndex].Append(OCCUtilities::getShape(entity));
+        networks_[subDomainId.get()].Append(OCCUtilities::getShape(entity));
     }
 
     /*!
      * \brief Adds a set of entities to the network
      *        embedded in sub-domain with index subDomainIndex.
      * \param entities The set of entities
-     * \param subDomainIndex The index of the sub-domain in which
-     *                       the given entities are embedded.
+     * \param subDomainId The identifier (index) to be used for this sub-domain
      */
     template<class EntityNetwork>
-    void addSubDomainEntities(const EntityNetwork& entities, std::size_t subDomainIndex)
+    void addSubDomainEntities(const EntityNetwork& entities, Id subDomainId)
     {
         for (const auto& entity : entities)
-            addSubDomainEntity(entity, subDomainIndex);
+            addSubDomainEntity(entity, subDomainId);
     }
 
     /*!
