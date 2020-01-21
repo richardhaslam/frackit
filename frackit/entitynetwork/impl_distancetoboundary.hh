@@ -108,7 +108,7 @@ namespace ConstraintImpl {
         const auto sourceOnBound = pointOnGeometryBoundary(arc.source(), entity);
         const auto targetOnBound = pointOnGeometryBoundary(arc.target(), entity);
 
-        // if any of the two rouches the boundary, only check source or target
+        // if any of the two touches the boundary, only check source or target
         if (sourceOnBound || targetOnBound)
         {
             if (!sourceOnBound
