@@ -22,7 +22,7 @@
 #include <frackit/precision/precision.hh>
 
 #include <frackit/sampling/pointsampler.hh>
-#include <frackit/sampling/geometrysampling.hh>
+#include <frackit/sampling/disksampler.hh>
 
 #include <frackit/entitynetwork/containedentitynetwork.hh>
 #include <frackit/entitynetwork/networkbuilder.hh>

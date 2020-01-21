@@ -12,7 +12,7 @@
 #include <frackit/occ/breputilities.hh>
 
 #include <frackit/sampling/pointsampler.hh>
-#include <frackit/sampling/geometrysampling.hh>
+#include <frackit/sampling/disksampler.hh>
 
 #include <frackit/entitynetwork/constraints.hh>
 
@@ -35,7 +35,6 @@ int main()
     auto pointSampler = makeUniformPointSampler(domain);
 
     // sampler for disks of orientation 1
-    using DiskSampler = GeometrySampler<Disk>;
     DiskSampler diskSampler_1(std::normal_distribution<ctype>(0.35, 0.1),
                               std::normal_distribution<ctype>(0.225, 0.05),
                               std::normal_distribution<ctype>(toRadians(25.0), toRadians(5.0)),
@@ -102,8 +101,8 @@ int main()
         else if (createSecondary && accepted_2 == numTargetEntities_2)
             createSecondary = false;
 
-        auto disk = createSecondary ? diskSampler_1(pointSampler)
-                                    : diskSampler_2(pointSampler);
+        auto disk = createSecondary ? diskSampler_1( pointSampler() )
+                                    : diskSampler_2( pointSampler() );
         total++;
 
         // We don't want ellipses of too large aspect ratio
