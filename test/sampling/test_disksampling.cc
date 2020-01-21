@@ -11,7 +11,7 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/occ/breputilities.hh>
 #include <frackit/sampling/geometrysampling.hh>
-#include <frackit/sampling/pointsampling.hh>
+#include <frackit/sampling/pointsampler.hh>
 
 //! test random sampling of points on geometries
 int main()

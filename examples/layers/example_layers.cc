@@ -22,7 +22,7 @@
 #include <frackit/occ/breputilities.hh>
 
 // sampler for points and disks
-#include <frackit/sampling/pointsampling.hh>
+#include <frackit/sampling/pointsampler.hh>
 #include <frackit/sampling/geometrysampling.hh>
 
 // constraints to be enforced on the network (distance, angles, etc.)
