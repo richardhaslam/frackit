@@ -110,5 +110,6 @@ include_directories( ${CMAKE_SOURCE_DIR} )
 # include subdirectories
 add_subdirectory(cmake)
 add_subdirectory(doc)
+add_subdirectory(examples)
 add_subdirectory(frackit)
 add_subdirectory(test)
