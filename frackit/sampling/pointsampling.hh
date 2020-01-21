@@ -116,6 +116,9 @@ makeUniformPointSampler(const Box<ctype>& box)
 /*!
  * \brief Convenience function to create a point sampler that
  *        uniformly samples points on a cylinder.
+ * \note Sampling along the radius coordinate is in the interval [0, r^2]
+ *       and the square root is taken after sampling in order to get a
+ *       uniform distribution on the cylinder disks.
  */
 template< class ctype >
 GeometryPointSampler< Cylinder<ctype>, UniformPointSamplerTraits<ctype, 3> >
@@ -124,7 +127,7 @@ makeUniformPointSampler(const Cylinder<ctype>& cylinder)
     using Traits = UniformPointSamplerTraits<ctype, 3>;
     using Sampler = GeometryPointSampler<Cylinder<ctype>, Traits>;
     return Sampler( cylinder,
-                    typename Traits::DistroBase1(0.0, cylinder.radius()),
+                    typename Traits::DistroBase1(0.0, cylinder.radius()*cylinder.radius()),
                     typename Traits::DistroBase2(0.0, 2*M_PI),
                     typename Traits::DistroBase3(0.0, cylinder.height()) );
 }
@@ -181,7 +184,7 @@ public:
 template<class ctype, class T>
 class GeometryPointSampler< Cylinder<ctype>, T >
 {
-    using DistroRadius = typename T::DistroBase1;
+    using DistroRadiusSquared = typename T::DistroBase1;
     using DistroAngle = typename T::DistroBase2;
     using DistroHeight = typename T::DistroBase3;
 
@@ -196,24 +199,31 @@ public:
      * \brief Constructor from a cylinder and distributions.
      */
     GeometryPointSampler(const Cylinder<ctype>& cylinder,
-                         const DistroRadius& pr,
+                         const DistroRadiusSquared& pr,
                          const DistroAngle& pPhi,
                          const DistroHeight& ph)
     : bottom_(cylinder.bottomFace())
     , generator_(std::random_device{}())
-    , p_radius_(pr)
+    , p_radiusSquared_(pr)
     , p_angle_(pPhi)
     , p_height_(ph)
     {}
 
     /*!
      * \brief Sample a point from the distributions.
+     * \note The distribution for the radius is expected
+     *       to actually be a distribution for the squared
+     *       radius, i.e. it is in the interval [0, r^2].
+     *       After sampling, the square root is taken.
      */
     Point operator() ()
     {
-        const auto r = p_radius_(generator_);
         const auto phi = p_angle_(generator_);
         const auto h = p_height_(generator_);
+        auto r = p_radiusSquared_(generator_);
+
+        using std::sqrt;
+        r = sqrt(r);
 
         using Vector = Frackit::Vector<ctype, 3>;
         auto a = Vector(bottom_.majorAxis());
@@ -238,7 +248,7 @@ public:
      typename Cylinder<ctype>::Disk bottom_;
 
      std::default_random_engine generator_;
-     DistroRadius p_radius_;
+     DistroRadiusSquared p_radiusSquared_;
      DistroAngle  p_angle_;
      DistroHeight p_height_;
 };
