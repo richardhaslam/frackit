@@ -24,31 +24,28 @@
 #ifndef FRACKIT_GEOMETRY_SAMPLER_HH
 #define FRACKIT_GEOMETRY_SAMPLER_HH
 
-#include <frackit/common/extractctype.hh>
-#include <frackit/common/extractdimension.hh>
-#include <frackit/geometry/point.hh>
-
 namespace Frackit {
 
 /*!
  * \brief Interface for geometry sampler classes.
- *        The interface is defined by a () operator that
- *        receives a point, which is the point around which
- *        the geometry is to be created, and it returns an
- *        object of the geometry.
+ *        Sampler class implemetations must implement
+ *        the () operator, with which a random geometry
+ *        of the given type is created.
+ * \tparam Geometry The type of the geometry to be sampled.
  */
 template<class Geometry>
 class GeometrySampler
 {
-    using ctype = typename CoordinateTypeTraits<Geometry>::type;
-    static constexpr int worldDim = DimensionalityTraits<Geometry>::worldDimension();
 
 public:
+
+    //! every abstract base class has a virtual destructor
+    virtual ~GeometrySampler () {}
+
     /*!
-     * \brief Creates an object of Geometry around the given point.
-     * \param point The point around which the geometry is to be created
+     * \brief Creates an object of Geometry.
      */
-    virtual Geometry operator() (const Point<ctype, worldDim>& point) = 0;
+    virtual Geometry operator() () = 0;
 };
 
 } // end namespace Frackit

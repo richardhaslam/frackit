@@ -34,7 +34,6 @@
 // writes an entity network to a meshable Gmsh .geo file format
 #include <frackit/io/gmshwriter.hh>
 
-
 int main(int argc, char** argv)
 {
     //! print welcome message
@@ -90,14 +89,16 @@ int main(int argc, char** argv)
     const ctype meanMinAxisLength = 15.0;
 
     // sampler for disks of orientation 1
-    DiskSampler diskSampler1(std::normal_distribution<ctype>(meanMajAxisLength, 6.5),           // major axis length: mean value & standard deviation
+    DiskSampler diskSampler1(pointSampler,                                                      // sampler for disk center points
+                             std::normal_distribution<ctype>(meanMajAxisLength, 6.5),           // major axis length: mean value & standard deviation
                              std::normal_distribution<ctype>(meanMinAxisLength, 4.5),           // minor axis length: mean value & standard deviation
                              std::normal_distribution<ctype>(toRadians(0.0), toRadians(7.5)),   // rotation around x-axis: mean value & standard deviation
                              std::normal_distribution<ctype>(toRadians(0.0), toRadians(7.5)),   // rotation around y-axis: mean value & standard deviation
                              std::normal_distribution<ctype>(toRadians(0.0), toRadians(7.5)));  // rotation around z-axis: mean value & standard deviation
 
     // sampler for disks of orientation 2
-    DiskSampler diskSampler2(std::normal_distribution<ctype>(meanMajAxisLength, 6.5),           // major axis length: mean value & standard deviation
+    DiskSampler diskSampler2(pointSampler,                                                      // sampler for disk center points
+                             std::normal_distribution<ctype>(meanMajAxisLength, 6.5),           // major axis length: mean value & standard deviation
                              std::normal_distribution<ctype>(meanMinAxisLength, 4.5),           // minor axis length: mean value & standard deviation
                              std::normal_distribution<ctype>(toRadians(90.0), toRadians(7.5)),  // rotation around x-axis: mean value & standard deviation
                              std::normal_distribution<ctype>(toRadians(0.0),  toRadians(7.5)),  // rotation around y-axis: mean value & standard deviation
@@ -158,8 +159,8 @@ int main(int argc, char** argv)
         else if (createSecondary && accepted_2 == numTargetEntities_2)
             createSecondary = false;
 
-        auto disk = createSecondary ? diskSampler1( pointSampler() )
-                                    : diskSampler2( pointSampler() );
+        auto disk = createSecondary ? diskSampler1()
+                                    : diskSampler2();
         total++;
 
         // We don't want ellipses of too large aspect ratio

@@ -25,7 +25,8 @@ int main()
 
     Cylinder cylinder(0.5, 1.0);
     auto cylPointSampler = makeUniformPointSampler(cylinder);
-    DiskSampler diskSampler(std::normal_distribution<ctype>(0.5, 0.05),
+    DiskSampler diskSampler(cylPointSampler,
+                            std::normal_distribution<ctype>(0.5, 0.05),
                             std::normal_distribution<ctype>(0.25, 0.025),
                             std::normal_distribution<ctype>(toRadians(45.0),toRadians(10.0)),
                             std::normal_distribution<ctype>(toRadians(45.0),toRadians(10.0)),
@@ -34,7 +35,7 @@ int main()
     // sample 5 disks
     std::vector<Disk> disks;
     for (unsigned int i = 0; i < 5; ++i)
-        disks.emplace_back(diskSampler( cylPointSampler() ));
+        disks.emplace_back(diskSampler());
 
     // create a single compound and write to .brep file
     // build a single compound shape
