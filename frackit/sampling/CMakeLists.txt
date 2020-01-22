@@ -1,4 +1,5 @@
 install(FILES
+boxpointsampler.hh
 disksampler.hh
 geometrysampler.hh
 geometrypointsampler.hh
