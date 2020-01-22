@@ -18,241 +18,30 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Class to randomly generate points, sampled on geometries.
+ * \brief Interface for classes that randomly generate points.
  */
-#ifndef FRACKIT_POINT_SAMPLING_HH
-#define FRACKIT_POINT_SAMPLING_HH
-
-#include <cmath>
-#include <random>
-
-#include <frackit/geometry/cylinder.hh>
-#include <frackit/geometry/box.hh>
-#include <frackit/geometry/vector.hh>
+#ifndef FRACKIT_POINT_SAMPLER_HH
+#define FRACKIT_POINT_SAMPLER_HH
 
 namespace Frackit {
 
 /*!
- * \brief Class to randomly generate points within geometries.
- * \tparam Geometry The geometry on which to sample points
- * \tparam T The traits class containing the type of distributions
- *           to be used.
- * \note The traits class is expected to provide the type of
- *       distribution functions to be used for each coordinate
- *       direction of the geometry's local basis. That is, for
- *       one-dimensional geometries the traits must define the
- *       alias:
- *       using DistroBase1 = ...;
- *       to export the distribution type used along the geometry's
- *       local coordinate. Similarly, for two and three-dimensional
- *       geometries the aliases
- *       using DistroBase2 = ...;
- *       using DistroBase3 = ...;
- *       for the second and/or third dimension of the geometry.
+ * \brief Defines the interface for point samplers.
+ * \tparam P The type used for points
  */
-template< class Geometry, class T >
-class GeometryPointSampler;
-
-/*!
- * \brief Traits class to be used for sampling on
- *        uniform distributions in all coordinate directions.
- * \tparam ctype The type used for coordinates
- * \tparam worldDim The dimension of the coordinate space.
- */
-template<class ctype, int worldDim>
-struct UniformPointSamplerTraits;
-
-/*!
- * \brief Traits class to be used for uniform sampling
- *         of points on 1-dimensional geometries.
- * \tparam ctype The type used for coordinates
- */
-template<class ctype>
-struct UniformPointSamplerTraits<ctype, 1>
+template< class P >
+class PointSampler
 {
-    using DistroBase1 = std::uniform_real_distribution<ctype>;
-};
-
-/*!
- * \brief Traits class to be used for uniform sampling
- *         of points on 2-dimensional geometries.
- * \tparam ctype The type used for coordinates
- */
-template<class ctype>
-struct UniformPointSamplerTraits<ctype, 2>
-{
-    using DistroBase1 = std::uniform_real_distribution<ctype>;
-    using DistroBase2 = std::uniform_real_distribution<ctype>;
-};
-
-/*!
- * \brief Traits class to be used for uniform sampling
- *         of points on 3-dimensional geometries.
- * \tparam ctype The type used for coordinates
- */
-template<class ctype>
-struct UniformPointSamplerTraits<ctype, 3>
-{
-    using DistroBase1 = std::uniform_real_distribution<ctype>;
-    using DistroBase2 = std::uniform_real_distribution<ctype>;
-    using DistroBase3 = std::uniform_real_distribution<ctype>;
-};
-
-/*!
- * \brief Convenience function to create a point sampler that
- *        uniformly samples points on a box.
- */
-template< class ctype >
-GeometryPointSampler< Box<ctype>, UniformPointSamplerTraits<ctype, 3> >
-makeUniformPointSampler(const Box<ctype>& box)
-{
-    using Traits = UniformPointSamplerTraits<ctype, 3>;
-    using Sampler = GeometryPointSampler<Box<ctype>, Traits>;
-    return Sampler( typename Traits::DistroBase1(box.xMin(), box.xMax()),
-                    typename Traits::DistroBase2(box.yMin(), box.yMax()),
-                    typename Traits::DistroBase3(box.zMin(), box.zMax()) );
-}
-
-/*!
- * \brief Convenience function to create a point sampler that
- *        uniformly samples points on a cylinder.
- * \note Sampling along the radius coordinate is in the interval [0, r^2]
- *       and the square root is taken after sampling in order to get a
- *       uniform distribution on the cylinder disks.
- */
-template< class ctype >
-GeometryPointSampler< Cylinder<ctype>, UniformPointSamplerTraits<ctype, 3> >
-makeUniformPointSampler(const Cylinder<ctype>& cylinder)
-{
-    using Traits = UniformPointSamplerTraits<ctype, 3>;
-    using Sampler = GeometryPointSampler<Cylinder<ctype>, Traits>;
-    return Sampler( cylinder,
-                    typename Traits::DistroBase1(0.0, cylinder.radius()*cylinder.radius()),
-                    typename Traits::DistroBase2(0.0, 2*M_PI),
-                    typename Traits::DistroBase3(0.0, cylinder.height()) );
-}
-
-/*!
- * \brief Specialization of the sampler class for boxes.
- */
-template<class ctype, class T>
-class GeometryPointSampler< Box<ctype>, T >
-{
-    using DistroX = typename T::DistroBase1;
-    using DistroY = typename T::DistroBase2;
-    using DistroZ = typename T::DistroBase3;
-
 public:
-    //! export resulting point type
-    using Point = typename Box<ctype>::Point;
-
-    //! export traits class
-    using Traits = T;
+    //! Export the sampled point type
+    using Point = P;
 
     /*!
-     * \brief Constructor from distributions.
+     * \brief Return a point.
      */
-    GeometryPointSampler(const DistroX& px,
-                         const DistroY& py,
-                         const DistroZ& pz)
-    : generator_(std::random_device{}())
-    , p_x_(px)
-    , p_y_(py)
-    , p_z_(pz)
-    {}
-
-    /*!
-     * \brief Sample a point from the distributions.
-     */
-    Point operator() ()
-    {
-        return Point( {p_x_(generator_),
-                       p_y_(generator_),
-                       p_z_(generator_)} );
-    }
-
- private:
-    std::default_random_engine generator_;
-    DistroX p_x_;
-    DistroY p_y_;
-    DistroZ p_z_;
-};
-
-/*!
- * \brief Specialization of the sampler class for cylinders.
- */
-template<class ctype, class T>
-class GeometryPointSampler< Cylinder<ctype>, T >
-{
-    using DistroRadiusSquared = typename T::DistroBase1;
-    using DistroAngle = typename T::DistroBase2;
-    using DistroHeight = typename T::DistroBase3;
-
-public:
-    //! export resulting point type
-    using Point = typename Cylinder<ctype>::Point;
-
-    //! export traits class
-    using Traits = T;
-
-    /*!
-     * \brief Constructor from a cylinder and distributions.
-     */
-    GeometryPointSampler(const Cylinder<ctype>& cylinder,
-                         const DistroRadiusSquared& pr,
-                         const DistroAngle& pPhi,
-                         const DistroHeight& ph)
-    : bottom_(cylinder.bottomFace())
-    , generator_(std::random_device{}())
-    , p_radiusSquared_(pr)
-    , p_angle_(pPhi)
-    , p_height_(ph)
-    {}
-
-    /*!
-     * \brief Sample a point from the distributions.
-     * \note The distribution for the radius is expected
-     *       to actually be a distribution for the squared
-     *       radius, i.e. it is in the interval [0, r^2].
-     *       After sampling, the square root is taken.
-     */
-    Point operator() ()
-    {
-        const auto phi = p_angle_(generator_);
-        const auto h = p_height_(generator_);
-        auto r = p_radiusSquared_(generator_);
-
-        using std::sqrt;
-        r = sqrt(r);
-
-        using Vector = Frackit::Vector<ctype, 3>;
-        auto a = Vector(bottom_.majorAxis());
-        auto b = Vector(bottom_.minorAxis());
-        auto n = Vector(bottom_.normal());
-
-        using std::sin;
-        using std::cos;
-        a *= r*cos(phi);
-        b *= r*sin(phi);
-        n *= h;
-
-        Point result = bottom_.center();
-        result += a;
-        result += b;
-        result += n;
-
-        return result;
-    }
-
- private:
-     typename Cylinder<ctype>::Disk bottom_;
-
-     std::default_random_engine generator_;
-     DistroRadiusSquared p_radiusSquared_;
-     DistroAngle  p_angle_;
-     DistroHeight p_height_;
+    virtual Point operator() () = 0;
 };
 
 } // end namespace Frackit
 
-#endif // FRACKIT_POINT_SAMPLING_HH
+#endif // FRACKIT_POINT_SAMPLER_HH
