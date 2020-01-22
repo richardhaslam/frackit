@@ -1,5 +1,6 @@
 install(FILES
 boxpointsampler.hh
+cylinderpointsampler.hh
 disksampler.hh
 geometrysampler.hh
 geometrypointsampler.hh
