@@ -11,7 +11,7 @@
 #include <frackit/magnitude/containedmagnitude.hh>
 #include <frackit/occ/breputilities.hh>
 
-#include <frackit/sampling/geometrypointsampler.hh>
+#include <frackit/sampling/makeuniformpointsampler.hh>
 #include <frackit/sampling/disksampler.hh>
 
 #include <frackit/entitynetwork/constraints.hh>

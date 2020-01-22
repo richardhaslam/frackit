@@ -21,7 +21,7 @@
 #include <frackit/occ/breputilities.hh>
 #include <frackit/precision/precision.hh>
 
-#include <frackit/sampling/geometrypointsampler.hh>
+#include <frackit/sampling/makeuniformpointsampler.hh>
 #include <frackit/sampling/disksampler.hh>
 
 #include <frackit/entitynetwork/containedentitynetwork.hh>

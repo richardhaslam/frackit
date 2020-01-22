@@ -6,7 +6,7 @@
 #include <BRep_Builder.hxx>
 #include <TopoDS_Compound.hxx>
 
-#include <frackit/sampling/geometrypointsampler.hh>
+#include <frackit/sampling/makeuniformpointsampler.hh>
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/occ/breputilities.hh>
