@@ -3,7 +3,6 @@ boxpointsampler.hh
 cylinderpointsampler.hh
 disksampler.hh
 geometrysampler.hh
-geometrypointsampler.hh
 makepointsampler.hh
 makeuniformpointsampler.hh
 pointsampler.hh
