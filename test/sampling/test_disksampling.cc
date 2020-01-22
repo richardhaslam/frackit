@@ -12,7 +12,7 @@
 #include <frackit/occ/breputilities.hh>
 
 #include <frackit/sampling/disksampler.hh>
-#include <frackit/sampling/geometrypointsampler.hh>
+#include <frackit/sampling/makeuniformpointsampler.hh>
 
 //! test random sampling of points on geometries
 int main()
