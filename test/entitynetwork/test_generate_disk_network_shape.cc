@@ -57,14 +57,16 @@ int main(int argc, char** argv)
     auto pointSampler = makeUniformPointSampler(OCCUtilities::getBoundingBox(domain));
 
     // sampler for disks of orientation 1
-    DiskSampler diskSampler_1(std::normal_distribution<ctype>(40.0, 6.5),
+    DiskSampler diskSampler_1(pointSampler,
+                              std::normal_distribution<ctype>(40.0, 6.5),
                               std::normal_distribution<ctype>(20.0, 4.5),
                               std::normal_distribution<ctype>(toRadians(0.0), toRadians(5.0)),
                               std::normal_distribution<ctype>(toRadians(0.0), toRadians(5.0)),
                               std::normal_distribution<ctype>(toRadians(0.0), toRadians(5.0)));
 
     // sampler for disks of orientation 1
-    DiskSampler diskSampler_2(std::normal_distribution<ctype>(40.0, 6.5),
+    DiskSampler diskSampler_2(pointSampler,
+                              std::normal_distribution<ctype>(40.0, 6.5),
                               std::normal_distribution<ctype>(20.0, 4.5),
                               std::normal_distribution<ctype>(toRadians(45.0), toRadians(5.0)),
                               std::normal_distribution<ctype>(toRadians(0.0),  toRadians(5.0)),
@@ -123,8 +125,8 @@ int main(int argc, char** argv)
         else if (createSecondary && accepted_2 == numTargetEntities_2)
             createSecondary = false;
 
-        auto disk = createSecondary ? diskSampler_1( pointSampler() )
-                                    : diskSampler_2( pointSampler() );
+        auto disk = createSecondary ? diskSampler_1()
+                                    : diskSampler_2();
         total++;
 
         // We don't want ellipses of too large aspect ratio

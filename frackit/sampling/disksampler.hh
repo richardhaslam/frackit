@@ -23,13 +23,17 @@
 #ifndef FRACKIT_DISK_SAMPLER_HH
 #define FRACKIT_DISK_SAMPLER_HH
 
+#include <memory>
 #include <random>
+#include <type_traits>
 
 #include <frackit/common/math.hh>
-#include <frackit/geometry/disk.hh>
+#include <frackit/geometry/point.hh>
 #include <frackit/geometry/vector.hh>
 #include <frackit/geometry/direction.hh>
+#include <frackit/geometry/disk.hh>
 
+#include "pointsampler.hh"
 #include "geometrysampler.hh"
 
 namespace Frackit {
@@ -86,6 +90,7 @@ class DiskSampler : public GeometrySampler< Disk<ctype> >
     using YAngleDistribution = typename T::YAngleDistribution;
     using ZAngleDistribution = typename T::ZAngleDistribution;
 
+    using Point = Frackit::Point<ctype, 3>;
     using Vector = Frackit::Vector<ctype, 3>;
     using Direction = Frackit::Direction<ctype, 3>;
 
@@ -99,6 +104,7 @@ public:
 
     /*!
      * \brief Constructor.
+     * \param pointSampler Samples the center points of the disks
      * \param majAxis Distribution used to sample major axis lengths
      * \param minAxis Distribution used to sample minor axis lengths
      * \param xAngle Distribution used to sample the angle of rotation around x-axis
@@ -107,25 +113,29 @@ public:
      * \note For more info on the meaning of the rotation angles, see the description
      *       of this class.
      */
-    DiskSampler(const MajorAxisLengthDistribution& majAxis,
+    template<class PointSamplerImpl>
+    DiskSampler(PointSamplerImpl& pointSampler,
+                const MajorAxisLengthDistribution& majAxis,
                 const MinorAxisLengthDistribution& minAxis,
                 const XAngleDistribution& xAngle,
                 const YAngleDistribution& yAngle,
                 const ZAngleDistribution& zAngle)
-    : generator_(std::random_device{}())
+    : pointSampler_(std::make_shared<PointSamplerImpl>(pointSampler))
+    , generator_(std::random_device{}())
     , p_majorAxisLength_(majAxis)
     , p_minorAxisLength_(minAxis)
     , p_angle_x_(xAngle)
     , p_angle_y_(yAngle)
     , p_angle_z_(zAngle)
-    {}
+    {
+        static_assert(std::is_base_of<PointSampler<Point>, PointSamplerImpl>::value,
+                      "The provided point sampler does not inherit from the point sampler interface");
+    }
 
     /*!
      * \brief Generate a random disk.
-     * \param point The point around which the disk should
-     *              be created. This is taken as the disk center.
      */
-    Disk operator() (const Point<ctype, 3>& point) override
+    Disk operator() () override
     {
         auto a = p_majorAxisLength_(generator_);
         while (a <= 0.0) a = p_majorAxisLength_(generator_);
@@ -157,17 +167,19 @@ public:
         // rotate both axes around z
         rotate(axes, e3, gamma);
 
-        return Disk(point, Direction(axes[0]), Direction(axes[1]), a, b);
+        // sample center point and make disk
+        return Disk((*pointSampler_)(), Direction(axes[0]), Direction(axes[1]), a, b);
     }
 
  private:
-    std::default_random_engine generator_;
+    std::shared_ptr<PointSampler<Point>> pointSampler_; //!< pointer to the sampler for disk center points
+    std::default_random_engine generator_;              //!< Random number generator
 
-    MajorAxisLengthDistribution p_majorAxisLength_;
-    MinorAxisLengthDistribution p_minorAxisLength_;
-    XAngleDistribution p_angle_x_;
-    YAngleDistribution p_angle_y_;
-    ZAngleDistribution p_angle_z_;
+    MajorAxisLengthDistribution p_majorAxisLength_;     //!< Distribution used for major axis length
+    MinorAxisLengthDistribution p_minorAxisLength_;     //!< Distribution used for minor axis length
+    XAngleDistribution p_angle_x_;                      //!< Distribution used for x-axis rotation of local basis
+    YAngleDistribution p_angle_y_;                      //!< Distribution used for y-axis rotation of local basis
+    ZAngleDistribution p_angle_z_;                      //!< Distribution used for z-axis rotation of local basis
 };
 
 } // end namespace Frackit

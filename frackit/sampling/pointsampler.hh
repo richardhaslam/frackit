@@ -36,6 +36,9 @@ public:
     //! Export the sampled point type
     using Point = P;
 
+    //! every abstract base class has a virtual destructor
+    virtual ~PointSampler () {}
+
     /*!
      * \brief Return a point.
      */
