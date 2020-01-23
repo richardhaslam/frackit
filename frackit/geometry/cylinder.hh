@@ -24,8 +24,11 @@
 #define FRACKIT_GEOMETRY_CYLINDER_HH
 
 #include <cmath>
+#include <string>
 
 #include <frackit/precision/precision.hh>
+
+#include "geometry.hh"
 #include "point.hh"
 #include "segment.hh"
 #include "direction.hh"
@@ -44,7 +47,7 @@ template<class CT> class CylinderSurface;
  * \tparam CT The type used for coordinates
  */
 template<class CT>
-class Cylinder
+class Cylinder : public Geometry
 {
     using Vector = typename Frackit::Direction<CT, 3>::Vector;
 
@@ -110,7 +113,7 @@ public:
     }
 
     //! Return the name of the geometry
-    static std::string name() { return "Cylinder"; }
+    std::string name() const override { return "Cylinder"; }
 
     //! Return the first basis vector of the cylinder (horizontal axis)
     const Direction& base1() const { return bottom_.majorAxis(); }

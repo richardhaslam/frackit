@@ -23,8 +23,10 @@
 #ifndef FRACKIT_GEOMETRY_SEGMENT_HH
 #define FRACKIT_GEOMETRY_SEGMENT_HH
 
+#include <string>
 #include <frackit/precision/precision.hh>
 
+#include "geometry.hh"
 #include "point.hh"
 #include "vector.hh"
 #include "direction.hh"
@@ -45,7 +47,7 @@ template<class CT, int wd> class Line;
  * \tparam wd The dimension of the coordinate space.
  */
 template<class CT, int wd>
-class Segment
+class Segment : public Geometry
 {
     using Vector = Frackit::Vector<CT, wd>;
 
@@ -76,7 +78,7 @@ public:
     {}
 
     //! Return the name of this geometry
-    static std::string name() { return "Segment"; }
+    std::string name() const override { return "Segment_" + std::to_string(wd) + "d"; }
     //! Return the first corner of the segment
     const Point& source() const { return source_; }
     //! Return the second corner of the segment

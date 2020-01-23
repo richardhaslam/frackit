@@ -25,10 +25,12 @@
 #define FRACKIT_CIRCLE_HH
 
 #include <cmath>
+#include <string>
 
 #include <frackit/common/math.hh>
 #include <frackit/precision/precision.hh>
 
+#include "geometry.hh"
 #include "ellipticalgeometry.hh"
 #include "vector.hh"
 
@@ -48,7 +50,8 @@ class Circle;
  */
 template<class ctype>
 class Circle<ctype, /*worldDim=*/3>
-: public EllipticalGeometry<ctype, /*worldDim=*/3>
+: public Geometry
+, public EllipticalGeometry<ctype, /*worldDim=*/3>
 {
     using ParentType = EllipticalGeometry<ctype, /*worldDim=*/3>;
     using Vector = Frackit::Vector<ctype, 3>;
@@ -75,7 +78,7 @@ public:
     {}
 
     //! Return the name of this geometry
-    static std::string name() { return "Circle"; }
+    std::string name() const override { return "Circle_3d"; }
 
     //! Return the basis vectors of the circle
     const Direction& base1() const { return this->majorAxis(); }

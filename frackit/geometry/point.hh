@@ -24,11 +24,13 @@
 #define FRACKIT_GEOMETRY_POINT_HH
 
 #include <array>
+#include <string>
 #include <cassert>
 #include <algorithm>
 #include <initializer_list>
 
 #include <frackit/precision/precision.hh>
+#include "geometry.hh"
 #include "vector.hh"
 
 namespace Frackit {
@@ -43,7 +45,7 @@ template<class CT, int wd> class Vector;
  * \tparam wd The dimension of the space
  */
 template<class Impl, class CT, int wd>
-class PointBase
+class PointBase : public Geometry
 {
 
 public:
@@ -73,8 +75,7 @@ public:
     }
 
     //! Return the name of this geometry class
-    static std::string name()
-    { return "Point"; }
+    std::string name() const override { return "Point_" + std::to_string(wd) + "d"; }
 
     //! Returns true if the given point is equal to this one
     bool isEqual(const Impl& other, ctype eps) const

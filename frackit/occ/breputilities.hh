@@ -84,6 +84,7 @@
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
+#include <frackit/geometry/name.hh>
 
 #include "gputilities.hh"
 #include "geomutilities.hh"
@@ -122,8 +123,8 @@ namespace OCCUtilities {
 
     //! get the BRep of a geometry (overloads provided)
     template<class Geo>
-    TopoDS_Shape getShape(const Geo& p)
-    { throw std::runtime_error("getShape() not implemented for " + Geo::name()); }
+    TopoDS_Shape getShape(const Geo& geo)
+    { throw std::runtime_error("getShape() not implemented for " + geometryName(geo)); }
 
     //! get the BRep of a point
     template<class ctype, int worldDim>

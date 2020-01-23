@@ -24,6 +24,7 @@
 #define FRACKIT_ELLIPSE_ARC_HH
 
 #include <cassert>
+#include <string>
 
 #include <frackit/precision/precision.hh>
 #include "ellipse.hh"
@@ -97,7 +98,7 @@ public:
     }
 
     //! Return the name of this geometry
-    static std::string name() { return "EllipseArc"; }
+    std::string name() const override { return "EllipseArc_3d"; }
 
     //! Return the source point of the arc
     const Point& source() const { return source_; }

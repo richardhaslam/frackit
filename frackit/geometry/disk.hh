@@ -24,8 +24,11 @@
 #define FRACKIT_DISK_HH
 
 #include <cmath>
+#include <string>
 
 #include <frackit/precision/precision.hh>
+
+#include "geometry.hh"
 #include "ellipticalgeometry.hh"
 #include "ellipse.hh"
 #include "vector.hh"
@@ -38,7 +41,8 @@ namespace Frackit {
  */
 template<class CT>
 class Disk
-: public EllipticalGeometry<CT, /*worldDim=*/3>
+: public Geometry
+, public EllipticalGeometry<CT, /*worldDim=*/3>
 {
     using ParentType = EllipticalGeometry<CT, /*worldDim=*/3>;
     using Vector = Frackit::Vector<CT, 3>;
@@ -71,7 +75,7 @@ public:
     {}
 
     //! Return the name of this geometry
-    static std::string name() { return "Disk"; }
+    std::string name() const override { return "Disk"; }
     //! Return the disk area
     ctype area() const
     {
@@ -142,6 +146,6 @@ public:
     }
 };
 
-} // end namespace OpenFrack
+} // end namespace Frackit
 
 #endif // FRACKIT_DISK_HH
