@@ -41,7 +41,8 @@
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/ellipse.hh>
-#include <frackit/geometry/name.hh>
+
+#include <frackit/geometryutilities/name.hh>
 
 namespace Frackit {
 namespace ConstraintImpl {

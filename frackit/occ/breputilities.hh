@@ -84,7 +84,8 @@
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
-#include <frackit/geometry/name.hh>
+
+#include <frackit/geometryutilities/name.hh>
 
 #include "gputilities.hh"
 #include "geomutilities.hh"

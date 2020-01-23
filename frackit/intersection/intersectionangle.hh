@@ -50,7 +50,7 @@
 #include <frackit/geometry/line.hh>
 #include <frackit/geometry/cylindersurface.hh>
 
-#include <frackit/geometry/name.hh>
+#include <frackit/geometryutilities/name.hh>
 #include <frackit/common/extractdimension.hh>
 
 #include <frackit/occ/gputilities.hh>
