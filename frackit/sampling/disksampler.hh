@@ -118,7 +118,7 @@ public:
      *       of this class.
      */
     template<class PointSamplerImpl>
-    DiskSampler(PointSamplerImpl& pointSampler,
+    DiskSampler(const PointSamplerImpl& pointSampler,
                 const MajorAxisLengthDistribution& majAxis,
                 const MinorAxisLengthDistribution& minAxis,
                 const XAngleDistribution& xAngle,
