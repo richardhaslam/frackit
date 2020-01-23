@@ -34,6 +34,9 @@ namespace Frackit {
 class Id
 {
 public:
+    //! Default constructor
+    Id() = default;
+
     /*!
      * \brief Construction from an index.
      */
