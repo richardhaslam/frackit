@@ -73,13 +73,17 @@ struct DefaultDiskSamplerTraits
  *            - rotation angle of standard basis around x-axis
  *            - rotation angle of standard basis around y-axis
  *            - rotation angle of standard basis around z-axis
- *        The rotation angles are used to define the local basis
- *        of the disk, composed of major axis, minor axis and normal.
- *        The angles state around which angles the standard basis of R^3
- *        has to be rotated around the x-, y- and the z-axis (subsequently!)
- *        for it to describe the disk-local basis. This approach was chosen
- *        since independent sampling of the axis vectors is not possible
- *        due to the requirement that they must form an orthonormal basis.
+ *        The rotation angles are used to define the orientation of the
+ *        local basis of the disk, composed of major axis, minor axis and normal.
+ *        We start from the disk being defined such that its local basis is aligned
+ *        with standard basis of R^3, i.e. the major axis is aligned with the x-axis,
+ *        the minor axis is aligned with the y-axis and the normal of the disk is
+ *        is aligned with the z-axis. Then, the angles state with which angles the
+ *        standard basis of R^3 has to be rotated around the x-, y- and the z-axis,
+ *        in this order (!), for it to describe the desired orientation of the
+ *        disk-local basis. This approach was chosen since independent sampling of
+ *        the axis vectors is not possible due to the requirement that they must form
+ *        an orthonormal basis.
  */
 template< class ctype = double, class T = DefaultDiskSamplerTraits<ctype> >
 class DiskSampler : public GeometrySampler< Disk<ctype> >
