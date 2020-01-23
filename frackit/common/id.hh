@@ -50,6 +50,12 @@ public:
     std::size_t get() const
     { return id_; }
 
+    /*!
+     * \brief Equality check.
+     */
+    bool operator== (const Id& otherId) const
+    { return id_ == otherId.get(); }
+
 private:
     std::size_t id_;
 };
