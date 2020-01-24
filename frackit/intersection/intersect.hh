@@ -129,7 +129,7 @@ intersect(const Line<ctype, 3>& line, const Plane<ctype, 3>& plane, ctype eps)
 /*!
  * \brief Intersect a disk and a line.
  * \param disk The disk
- * \param plane The line
+ * \param line The line
  * \param eps Tolerance to be used for floating point comparisons
  */
 template<class ctype>
@@ -139,7 +139,7 @@ intersect(const Disk<ctype>& disk, const Line<ctype, 3>& line, ctype eps)
 
 /*!
  * \brief Intersect a line and a disk.
- * \param plane The line
+ * \param line The line
  * \param disk The disk
  * \param eps Tolerance to be used for floating point comparisons
  */
