@@ -36,6 +36,7 @@
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/cylindersurface.hh>
@@ -109,6 +110,21 @@ struct IntersectionTraits< Disk<ctype>, Line<ctype, 3> >
 template<class ctype>
 struct IntersectionTraits< Line<ctype, 3>, Disk<ctype> >
 : public IntersectionTraits< Disk<ctype>, Line<ctype, 3> >
+{};
+
+//! Result type of the intersection of a 3d quadrilateral and a line
+template<class ctype>
+struct IntersectionTraits< Quadrilateral<ctype, 3>, Line<ctype, 3> >
+{
+    using type = std::variant< Point<ctype, 3>,
+                               Segment<ctype, 3>,
+                               EmptyIntersection<3> >;
+};
+
+//! Result type of the intersection of a line and a 3d quadrilateral
+template<class ctype>
+struct IntersectionTraits< Line<ctype, 3>, Quadrilateral<ctype, 3> >
+: public IntersectionTraits< Quadrilateral<ctype, 3>, Line<ctype, 3> >
 {};
 
 //! Result type of the intersection of a disk and a disk

@@ -76,6 +76,9 @@ public:
     using Segment = Frackit::Segment<ctype, 3>;
     using Plane = Frackit::Plane<ctype, 3>;
 
+    //! Default constructor
+    Quadrilateral() = default;
+
     /*!
      * \brief The constructor.
      * \note The node & edge ordering is as follows
@@ -138,6 +141,8 @@ public:
         }
     }
 
+    //! Return the center of the quadrilateral
+    const Point& center() const { return center_; }
     //! Return the plane this quadrilateral is embedded in
     const Plane& supportingPlane() const { return supportPlane_; }
     //! Return the area of the quadrilateral

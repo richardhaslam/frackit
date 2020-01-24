@@ -28,6 +28,7 @@
 #ifndef FRACKIT_DEFAULT_EPSILON_HH
 #define FRACKIT_DEFAULT_EPSILON_HH
 
+#include <cmath>
 #include <TopoDS_Shape.hxx>
 
 #include <frackit/occ/breputilities.hh>
@@ -35,6 +36,7 @@
 #include <frackit/geometry/circle.hh>
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
 
@@ -81,6 +83,16 @@ ctype defaultEpsilon(const Ellipse<ctype, worldDim>& ellipse)
 template<class ctype>
 ctype defaultEpsilon(const Disk<ctype>& disk)
 { return defaultEpsilon(disk.boundingEllipse()); }
+
+/*!
+ * \brief Default epsilon for operations on quadrilaterals.
+ */
+template<class ctype>
+ctype defaultEpsilon(const Quadrilateral<ctype, 3>& quad)
+{
+    using std::sqrt;
+    return 0.5*sqrt(quad.area())*Precision<ctype>::confusion();
+}
 
 /*!
  * \brief Default epsilon for operations on cylinder surfaces.

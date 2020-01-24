@@ -24,6 +24,7 @@
 #ifndef FRACKIT_INTERSECT_HH
 #define FRACKIT_INTERSECT_HH
 
+#include <cmath>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shell.hxx>
 
@@ -32,6 +33,7 @@
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/precision/defaultepsilon.hh>
 
@@ -40,6 +42,7 @@
 #include "algo_plane_plane.hh"
 #include "algo_plane_line.hh"
 #include "algo_disk_line.hh"
+#include "algo_quadrilateral_line.hh"
 #include "algo_disk_disk.hh"
 #include "algo_cylsurface_disk.hh"
 #include "algo_shell_disk.hh"
@@ -75,9 +78,10 @@ EmptyIntersection<0> intersect(const Geom1& geo1,
 template<class Geom1, class Geom2>
 auto intersect(const Geom1& geo1, const Geom2& geo2)
 {
+    using std::min;
     const auto eps1 = defaultEpsilon(geo1);
     const auto eps2 = defaultEpsilon(geo2);
-    return intersect(geo1, geo2, 0.5*(eps1 + eps2));
+    return intersect(geo1, geo2, min(eps1, eps2));
 }
 
 /*!
@@ -127,7 +131,7 @@ intersect(const Line<ctype, 3>& line, const Plane<ctype, 3>& plane, ctype eps)
 /*!
  * \brief Intersect a disk and a line.
  * \param disk The disk
- * \param plane The line
+ * \param line The line
  * \param eps Tolerance to be used for floating point comparisons
  */
 template<class ctype>
@@ -137,7 +141,7 @@ intersect(const Disk<ctype>& disk, const Line<ctype, 3>& line, ctype eps)
 
 /*!
  * \brief Intersect a line and a disk.
- * \param plane The line
+ * \param line The line
  * \param disk The disk
  * \param eps Tolerance to be used for floating point comparisons
  */
@@ -146,6 +150,28 @@ Intersection< Line<ctype, 3>, Disk<ctype> >
 intersect(const Line<ctype, 3>& line, const Disk<ctype>& disk, ctype eps)
 { return intersect(disk, line, eps); }
 
+/*!
+ * \brief Intersect a three-dimensional quadrilateral and a line.
+ * \param quad The quadrilateral
+ * \param line The line
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Quadrilateral<ctype, 3>, Line<ctype, 3> >
+intersect(const Quadrilateral<ctype, 3>& quad, const Line<ctype, 3>& line, ctype eps)
+{ return IntersectionAlgorithms::intersect_quadrilateral_line(quad, line, eps); }
+
+
+/*!
+ * \brief Intersect a line and a three-dimensional quadrilateral.
+ * \param line The line
+ * \param quad The quadrilateral
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Line<ctype, 3>, Quadrilateral<ctype, 3>>
+intersect(const Line<ctype, 3>& line, const Quadrilateral<ctype, 3>& quad, ctype eps)
+{ return intersect(quad, line, eps); }
 /*!
  * \brief Intersect two disks.
  * \param disk1 The first disk

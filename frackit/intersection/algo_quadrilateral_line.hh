@@ -19,17 +19,16 @@
 /*!
  * \file
  * \brief Contains the intersection algorithm
- *        between a disk and a line.
+ *        between a quadrilateral and a line in 3d space.
  */
-#ifndef FRACKIT_DISK_LINE_INTERSECTION_HH
-#define FRACKIT_DISK_LINE_INTERSECTION_HH
+#ifndef FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH
+#define FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH
 
-#include <variant>
-#include <stdexcept>
+#include <cmath>
+#include <limits>
 
-#include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/line.hh>
-#include <frackit/precision/precision.hh>
 
 #include "intersectiontraits.hh"
 #include "algo_planargeom_line.hh"
@@ -37,23 +36,28 @@
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect a disk and a line
+//! Intersect a 3d quadrilateral and a line
 //! The result can be:
 //! - a segment
 //! - a point
 //! - no intersection
 template<class ctype>
-Intersection< Disk<ctype>, Line<ctype, 3> >
-intersect_disk_line(const Disk<ctype>& disk,
-                    const Line<ctype, 3>& line,
-                    ctype eps)
+Intersection< Quadrilateral<ctype, 3>, Line<ctype, 3> >
+intersect_quadrilateral_line(const Quadrilateral<ctype, 3>& quad,
+                             const Line<ctype, 3>& line,
+                             ctype eps)
 {
     // characteristic length
-    const auto charLength = disk.majorAxisLength();
-    return intersect_planargeometry_line(disk, line, charLength, Precision<ctype>::confusion(), eps);
+    ctype charLength = std::numeric_limits<ctype>::max();
+
+    using std::min;
+    for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
+        charLength = min(charLength, quad.edge(edgeIdx).length());
+
+    return intersect_planargeometry_line(quad, line, charLength, eps, eps);
 }
 
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_INTERSECT_HH
+#endif // FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH

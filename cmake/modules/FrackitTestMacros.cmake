@@ -68,7 +68,7 @@ function(frackit_add_test)
     target_compile_definitions(${ADDTEST_NAME} PUBLIC ${ADDTEST_COMPILE_DEFINITIONS})
     target_compile_options(${ADDTEST_NAME} PUBLIC ${ADDTEST_COMPILE_FLAGS})
 
-    # link GMSH library to each test
+    # link OCC library to each test
     target_link_libraries(${ADDTEST_NAME} ${ADDTEST_LINK_LIBRARIES} ${OCC_LIBS})
     set(ADDTEST_TARGET ${ADDTEST_NAME})
   endif()
