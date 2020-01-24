@@ -43,6 +43,7 @@
 #include "algo_plane_line.hh"
 #include "algo_disk_line.hh"
 #include "algo_quadrilateral_line.hh"
+#include "algo_quadrilateral_quadrilateral.hh"
 #include "algo_disk_disk.hh"
 #include "algo_cylsurface_disk.hh"
 #include "algo_shell_disk.hh"
@@ -172,6 +173,7 @@ template<class ctype>
 Intersection< Line<ctype, 3>, Quadrilateral<ctype, 3>>
 intersect(const Line<ctype, 3>& line, const Quadrilateral<ctype, 3>& quad, ctype eps)
 { return intersect(quad, line, eps); }
+
 /*!
  * \brief Intersect two disks.
  * \param disk1 The first disk
@@ -180,10 +182,19 @@ intersect(const Line<ctype, 3>& line, const Quadrilateral<ctype, 3>& quad, ctype
  */
 template<class ctype>
 Intersection< Disk<ctype>, Disk<ctype> >
-intersect(const Disk<ctype>& disk1,
-          const Disk<ctype>& disk2,
-          ctype eps)
+intersect(const Disk<ctype>& disk1, const Disk<ctype>& disk2, ctype eps)
 { return IntersectionAlgorithms::intersect_disk_disk(disk1, disk2, eps); }
+
+/*!
+ * \brief Intersect two quadrilaterals in 3d space.
+ * \param quad1 The first quadrilateral
+ * \param quad2 The second quadrilateral
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Quadrilateral<ctype, 3>, Quadrilateral<ctype, 3> >
+intersect(const Quadrilateral<ctype, 3>& quad1, const Quadrilateral<ctype, 3>& quad2, ctype eps)
+{ return IntersectionAlgorithms::intersect_quadrilateral_quadrilateral(quad1, quad2, eps); }
 
 /*!
  * \brief Intersect a lateral cylinder surface and a disk.
