@@ -25,7 +25,6 @@
 #define FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH
 
 #include <cmath>
-#include <limits>
 
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/line.hh>
@@ -48,11 +47,10 @@ intersect_quadrilateral_line(const Quadrilateral<ctype, 3>& quad,
                              ctype eps)
 {
     // characteristic length
-    ctype charLength = std::numeric_limits<ctype>::max();
-
-    using std::min;
+    using std::max;
+    ctype charLength = 0.0;
     for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
-        charLength = min(charLength, quad.edge(edgeIdx).length());
+        charLength = max(charLength, quad.edge(edgeIdx).length());
 
     return intersect_planargeometry_line(quad, line, charLength, eps, eps);
 }
