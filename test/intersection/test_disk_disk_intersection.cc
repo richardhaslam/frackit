@@ -47,7 +47,7 @@ void checkResultGeometry(const Frackit::Disk<CT>& disk, IntersectionType expecte
               << "major ax length: " << disk.majorAxisLength() << ", "
               << "minor ax length: " << disk.minorAxisLength() << std::endl;
     if (expected != IntersectionType::disk)
-        throw std::runtime_error("Got an unexpected segment intersection");
+        throw std::runtime_error("Got an unexpected disk intersection");
     std::cout << "Test passed" << std::endl;
 }
 
