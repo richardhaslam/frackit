@@ -72,7 +72,7 @@ void checkResultGeometry(const std::vector<IS>& intersections, IntersectionType 
         checkResultGeometry(is, expected);
 }
 
-//! test disk-disk intersections
+//! test cylinder surface - disk intersections
 int main()
 {
     using ctype = double;
