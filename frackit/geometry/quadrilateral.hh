@@ -141,6 +141,8 @@ public:
         }
     }
 
+    //! Return the center of the quadrilateral
+    const Point& center() const { return center_; }
     //! Return the plane this quadrilateral is embedded in
     const Plane& supportingPlane() const { return supportPlane_; }
     //! Return the area of the quadrilateral
