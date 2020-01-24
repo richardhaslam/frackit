@@ -32,6 +32,7 @@
 #include <frackit/geometry/line.hh>
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/plane.hh>
+#include <frackit/common/extractdimension.hh>
 
 #include "intersectiontraits.hh"
 #include "emptyintersection.hh"
