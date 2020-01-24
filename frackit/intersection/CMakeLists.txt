@@ -8,6 +8,7 @@ algo_planargeom_line.hh
 algo_planargeom_planargeom.hh
 algo_plane_line.hh
 algo_plane_plane.hh
+algo_quadrilateral_disk.hh
 algo_quadrilateral_line.hh
 algo_quadrilateral_quadrilateral.hh
 algo_segment_segment.hh
