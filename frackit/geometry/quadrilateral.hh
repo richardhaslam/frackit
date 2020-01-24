@@ -76,6 +76,9 @@ public:
     using Segment = Frackit::Segment<ctype, 3>;
     using Plane = Frackit::Plane<ctype, 3>;
 
+    //! Default constructor
+    Quadrilateral() = default;
+
     /*!
      * \brief The constructor.
      * \note The node & edge ordering is as follows
