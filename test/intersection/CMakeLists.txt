@@ -17,6 +17,11 @@ frackit_add_test(NAME test_disk_line_intersection
                  SOURCES test_disk_line_intersection.cc
                  LABELS intersection)
 
+# quadrilateral - line
+frackit_add_test(NAME test_quad_line_intersection
+                 SOURCES test_quad_line_intersection.cc
+                 LABELS intersection)
+
 # disk - disk
 frackit_add_test(NAME test_disk_disk_intersection
                  SOURCES test_disk_disk_intersection.cc
