@@ -29,12 +29,10 @@
 
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/line.hh>
-#include <frackit/occ/breputilities.hh>
 #include <frackit/precision/precision.hh>
 
 #include "intersectiontraits.hh"
-#include "emptyintersection.hh"
-#include "algo_plane_line.hh"
+#include "algo_planargeom_line.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
@@ -50,77 +48,9 @@ intersect_disk_line(const Disk<ctype>& disk,
                     const Line<ctype, 3>& line,
                     ctype eps)
 {
-    using ResultType = Intersection< Disk<ctype>, Line<ctype, 3> >;
-
-    // intersect the line with the plane
-    const auto planeLineIS = intersect_plane_line(disk.supportingPlane(), line, eps);
-
-    // empty result
-    if (std::holds_alternative<EmptyIntersection<3>>(planeLineIS))
-        return ResultType( EmptyIntersection<3>() );
-
-    // potential point intersection
-    else if (std::holds_alternative<Point<ctype, 3>>(planeLineIS))
-    {
-        // check if point is on the disk
-        const auto p = std::get<Point<ctype, 3>>(planeLineIS);
-        if (disk.contains(p, Precision<ctype>::confusion(), false))
-            return ResultType( p );
-        else
-            return ResultType( EmptyIntersection<3>() );
-    }
-
-    // potential segment intersection
-    else if (std::holds_alternative<Line<ctype, 3>>(planeLineIS))
-    {
-        // Intersection might be a segment, a touching point on the rim or empty
-        // Use the BRep algorithm package to determine the part of the line on the ellipse.
-        // For this, we create a segment of the line in the neighborhood of ellipse which is
-        // large enough to cover the entire disk in case they intersect.
-        auto source = line.projection(disk.center());
-        auto target = source;
-        auto dir = Vector<ctype, 3>(line.direction());
-        dir *= disk.majorAxisLength()*20.0;
-        source += dir;
-        target -= dir;
-
-        // find the part of the segment on the disk
-        const auto segmentShape = OCCUtilities::makeEdge(source, target);
-        const auto diskShape = OCCUtilities::getShape(disk);
-        const auto isShape = OCCUtilities::intersect(segmentShape, diskShape, 0.1*eps);
-        const auto isEdges = OCCUtilities::getEdges(isShape);
-
-        assert(isEdges.size() <= 1);
-        if (isEdges.size() == 1)
-        {
-            const auto vertices = OCCUtilities::getVertices(isEdges[0]);
-            assert(vertices.size() == 2);
-            return ResultType( Segment<ctype, 3>(OCCUtilities::point(vertices[0]),
-                                                 OCCUtilities::point(vertices[1])) );
-        }
-
-        // the line can still touch the ellipse on the rim
-        const auto cutShape = OCCUtilities::cut(segmentShape, diskShape, 0.1*eps);
-        const auto vertices = OCCUtilities::getVertices(cutShape);
-
-        assert(vertices.size() == 2 || vertices.size() == 4);
-        if (vertices.size() == 2)
-            return ResultType( EmptyIntersection<3>() );
-        else
-        {
-            // find the new point
-            for (const auto& v : vertices)
-            {
-                const auto curPoint = OCCUtilities::point(v);
-                if (!curPoint.isEqual(source, eps) && !curPoint.isEqual(target, eps))
-                    return ResultType( curPoint );
-            }
-        }
-
-        throw std::runtime_error("Unexpected code behaviour");
-    }
-
-    throw std::runtime_error("Unexpected Plane-Line intersection result");
+    // characteristic length
+    const auto charLength = disk.majorAxisLength();
+    return intersect_planargeometry_line(disk, line, charLength, Precision<ctype>::confusion(), eps);
 }
 
 } // end namespace IntersectionAlgorithms
