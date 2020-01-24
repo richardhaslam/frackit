@@ -14,7 +14,7 @@
 #include <frackit/sampling/disksampler.hh>
 #include <frackit/sampling/makeuniformpointsampler.hh>
 
-//! test random sampling of points on geometries
+//! test random sampling of disks
 int main()
 {
     using ctype = double;
