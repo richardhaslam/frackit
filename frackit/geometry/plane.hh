@@ -69,6 +69,9 @@ public:
     using Direction = Frackit::Direction<ctype, 3>;
     using Segment = Frackit::Segment<ctype, 3>;
 
+    //! Default constructor
+    Plane() = default;
+    
     /*!
      * \brief Constructor
      * \param p A point on the plane
