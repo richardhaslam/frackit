@@ -46,7 +46,7 @@ namespace IntersectionAlgorithms {
  *        - a segment
  *        - a point
  *        - no intersection
- * \param face The planar geometry
+ * \param faceGeom The planar geometry
  * \param line The line
  * \param charLength A characteristic length scale of the face
  * \param containsEps Tolerance to be used for contains() queries on the planar geometry
