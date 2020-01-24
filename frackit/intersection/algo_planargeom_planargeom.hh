@@ -60,7 +60,7 @@ namespace IntersectionAlgorithms {
  */
 template<class PlanarGeom1, class PlanarGeom2, class ctype>
 Intersection< PlanarGeom1, PlanarGeom2 >
-intersect_planargeometry_planargeometry(const PlanarGeom1& faceGeom1,
+intersect_planarGeometry_planarGeometry(const PlanarGeom1& faceGeom1,
                                         const PlanarGeom2& faceGeom2,
                                         ctype charLength,
                                         ctype containsEps1,
