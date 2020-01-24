@@ -50,7 +50,7 @@ intersect_disk_line(const Disk<ctype>& disk,
 {
     // characteristic length
     const auto charLength = disk.majorAxisLength();
-    return intersect_planargeometry_line(disk, line, charLength, Precision<ctype>::confusion(), eps);
+    return intersect_planarGeometry_line(disk, line, charLength, Precision<ctype>::confusion(), eps);
 }
 
 } // end namespace IntersectionAlgorithms

@@ -88,8 +88,8 @@ intersect_planarGeometry_planarGeometry(const PlanarGeom1& faceGeom1,
     else if (std::holds_alternative<Line<ctype, worldDim>>(planeIS))
     {
         const auto& isLine = std::get<Line<ctype, worldDim>>(planeIS);
-        const auto is1 = intersect_planargeometry_line(faceGeom1, isLine, charLength, containsEps1, eps);
-        const auto is2 = intersect_planargeometry_line(faceGeom2, isLine, charLength, containsEps2, eps);
+        const auto is1 = intersect_planarGeometry_line(faceGeom1, isLine, charLength, containsEps1, eps);
+        const auto is2 = intersect_planarGeometry_line(faceGeom2, isLine, charLength, containsEps2, eps);
 
         // each faces intersect the support plane of the other face
         if (std::holds_alternative<Segment<ctype, worldDim>>(is1)
