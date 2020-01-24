@@ -24,6 +24,7 @@
 #ifndef FRACKIT_INTERSECT_HH
 #define FRACKIT_INTERSECT_HH
 
+#include <cmath>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shell.hxx>
 
@@ -75,9 +76,10 @@ EmptyIntersection<0> intersect(const Geom1& geo1,
 template<class Geom1, class Geom2>
 auto intersect(const Geom1& geo1, const Geom2& geo2)
 {
+    using std::min;
     const auto eps1 = defaultEpsilon(geo1);
     const auto eps2 = defaultEpsilon(geo2);
-    return intersect(geo1, geo2, 0.5*(eps1 + eps2));
+    return intersect(geo1, geo2, min(eps1, eps2));
 }
 
 /*!
