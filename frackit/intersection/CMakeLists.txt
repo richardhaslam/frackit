@@ -5,6 +5,7 @@ algo_disk_line.hh
 algo_face_disk.hh
 algo_find_touching_points.hh
 algo_planargeom_line.hh
+algo_planargeom_planargeom.hh
 algo_plane_line.hh
 algo_plane_plane.hh
 algo_quadrilateral_line.hh
