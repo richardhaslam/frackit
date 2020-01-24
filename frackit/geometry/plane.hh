@@ -24,10 +24,12 @@
 #define FRACKIT_GEOMETRY_PLANE_HH
 
 #include <cassert>
+#include <string>
 
 #include <frackit/common/math.hh>
 #include <frackit/precision/precision.hh>
 
+#include "geometry.hh"
 #include "point.hh"
 #include "vector.hh"
 #include "segment.hh"
@@ -49,7 +51,7 @@ class Plane;
  * \tparam CT The type used for coordinates
  */
 template<class CT>
-class Plane<CT, 3>
+class Plane<CT, 3> : public Geometry
 {
     using Vector = Frackit::Vector<CT, 3>;
 
@@ -118,7 +120,8 @@ public:
     }
 
     //! Return the name of this geometry
-    static std::string name() { return "Plane"; }
+    std::string name() const override { return "Plane_3d"; }
+
     //! Return the supporting point of the plane
     const Point& supportingPoint() const { return supportPoint_; }
     //! Return the unit normal vector

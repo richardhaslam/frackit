@@ -44,7 +44,7 @@ namespace Frackit {
  */
 template<class Geo>
 std::string geometryName(const Geo& geo)
-{ return Geo::name(); }
+{ return geo.name(); }
 
 /*!
  * \brief Return the name for a TopoDS_Solid.

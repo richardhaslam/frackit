@@ -23,8 +23,11 @@
 #ifndef FRACKIT_GEOMETRY_LINE_HH
 #define FRACKIT_GEOMETRY_LINE_HH
 
+#include <string>
+
 #include <frackit/precision/precision.hh>
 
+#include "geometry.hh"
 #include "point.hh"
 #include "direction.hh"
 #include "vector.hh"
@@ -42,7 +45,7 @@ template<class CT, int wd> class Direction;
  * \tparam wd The dimension of the coordinate space
  */
 template<class CT, int wd>
-class Line
+class Line : public Geometry
 {
     using Vector = Frackit::Vector<CT, wd>;
 
@@ -69,7 +72,7 @@ public:
     {}
 
     //! Return the name of this geometry
-    static std::string name() { return "Line"; }
+    std::string name() const override { return "Line_" + std::to_string(wd) + "d"; }
     //! Return the supporting point of the line
     const Point& supportingPoint() const { return supportPoint_; }
     //! Return the direction of the line

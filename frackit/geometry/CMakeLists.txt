@@ -9,6 +9,7 @@ disk.hh
 ellipsearc.hh
 ellipse.hh
 ellipticalgeometry.hh
+geometry.hh
 line.hh
 name.hh
 plane.hh

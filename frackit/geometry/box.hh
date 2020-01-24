@@ -25,7 +25,9 @@
 
 #include <cassert>
 #include <stdexcept>
+#include <string>
 
+#include "geometry.hh"
 #include "point.hh"
 #include "segment.hh"
 #include "quadrilateral.hh"
@@ -37,7 +39,7 @@ namespace Frackit {
  * \tparam CT The type used for coordinates
  */
 template<class CT>
-class Box
+class Box : public Geometry
 {
 
 public:
@@ -76,7 +78,7 @@ public:
     {}
 
     //! Return the name of this geometry.
-    static std::string name() { return "Box"; }
+    std::string name() const override { return "Box"; }
     //! Return the x-coordinate of the first corner.
     ctype xMin() const { return xMin_; }
     //! Return the y-coordinate of the first corner.

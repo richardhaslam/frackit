@@ -24,12 +24,14 @@
 #define FRACKIT_GEOMETRY_QUADRILATERAL_HH
 
 #include <cassert>
+#include <string>
 #include <array>
 #include <stdexcept>
 
 #include <frackit/common/math.hh>
 #include <frackit/precision/precision.hh>
 
+#include "geometry.hh"
 #include "point.hh"
 #include "vector.hh"
 #include "segment.hh"
@@ -56,7 +58,7 @@ class Quadrilateral;
  *       corners lie on a common plane.
  */
 template<class CT>
-class Quadrilateral<CT, 3>
+class Quadrilateral<CT, 3> : public Geometry
 {
     using Triangle = Frackit::Triangle<CT, 3>;
     using Vector = Frackit::Vector<CT, 3>;
@@ -110,8 +112,7 @@ public:
     }
 
     //! Return the name of this geometry
-    static std::string name() { return "Quadrilateral"; }
-
+    std::string name() const override { return "Quadrilateral_3d"; }
     //! Return the number of corners
     static constexpr std::size_t numCorners() { return 4; }
     //! Return the i-th corner

@@ -24,8 +24,11 @@
 #define FRACKIT_GEOMETRY_ELLIPSE_HH
 
 #include <cmath>
+#include <string>
 
 #include <frackit/precision/precision.hh>
+
+#include "geometry.hh"
 #include "ellipticalgeometry.hh"
 #include "vector.hh"
 
@@ -45,7 +48,8 @@ class Ellipse;
  */
 template<class CT>
 class Ellipse<CT, /*worldDim=*/3>
-: public EllipticalGeometry<CT, /*worldDim=*/3>
+: public Geometry
+, public EllipticalGeometry<CT, /*worldDim=*/3>
 {
     using ParentType = EllipticalGeometry<CT, /*worldDim=*/3>;
     using Vector = Frackit::Vector<CT, /*worldDim*/3>;
@@ -65,7 +69,7 @@ public:
     using ParentType::ParentType;
 
     //! Return the name of this geometry
-    static std::string name() { return "Ellipse"; }
+    std::string name() const override { return "Ellipse_3d"; }
 
     /*!
      * \brief Returns true if a point is on the ellipse

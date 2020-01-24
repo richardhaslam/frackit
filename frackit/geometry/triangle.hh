@@ -25,9 +25,11 @@
 
 #include <cassert>
 #include <stdexcept>
+#include <string>
 #include <array>
 
 #include <frackit/common/math.hh>
+#include "geometry.hh"
 #include "point.hh"
 #include "segment.hh"
 #include "vector.hh"
@@ -50,7 +52,7 @@ class Triangle;
  * \tparam CT The type used for coordinates
  */
 template<class CT>
-class Triangle<CT, 3>
+class Triangle<CT, 3> : public Geometry
 {
     using Vector = Frackit::Vector<CT, 3>;
     using Direction = Frackit::Direction<CT, 3>;
@@ -92,7 +94,7 @@ public:
     }
 
     //! Return the name of the geometry
-    static std::string name() { return "Triangle"; }
+    std::string name() const override { return "Triangle_3d"; }
     //! Return the triangle area
     ctype area() const { return area_; }
     //! Return center of the triangle

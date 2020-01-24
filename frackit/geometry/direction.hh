@@ -23,6 +23,9 @@
 #ifndef FRACKIT_GEOMETRY_DIRECTION_HH
 #define FRACKIT_GEOMETRY_DIRECTION_HH
 
+#include <string>
+
+#include "geometry.hh"
 #include "vector.hh"
 
 namespace Frackit {
@@ -43,7 +46,7 @@ class Direction;
  * \tparam CT The type used for coordinates
  */
 template<class CT>
-class Direction<CT, 1>
+class Direction<CT, 1> : public Geometry
 {
 public:
     //! export underlying vector type
@@ -63,6 +66,9 @@ public:
         vNorm /= v.length();
         coordinates_[0] = vNorm.x();
     }
+
+    //! Return the name of this geometry
+    std::string name() const override { return "Direction_1d"; }
 
     //! Return the x-coordinate of the direction
     CT x() const { return coordinates_[0]; }
@@ -91,7 +97,7 @@ private:
  * \tparam CT The type used for coordinates
  */
 template<class CT>
-class Direction<CT, 2>
+class Direction<CT, 2> : public Geometry
 {
 public:
     //! export underlying vector type
@@ -112,6 +118,9 @@ public:
         coordinates_[0] = vNorm.x();
         coordinates_[1] = vNorm.y();
     }
+
+    //! Return the name of this geometry
+    std::string name() const override { return "Direction_2d"; }
 
     //! Return the x-coordinate of the direction
     CT x() const { return coordinates_[0]; }
@@ -143,7 +152,7 @@ private:
  * \tparam CT The type used for coordinates
  */
 template<class CT>
-class Direction<CT, 3>
+class Direction<CT, 3> : public Geometry
 {
 public:
     //! export underlying vector type
@@ -165,6 +174,9 @@ public:
         coordinates_[1] = vNorm.y();
         coordinates_[2] = vNorm.z();
     }
+
+    //! Return the name of this geometry
+    std::string name() const override { return "Direction_3d"; }
 
     //! Return the x-coordinate of the direction
     CT x() const { return coordinates_[0]; }

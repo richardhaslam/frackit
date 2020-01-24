@@ -26,11 +26,13 @@
 #include <cassert>
 #include <cmath>
 #include <array>
+#include <string>
 #include <iostream>
 #include <algorithm>
 #include <initializer_list>
 #include <type_traits>
 
+#include "geometry.hh"
 #include "point.hh"
 #include "direction.hh"
 
@@ -137,7 +139,7 @@ namespace VectorImpl {
  * \tparam wd The dimension of the space
  */
 template<class Impl, class CoordType, int wd>
-class VectorBase
+class VectorBase : public Geometry
 {
 
 public:
@@ -174,8 +176,7 @@ public:
     }
 
     //! Return the name of this geometry class
-    static std::string name()
-    { return "Vector"; }
+    std::string name() const override { return "Vector_" + std::to_string(wd) + "d"; }
 
     //! Return the squared length of the vector
     ctype squaredLength() const
