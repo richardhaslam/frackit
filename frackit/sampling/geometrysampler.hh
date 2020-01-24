@@ -31,13 +31,15 @@ namespace Frackit {
  *        Sampler class implemetations must implement
  *        the () operator, with which a random geometry
  *        of the given type is created.
- * \tparam Geometry The type of the geometry to be sampled.
+ * \tparam G The type of the geometry to be sampled.
  */
-template<class Geometry>
+template<class G>
 class GeometrySampler
 {
 
 public:
+    //! Export the geometry type that is sampled
+    using Geometry = G;
 
     //! every abstract base class has a virtual destructor
     virtual ~GeometrySampler () {}
