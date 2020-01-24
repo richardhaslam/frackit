@@ -27,6 +27,8 @@
 #include <cmath>
 
 #include <frackit/precision/precision.hh>
+#include <frackit/geometry/disk.hh>
+
 #include "algo_planargeom_planargeom.hh"
 
 namespace Frackit {
