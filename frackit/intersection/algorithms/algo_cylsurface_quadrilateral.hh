@@ -19,41 +19,43 @@
 /*!
  * \file
  * \brief Contains the intersection algorithm
- *        between a disk and a line.
+ *        between a lateral cylinder surface and
+ *        a quadrilateral in 3d space.
  */
-#ifndef FRACKIT_DISK_LINE_INTERSECTION_HH
-#define FRACKIT_DISK_LINE_INTERSECTION_HH
+#ifndef FRACKIT_CYLINDERSURFACE_QUADRILATERAL_INTERSECTION_HH
+#define FRACKIT_CYLINDERSURFACE_QUADRILATERAL_INTERSECTION_HH
 
-#include <variant>
-#include <stdexcept>
+#include <cmath>
 
-#include <frackit/geometry/disk.hh>
-#include <frackit/geometry/line.hh>
-#include <frackit/precision/precision.hh>
+#include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/cylindersurface.hh>
 
-#include "intersectiontraits.hh"
-#include "algo_planargeom_line.hh"
+#include <frackit/intersection/intersectiontraits.hh>
+#include "algo_cylsurface_planargeom.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect a disk and a line
+//! Intersect a lateral cylinder surface and a disk
 //! The result can be:
-//! - a segment
-//! - a point
-//! - no intersection
+//! - an ellipse
+//! - ellipse arc(s)
+//! - segment(s)
+//! - touching points
 template<class ctype>
-Intersection< Disk<ctype>, Line<ctype, 3> >
-intersect_disk_line(const Disk<ctype>& disk,
-                    const Line<ctype, 3>& line,
-                    ctype eps)
+Intersection< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
+intersect_cylinderSurface_quadrilateral(const CylinderSurface<ctype>& cylSurface,
+                                        const Quadrilateral<ctype, 3>& quad,
+                                        ctype eps)
 {
-    // characteristic length
-    const auto charLength = disk.majorAxisLength();
-    return intersect_planarGeometry_line(disk, line, charLength, Precision<ctype>::confusion(), eps);
+    using std::max;
+    ctype charLength = 0.0;
+    for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
+        charLength = max(charLength, quad.edge(edgeIdx).length());
+    return intersect_cylinderSurface_planarGeometry(cylSurface, quad, charLength, eps);
 }
 
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_INTERSECT_HH
+#endif // FRACKIT_CYLINDERSURFACE_QUADRILATERAL_INTERSECTION_HH

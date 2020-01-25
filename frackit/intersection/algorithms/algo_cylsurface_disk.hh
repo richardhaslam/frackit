@@ -19,32 +19,34 @@
 /*!
  * \file
  * \brief Contains the intersection algorithm
- *        between a face shape and a quadrilateral in 3d space.
+ *        between a lateral cylinder surface and a disk.
  */
-#ifndef FRACKIT_FACE_QUADRILATERAL_INTERSECTION_HH
-#define FRACKIT_FACE_QUADRILATERAL_INTERSECTION_HH
+#ifndef FRACKIT_CYLINDERSURFACE_DISK_INTERSECTION_HH
+#define FRACKIT_CYLINDERSURFACE_DISK_INTERSECTION_HH
 
-#include "algo_face_planargeom.hh"
-#include "intersectiontraits.hh"
+#include <frackit/geometry/disk.hh>
+#include <frackit/geometry/cylindersurface.hh>
+
+#include <frackit/intersection/intersectiontraits.hh>
+#include "algo_cylsurface_planargeom.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect a face shape and a quadrilateral in 3d space.
-//! The result can be composed of:
-//! - points
-//! - edges
-//! - faces
-//! Multiple of the above are possible
-//! since the face shape might be curved.
+//! Intersect a lateral cylinder surface and a disk
+//! The result can be:
+//! - an ellipse
+//! - ellipse arc(s)
+//! - segment(s)
+//! - touching points
 template<class ctype>
-Intersection< TopoDS_Face, Quadrilateral<ctype, 3> >
-intersect_face_quadrilateral(const TopoDS_Face& face,
-                             const Quadrilateral<ctype, 3>& quad,
-                             ctype eps)
-{ return intersect_face_planarGeometry(face, quad, eps); }
+Intersection< CylinderSurface<ctype>, Disk<ctype> >
+intersect_cylinderSurface_disk(const CylinderSurface<ctype>& cylSurface,
+                               const Disk<ctype>& disk,
+                               ctype eps)
+{ return intersect_cylinderSurface_planarGeometry(cylSurface, disk, disk.majorAxisLength(), eps); }
 
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_FACE_QUADRILATERAL_INTERSECTION_HH
+#endif // FRACKIT_CYLINDERSURFACE_DISK_INTERSECTION_HH

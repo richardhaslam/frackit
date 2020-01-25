@@ -38,19 +38,19 @@
 #include <frackit/precision/defaultepsilon.hh>
 
 #include "intersectiontraits.hh"
-#include "algo_segment_segment.hh"
-#include "algo_plane_plane.hh"
-#include "algo_plane_line.hh"
-#include "algo_disk_line.hh"
-#include "algo_quadrilateral_line.hh"
-#include "algo_quadrilateral_quadrilateral.hh"
-#include "algo_quadrilateral_disk.hh"
-#include "algo_disk_disk.hh"
-#include "algo_cylsurface_disk.hh"
-#include "algo_cylsurface_quadrilateral.hh"
-#include "algo_shell_disk.hh"
-#include "algo_face_disk.hh"
-#include "algo_face_quadrilateral.hh"
+#include "algorithms/algo_segment_segment.hh"
+#include "algorithms/algo_plane_plane.hh"
+#include "algorithms/algo_plane_line.hh"
+#include "algorithms/algo_disk_line.hh"
+#include "algorithms/algo_quadrilateral_line.hh"
+#include "algorithms/algo_quadrilateral_quadrilateral.hh"
+#include "algorithms/algo_quadrilateral_disk.hh"
+#include "algorithms/algo_disk_disk.hh"
+#include "algorithms/algo_cylsurface_disk.hh"
+#include "algorithms/algo_cylsurface_quadrilateral.hh"
+#include "algorithms/algo_shell_disk.hh"
+#include "algorithms/algo_face_disk.hh"
+#include "algorithms/algo_face_quadrilateral.hh"
 
 namespace Frackit {
 

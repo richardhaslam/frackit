@@ -38,8 +38,8 @@
 #include <frackit/occ/breputilities.hh>
 #include <frackit/occ/gputilities.hh>
 
-#include "intersectiontraits.hh"
-#include "emptyintersection.hh"
+#include <frackit/intersection/intersectiontraits.hh>
+#include <frackit/intersection/emptyintersection.hh>
 
 namespace Frackit {
 namespace IntersectionAlgorithms {

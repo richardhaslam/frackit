@@ -37,8 +37,8 @@
 #include <frackit/precision/precision.hh>
 #include <frackit/occ/breputilities.hh>
 
-#include "intersectiontraits.hh"
-#include "emptyintersection.hh"
+#include <frackit/intersection/intersectiontraits.hh>
+#include <frackit/intersection/emptyintersection.hh>
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
