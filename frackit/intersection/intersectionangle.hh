@@ -138,8 +138,8 @@ public:
     /*!
      * \brief Returns the angle in which two planar 2-dimensional
      *        geometries embedded in 3d space touch in a point
-     * \param disk1 The first plane
-     * \param disk2 The second plane
+     * \param geo1 The first planar geometry
+     * \param geo2 The first planar geometry
      * \param isPoint The touching point
      */
     template<class Geo1, class Geo2,
@@ -153,8 +153,8 @@ public:
     /*!
      * \brief Returns the angle in which two planar 2-dimensional
      *        geometries embedded in 3d space touch intersect in a segment
-     * \param disk1 The first plane
-     * \param disk2 The second plane
+     * \param geo1 The first planar geometry
+     * \param geo2 The first planar geometry
      * \param isSeg The intersection segment
      */
     template<class Geo1, class Geo2,
