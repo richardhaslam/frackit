@@ -94,6 +94,7 @@ public:
      * \note This is only available if the engines are default constructible
      */
     EntityNetworkConstraints()
+    : EntityNetworkConstraints(AngleComputationEngine())
     {
         static_assert(std::is_default_constructible<AE>::value,
                       "Angle computation engine not default constructible. "
