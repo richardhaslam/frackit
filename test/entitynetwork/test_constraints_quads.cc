@@ -5,6 +5,7 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/entitynetwork/constraints.hh>
+#include <frackit/occ/breputilities.hh>
 
 //! test the constraints for entity networks of quadrilaterals
 int main()
@@ -104,6 +105,17 @@ int main()
     if (!constraints.evaluate(mainQuad, quad8))
         throw std::runtime_error("False positive intersection distance violation");
     std::cout << "Test 8 passed" << std::endl;
+
+    // test the two above also with a shape representation of the main quad
+    {
+        if (constraints.evaluate(mainQuad, Frackit::OCCUtilities::getShape(quad7)))
+            throw std::runtime_error("Did not detect intersection distance violation");
+        std::cout << "Test 7 (with shape) passed" << std::endl;
+
+        if (!constraints.evaluate(mainQuad, Frackit::OCCUtilities::getShape(quad8)))
+            throw std::runtime_error("False positive intersection distance violation");
+        std::cout << "Test 8 (with shape) passed" << std::endl;
+    }
 
     // intersection angle just ok
     Quad quad9(Point(-0.5, -0.5, -0.5 - 1e-3),

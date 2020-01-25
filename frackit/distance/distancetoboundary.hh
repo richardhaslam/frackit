@@ -191,6 +191,29 @@ ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
 }
 
 /*!
+ * \brief Compute the distance of a shape
+ *        to the bounding wire of a quadrilateral.
+ * \param shape The shape
+ * \param quad The quadrilateral
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class ctype>
+ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
+                                const Quadrilateral<ctype, 3>& quad,
+                                ctype deflection = Precision<ctype>::confusion(),
+                                Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                                Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{
+    return computeDistance(shape,
+                           OCCUtilities::getShape(quad),
+                           deflection,
+                           extFlag,
+                           extAlgo);
+}
+
+/*!
  * \brief Compute the distance of a geometry
  *        to the boundary of a TopoDS_Face.
  * \param geo The geometry

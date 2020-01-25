@@ -139,10 +139,10 @@ namespace ConstraintImpl {
     /*!
      * \brief Overload for edge intersections on disks.
      */
-    template<class ctype, class ctype2>
+    template<class Entity, class ctype>
     bool isAdmissibleDistanceToBoundary(const TopoDS_Edge& edge,
-                                        const Disk<ctype>& entity,
-                                        ctype2 threshold)
+                                        const Entity& entity,
+                                        ctype threshold)
     {
         const auto p1 = OCCUtilities::point( TopExp::FirstVertex(edge) );
         const auto p2 = OCCUtilities::point( TopExp::LastVertex(edge) );
@@ -154,33 +154,9 @@ namespace ConstraintImpl {
     /*!
      * \brief Overload for face intersections on disks.
      */
-    template<class ctype, class ctype2>
+    template<class Entity, class ctype>
     bool isAdmissibleDistanceToBoundary(const TopoDS_Face& face,
-                                        const Disk<ctype>& entity,
-                                        ctype2 threshold)
-    { throw std::runtime_error("NotImplemented: face-entity boundary distance"); }
-
-    /*!
-     * \brief Overload for edge intersections on faces.
-     */
-    template<class ctype>
-    bool isAdmissibleDistanceToBoundary(const TopoDS_Edge& edge,
-                                        const TopoDS_Face& entity,
-                                        ctype threshold)
-    {
-        const auto p1 = OCCUtilities::point( TopExp::FirstVertex(edge) );
-        const auto p2 = OCCUtilities::point( TopExp::LastVertex(edge) );
-        if (!isAdmissibleDistanceToBoundary(p1, entity, threshold))
-            return false;
-        return isAdmissibleDistanceToBoundary(p2, entity, threshold);
-    }
-
-    /*!
-     * \brief Overload for face intersections on faces.
-     */
-    template<class ctype>
-    bool isAdmissibleDistanceToBoundary(const TopoDS_Face& face,
-                                        const TopoDS_Face& entity,
+                                        const Entity& entity,
                                         ctype threshold)
     { throw std::runtime_error("NotImplemented: face-entity boundary distance"); }
 
