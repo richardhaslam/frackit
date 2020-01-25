@@ -40,6 +40,7 @@
 // If a new geometry is added, it has to be included here and the
 // implementation in the applyOnGeometry() function has to be extended.
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
 
 #include "assign.hh"
 
@@ -61,6 +62,13 @@ auto applyOnGeometry(ApplyFunc&& applyFunc, Geometry* geoPtr)
         if (!assign(geoPtr, disk))
             throw std::runtime_error("applyOnGeometry(): could not assign disk");
         return applyFunc(disk);
+    }
+    else if (geoPtr->name() == "Quadrilateral_3d")
+    {
+        Quadrilateral<ctype, 3> quad;
+        if (!assign(geoPtr, quad))
+            throw std::runtime_error("applyOnGeometry(): could not assign 3d quadrilateral");
+        return applyFunc(quad);
     }
 
     std::string msg = "applyOnGeometry() function not implemented ";
