@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/entitynetwork/constraints.hh>
 
@@ -12,6 +13,7 @@ int main()
     using ctype = double;
 
     using Disk = Frackit::Disk<ctype>;
+    using Quad = Frackit::Quadrilateral<ctype, 3>;
     using Point = typename Disk::Point;
     using Direction = typename Disk::Direction;
     using Vector = typename Direction::Vector;
@@ -86,6 +88,27 @@ int main()
     if (constraints.evaluate(mainDisk, disk9))
         throw std::runtime_error("Did not detect intersection angle violation");
     std::cout << "Test 9 passed" << std::endl;
+
+    // test both intersection angles also with quadrilaterals
+    {
+        // intersection angle just ok
+        Quad quad1(Point(-1.0, -1.0, -1.0 - 0.5e-3),
+                   Point( 1.0, -1.0, -1.0 - 0.5e-3),
+                   Point(-1.0,  1.0, 1.0 + 0.5e-3),
+                   Point( 1.0,  1.0, 1.0 + 0.5e-3));
+        if (!constraints.evaluate(mainDisk, quad1))
+            throw std::runtime_error("False positive intersection angle violation");
+        std::cout << "Test 8 with quad passed" << std::endl;
+
+        // intersection angle too small
+        Quad quad2(Point(-1.0, -1.0, -1.0 + 0.5e-3),
+                   Point( 1.0, -1.0, -1.0 + 0.5e-3),
+                   Point(-1.0,  1.0, 1.0 - 0.5e-3),
+                   Point( 1.0,  1.0, 1.0 - 0.5e-3));
+        if (constraints.evaluate(mainDisk, quad2))
+            throw std::runtime_error("Did not detect intersection angle violation");
+        std::cout << "Test 9 with quad passed" << std::endl;
+    }
 
     // Test constraints w.r.t. cylinder
     Frackit::Cylinder<ctype> cylinder(0.5, 1.0);
