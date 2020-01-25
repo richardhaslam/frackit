@@ -24,6 +24,8 @@
 #ifndef FRACKIT_DISTANCE_TO_BOUNDARY_HH
 #define FRACKIT_DISTANCE_TO_BOUNDARY_HH
 
+#include <cmath>
+#include <limits>
 #include <algorithm>
 
 #include <Extrema_ExtAlgo.hxx>
@@ -32,6 +34,7 @@
 
 #include <frackit/precision/precision.hh>
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/name.hh>
 
@@ -59,7 +62,8 @@ computeDistanceToBoundary(const Geo1& geo1,
     std::string msg = "Distance to boundary computation not implemented for ";
     msg += "\"" + geometryName(geo1) + "\"";
     msg += " and ";
-    msg += "\"" + geometryName(geo1)  + "\"";
+    msg += "\"" + geometryName(geo2)  + "\"";
+    throw std::runtime_error(msg);
 }
 
 /*!
@@ -85,6 +89,26 @@ computeDistanceToBoundary(const Geo& geo,
                            deflection,
                            extFlag,
                            extAlgo);
+}
+
+/*!
+ * \brief Compute the distance of a point
+ *        to the bounding of a quadrilateral.
+ * \param p The point
+ * \param quad The quadrilateral
+ */
+template<class ctype1, class ctype2>
+PromotedType<ctype1, ctype2>
+computeDistanceToBoundary(const Point<ctype1, 3>& p,
+                          const Quadrilateral<ctype2, 3>& quad)
+{
+    using std::min;
+    using ctype = PromotedType<ctype1, ctype2>;
+
+    ctype distance = std::numeric_limits<ctype>::max();
+    for (unsigned int i = 0; i < quad.numEdges(); ++i)
+        distance = min(distance, computeDistance(quad.edge(i), p));
+    return distance;
 }
 
 /*!

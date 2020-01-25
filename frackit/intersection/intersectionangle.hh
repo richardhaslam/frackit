@@ -49,7 +49,9 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/line.hh>
 #include <frackit/geometry/cylindersurface.hh>
+
 #include <frackit/geometry/name.hh>
+#include <frackit/common/extractdimension.hh>
 
 #include <frackit/occ/gputilities.hh>
 #include <frackit/occ/geomutilities.hh>
@@ -68,6 +70,13 @@ namespace Frackit {
 template<class ctype = double>
 class IntersectionAngle
 {
+    template<class G>
+    struct IsPlanarGeometry
+    {
+        static constexpr bool value = DimensionalityTraits<G>::geometryDimension() == 2
+                                      && DimensionalityTraits<G>::worldDimension() == 3;
+    };
+
 public:
 
     /*!
@@ -127,55 +136,67 @@ public:
     }
 
     /*!
-     * \brief Returns the angle in which two disks touch in a point
-     * \param disk1 The first plane
-     * \param disk2 The second plane
+     * \brief Returns the angle in which two planar 2-dimensional
+     *        geometries embedded in 3d space touch in a point
+     * \param geo1 The first planar geometry
+     * \param geo2 The first planar geometry
      * \param isPoint The touching point
      */
-    ctype operator() (const Disk<ctype>& disk1,
-                      const Disk<ctype>& disk2,
+    template<class Geo1, class Geo2,
+             std::enable_if_t<IsPlanarGeometry<Geo1>::value
+                              && IsPlanarGeometry<Geo2>::value, int> = 0>
+    ctype operator() (const Geo1& geo1,
+                      const Geo2& geo2,
                       const Point<ctype, 3>& isPoint)
-    { return (*this)(disk1.supportingPlane(), disk2.supportingPlane()); }
+    { return (*this)(geo1.supportingPlane(), geo2.supportingPlane()); }
 
     /*!
-     * \brief Returns the angle in which two disks intersect in a segment
-     * \param disk1 The first plane
-     * \param disk2 The second plane
+     * \brief Returns the angle in which two planar 2-dimensional
+     *        geometries embedded in 3d space touch intersect in a segment
+     * \param geo1 The first planar geometry
+     * \param geo2 The first planar geometry
      * \param isSeg The intersection segment
      */
-    ctype operator() (const Disk<ctype>& disk1,
-                      const Disk<ctype>& disk2,
+    template<class Geo1, class Geo2,
+             std::enable_if_t<IsPlanarGeometry<Geo1>::value
+                              && IsPlanarGeometry<Geo2>::value, int> = 0>
+    ctype operator() (const Geo1& geo1,
+                      const Geo2& geo2,
                       const Segment<ctype, 3>& isSeg)
-    { return (*this)(disk1.supportingPlane(), disk2.supportingPlane()); }
+    { return (*this)(geo1.supportingPlane(), geo2.supportingPlane()); }
 
     /*!
-     * \brief Returns the angle in which a disk and a
-     *        cylinder surface touch in a point.
-     * \param disk The disk
+     * \brief Returns the angle in which a planar
+     *        2-dimensional geometry in 2d space
+     *        and a cylinder surface touch in a point.
+     * \param geo The planar geometry
      * \param cylSurface The cylinder surface
      * \param isPoint The touching point
      */
-    ctype operator() (const Disk<ctype>& disk,
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    ctype operator() (const Geo& geo,
                       const CylinderSurface<ctype>& cylSurface,
                       const Point<ctype, 3>& isPoint)
-    { return (*this)(disk.supportingPlane(), cylSurface.getTangentPlane(isPoint)); }
+    { return (*this)(geo.supportingPlane(), cylSurface.getTangentPlane(isPoint)); }
 
     /*!
      * \brief Returns the angle in which a cylinder
-     *        surface and a disk touch in a point.
+     *        surface and planar 2-dimensional geometry
+     *        in 2d space touch in a point.
      * \param cylSurface The cylinder surface
-     * \param disk The disk
+     * \param geo The planar geometry
      * \param isPoint The touching point
      */
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const CylinderSurface<ctype>& cylSurface,
-                      const Disk<ctype>& disk,
+                      const Geo& geo,
                       const Point<ctype, 3>& isPoint)
-    { return(*this)(disk, cylSurface, isPoint); }
+    { return(*this)(geo, cylSurface, isPoint); }
 
     /*!
-     * \brief Returns the angle in which a disk
+     * \brief Returns the angle in which a planar 2-dimensional geometry
      *        and a cylinder surface intersect in a segment.
-     * \param disk The disk
+     * \param geo The planar geometry
      * \param cylSurface The cylinder surface
      * \param isSeg The intersection segment
      * \note An intersection segment on the cylinder surface can only
@@ -184,16 +205,17 @@ public:
      *       the intersection segment, and we compute the angle for an
      *       arbitrary point on the segment; here: the first corner.
      */
-    ctype operator() (const Disk<ctype>& disk,
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    ctype operator() (const Geo& geo,
                       const CylinderSurface<ctype>& cylSurface,
                       const Segment<ctype, 3>& isSeg)
-    { return (*this)(disk.supportingPlane(), cylSurface.getTangentPlane(isSeg.source())); }
+    { return (*this)(geo.supportingPlane(), cylSurface.getTangentPlane(isSeg.source())); }
 
     /*!
-     * \brief Returns the angle in which a cylinder surface
-     *        and a disk intersect in a segment.
-     * \param disk The disk
+     * \brief Returns the angle in which a cylinder surface and
+     *        a planar 2-dimensional geometry intersect in a segment.
      * \param cylSurface The cylinder surface
+     * \param geo The planar geometry
      * \param isSeg The intersection segment
      * \note An intersection segment on the cylinder surface can only
      *       occur if the intersection is parallel to the cylinder axis.
@@ -201,65 +223,69 @@ public:
      *       the intersection segment, and we compute the angle for an
      *       arbitrary point on the segment; here: the first corner.
      */
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const CylinderSurface<ctype>& cylSurface,
-                      const Disk<ctype>& disk,
+                      const Geo& geo,
                       const Segment<ctype, 3>& isSeg)
-    { return (*this)(disk, cylSurface, isSeg); }
+    { return (*this)(geo, cylSurface, isSeg); }
 
     /*!
-     * \brief Returns the angle in which a cylinder surface
-     *        and a disk intersect in an ellipse arc.
-     * \param disk The disk
+     * \brief Returns the angle in which a planar 2-dimensional
+     *        geometry and a cylinder surface intersect in an ellipse arc.
+     * \param geo The planar geometry
      * \param cylSurface The cylinder surface
      * \param isArc The intersection arc
      */
-    ctype operator() (const Disk<ctype>& disk,
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    ctype operator() (const Geo& geo,
                       const CylinderSurface<ctype>& cylSurface,
                       const EllipseArc<ctype, 3>& isArc)
     {
-        // use the minimum angle between the disk plane and the
+        // use the minimum angle between the geometry plane and the
         // tangent plane on the surface at four sample points
         std::array<ctype, 5> params({0.0, 0.25, 0.5, 0.75, 1.0});
         ctype resultAngle = std::numeric_limits<ctype>::max();
-        const auto& diskPlane = disk.supportingPlane();
+        const auto& geoPlane = geo.supportingPlane();
 
         using std::min;
         for (auto param : params)
         {
             const auto p = isArc.getPoint(param);
             const auto tangentPlane = cylSurface.getTangentPlane(p);
-            resultAngle = min(resultAngle, (*this)(diskPlane, tangentPlane));
+            resultAngle = min(resultAngle, (*this)(geoPlane, tangentPlane));
         }
 
         return resultAngle;
     }
 
     /*!
-     * \brief Returns the angle in which a disk
-     *        and a cylinder surface intersect in an ellipse arc.
+     * \brief Returns the angle in which a cyliner surface and
+     *        a planar 2-dimensional geometry intersect in an ellipse arc.
      * \param cylSurface The cylinder surface
-     * \param disk The disk
+     * \param geo The planar geometry
      * \param isArc The intersection arc
      */
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const CylinderSurface<ctype>& cylSurface,
-                      const Disk<ctype>& disk,
+                      const Geo& geo,
                       const EllipseArc<ctype, 3>& isArc)
-    { return (*this)(disk, cylSurface, isArc); }
+    { return (*this)(geo, cylSurface, isArc); }
 
     /*!
-     * \brief Returns the angle in which a disk
+     * \brief Returns the angle in which a planar 2-dimensional geometry
      *        and a cylinder surface intersect in an ellipse.
      * \param cylSurface The cylinder surface
-     * \param disk The disk
+     * \param geo The planar geometry
      * \param isEllipse The intersection ellipse
      */
-    ctype operator() (const Disk<ctype>& disk,
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    ctype operator() (const Geo& geo,
                       const CylinderSurface<ctype>& cylSurface,
                       const Ellipse<ctype, 3>& isEllipse)
     {
-        // use the minimum angle between the disk plane and the
+        // use the minimum angle between the geometry plane and the
         // tangent plane on the surface at eight sample points
-        const auto& diskPlane = disk.supportingPlane();
+        const auto& geoPlane = geo.supportingPlane();
         ctype resultAngle = std::numeric_limits<ctype>::max();
         std::array<ctype, 9> params({0.0, 0.125, 0.25, 0.375,
                                      0.5, 0.625, 0.75, 0.875,
@@ -270,7 +296,7 @@ public:
         {
             const auto p = isEllipse.getPoint(param);
             const auto tangentPlane = cylSurface.getTangentPlane(p);
-            resultAngle = min(resultAngle, (*this)(diskPlane, tangentPlane));
+            resultAngle = min(resultAngle, (*this)(geoPlane, tangentPlane));
         }
 
         return resultAngle;
@@ -278,15 +304,16 @@ public:
 
     /*!
      * \brief Returns the angle in which a cylinder surface
-     *        and a disk intersect in an ellipse.
-     * \param disk The disk
+     *        and a planar 2-dimensional geometry intersect in an ellipse.
+     * \param geo The planar geometry
      * \param cylSurface The cylinder surface
      * \param isEllipse The intersection ellipse
      */
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const CylinderSurface<ctype>& cylSurface,
-                      const Disk<ctype>& disk,
+                      const Geo& geo,
                       const Ellipse<ctype, 3>& isEllipse)
-    { return (*this)(disk, cylSurface, isEllipse); }
+    { return (*this)(geo, cylSurface, isEllipse); }
 
     /*!
      * \brief Returns the angle in which a disk
