@@ -50,7 +50,7 @@ namespace Frackit {
 template<class ctype1, int wd, class Geo, class ctype2>
 bool pointOnGeometryBoundary(const Point<ctype1, wd>& p, const Geo& geo, ctype2 eps)
 {
-    static_assert(wd == DimensionalityTraits<Geo>::geomDim, "World dimension mismatch");
+    static_assert(wd == DimensionalityTraits<Geo>::worldDimension(), "World dimension mismatch");
     std::string msg = "Point on boundary not implemented for ";
     msg += "\"" + geometryName(geo) + "\" \n";
     throw std::runtime_error(msg);
@@ -67,6 +67,24 @@ bool pointOnGeometryBoundary(const Point<ctype1, wd>& p,
                              const Disk<ctype2>& disk,
                              ctype2 eps)
 { return pointOnGeometry(p, disk.boundingEllipse(), eps); }
+
+/*!
+ * \brief Evaluate if a point lies on the boundary of
+ *        a quadrilateral in 3d space.
+ * \param p The point
+ * \param quad The quadrilateral
+ * \param eps Epsilon value to be used for the check
+ */
+template<class ctype1, class ctype2, class ctype3>
+bool pointOnGeometryBoundary(const Point<ctype1, 3>& p,
+                             const Quadrilateral<ctype2, 3>& quad,
+                             ctype3 eps)
+{
+    for (unsigned int i = 0; i < quad.numEdges(); ++i)
+        if (pointOnGeometry(p, quad.edge(i), eps))
+            return true;
+    return false;
+}
 
 /*!
  * \brief Evaluate if a point lies on the boundary of a cylinder surface.
