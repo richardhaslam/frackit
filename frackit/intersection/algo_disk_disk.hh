@@ -50,7 +50,7 @@ intersect_disk_disk(const Disk<ctype>& disk1,
     ctype charLength = disk1.majorAxisLength();
     charLength = max(charLength, disk2.majorAxisLength());
 
-    return intersect_planargeometry_planargeometry(disk1,
+    return intersect_planarGeometry_planarGeometry(disk1,
                                                    disk2,
                                                    charLength,
                                                    Precision<ctype>::confusion(),

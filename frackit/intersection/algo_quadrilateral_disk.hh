@@ -52,7 +52,7 @@ intersect_quadrilateral_disk(const Quadrilateral<ctype, 3>& quad,
     for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
         charLength = max(charLength, quad.edge(edgeIdx).length());
 
-    return intersect_planargeometry_planargeometry(quad,
+    return intersect_planarGeometry_planarGeometry(quad,
                                                    disk,
                                                    charLength,
                                                    eps,

@@ -54,7 +54,7 @@ namespace IntersectionAlgorithms {
  */
 template<class PlanarGeometry, class ctype>
 Intersection< PlanarGeometry, Line<ctype, 3> >
-intersect_planargeometry_line(const PlanarGeometry& faceGeom,
+intersect_planarGeometry_line(const PlanarGeometry& faceGeom,
                               const Line<ctype, 3>& line,
                               ctype charLength,
                               ctype containsEps,

@@ -32,6 +32,7 @@
 #include <frackit/geometry/line.hh>
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/plane.hh>
+#include <frackit/common/extractdimension.hh>
 
 #include "intersectiontraits.hh"
 #include "emptyintersection.hh"
@@ -59,7 +60,7 @@ namespace IntersectionAlgorithms {
  */
 template<class PlanarGeom1, class PlanarGeom2, class ctype>
 Intersection< PlanarGeom1, PlanarGeom2 >
-intersect_planargeometry_planargeometry(const PlanarGeom1& faceGeom1,
+intersect_planarGeometry_planarGeometry(const PlanarGeom1& faceGeom1,
                                         const PlanarGeom2& faceGeom2,
                                         ctype charLength,
                                         ctype containsEps1,
@@ -87,8 +88,8 @@ intersect_planargeometry_planargeometry(const PlanarGeom1& faceGeom1,
     else if (std::holds_alternative<Line<ctype, worldDim>>(planeIS))
     {
         const auto& isLine = std::get<Line<ctype, worldDim>>(planeIS);
-        const auto is1 = intersect_planargeometry_line(faceGeom1, isLine, charLength, containsEps1, eps);
-        const auto is2 = intersect_planargeometry_line(faceGeom2, isLine, charLength, containsEps2, eps);
+        const auto is1 = intersect_planarGeometry_line(faceGeom1, isLine, charLength, containsEps1, eps);
+        const auto is2 = intersect_planarGeometry_line(faceGeom2, isLine, charLength, containsEps2, eps);
 
         // each faces intersect the support plane of the other face
         if (std::holds_alternative<Segment<ctype, worldDim>>(is1)

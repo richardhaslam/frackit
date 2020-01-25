@@ -52,7 +52,7 @@ intersect_quadrilateral_line(const Quadrilateral<ctype, 3>& quad,
     for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
         charLength = max(charLength, quad.edge(edgeIdx).length());
 
-    return intersect_planargeometry_line(quad, line, charLength, eps, eps);
+    return intersect_planarGeometry_line(quad, line, charLength, eps, eps);
 }
 
 } // end namespace IntersectionAlgorithms
