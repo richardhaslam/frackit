@@ -316,13 +316,14 @@ public:
     { return (*this)(geo, cylSurface, isEllipse); }
 
     /*!
-     * \brief Returns the angle in which a disk
+     * \brief Returns the angle in which a planar 2d geometry
      *        and a face shape touch in a point.
-     * \param disk The disk
+     * \param geo The planar geometry
      * \param face The face shape
      * \param isPoint The touching point
      */
-    ctype operator() (const Disk<ctype>& disk,
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    ctype operator() (const Geo& geo,
                       const TopoDS_Face& face,
                       const Point<ctype, 3>& isPoint)
     {
@@ -345,29 +346,31 @@ public:
         const auto base2 = OCCUtilities::vector(baseVec2);
         const Direction<ctype, 3> normal(crossProduct(base1, base2));
         const Plane<ctype, 3> tangentPlane(isPoint, normal);
-        return (*this)(disk.supportingPlane(), tangentPlane);
+        return (*this)(geo.supportingPlane(), tangentPlane);
     }
 
     /*!
      * \brief Returns the angle in which a face shape
-     *        and a disk intersect in a point.
+     *        and a planar 2d geometry intersect in a point.
      * \param face The face shape
-     * \param disk The disk
+     * \param geo The planar geometry
      * \param isPoint The touching point
      */
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const TopoDS_Face& face,
-                      const Disk<ctype>& disk,
+                      const Geo& geo,
                       const Point<ctype, 3>& isPoint)
-    { return (*this)(disk, face, isPoint); }
+    { return (*this)(geo, face, isPoint); }
 
     /*!
-     * \brief Returns the angle in which a disk
+     * \brief Returns the angle in which a planar 2d geometry
      *        and a face shape intersect in an edge.
-     * \param disk The disk
+     * \param geo The planar geometry
      * \param face The face shape
      * \param isEdge The intersection edge
      */
-    ctype operator() (const Disk<ctype>& disk,
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    ctype operator() (const Geo& geo,
                       const TopoDS_Face& face,
                       const TopoDS_Edge& isEdge)
     {
@@ -383,7 +386,7 @@ public:
         {
             const auto param = edgeHandle->FirstParameter() + f*deltaParam;
             const auto isPoint = OCCUtilities::point(edgeHandle->Value(param));
-            resultAngle = min(resultAngle, (*this)(disk, face, isPoint));
+            resultAngle = min(resultAngle, (*this)(geo, face, isPoint));
         }
 
         return resultAngle;
@@ -391,39 +394,42 @@ public:
 
     /*!
      * \brief Returns the angle in which a face shape
-     *        and a disk intersect in an edge.
+     *        and a planar 2d geometry intersect in an edge.
      * \param face The face shape
-     * \param disk The disk
+     * \param geo The planar geometry
      * \param isEdge The intersection edge
      */
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const TopoDS_Face& face,
-                      const Disk<ctype>& disk,
+                      const Geo& geo,
                       const TopoDS_Edge& isEdge)
-    { return (*this)(disk, face, isEdge); }
+    { return (*this)(geo, face, isEdge); }
 
     /*!
-     * \brief Returns the angle in which a disk intersects
-     *        a face shape in a face.
-     * \param disk The disk
+     * \brief Returns the angle in which a planar 2d geometry
+     *        intersects a face shape in a face.
+     * \param geo The planar geometry
      * \param face The face shape
      * \param isFace The intersection face
      */
-    ctype operator() (const Disk<ctype>& disk,
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    ctype operator() (const Geo& geo,
                       const TopoDS_Face& face,
                       const TopoDS_Face& isFace)
     { return 0.0; }
 
     /*!
      * \brief Returns the angle in which a face shape
-     *        intersects a disk in a face.
+     *        intersects a planar 2d geometry in a face.
      * \param face The face shape
-     * \param disk The disk
+     * \param geo The planar geometry
      * \param isFace The intersection face
      */
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const TopoDS_Face& face,
-                      const Disk<ctype>& disk,
+                      const Geo& geo,
                       const TopoDS_Face& isFace)
-    { return (*this)(disk, face, isFace); }
+    { return (*this)(geo, face, isFace); }
 
     /*!
      * \brief Overload for an intersection variant
