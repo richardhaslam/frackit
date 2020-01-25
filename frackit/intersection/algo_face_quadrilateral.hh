@@ -19,10 +19,10 @@
 /*!
  * \file
  * \brief Contains the intersection algorithm
- *        between a face shape and a disk.
+ *        between a face shape and a quadrilateral in 3d space.
  */
-#ifndef FRACKIT_FACE_DISK_INTERSECTION_HH
-#define FRACKIT_FACE_DISK_INTERSECTION_HH
+#ifndef FRACKIT_FACE_QUADRILATERAL_INTERSECTION_HH
+#define FRACKIT_FACE_QUADRILATERAL_INTERSECTION_HH
 
 #include "algo_face_planargeom.hh"
 #include "intersectiontraits.hh"
@@ -30,7 +30,7 @@
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect a face shape and a disk
+//! Intersect a face shape and a quadrilateral in 3d space.
 //! The result can be composed of:
 //! - points
 //! - edges
@@ -38,13 +38,13 @@ namespace IntersectionAlgorithms {
 //! Multiple of the above are possible
 //! since the face shape might be curved.
 template<class ctype>
-Intersection< TopoDS_Face, Disk<ctype> >
-intersect_face_disk(const TopoDS_Face& face,
-                    const Disk<ctype>& disk,
-                    ctype eps)
-{ return intersect_face_planarGeometry(face, disk, eps); }
+Intersection< TopoDS_Face, Quadrilateral<ctype, 3> >
+intersect_face_quadrilateral(const TopoDS_Face& face,
+                             const Quadrilateral<ctype, 3>& quad,
+                             ctype eps)
+{ return intersect_face_planarGeometry(face, quad, eps); }
 
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_FACE_DISK_INTERSECTION_HH
+#endif // FRACKIT_FACE_QUADRILATERAL_INTERSECTION_HH

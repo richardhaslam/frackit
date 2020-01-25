@@ -50,6 +50,7 @@
 #include "algo_cylsurface_quadrilateral.hh"
 #include "algo_shell_disk.hh"
 #include "algo_face_disk.hh"
+#include "algo_face_quadrilateral.hh"
 
 namespace Frackit {
 
@@ -307,6 +308,28 @@ template<class ctype>
 Intersection< TopoDS_Face, Disk<ctype> >
 intersect(const TopoDS_Face& face, const Disk<ctype>& disk, ctype eps)
 { return intersect(disk, face, eps); }
+
+/*!
+ * \brief Intersect a quadrilateral and a face shape.
+ * \param quad The quadrilateral
+ * \param face The face shape
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Quadrilateral<ctype, 3>, TopoDS_Face >
+intersect(const Quadrilateral<ctype, 3>& quad, const TopoDS_Face& face, ctype eps)
+{ return IntersectionAlgorithms::intersect_face_quadrilateral(face, quad, eps); }
+
+/*!
+ * \brief Intersect a face shape and a quadrilateral.
+ * \param face The face shape
+ * \param quad The quadrilateral
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< TopoDS_Face, Quadrilateral<ctype, 3> >
+intersect(const TopoDS_Face& face, const Quadrilateral<ctype, 3>& quad, ctype eps)
+{ return intersect(quad, face, eps); }
 
 } // end namespace Frackit
 
