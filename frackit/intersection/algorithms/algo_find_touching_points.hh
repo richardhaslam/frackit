@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <vector>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>

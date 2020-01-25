@@ -36,9 +36,9 @@
 #include <frackit/occ/breputilities.hh>
 #include <frackit/common/extractctype.hh>
 
+#include <frackit/intersection/intersectiontraits.hh>
+#include <frackit/intersection/emptyintersection.hh>
 #include "algo_find_touching_points.hh"
-#include "intersectiontraits.hh"
-#include "emptyintersection.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {

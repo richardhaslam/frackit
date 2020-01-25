@@ -34,8 +34,8 @@
 #include <frackit/geometry/plane.hh>
 #include <frackit/common/extractdimension.hh>
 
-#include "intersectiontraits.hh"
-#include "emptyintersection.hh"
+#include <frackit/intersection/intersectiontraits.hh>
+#include <frackit/intersection/emptyintersection.hh>
 
 #include "algo_segment_segment.hh"
 #include "algo_plane_plane.hh"

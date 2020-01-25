@@ -24,8 +24,8 @@
 #ifndef FRACKIT_FACE_DISK_INTERSECTION_HH
 #define FRACKIT_FACE_DISK_INTERSECTION_HH
 
+#include <frackit/intersection/intersectiontraits.hh>
 #include "algo_face_planargeom.hh"
-#include "intersectiontraits.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {

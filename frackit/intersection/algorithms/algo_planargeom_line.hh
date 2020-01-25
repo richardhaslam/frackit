@@ -33,8 +33,8 @@
 #include <frackit/occ/breputilities.hh>
 #include <frackit/precision/precision.hh>
 
-#include "intersectiontraits.hh"
-#include "emptyintersection.hh"
+#include <frackit/intersection/intersectiontraits.hh>
+#include <frackit/intersection/emptyintersection.hh>
 #include "algo_plane_line.hh"
 
 namespace Frackit {

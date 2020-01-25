@@ -19,34 +19,43 @@
 /*!
  * \file
  * \brief Contains the intersection algorithm
- *        between a lateral cylinder surface and a disk.
+ *        between a quadrilateral and a line in 3d space.
  */
-#ifndef FRACKIT_CYLINDERSURFACE_DISK_INTERSECTION_HH
-#define FRACKIT_CYLINDERSURFACE_DISK_INTERSECTION_HH
+#ifndef FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH
+#define FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH
 
-#include <frackit/geometry/disk.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <cmath>
 
-#include "intersectiontraits.hh"
-#include "algo_cylsurface_planargeom.hh"
+#include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/line.hh>
+
+#include <frackit/intersection/intersectiontraits.hh>
+#include "algo_planargeom_line.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect a lateral cylinder surface and a disk
+//! Intersect a 3d quadrilateral and a line
 //! The result can be:
-//! - an ellipse
-//! - ellipse arc(s)
-//! - segment(s)
-//! - touching points
+//! - a segment
+//! - a point
+//! - no intersection
 template<class ctype>
-Intersection< CylinderSurface<ctype>, Disk<ctype> >
-intersect_cylinderSurface_disk(const CylinderSurface<ctype>& cylSurface,
-                               const Disk<ctype>& disk,
-                               ctype eps)
-{ return intersect_cylinderSurface_planarGeometry(cylSurface, disk, disk.majorAxisLength(), eps); }
+Intersection< Quadrilateral<ctype, 3>, Line<ctype, 3> >
+intersect_quadrilateral_line(const Quadrilateral<ctype, 3>& quad,
+                             const Line<ctype, 3>& line,
+                             ctype eps)
+{
+    // characteristic length
+    using std::max;
+    ctype charLength = 0.0;
+    for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
+        charLength = max(charLength, quad.edge(edgeIdx).length());
+
+    return intersect_planarGeometry_line(quad, line, charLength, eps, eps);
+}
 
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_CYLINDERSURFACE_DISK_INTERSECTION_HH
+#endif // FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH

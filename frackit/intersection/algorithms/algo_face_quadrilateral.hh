@@ -19,43 +19,32 @@
 /*!
  * \file
  * \brief Contains the intersection algorithm
- *        between a quadrilateral and a line in 3d space.
+ *        between a face shape and a quadrilateral in 3d space.
  */
-#ifndef FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH
-#define FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH
+#ifndef FRACKIT_FACE_QUADRILATERAL_INTERSECTION_HH
+#define FRACKIT_FACE_QUADRILATERAL_INTERSECTION_HH
 
-#include <cmath>
-
-#include <frackit/geometry/quadrilateral.hh>
-#include <frackit/geometry/line.hh>
-
-#include "intersectiontraits.hh"
-#include "algo_planargeom_line.hh"
+#include <frackit/intersection/intersectiontraits.hh>
+#include "algo_face_planargeom.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect a 3d quadrilateral and a line
-//! The result can be:
-//! - a segment
-//! - a point
-//! - no intersection
+//! Intersect a face shape and a quadrilateral in 3d space.
+//! The result can be composed of:
+//! - points
+//! - edges
+//! - faces
+//! Multiple of the above are possible
+//! since the face shape might be curved.
 template<class ctype>
-Intersection< Quadrilateral<ctype, 3>, Line<ctype, 3> >
-intersect_quadrilateral_line(const Quadrilateral<ctype, 3>& quad,
-                             const Line<ctype, 3>& line,
+Intersection< TopoDS_Face, Quadrilateral<ctype, 3> >
+intersect_face_quadrilateral(const TopoDS_Face& face,
+                             const Quadrilateral<ctype, 3>& quad,
                              ctype eps)
-{
-    // characteristic length
-    using std::max;
-    ctype charLength = 0.0;
-    for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
-        charLength = max(charLength, quad.edge(edgeIdx).length());
-
-    return intersect_planarGeometry_line(quad, line, charLength, eps, eps);
-}
+{ return intersect_face_planarGeometry(face, quad, eps); }
 
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_QUADRILATERAL_LINE_INTERSECTION_HH
+#endif // FRACKIT_FACE_QUADRILATERAL_INTERSECTION_HH
