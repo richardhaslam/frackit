@@ -49,7 +49,9 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/line.hh>
 #include <frackit/geometry/cylindersurface.hh>
+
 #include <frackit/geometry/name.hh>
+#include <frackit/common/extractdimension.hh>
 
 #include <frackit/occ/gputilities.hh>
 #include <frackit/occ/geomutilities.hh>
@@ -68,6 +70,13 @@ namespace Frackit {
 template<class ctype = double>
 class IntersectionAngle
 {
+    template<class G>
+    struct IsPlanarGeometry
+    {
+        static constexpr bool value = DimensionalityTraits<G>::geometryDimension() == 2
+                                      && DimensionalityTraits<G>::worldDimension() == 3;
+    };
+
 public:
 
     /*!
@@ -127,26 +136,34 @@ public:
     }
 
     /*!
-     * \brief Returns the angle in which two disks touch in a point
+     * \brief Returns the angle in which two planar 2-dimensional
+     *        geometries embedded in 3d space touch in a point
      * \param disk1 The first plane
      * \param disk2 The second plane
      * \param isPoint The touching point
      */
-    ctype operator() (const Disk<ctype>& disk1,
-                      const Disk<ctype>& disk2,
+    template<class Geo1, class Geo2,
+             std::enable_if_t<IsPlanarGeometry<Geo1>::value
+                              && IsPlanarGeometry<Geo2>::value, int> = 0>
+    ctype operator() (const Geo1& geo1,
+                      const Geo2& geo2,
                       const Point<ctype, 3>& isPoint)
-    { return (*this)(disk1.supportingPlane(), disk2.supportingPlane()); }
+    { return (*this)(geo1.supportingPlane(), geo2.supportingPlane()); }
 
     /*!
-     * \brief Returns the angle in which two disks intersect in a segment
+     * \brief Returns the angle in which two planar 2-dimensional
+     *        geometries embedded in 3d space touch intersect in a segment
      * \param disk1 The first plane
      * \param disk2 The second plane
      * \param isSeg The intersection segment
      */
-    ctype operator() (const Disk<ctype>& disk1,
-                      const Disk<ctype>& disk2,
+    template<class Geo1, class Geo2,
+             std::enable_if_t<IsPlanarGeometry<Geo1>::value
+                              && IsPlanarGeometry<Geo2>::value, int> = 0>
+    ctype operator() (const Geo1& geo1,
+                      const Geo2& geo2,
                       const Segment<ctype, 3>& isSeg)
-    { return (*this)(disk1.supportingPlane(), disk2.supportingPlane()); }
+    { return (*this)(geo1.supportingPlane(), geo2.supportingPlane()); }
 
     /*!
      * \brief Returns the angle in which a disk and a
