@@ -5,6 +5,7 @@ algo_cylsurface_quadrilateral.hh
 algo_disk_disk.hh
 algo_disk_line.hh
 algo_face_disk.hh
+algo_face_planargeom.hh
 algo_find_touching_points.hh
 algo_planargeom_line.hh
 algo_planargeom_planargeom.hh
