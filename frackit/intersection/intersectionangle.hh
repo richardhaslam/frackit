@@ -89,7 +89,7 @@ public:
     template<class Geo1, class Geo2, class IsGeometry>
     ctype operator() (const Geo1& geo1,
                       const Geo2& geo2,
-                      const IsGeometry& isGeom)
+                      const IsGeometry& isGeom) const
     {
         std::string msg = "Intersection angle not implemented for ";
         msg += "\"" + geometryName(geo1) + "\"";
@@ -108,7 +108,7 @@ public:
     template<int wd>
     ctype operator() (const Plane<ctype, wd>& plane1,
                       const Plane<ctype, wd>& plane2,
-                      const Line<ctype, wd>& isLine)
+                      const Line<ctype, wd>& isLine) const
     {
         using std::abs;
         using std::acos;
@@ -125,7 +125,7 @@ public:
      */
     template<int wd>
     ctype operator() (const Plane<ctype, wd>& plane1,
-                      const Plane<ctype, wd>& plane2)
+                      const Plane<ctype, wd>& plane2) const
     {
         assert( !isEmptyIntersection(intersect(plane1, plane2)) );
 
@@ -147,7 +147,7 @@ public:
                               && IsPlanarGeometry<Geo2>::value, int> = 0>
     ctype operator() (const Geo1& geo1,
                       const Geo2& geo2,
-                      const Point<ctype, 3>& isPoint)
+                      const Point<ctype, 3>& isPoint) const
     { return (*this)(geo1.supportingPlane(), geo2.supportingPlane()); }
 
     /*!
@@ -162,7 +162,7 @@ public:
                               && IsPlanarGeometry<Geo2>::value, int> = 0>
     ctype operator() (const Geo1& geo1,
                       const Geo2& geo2,
-                      const Segment<ctype, 3>& isSeg)
+                      const Segment<ctype, 3>& isSeg) const
     { return (*this)(geo1.supportingPlane(), geo2.supportingPlane()); }
 
     /*!
@@ -176,7 +176,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
                       const CylinderSurface<ctype>& cylSurface,
-                      const Point<ctype, 3>& isPoint)
+                      const Point<ctype, 3>& isPoint) const
     { return (*this)(geo.supportingPlane(), cylSurface.getTangentPlane(isPoint)); }
 
     /*!
@@ -190,7 +190,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const CylinderSurface<ctype>& cylSurface,
                       const Geo& geo,
-                      const Point<ctype, 3>& isPoint)
+                      const Point<ctype, 3>& isPoint) const
     { return(*this)(geo, cylSurface, isPoint); }
 
     /*!
@@ -208,7 +208,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
                       const CylinderSurface<ctype>& cylSurface,
-                      const Segment<ctype, 3>& isSeg)
+                      const Segment<ctype, 3>& isSeg) const
     { return (*this)(geo.supportingPlane(), cylSurface.getTangentPlane(isSeg.source())); }
 
     /*!
@@ -226,7 +226,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const CylinderSurface<ctype>& cylSurface,
                       const Geo& geo,
-                      const Segment<ctype, 3>& isSeg)
+                      const Segment<ctype, 3>& isSeg) const
     { return (*this)(geo, cylSurface, isSeg); }
 
     /*!
@@ -239,7 +239,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
                       const CylinderSurface<ctype>& cylSurface,
-                      const EllipseArc<ctype, 3>& isArc)
+                      const EllipseArc<ctype, 3>& isArc) const
     {
         // use the minimum angle between the geometry plane and the
         // tangent plane on the surface at four sample points
@@ -268,7 +268,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const CylinderSurface<ctype>& cylSurface,
                       const Geo& geo,
-                      const EllipseArc<ctype, 3>& isArc)
+                      const EllipseArc<ctype, 3>& isArc) const
     { return (*this)(geo, cylSurface, isArc); }
 
     /*!
@@ -281,7 +281,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
                       const CylinderSurface<ctype>& cylSurface,
-                      const Ellipse<ctype, 3>& isEllipse)
+                      const Ellipse<ctype, 3>& isEllipse) const
     {
         // use the minimum angle between the geometry plane and the
         // tangent plane on the surface at eight sample points
@@ -312,7 +312,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const CylinderSurface<ctype>& cylSurface,
                       const Geo& geo,
-                      const Ellipse<ctype, 3>& isEllipse)
+                      const Ellipse<ctype, 3>& isEllipse) const
     { return (*this)(geo, cylSurface, isEllipse); }
 
     /*!
@@ -325,7 +325,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
                       const TopoDS_Face& face,
-                      const Point<ctype, 3>& isPoint)
+                      const Point<ctype, 3>& isPoint) const
     {
         // get the parameters of this point on the face via orthogonal projection
         const auto geomSurface = OCCUtilities::getGeomHandle(face);
@@ -359,7 +359,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const TopoDS_Face& face,
                       const Geo& geo,
-                      const Point<ctype, 3>& isPoint)
+                      const Point<ctype, 3>& isPoint) const
     { return (*this)(geo, face, isPoint); }
 
     /*!
@@ -372,7 +372,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
                       const TopoDS_Face& face,
-                      const TopoDS_Edge& isEdge)
+                      const TopoDS_Edge& isEdge) const
     {
         // compute the angle at several sample points along the edge and take minimum
         const auto edgeHandle = OCCUtilities::getGeomHandle(isEdge);
@@ -402,7 +402,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const TopoDS_Face& face,
                       const Geo& geo,
-                      const TopoDS_Edge& isEdge)
+                      const TopoDS_Edge& isEdge) const
     { return (*this)(geo, face, isEdge); }
 
     /*!
@@ -415,7 +415,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
                       const TopoDS_Face& face,
-                      const TopoDS_Face& isFace)
+                      const TopoDS_Face& isFace) const
     { return 0.0; }
 
     /*!
@@ -428,7 +428,7 @@ public:
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const TopoDS_Face& face,
                       const Geo& geo,
-                      const TopoDS_Face& isFace)
+                      const TopoDS_Face& isFace) const
     { return (*this)(geo, face, isFace); }
 
     /*!
@@ -440,7 +440,7 @@ public:
     template<class Geo1, class Geo2, class... T>
     ctype operator() (const Geo1& geo1,
                       const Geo2& geo2,
-                      const std::variant<T...>& intersection)
+                      const std::variant<T...>& intersection) const
     { return std::visit([&] (auto&& is) { return (*this)(geo1, geo2, is); }, intersection); }
 
     /*!
@@ -451,7 +451,7 @@ public:
     template<class Geo1, class Geo2, class T>
     ctype operator() (const Geo1& geo1,
                       const Geo2& geo2,
-                      const std::vector<T>& intersections)
+                      const std::vector<T>& intersections) const
     {
         using std::min;
         ctype result = std::numeric_limits<ctype>::max();
