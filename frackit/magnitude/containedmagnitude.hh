@@ -27,8 +27,13 @@
 
 #include <type_traits>
 
-#include <frackit/precision/defaultepsilon.hh>
 #include <frackit/occ/breputilities.hh>
+#include <frackit/common/extractctype.hh>
+#include <frackit/precision/defaultepsilon.hh>
+
+#include <frackit/geometry/geometry.hh>
+#include <frackit/geometryutilities/applyongeometry.hh>
+
 #include "magnitude.hh"
 
 namespace Frackit {
@@ -87,6 +92,23 @@ typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
                                  defaultEpsilon(domain),
                                  OCCUtilities::point(geometry.center()));
     return size;
+}
+
+/*!
+ * \brief TODO doc
+ */
+template<class Domain>
+typename CoordinateTypeTraits<Domain>::type
+computeContainedMagnitude(std::shared_ptr<Geometry> geometry,
+                          const Domain& domain)
+{
+    using ctype = typename CoordinateTypeTraits<Domain>::type;
+
+    // lambda to evaluate the contained magnitude
+    auto doComputation = [&] (const auto& geometry) -> ctype
+    { return computeContainedMagnitude(geometry, domain); };
+
+    return applyOnGeometry(doComputation, geometry);
 }
 
 } // end namespace Frackit
