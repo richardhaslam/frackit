@@ -109,6 +109,45 @@ public:
     bool contains(const Point& p) const
     { return contains(p, Precision<ctype>::confusion()*radius()); }
 
+    /*!
+     * \brief Returns the point on the circle for the given parameter
+     * \param param The parameter (0.0 <= param <= 1.0)
+     * \note param = 0.0 corresponds to the point on the circle
+     *       for an angle of 0 w.r.t. the circle-local coordinate
+     *       system consisting of base1() and base2().
+     *       Similarly, param = 1.0 corresponds to 2*Pi.
+     */
+    Point getPoint(ctype param) const
+    {
+        assert(param >= 0.0 && param <= 1.0);
+        return getPointFromAngle(2.0*M_PI*param);
+    }
+
+    /*!
+     * \brief Returns the point on the circle for a given angle
+     * \param angle The angle in radians
+     * \note The angle is to be understood with respect to the
+     *       circle-local coordinate system consisting of base1()
+     *       and base2().
+     */
+    Point getPointFromAngle(ctype angle) const
+    {
+        assert(!std::signbit(angle));
+
+        using std::sin;
+        using std::cos;
+        const auto x = cos(angle)*this->radius();
+        const auto y = sin(angle)*this->radius();
+
+        auto xVec = Vector(this->base1()); xVec *= x;
+        auto yVec = Vector(this->base2()); yVec *= y;
+
+        auto result = this->center();
+        result += xVec;
+        result += yVec;
+        return result;
+    }
+
 private:
     //! constructs the base geometry
     ParentType makeBaseGeometry_(const Point& center,
