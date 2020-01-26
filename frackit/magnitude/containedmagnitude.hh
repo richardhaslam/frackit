@@ -44,8 +44,9 @@ namespace Frackit {
  *       are contained in the geometry or not.
  */
 template<class Geometry, class Domain, std::enable_if_t<Geometry::myDimension() == 0, int> = 0>
-typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
-                                                   const Domain& domain)
+typename CoordinateTypeTraits<Geometry>::type
+computeContainedMagnitude(const Geometry& geometry,
+                          const Domain& domain)
 { return 0.0; }
 
 /*!
@@ -53,8 +54,9 @@ typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
  *        geometry that is contained in a domain geometry.
  */
 template<class Geometry, class Domain, std::enable_if_t<Geometry::myDimension() == 1, int> = 0>
-typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
-                                                   const Domain& domain)
+typename CoordinateTypeTraits<Geometry>::type
+computeContainedMagnitude(const Geometry& geometry,
+                          const Domain& domain)
 {
     const auto geomShape = OCCUtilities::getShape(geometry);
     const auto domainShape = OCCUtilities::getShape(domain);
@@ -75,8 +77,9 @@ typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
  *        geometry that is contained in a domain geometry.
  */
 template<class Geometry, class Domain, std::enable_if_t<Geometry::myDimension() == 2, int> = 0>
-typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
-                                                   const Domain& domain)
+typename CoordinateTypeTraits<Geometry>::type
+computeContainedMagnitude(const Geometry& geometry,
+                          const Domain& domain)
 {
     const auto geomShape = OCCUtilities::getShape(geometry);
     const auto domainShape = OCCUtilities::getShape(domain);
