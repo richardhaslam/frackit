@@ -79,8 +79,8 @@ int main(int argc, char** argv)
 
     // sampler for disks (orientation 1)
     DiskSampler diskSampler(makeUniformPointSampler(domainBBox),                               // sampler for disk center points
-                            std::normal_distribution<ctype>(20.0, 6.5),                        // major axis length: mean value & standard deviation
-                            std::normal_distribution<ctype>(15.0, 4.5),                        // minor axis length: mean value & standard deviation
+                            std::normal_distribution<ctype>(30.0, 6.5),                        // major axis length: mean value & standard deviation
+                            std::normal_distribution<ctype>(24.0, 4.5),                        // minor axis length: mean value & standard deviation
                             std::normal_distribution<ctype>(toRadians(0.0), toRadians(7.5)),   // rotation around x-axis: mean value & standard deviation
                             std::normal_distribution<ctype>(toRadians(0.0), toRadians(7.5)),   // rotation around y-axis: mean value & standard deviation
                             std::normal_distribution<ctype>(toRadians(0.0), toRadians(7.5)));  // rotation around z-axis: mean value & standard deviation
@@ -89,7 +89,7 @@ int main(int argc, char** argv)
     QuadrilateralSampler<3> quadSampler(makeUniformPointSampler(domainBBox),                               // sampler for quadrilateral center points
                                         std::normal_distribution<ctype>(toRadians(0.0), toRadians(5.0)),   // strike angle: mean value & standard deviation
                                         std::normal_distribution<ctype>(toRadians(45.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
-                                        std::normal_distribution<ctype>(40.0, 5.0),                        // edge length: mean value & standard deviation
+                                        std::normal_distribution<ctype>(35.0, 5.0),                        // edge length: mean value & standard deviation
                                         5.0);                                                              // threshold for minimum edge length
 
     // Define ids for the two entity sets
@@ -111,13 +111,20 @@ int main(int argc, char** argv)
     //    of different orientations.                                     //
     ///////////////////////////////////////////////////////////////////////
 
-    // Define constraints between entities of the same set
+    // Define constraints between entities of orientation 1
     using Constraints = EntityNetworkConstraints<ctype>;
-    Constraints constraintsOnSelf;
-    constraintsOnSelf.setMinDistance(2.5);
-    constraintsOnSelf.setMinIntersectingAngle(toRadians(25.0));
-    constraintsOnSelf.setMinIntersectionMagnitude(2.5);
-    constraintsOnSelf.setMinIntersectionDistance(2.0);
+    Constraints constraints1;
+    constraints1.setMinDistance(1.5);
+    constraints1.setMinIntersectingAngle(toRadians(25.0));
+    constraints1.setMinIntersectionMagnitude(2.5);
+    constraints1.setMinIntersectionDistance(2.0);
+
+    // Define constraints between entities of orientation 2
+    Constraints constraints2;
+    constraints2.setMinDistance(10.0);
+    constraints2.setMinIntersectingAngle(toRadians(25.0));
+    constraints2.setMinIntersectionMagnitude(2.5);
+    constraints2.setMinIntersectionDistance(2.0);
 
     // Define constraints between entities of different sets
     Constraints constraintsOnOther;
@@ -128,9 +135,11 @@ int main(int argc, char** argv)
 
     // We can use a constraint matrix to facilitate constraint evaluation
     EntityNetworkConstraintsMatrix<Constraints> constraintsMatrix;
-    constraintsMatrix.addConstraints(constraintsOnSelf,               // constraint instance
-                                     {IdPair(diskSetId, diskSetId),   // sets between which to use these constraints
-                                      IdPair(quadSetId, quadSetId)}); // sets between which to use these constraints
+    constraintsMatrix.addConstraints(constraints1,                  // constraint instance
+                                     IdPair(diskSetId, diskSetId)); // set between which to use these constraints
+
+    constraintsMatrix.addConstraints(constraints2,                  // constraint instance
+                                     IdPair(quadSetId, quadSetId)); // set between which to use these constraints
 
     constraintsMatrix.addConstraints(constraintsOnOther,              // constraint instance
                                      {IdPair(diskSetId, quadSetId),   // sets between which to use these constraints
@@ -173,9 +182,9 @@ int main(int argc, char** argv)
         if (status.finished(id))
         { status.increaseRejectedCounter(); continue; }
 
-        // Moreover, we want to avoid small fragments (< 200 m²)
+        // Moreover, we want to avoid small fragments (< 250 m²)
         const auto containedArea = computeContainedMagnitude(geom, networkDomain);
-        if (containedArea < 200.0)
+        if (containedArea < 250.0)
         { status.increaseRejectedCounter(); continue; }
 
         // enforce constraints w.r.t. to the other entities
