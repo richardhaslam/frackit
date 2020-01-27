@@ -37,3 +37,9 @@
      * \defgroup GeometryUtilities Geometry Utilities
      * \brief Utility functionality for geometrical objects.
      */
+
+    /*!
+     * \ingroup Geometry
+     * \defgroup Intersection Intersection
+     * \brief Classes and functions related to intersections between geometries.
+     */

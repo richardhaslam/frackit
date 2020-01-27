@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Intersection
  * \brief Class that contains functionality to determine
  *        the angle in which two geometries intersect.
  */
@@ -63,6 +64,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Intersection
  * \brief Class that contains functions to compute the
  *        intersection angle between two geometries,
  *        intersecting in a given intersection geometry.
