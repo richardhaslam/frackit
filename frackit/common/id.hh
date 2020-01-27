@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Common
  * \brief Simple wrapper class to define ids/indices.
  */
 #ifndef FRACKIT_ID_HH
@@ -26,6 +27,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Common
  * \brief Simple wrapper class to define ids/indices.
  *        This can be used wherever indices are passed
  *        to interfaces to avoid implicit conversion of

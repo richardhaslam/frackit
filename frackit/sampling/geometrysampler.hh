@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Class that defines the interface for
  *        sampler classes of geometries.
  */
@@ -27,6 +28,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Interface for geometry sampler classes.
  *        Sampler class implemetations must implement
  *        the () operator, with which a random geometry

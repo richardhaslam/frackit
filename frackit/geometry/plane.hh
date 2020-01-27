@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Classes that implement planes in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_PLANE_HH
@@ -38,6 +39,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements a plane
  *        in a coordinate space with dimension wd.
  * \tparam CT The type used for coordinates
@@ -47,6 +49,7 @@ template<class CT, int wd>
 class Plane;
 
 /*!
+ * \ingroup Geometry
  * \brief Implementation of a plane in 3d space.
  * \tparam CT The type used for coordinates
  */
@@ -71,7 +74,7 @@ public:
 
     //! Default constructor
     Plane() = default;
-    
+
     /*!
      * \brief Constructor
      * \param p A point on the plane

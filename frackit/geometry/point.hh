@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Classes that implement points in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_POINT_HH
@@ -39,6 +40,7 @@ namespace Frackit {
 template<class CT, int wd> class Vector;
 
 /*!
+ * \ingroup Geometry
  * \brief Base class for Point implementations.
  * \tparam Impl The actual vector class implementation
  * \tparam CT The type used for coordinates
@@ -111,6 +113,7 @@ private:
 };
 
 /*!
+ * \ingroup Geometry
  * \brief Point class implementation.
  * \tparam CT The type used for coordinates
  * \tparam wd The dimension of the space
@@ -119,6 +122,7 @@ template<class CT, int wd>
 class Point;
 
 /*!
+ * \ingroup Geometry
  * \brief Point class implementation in 1d space.
  */
 template<class CT>
@@ -176,6 +180,7 @@ public:
 };
 
 /*!
+ * \ingroup Geometry
  * \brief Point class implementation in 2d space.
  */
 template<class CT>
@@ -238,6 +243,7 @@ public:
 };
 
 /*!
+ * \ingroup Geometry
  * \brief Point class implementation in 3d space.
  */
 template<class CT>
@@ -306,10 +312,10 @@ public:
 
 /*!
  * \brief Writes out a point in 1d space.
- * \relates Vector
+ * \relates Point
  *
  * \param s std::ostream to write to
- * \param v Vector to write
+ * \param p Point to write
  *
  * \returns the output stream (s)
  */
@@ -322,10 +328,10 @@ std::ostream& operator<< (std::ostream& s, const Point<CT, 1>& p)
 
 /*!
  * \brief Writes out a point in 2d space.
- * \relates Vector
+ * \relates Point
  *
  * \param s std::ostream to write to
- * \param v Vector to write
+ * \param p Point to write
  *
  * \returns the output stream (s)
  */
@@ -338,10 +344,10 @@ std::ostream& operator<< (std::ostream& s, const Point<CT, 2>& p)
 
 /*!
  * \brief Writes out a point in 3d space.
- * \relates Vector
+ * \relates Point
  *
  * \param s std::ostream to write to
- * \param v Vector to write
+ * \param p Point to write
  *
  * \returns the output stream (s)
  */

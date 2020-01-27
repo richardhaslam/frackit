@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Constraints
  * \brief Class that enforces geometric
  *        constraints on networks of entities.
  */
@@ -53,14 +54,16 @@ template<class ST = double,
 class EntityNetworkConstraints;
 
 /*!
- * \brief Convenience function to construct an instance
- *        of the constraints class using the default engines
+ * \ingroup Constraints
+ * \brief Convenience function to construct an instance of
+ *        the constraints class using the default template arguments.
  */
 template<class ST = double>
 EntityNetworkConstraints<ST> makeDefaultConstraints()
 { return EntityNetworkConstraints<ST>(IntersectionAngle<ST>()); }
 
 /*!
+ * \ingroup Constraints
  * \brief Class which defines and checks constraints on
  *        the geometric relationships between entities of
  *        a network. As constraints one can define:

@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Class that describes a cylinder in 3d space.
  */
 #ifndef FRACKIT_GEOMETRY_CYLINDER_HH
@@ -43,6 +44,7 @@ namespace Frackit {
 template<class CT> class CylinderSurface;
 
 /*!
+ * \ingroup Geometry
  * \brief Class that describes a cylinder in 3d space.
  * \tparam CT The type used for coordinates
  */

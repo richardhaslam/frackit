@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup EntityNetwork
  * \brief Class in which sets of entities of different
  *        geometry types can be stored. Each entity set
  *        receives a unique identifier, which is deduced
@@ -40,6 +41,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup EntityNetwork
  * \brief Class in which sets of entities of
  *        different geometry types can be stored.
  */

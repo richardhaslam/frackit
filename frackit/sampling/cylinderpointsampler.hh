@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Class to randomly generate points on cylinders.
  */
 #ifndef FRACKIT_CYLINDER_POINT_SAMPLER_HH
@@ -34,6 +35,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Class to randomly generate points within cylinders
  *        following the provided distributions. The type of
  *        distribution to be used can be specified via traits,

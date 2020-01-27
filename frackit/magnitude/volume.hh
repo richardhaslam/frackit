@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Magnitude
  * \brief Contains functionality for computing the
  *        volume of three-dimensional geometries.
  */
@@ -36,6 +37,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the volume of a TopoDS_Solid.
  * \param solid The solid
  * \param eps Tolerance value to be used

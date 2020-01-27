@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Classes that implements lines in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_LINE_HH
@@ -39,6 +40,7 @@ template<class CT, int wd> class Point;
 template<class CT, int wd> class Direction;
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements a line in
  *        a space with dimension wd.
  * \tparam CT The type used for coordinates

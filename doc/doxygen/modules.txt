@@ -1,0 +1,72 @@
+/*!
+ * \file
+ * \brief This file contains all module definitions for the doxygen documentation.
+ */
+
+/*!
+ * \defgroup Common Common
+ * \brief Common classes, functions, properties and concepts
+ */
+
+/*!
+ * \defgroup EntityNetwork Entity Networks
+ * \brief Classes, functions and concepts related to networks of geometrical entities.
+ */
+
+    /*!
+     * \ingroup EntityNetwork
+     * \defgroup Constraints Constraints
+     * \brief Classes and functions related to the enforcement
+     *        geometric constraints (distance, intersection angle etc)
+     *        between entities in entity networks.
+     */
+
+/*!
+ * \defgroup Geometry Geometry
+ * \brief Classes that define basic geometrical objects.
+ */
+
+    /*!
+     * \ingroup Geometry
+     * \defgroup GeometryUtilities Geometry Utilities
+     * \brief Utility functionality for geometrical objects.
+     */
+
+    /*!
+     * \ingroup Geometry
+     * \defgroup Intersection Intersection
+     * \brief Classes and functions related to intersections between geometries.
+     */
+
+    /*!
+     * \ingroup Geometry
+     * \defgroup Distance Distance
+     * \brief Functionality related to distance computations between geometrical objects.
+     */
+
+    /*!
+     * \ingroup Geometry
+     * \defgroup Magnitude Magnitude
+     * \brief Functionality related to magnitude (length/area/volume) computations of geometrical objects.
+     */
+
+    /*!
+     * \ingroup Geometry
+     * \defgroup Sampling Sampling
+     * \brief Functionality related to random generation (sampling) of geometries.
+     */
+
+/*!
+ * \defgroup OpenCascade OpenCascade
+ * \brief Utility functions for communication with the OpenCascade library.
+ */
+
+/*!
+ * \defgroup IO Input-Output
+ * \brief Classes and functions for file input/output.
+ */
+
+/*!
+ * \defgroup Precision Precision
+ * \brief Definitions of tolerance values to be used for floating point comparisons.
+ */

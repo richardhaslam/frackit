@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Intersection
  * \brief Contains functionality to compute the
  *        intersections between geometries.
  */
@@ -55,6 +56,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Intersection
  * \brief Interface for intersecting two geometries.
  * \param geo1 The first geometry
  * \param geo2 The second geometry
@@ -74,6 +76,7 @@ EmptyIntersection<0> intersect(const Geom1& geo1,
 }
 
 /*!
+ * \ingroup Intersection
  * \brief Interface for intersecting two geometries.
  * \param geo1 The first geometry
  * \param geo2 The second geometry
@@ -89,6 +92,7 @@ auto intersect(const Geom1& geo1, const Geom2& geo2)
 }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect two segments.
  * \param segment1 The first segment
  * \param segment2 The second segment
@@ -100,6 +104,7 @@ intersect(const Segment<ctype, wd>& segment1, const Segment<ctype, wd>& segment2
 { return IntersectionAlgorithms::intersect_segment_segment(segment1, segment2, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect two planes.
  * \param plane1 The first plane
  * \param plane2 The second plane
@@ -111,6 +116,7 @@ intersect(const Plane<ctype, 3>& plane1, const Plane<ctype, 3>& plane2, ctype ep
 { return IntersectionAlgorithms::intersect_plane_plane(plane1, plane2, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a plane and a line.
  * \param plane The plane
  * \param line The line
@@ -122,6 +128,7 @@ intersect(const Plane<ctype, 3>& plane, const Line<ctype, 3>& line, ctype eps)
 { return IntersectionAlgorithms::intersect_plane_line(plane, line, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a line and a plane.
  * \param line The plane
  * \param plane The line
@@ -133,6 +140,7 @@ intersect(const Line<ctype, 3>& line, const Plane<ctype, 3>& plane, ctype eps)
 { return intersect(plane, line, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a disk and a line.
  * \param disk The disk
  * \param line The line
@@ -144,6 +152,7 @@ intersect(const Disk<ctype>& disk, const Line<ctype, 3>& line, ctype eps)
 { return IntersectionAlgorithms::intersect_disk_line(disk, line, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a line and a disk.
  * \param line The line
  * \param disk The disk
@@ -155,6 +164,7 @@ intersect(const Line<ctype, 3>& line, const Disk<ctype>& disk, ctype eps)
 { return intersect(disk, line, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a three-dimensional quadrilateral and a line.
  * \param quad The quadrilateral
  * \param line The line
@@ -167,6 +177,7 @@ intersect(const Quadrilateral<ctype, 3>& quad, const Line<ctype, 3>& line, ctype
 
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a line and a three-dimensional quadrilateral.
  * \param line The line
  * \param quad The quadrilateral
@@ -178,6 +189,7 @@ intersect(const Line<ctype, 3>& line, const Quadrilateral<ctype, 3>& quad, ctype
 { return intersect(quad, line, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect two disks.
  * \param disk1 The first disk
  * \param disk2 The second disk
@@ -189,6 +201,7 @@ intersect(const Disk<ctype>& disk1, const Disk<ctype>& disk2, ctype eps)
 { return IntersectionAlgorithms::intersect_disk_disk(disk1, disk2, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect two quadrilaterals in 3d space.
  * \param quad1 The first quadrilateral
  * \param quad2 The second quadrilateral
@@ -200,6 +213,7 @@ intersect(const Quadrilateral<ctype, 3>& quad1, const Quadrilateral<ctype, 3>& q
 { return IntersectionAlgorithms::intersect_quadrilateral_quadrilateral(quad1, quad2, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a quadrilateral and a disk in 3d space.
  * \param quad The quadrilateral
  * \param disk The disk
@@ -211,6 +225,7 @@ intersect(const Quadrilateral<ctype, 3>& quad, const Disk<ctype>& disk, ctype ep
 { return IntersectionAlgorithms::intersect_quadrilateral_disk(quad, disk, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a disk and a quadrilateral in 3d space.
  * \param disk The disk
  * \param quad The quadrilateral
@@ -222,6 +237,7 @@ intersect(const Disk<ctype>& disk, const Quadrilateral<ctype, 3>& quad, ctype ep
 { return intersect(quad, disk, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a lateral cylinder surface and a disk.
  * \param cylSurface The lateral cylinder surface
  * \param disk The disk
@@ -233,6 +249,7 @@ intersect(const CylinderSurface<ctype>& cylSurface, const Disk<ctype>& disk, cty
 { return IntersectionAlgorithms::intersect_cylinderSurface_disk(cylSurface, disk, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a disk and a lateral cylinder surface.
  * \param disk The disk
  * \param cylSurface The lateral cylinder surface
@@ -244,6 +261,7 @@ intersect(const Disk<ctype>& disk, const CylinderSurface<ctype>& cylSurface, cty
 { return intersect(cylSurface, disk, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a lateral cylinder surface and a quadrilateral.
  * \param cylSurface The lateral cylinder surface
  * \param quad The quadrilateral
@@ -255,6 +273,7 @@ intersect(const CylinderSurface<ctype>& cylSurface, const Quadrilateral<ctype, 3
 { return IntersectionAlgorithms::intersect_cylinderSurface_quadrilateral(cylSurface, quad, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a quadrilateral and a lateral cylinder surface.
  * \param quad The quadrilateral
  * \param cylSurface The lateral cylinder surface
@@ -266,6 +285,7 @@ intersect(const Quadrilateral<ctype, 3>& quad, const CylinderSurface<ctype>& cyl
 { return intersect(cylSurface, quad, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a disk and the boundary (TopoDS_Shell) of a solid.
  * \param disk The disk
  * \param shell The shell of a solid
@@ -277,6 +297,7 @@ intersect(const Disk<ctype>& disk, const TopoDS_Shell& shell, ctype eps)
 { return IntersectionAlgorithms::intersect_shell_disk(shell, disk, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect the boundary (TopoDS_Shell) of a solid and a disk.
  * \param shell The shell of a solid
  * \param disk The disk
@@ -288,6 +309,7 @@ intersect(const TopoDS_Shell& shell, const Disk<ctype>& disk, ctype eps)
 { return intersect(disk, shell, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a disk and a face shape.
  * \param disk The disk
  * \param face The face shape
@@ -299,6 +321,7 @@ intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
 { return IntersectionAlgorithms::intersect_face_disk(face, disk, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a face shape and a disk.
  * \param face The face shape
  * \param disk The disk
@@ -310,6 +333,7 @@ intersect(const TopoDS_Face& face, const Disk<ctype>& disk, ctype eps)
 { return intersect(disk, face, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a quadrilateral and a face shape.
  * \param quad The quadrilateral
  * \param face The face shape
@@ -321,6 +345,7 @@ intersect(const Quadrilateral<ctype, 3>& quad, const TopoDS_Face& face, ctype ep
 { return IntersectionAlgorithms::intersect_face_quadrilateral(face, quad, eps); }
 
 /*!
+ * \ingroup Intersection
  * \brief Intersect a face shape and a quadrilateral.
  * \param face The face shape
  * \param quad The quadrilateral

@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Interface for sampling strategies, which can be used in conjunction
  *        with, for instance, instances of 'MultiGeometrySampler'. A strategy
  *        allows for defining a number of ids, and it provides the function
@@ -36,6 +37,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Interface for sampling strategies.
  */
 class SamplingStrategy

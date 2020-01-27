@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Classes describing circles in n-dimensional space.
  * \note For the moment, only circles in three-dimensional space are implemented.
  */
@@ -37,6 +38,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Geometry
  * \brief Class describing a circle
  * \tparam ctype The type used for coordinates.
  * \tparam wd the space dimension.
@@ -45,6 +47,7 @@ template<class ctype, int wd>
 class Circle;
 
 /*!
+ * \ingroup Geometry
  * \brief Class describing a circle in 3d space.
  * \tparam ctype The type used for coordinates
  */

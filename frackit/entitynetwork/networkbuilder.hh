@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup EntityNetwork
  * \brief Contains builder classes for entity networks.
  */
 #ifndef FRACKIT_ENTITY_NETWORK_BUILDER_HH
@@ -54,6 +55,7 @@ template<class ctype = double>
 class ContainedEntityNetworkBuilder;
 
 /*!
+ * \ingroup EntityNetwork
  * \brief Base class for builders of entity networks.
  *        Stores data related to the entities and sub-domains.
  */
@@ -490,6 +492,7 @@ protected:
 };
 
 /*!
+ * \ingroup EntityNetwork
  * \brief Builder class for entity networks,
  *        which neglect the sub-domains in which
  *        the network is embedded in and only carries
@@ -590,6 +593,7 @@ private:
 };
 
 /*!
+ * \ingroup EntityNetwork
  * \brief Builder class for entity networks contained
  *        in (possibly multiple) sub-domains.
  */

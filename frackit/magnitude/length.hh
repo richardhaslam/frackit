@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Magnitude
  * \brief Contains functionality for computing the
  *        lengths of one-dimensional geometries.
  */
@@ -42,6 +43,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the length of a geometry.
  * \note This is the default overload trying to get
  *       the length from the geometry itself.
@@ -51,6 +53,7 @@ typename Geometry::ctype computeLength(const Geometry& geom)
 { return geom.length(); }
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the length of a curve of the Geom package.
  */
 template<class ctype = double>
@@ -63,6 +66,7 @@ ctype computeLength(const Handle(Geom_Curve)& curve)
 }
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the length of a BRep edge.
  */
 template<class ctype = double>
@@ -70,6 +74,7 @@ ctype computeLength(const TopoDS_Edge& edge)
 { return computeLength(OCCUtilities::getGeomHandle(edge)); }
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the length of a circle (circumference).
  */
 template<class ctype, int worldDim>
@@ -77,6 +82,7 @@ ctype computeLength(const Circle<ctype, worldDim>& circle)
 { return 2.0*M_PI*circle.radius(); }
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the length of an ellipse.
  */
 template<class ctype, int worldDim>
@@ -84,6 +90,7 @@ ctype computeLength(const Ellipse<ctype, worldDim>& ellipse)
 { return M_PI*(ellipse.majorAxisLength() + ellipse.minorAxisLength()); }
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the length of an elliptical arc.
  */
 template<class ctype>

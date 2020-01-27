@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Traits classes to be used for uniform point samplers.
  */
 #ifndef FRACKIT_UNIFORM_POINT_SAMPLER_TRAITS_HH
@@ -28,6 +29,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Traits class to be used for sampling on
  *        uniform distributions in all coordinate directions.
  * \tparam ctype The type used for coordinates
@@ -37,6 +39,7 @@ template<class ctype, int worldDim>
 struct UniformPointSamplerTraits;
 
 /*!
+ * \ingroup Sampling
  * \brief Traits class to be used for uniform sampling
  *         of points on 1-dimensional geometries.
  * \tparam ctype The type used for coordinates
@@ -48,6 +51,7 @@ struct UniformPointSamplerTraits<ctype, 1>
 };
 
 /*!
+ * \ingroup Sampling
  * \brief Traits class to be used for uniform sampling
  *         of points on 2-dimensional geometries.
  * \tparam ctype The type used for coordinates
@@ -60,6 +64,7 @@ struct UniformPointSamplerTraits<ctype, 2>
 };
 
 /*!
+ * \ingroup Sampling
  * \brief Traits class to be used for uniform sampling
  *         of points on 3-dimensional geometries.
  * \tparam ctype The type used for coordinates

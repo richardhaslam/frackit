@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Class that implements elliptical disks in 3d space.
  */
 #ifndef FRACKIT_DISK_HH
@@ -36,6 +37,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements elliptical disks in 3d space.
  * \tparam CT The type used for coordinates
  */

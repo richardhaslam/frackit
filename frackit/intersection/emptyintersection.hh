@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Intersection
  * \brief Class used to define empty intersection.
  */
 #ifndef FRACKIT_EMPTY_INTERSECTION_HH
@@ -29,6 +30,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Intersection
  * \brief Class used to define empty intersection.
  * \tparam wd The dimension of the coordinate space.
  * \tparam CT The type used for coordinates
@@ -50,6 +52,7 @@ struct EmptyIntersection
 };
 
 /*!
+ * \ingroup Intersection
  * \brief Traits class to identify empty intersections
  * \tparam IsGeometry The geometry type of an intersection
  */
@@ -63,6 +66,7 @@ struct IsEmptyIntersection<EmptyIntersection<wd>>
 { static constexpr bool value = true; };
 
 /*!
+ * \ingroup Intersection
  * \brief Returns true if a geometry describes an empty intersection.
  * \tparam IsGeometry the geometry of an intersection
  */
@@ -71,6 +75,7 @@ constexpr bool isEmptyIntersection(const IsGeometry& is)
 { return IsEmptyIntersection<IsGeometry>::value; }
 
 /*!
+ * \ingroup Intersection
  * \brief Overload for intersection variant
  */
 template<class... T>
@@ -78,6 +83,7 @@ bool isEmptyIntersection(const std::variant<T...>& intersection)
 { return std::visit([&] (auto&& is) { return isEmptyIntersection(is); }, intersection); }
 
 /*!
+ * \ingroup Intersection
  * \brief Overload for general intersections possibly
  *        containing possibly various types.
  */

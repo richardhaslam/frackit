@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup EntityNetwork
  * \brief Class representing a network of entities,
  *        consisting of fragments of primary entities.
  */
@@ -33,6 +34,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup EntityNetwor
  * \relates EntityNetworkBuilder
  * \brief Class representing a network of entities,
  *        consisting of fragments of primary entities.

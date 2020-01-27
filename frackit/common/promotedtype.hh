@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Common
  * \brief Determines the type that results from arithmetic
  *        operations on two different number types.
  */
@@ -29,9 +30,10 @@
 namespace Frackit {
 
 /*!
-* \brief Determines the type that results from arithmetic
-*        operations on two different number types.
-*/
+ * \ingroup Common
+ * \brief Determines the type that results from arithmetic
+ *        operations on two different number types.
+ */
 template<class T1, class T2>
 struct PromotionTraits
 {
@@ -43,8 +45,9 @@ template<class T1>
 struct PromotionTraits<T1,T1> { typedef T1 PromotedType; };
 
 /*!
-* \brief Convenience alias to get the promoted type
-*/
+ * \ingroup Common
+ * \brief Convenience alias to get the promoted type
+ */
 template<class T1, class T2>
 using PromotedType = typename PromotionTraits<T1, T2>::PromotedType;
 

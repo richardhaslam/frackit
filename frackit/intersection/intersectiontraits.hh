@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Intersection
  * \brief Traits class to define the type resulting
  *        from the intersection between different geometries.
  */
@@ -46,6 +47,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Intersection
  * \brief Traits class to define the result of the
  *        intersection operation between two geometries.
  * \tparam Geometry1 The first geometry

@@ -18,7 +18,9 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Contains functionality to evaluate if points are contained on geometries.
+ * \ingroup Distance
+ * \brief Contains functionality to evaluate if points are contained
+ *        on geometries, i.e. if the distance is below a numerical threshold.
  */
 #ifndef FRACKIT_POINT_ON_GEOMETRY_HH
 #define FRACKIT_POINT_ON_GEOMETRY_HH
@@ -34,6 +36,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Distance
  * \brief Evaluate if a point lies on a geometry.
  * \param p The point
  * \param geo The geometry
@@ -48,6 +51,7 @@ bool pointOnGeometry(const Point<ctype1, wd>& p, const Geo& geo, ctype2 eps)
 }
 
 /*!
+ * \ingroup Distance
  * \brief Evaluate if a point lies on a shape.
  * \param p The point
  * \param shape The shape
@@ -61,6 +65,7 @@ bool pointOnGeometry(const Point<ctype1, 3>& p, const Shape& shape, ctype2 eps)
 }
 
 /*!
+ * \ingroup Distance
  * \brief Evaluate if a point lies on a geometry.
  * \param p The point
  * \param geo The geometry

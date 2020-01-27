@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup GeometryUtilities
  * \brief Utility functionality to cast pointers on objects of
  *        the geometry interface into the corresponding geometry type.
  */
@@ -33,6 +34,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup GeometryUtilities
  * \brief Try to cast a pointer on a geometrical object
  *        into the provided instance of a geometry.
  * \param geoPtr Pointer to an object of the geometry interface

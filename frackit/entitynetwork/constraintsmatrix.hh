@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Constraints
  * \brief Class that allows defining a matrix of constraints.
  *        This is useful in contexts where multiple entity sets
  *        are defined, and where different constraints should be
@@ -38,6 +39,7 @@
 namespace Frackit {
 
 /*!
+* \ingroup Constraints
  * \brief Class that allows defining a matrix of constraints.
  *        For each constraint that is defined, a list of id pairs
  *        is passed that defines between which ids (representing

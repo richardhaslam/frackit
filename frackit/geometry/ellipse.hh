@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Classes that implement ellipses in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_ELLIPSE_HH
@@ -34,8 +35,9 @@
 
 namespace Frackit {
 /*!
- * \brief Class that implements an ellipse in a
- *        space with the dimension worldDim.
+ * \ingroup Geometry
+ * \brief Class that implements an ellipse in
+ *        n-dimensional space.
  * \tparam CT The type used for coordinates
  * \tparam wd The dimension of the space
  */
@@ -43,6 +45,7 @@ template<class CT, int worldDim>
 class Ellipse;
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements an ellipse in 3d space.
  * \tparam CT The type used for coordinates
  */

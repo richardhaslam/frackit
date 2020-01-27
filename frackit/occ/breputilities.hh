@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup OpenCascade
  * \brief Contains utility functionality for
  *        operations on objects of the BRep package
  *        as well as parsing internal geometries into
@@ -94,6 +95,7 @@ namespace Frackit {
 namespace OCCUtilities {
 
     /*!
+     * \ingroup OpenCascade
      * \brief Return the shape read from a .brep file.
      * \param fileName The name of the .brep file
      */
@@ -105,11 +107,20 @@ namespace OCCUtilities {
         return domainShape;
     }
 
-    //! converts a vertex shape into a point
+    /*!
+     * \ingroup OpenCascade
+     * \brief Converts a vertex shape into a point.
+     * \param v The vertex shape
+     */
     Point<double, 3> point(const TopoDS_Vertex& v)
     { return point(BRep_Tool::Pnt(v)); }
 
-    //! Create an edge shape from two points
+    /*!
+     * \ingroup OpenCascade
+     * \brief Create an edge shape (segment) from two points.
+     * \param source Source point of the edge
+     * \param target Target point of the edge
+     */
     template<class ctype, int worldDim>
     TopoDS_Edge makeEdge(const Point<ctype, worldDim>& source,
                          const Point<ctype, worldDim>& target)
@@ -122,12 +133,18 @@ namespace OCCUtilities {
         return TopoDS::Edge(segment.Shape());
     }
 
-    //! get the BRep of a geometry (overloads provided)
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a geometry.
+     */
     template<class Geo>
     TopoDS_Shape getShape(const Geo& geo)
     { throw std::runtime_error("getShape() not implemented for " + geometryName(geo)); }
 
-    //! get the BRep of a point
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a point.
+     */
     template<class ctype, int worldDim>
     TopoDS_Vertex getShape(const Point<ctype, worldDim>& p)
     {
@@ -138,12 +155,18 @@ namespace OCCUtilities {
         return TopoDS::Vertex(vertex.Shape());
     }
 
-    //! get the BRep of a segment
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a segment
+     */
     template<class ctype, int worldDim>
     TopoDS_Edge getShape(const Segment<ctype, worldDim>& segment)
     { return makeEdge(segment.source(), segment.target()); }
 
-    //! get the BRep of a cylinder
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a cylinder.
+     */
     template<class ctype>
     TopoDS_Solid getShape(const Cylinder<ctype>& cylinder)
     {
@@ -162,7 +185,10 @@ namespace OCCUtilities {
         return TopoDS::Solid(makeCylinder.Shape());
     }
 
-    //! get the BRep of a lateral cylinder surface
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a cylinder surface.
+     */
     template<class ctype>
     TopoDS_Face getShape(const CylinderSurface<ctype>& cylSurface)
     {
@@ -180,7 +206,10 @@ namespace OCCUtilities {
         return makeCylinder.Cylinder().LateralFace();
     }
 
-    //! get the BRep of a 3-dimensional ellipse
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of an ellipse in 3d space.
+     */
     template<class ctype>
     TopoDS_Wire getShape(const Ellipse<ctype, 3>& ellipse)
     {
@@ -195,7 +224,10 @@ namespace OCCUtilities {
         return BRepBuilderAPI_MakeWire(edge);
     }
 
-    //! get the BRep of a 3-dimensional circle
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a circle in 3d space.
+     */
     template<class ctype>
     TopoDS_Wire getShape(const Circle<ctype, 3>& circ)
     {
@@ -206,12 +238,18 @@ namespace OCCUtilities {
                                           circ.radius()));
     }
 
-    //! get the BRep of a 3-dimensional ellipse arc
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of an ellipse arc in 3d space.
+     */
     template<class ctype>
     TopoDS_Edge getShape(const EllipseArc<ctype, 3>& arc)
     { return BRepBuilderAPI_MakeEdge( getGeomHandle(arc) ); }
 
-    //! get the BRep of a quadrilateral in 3d space
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a quadrilateral in 3d space.
+     */
     template<class ctype>
     TopoDS_Face getShape(const Quadrilateral<ctype, 3>& quad)
     {
@@ -229,7 +267,10 @@ namespace OCCUtilities {
         return BRepBuilderAPI_MakeFace(wire);
     }
 
-    //! get the BRep of a disk
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a disk.
+     */
     template<class ctype>
     TopoDS_Face getShape(const Disk<ctype>& disk)
     {
@@ -245,7 +286,10 @@ namespace OCCUtilities {
         return BRepBuilderAPI_MakeFace(wire);
     }
 
-    //! get the BRep of a box
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a box.
+     */
     template<class ctype>
     TopoDS_Solid getShape(const Box<ctype>& box)
     {
@@ -258,14 +302,17 @@ namespace OCCUtilities {
         return TopoDS::Solid(makeBox.Shape());
     }
 
-    //! get the BRep of shapes (for compatibilty reasons)
+    //! Get the BRep of shapes (for compatibilty reasons)
     const TopoDS_Vertex& getShape(const TopoDS_Vertex& v) { return v; }
     const TopoDS_Edge& getShape(const TopoDS_Edge& e) { return e; }
     const TopoDS_Face& getShape(const TopoDS_Face& f) { return f; }
     const TopoDS_Wire& getShape(const TopoDS_Wire& w) { return w; }
     const TopoDS_Solid& getShape(const TopoDS_Solid& s) { return s; }
 
-    //! Get the vertices of a shape
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the vertices of a shape.
+     */
     template<class Shape>
     std::vector<TopoDS_Vertex> getVertices(const Shape& shape)
     {
@@ -276,7 +323,10 @@ namespace OCCUtilities {
         return vertices;
     }
 
-    //! Get the edges of a shape
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the edges of a shape.
+     */
     template<class Shape>
     std::vector<TopoDS_Edge> getEdges(const Shape& shape)
     {
@@ -287,7 +337,10 @@ namespace OCCUtilities {
         return edges;
     }
 
-    //! Get the faces of a shape
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the faces of a shape.
+     */
     template<class Shape>
     std::vector<TopoDS_Face> getFaces(const Shape& shape)
     {
@@ -298,7 +351,10 @@ namespace OCCUtilities {
         return faces;
     }
 
-    //! Get the wires of a shape
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the wires of a shape.
+     */
     template<class Shape>
     std::vector<TopoDS_Wire> getWires(const Shape& shape)
     {
@@ -308,7 +364,10 @@ namespace OCCUtilities {
         return wires;
     }
 
-    //! Get the shells of a shape
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the shells of a shape.
+     */
     template<class Shape>
     std::vector<TopoDS_Shell> getShells(const Shape& shape)
     {
@@ -318,7 +377,10 @@ namespace OCCUtilities {
         return shells;
     }
 
-    //! Get the solids of a shape
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the solids of a shape.
+     */
     template<class Shape>
     std::vector<TopoDS_Solid> getSolids(const Shape& shape)
     {
@@ -328,7 +390,10 @@ namespace OCCUtilities {
         return solids;
     }
 
-    //! Get bounding box
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the bounding box of a shape.
+     */
     template<class Shape, class ctype = double>
     Box<ctype> getBoundingBox(const Shape& shape)
     {
@@ -340,7 +405,11 @@ namespace OCCUtilities {
         return Box<ctype>(xMin, yMin, zMin, xMax, yMax, zMax);
     }
 
-    //! Convenience function to get the shape resulting from the cut of an object with a tool
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the shape resulting from the cut
+     *        of an object shape with a tool shape.
+     */
     template<class ctype>
     TopoDS_Shape cut(const TopoDS_Shape& object, const TopoDS_Shape& tool, ctype eps)
     {
@@ -354,7 +423,11 @@ namespace OCCUtilities {
         return cut.Shape();
     }
 
-    //! Convenience function to get the shape resulting from the intersection of two objects
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the shape resulting from the
+     *        intersection of two objects.
+     */
     template<class ctype>
     TopoDS_Shape intersect(const TopoDS_Shape& object1, const TopoDS_Shape& object2, ctype eps)
     {
@@ -368,7 +441,11 @@ namespace OCCUtilities {
         return common.Shape();
     }
 
-    //! Convenience function to get the shape resulting from the fragmentation of a set of objects
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the shape resulting from the
+     *        fragments of a set of objects.
+     */
     template<class ctype>
     TopoDS_Shape fragment(const std::vector<TopoDS_Shape>& objects, ctype eps)
     {
@@ -387,7 +464,11 @@ namespace OCCUtilities {
         return fragments.Shape();
     }
 
-    //! Convenience function to get the shape resulting from the union of a set of objects
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the shape resulting from the
+     *        union of a set of objects.
+     */
     template<class ctype>
     TopoDS_Shape fuse(const std::vector<TopoDS_Shape>& objects, ctype eps)
     {
@@ -408,6 +489,7 @@ namespace OCCUtilities {
     }
 
     /*!
+     * \ingroup OpenCascade
      * \brief Determines the overlap edges between two sets of edges.
      * \param edges1 the first set of edges
      * \param edges2 the second set of edges
@@ -427,6 +509,7 @@ namespace OCCUtilities {
     }
 
     /*!
+     * \ingroup OpenCascade
      * \brief Determines those edges along which two faces coincide.
      * \param face1 the shape of the first face
      * \param face2 the shape of the second face

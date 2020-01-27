@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Classes that implement quadrilaterals in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_QUADRILATERAL_HH
@@ -41,6 +42,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements a quadrilateral
  *        in a coordinate space with the dimension worldDim.
  * \tparam CT The type used for coordinates
@@ -50,6 +52,7 @@ template<class CT, int worldDim>
 class Quadrilateral;
 
 /*!
+ * \ingroup Geometry
  * \brief Implementation of a quadrilateral in 3d space.
  * \tparam CT The type used for coordinates
  * \note This class describes planar quadrilaterals.

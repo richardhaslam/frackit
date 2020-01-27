@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Class that describes a segment in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_SEGMENT_HH
@@ -41,8 +42,9 @@ template<class CT, int wd> class Direction;
 template<class CT, int wd> class Line;
 
 /*!
- * \brief Class that describes a segment in a
- *        coordinate space of dimension wd.
+ * \ingroup Geometry
+ * \brief Class that describes a segment in
+ *        an n-dimensional space
  * \tparam CT The type used for coordinates.
  * \tparam wd The dimension of the coordinate space.
  */

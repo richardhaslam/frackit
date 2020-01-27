@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup GeometryUtilities
  * \brief Utility functionality to apply functions on
  *        geometrical objects of which only the pointer
  *        to the virtual base class is available. In a
@@ -47,6 +48,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup GeometryUtilities
  * \brief Apply a function to the geometry referenced
  *        to by the given pointer on the geometry interface.
  * \param geoPtr Pointer to an object of the geometry interface

@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Class that implements ellipse arcs in n-dimensional space.
  */
 #ifndef FRACKIT_ELLIPSE_ARC_HH
@@ -32,8 +33,9 @@
 namespace Frackit {
 
 /*!
- * \brief Class that implements ellipse arcs in a
- *        space with the dimension worldDim.
+ * \ingroup Geometry
+ * \brief Class that implements ellipse arcs in
+ *        n-dimensional space.
  * \tparam CT The type used for coordinates
  * \tparam wd The dimension of the space
  */
@@ -41,6 +43,7 @@ template<class CT, int worldDim>
 class EllipseArc;
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements ellipse arcs in 3 space.
  * \tparam CT The type used for coordinates
  */

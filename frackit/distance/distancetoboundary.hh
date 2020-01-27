@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Distance
  * \brief Contains functionality for computing the distance
  *        of a geometry to the boundary of another geometry.
  */
@@ -44,6 +45,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Distance
  * \brief Compute the distance of a geometry
  *        to the boundary of another geometry.
  * \param geo1 The first geometry
@@ -51,6 +53,8 @@ namespace Frackit {
  * \param deflection The epsilon used in the BrepExtrema command
  * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
  * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ * \note This is the default overload throwing an error. Overloads have to be
+ *       implemented for pairs of geometries.
  */
 template<class Geo1, class Geo2>
 Impl::PCT<Geo1, Geo2>
@@ -68,6 +72,7 @@ computeDistanceToBoundary(const Geo1& geo1,
 }
 
 /*!
+ * \ingroup Distance
  * \brief Compute the distance of a geometry
  *        to the bounding ellipse of a disk.
  * \param geo The geometry
@@ -93,6 +98,7 @@ computeDistanceToBoundary(const Geo& geo,
 }
 
 /*!
+ * \ingroup Distance
  * \brief Compute the distance of a point
  *        to the bounding of a quadrilateral.
  * \param p The point
@@ -113,6 +119,7 @@ computeDistanceToBoundary(const Point<ctype1, 3>& p,
 }
 
 /*!
+ * \ingroup Distance
  * \brief Compute the distance of a geometry
  *        to the bounding circles of a cylinder surface.
  * \param geo The geometry
@@ -144,6 +151,7 @@ computeDistanceToBoundary(const Geo& geo,
 }
 
 /*!
+ * \ingroup Distance
  * \brief Compute the distance of a shape
  *        to the bounding ellipse of a disk.
  * \param shape The shape
@@ -167,6 +175,7 @@ ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
 }
 
 /*!
+ * \ingroup Distance
  * \brief Compute the distance of a shape
  *        to the boundary of a TopoDS_Face.
  * \param shape The shape
@@ -192,6 +201,7 @@ ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
 }
 
 /*!
+ * \ingroup Distance
  * \brief Compute the distance of a shape
  *        to the bounding wire of a quadrilateral.
  * \param shape The shape
@@ -215,6 +225,7 @@ ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
 }
 
 /*!
+ * \ingroup Distance
  * \brief Compute the distance of a geometry
  *        to the boundary of a TopoDS_Face.
  * \param geo The geometry

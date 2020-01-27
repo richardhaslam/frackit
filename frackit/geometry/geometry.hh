@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Abstract base class for geometries.
  */
 #ifndef FRACKIT_GEOMETRY_HH
@@ -28,6 +29,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Geometry
  * \brief Abstract base class for geometries.
  */
 class Geometry
@@ -39,6 +41,6 @@ public:
     virtual std::string name() const = 0;
 };
 
-} // end namespace OpenFrack
+} // end namespace Frackit
 
-#endif // FRACKIT_DISK_HH
+#endif // FRACKIT_GEOMETRY_HH

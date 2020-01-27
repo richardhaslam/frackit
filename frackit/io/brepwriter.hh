@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup IO
  * \brief Class that writes entity networks into the .brep file format.
  */
 #ifndef FRACKIT_BREP_WRITER_HH
@@ -46,6 +47,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup IO
  * \brief Class that writes entity networks into the .brep file format.
  *        This creates a single TopoDS_Compound shape in which each sub-shape
  *        is uniquely defined.

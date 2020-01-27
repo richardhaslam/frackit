@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Class that implements triangles in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_TRIANGLE_HH
@@ -39,8 +40,9 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements triangles
- *        in a space of dimension worldDim
+ *        in an n-dimensional space.
  * \tparam CT The type used for coordinates
  * \tparam worldDim The dimension of the coordinate space
  */
@@ -48,6 +50,7 @@ template<class CT, int worldDim>
 class Triangle;
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements triangles in 3d space.
  * \tparam CT The type used for coordinates
  */

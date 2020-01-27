@@ -18,7 +18,8 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Define some mathematical functions
+ * \ingroup Common
+ * \brief Defines some mathematical functions.
  */
 #ifndef FRACKIT_MATH_HH
 #define FRACKIT_MATH_HH
@@ -32,6 +33,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Common
  * \brief Returns the vector resulting from the cross product
  *        of two 3-dimensional vectors.
  */
@@ -45,6 +47,7 @@ Vector<ctype, 3> crossProduct(const Vector<ctype, 3>& v1,
 }
 
 /*!
+ * \ingroup Common
  * \brief Returns the scalar resulting from the cross product
  *        of two 2-dimensional vectors.
  */
@@ -54,6 +57,7 @@ ctype crossProduct(const Vector<ctype, 2>& v1,
 { return v1.x()*v2.y() - v1.y()*v2.x(); }
 
 /*!
+ * \ingroup Common
  * \brief Returns the scalar resulting from the box product
  *        of three 3-dimensional vectors.
  */
@@ -64,6 +68,7 @@ ctype boxProduct(const Vector<ctype, 3>& v1,
 { return v1*crossProduct(v2, v3); }
 
 /*!
+ * \ingroup Common
  * \brief Returns true if the given 3-dimensional
  *        vectors form a right-hand system.
  */
@@ -79,6 +84,7 @@ bool isRightHandSystem(const Vector<ctype, 3>& v1,
 }
 
 /*!
+ * \ingroup Common
  * \brief Converts a given angle in radians to degrees.
  */
 template<class ctype>
@@ -86,6 +92,7 @@ ctype toDegrees(const ctype radians)
 { return radians*180.0/M_PI; }
 
 /*!
+ * \ingroup Common
  * \brief Converts a given angle in degrees to radians.
  */
 template<class ctype>
@@ -93,6 +100,7 @@ ctype toRadians(const ctype degrees)
 { return degrees*M_PI/180.0; }
 
 /*!
+ * \ingroup Common
  * \brief Rotate a vector around an axis by a given angle.
  * \param v The vector to be rotated
  * \param axis The rotation axis
@@ -124,6 +132,7 @@ void rotate(Vector<ctype, 3>& v,
 }
 
 /*!
+ * \ingroup Common
  * \brief Rotate several vectors around an axis by a given angle.
  * \param vectors The vectors to be rotated
  * \param axis The rotation axis
