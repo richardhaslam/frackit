@@ -1,5 +1,6 @@
 install(FILES
 constraints.hh
+constraintsmatrix.hh
 containedentitynetwork.hh
 containedentitynetworkinterface.hh
 entitynetwork.hh
