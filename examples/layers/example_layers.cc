@@ -66,6 +66,9 @@ int main(int argc, char** argv)
     if (shells.size() != 1) throw std::runtime_error("Expected a single shell bounding the domain");
     const auto domainBoundaryFaces = OCCUtilities::getFaces(shells[0]);
 
+
+
+
     //////////////////////////////////////////////////////////////////////////////
     // 2. Make sampler classes to randomly sample points (entity centers)       //
     //    and disk/quadrilaterals as entities (using the sampled center points) //
@@ -100,6 +103,14 @@ int main(int argc, char** argv)
     multiSampler.addGeometrySampler(diskSampler, diskSetId);
     multiSampler.addGeometrySampler(quadSampler, quadSetId);
 
+
+
+
+    ///////////////////////////////////////////////////////////////////////
+    // 3. Define constraints that should be fulfilled among the entities //
+    //    of different orientations.                                     //
+    ///////////////////////////////////////////////////////////////////////
+
     // Define constraints between entities of the same set
     using Constraints = EntityNetworkConstraints<ctype>;
     Constraints constraintsOnSelf;
@@ -132,6 +143,13 @@ int main(int argc, char** argv)
     constraintsOnDomain.setMinIntersectionMagnitude(20.0);
     constraintsOnDomain.setMinIntersectionDistance(2.0);
 
+
+
+
+    ///////////////////////////
+    // 4. Network generation //
+    ///////////////////////////
+
     // Helper class to store an arbitrary number
     // of entity sets of different geometry types.
     MultiGeometryEntitySet<Disk, Quad> entitySets;
@@ -139,9 +157,10 @@ int main(int argc, char** argv)
     // Helper class for terminal output of the creation
     // progress and definition of stop criterion etc
     SamplingStatus status;
-    status.setTargetCount(diskSetId, 15); // we want 15 entities of orientation 1
-    status.setTargetCount(quadSetId, 15); // we want 15 entities of orientation 2
+    status.setTargetCount(diskSetId, 10); // we want 10 entities of orientation 1
+    status.setTargetCount(quadSetId, 10); // we want 10 entities of orientation 2
 
+    // The actual network generation loop
     ctype containedNetworkArea = 0.0;
     while (!status.finished())
     {
@@ -176,102 +195,69 @@ int main(int argc, char** argv)
         containedNetworkArea += containedArea;
     }
 
-    // compute entity density
+    // print the final entity density
     const auto density = containedNetworkArea/domainVolume;
     std::cout << "\nEntity density of the contained network: " << density << " m²/m³" << std::endl;
 
+
+
+
     //////////////////////////////////////////////////////////////////////////
-    // 3. The entities of the network have been created. We can now         //
+    // 5. The entities of the network have been created. We can now         //
     //    construct different types of networks (contained, confined, etc.) //
     //////////////////////////////////////////////////////////////////////////
 
-    ContainedEntityNetworkBuilder containedConfinedBuilder;
-    entitySets.exportEntitySets({diskSetId, quadSetId}, containedConfinedBuilder, Id(2));
-    containedConfinedBuilder.addConfiningSubDomain(solids[0],     Id(1));
-    containedConfinedBuilder.addConfiningSubDomain(networkDomain, Id(2));
-    containedConfinedBuilder.addConfiningSubDomain(solids[2],     Id(3));
+    // construct and write a contained network, i.e. write out both network and domain.
+    std::cout << "Building and writing contained, confined network" << std::endl;
+    ContainedEntityNetworkBuilder builder;
 
-    // build network
-    const auto containedConfinedNetwork = containedConfinedBuilder.build();
+    // add sub-domains
+    builder.addConfiningSubDomain(solids[0],     Id(1));
+    builder.addConfiningSubDomain(networkDomain, Id(2));
+    builder.addConfiningSubDomain(solids[2],     Id(3));
 
-    // std::cout << "Constructing contained, confined network" << std::endl;
-    // // 3.1 Construct a network such that the entities are confined in the
-    // //     sub-domain and which contains information about the containing domain.
-    // ContainedEntityNetworkBuilder containedConfinedBuilder;
-    //
-    // // define sub-domains
-    // containedConfinedBuilder.addConfiningSubDomain(solids[0],     Id(1));
-    // containedConfinedBuilder.addConfiningSubDomain(networkDomain, Id(2));
-    // containedConfinedBuilder.addConfiningSubDomain(solids[2],     Id(3));
-    //
-    // // define entity network for sub-domain 2
-    // containedConfinedBuilder.addSubDomainEntities(diskSet, Id(2));
-    // containedConfinedBuilder.addSubDomainEntities(quadSet, Id(2));
-    //
-    // // build network
-    // const auto containedConfinedNetwork = containedConfinedBuilder.build();
-    //
-    // std::cout << "Constructing contained, unconfined network" << std::endl;
-    // // 3.2 Construct a network such that the entities are NOT confined in the
-    // //     sub-domain and which contains information about the containing domain.
-    // ContainedEntityNetworkBuilder containedUnconfinedBuilder;
-    //
-    // // define sub-domains
-    // containedUnconfinedBuilder.addSubDomain(solids[0],     Id(1));
-    // containedUnconfinedBuilder.addSubDomain(solids[2],     Id(3));
-    // containedUnconfinedBuilder.addSubDomain(networkDomain, Id(2));
-    //
-    // // define entity network for sub-domain 2
-    // containedUnconfinedBuilder.addSubDomainEntities(diskSet, Id(2));
-    // containedUnconfinedBuilder.addSubDomainEntities(quadSet, Id(2));
-    //
-    // // build network
-    // const auto containedUnconfinedNetwork = containedUnconfinedBuilder.build();
-    //
-    // std::cout << "Constructing uncontained, confined network" << std::endl;
-    // // 3.3 Construct a network such that the entities are confined in the
-    // //     sub-domain, but, which does not contain information about the domains.
-    // //     This is computationally more efficient if only the 2d network is of interest.
-    // //     Moreover, the files written to disk are smaller as the domain is not contained.
-    // EntityNetworkBuilder uncontainedConfinedBuilder;
-    //
-    // // define sub-domains
-    // uncontainedConfinedBuilder.addConfiningSubDomain(networkDomain, Id(1));
-    //
-    // // define entity network for sub-domain 2
-    // uncontainedConfinedBuilder.addSubDomainEntities(diskSet, Id(1));
-    // uncontainedConfinedBuilder.addSubDomainEntities(quadSet, Id(1));
-    //
-    // // build network
-    // const auto uncontainedConfinedNetwork = uncontainedConfinedBuilder.build();
-    //
-    // std::cout << "Constructing uncontained, unconfined network" << std::endl;
-    // // 3.4 Construct the network only, independent of any domains
-    // EntityNetworkBuilder uncontainedUnconfinedBuilder;
-    // uncontainedUnconfinedBuilder.addEntities(diskSet);
-    // uncontainedUnconfinedBuilder.addEntities(quadSet);
-    //
-    // // build network
-    // const auto uncontainedUnconfinedNetwork = uncontainedUnconfinedBuilder.build();
-    //
-    //
-    // ///////////////////////////////////////////////////////
-    // // 4. Write the networks to disk in Gmsh .geo format //
-    // ///////////////////////////////////////////////////////
-    std::cout << "Write networks to disk" << std::endl;
-    GmshWriter containedConfinedWriter(containedConfinedNetwork);
-    containedConfinedWriter.write("contained_confined", // body of the filename to be used (will add .geo)
-                                  2.5,                  // mesh size to be used on entities
-                                  5.0);                 // mesh size to be used on domain boundaries
-    //
-    // GmshWriter containedUnconfinedWriter(containedUnconfinedNetwork);
-    // containedUnconfinedWriter.write("contained_unconfined", 2.5, 3.0);
-    //
-    // GmshWriter uncontainedConfinedWriter(uncontainedConfinedNetwork);
-    // uncontainedConfinedWriter.write("uncontained_confined", 2.5);
-    //
-    // GmshWriter uncontainedUnconfinedWriter(uncontainedUnconfinedNetwork);
-    // uncontainedUnconfinedWriter.write("uncontained_unconfined", 2.5);
+    // The entites that we created all belong to subdomain 2
+    // Use the convenience function to add all entities to the network builder.
+    // The last argument provides the id of the sub-domain to which the entities belong.
+    entitySets.exportEntitySets(builder, Id(2));
+
+    // Note that one can also call:
+    // entitySets.exportEntitySets({diskSetId, quadSetId}, containedConfinedBuilder, Id(2));
+    // This overload can be used to define specific entity sets that should be added to the builder
+
+    // now we can build and write out the network in Gmsh file format
+    GmshWriter gmshWriter(builder.build());
+    gmshWriter.write("contained_confined", // body of the filename to be used (will add .geo)
+                     2.5,                  // mesh size to be used on entities
+                     5.0);                 // mesh size to be used on domain boundaries
+
+    // we can also not confine the network to its sub-domain,
+    // simply by adding the sub-domains as non-confining
+    std::cout << "Building and writing contained, unconfined network" << std::endl;
+    builder.clear();
+    builder.addSubDomain(solids[0],     Id(1));
+    builder.addSubDomain(networkDomain, Id(2));
+    builder.addSubDomain(solids[2],     Id(3));
+    entitySets.exportEntitySets(builder, Id(2));
+
+    gmshWriter = GmshWriter(builder.build());
+    gmshWriter.write("contained_unconfined", 2.5, 5.0);
+
+    // We could also only write out the network, without the domain
+    // For example, confining the network to the sub-domain...
+    std::cout << "Building and writing uncontained, confined network" << std::endl;
+    EntityNetworkBuilder uncontainedBuilder;
+    uncontainedBuilder.addConfiningSubDomain(networkDomain, Id(2));
+    entitySets.exportEntitySets(uncontainedBuilder, Id(2));
+    gmshWriter = GmshWriter(uncontainedBuilder.build());
+    gmshWriter.write("uncontained_confined", 2.5);
+
+    // ... or not confining it
+    std::cout << "Building and writing uncontained, unconfined network" << std::endl;
+    uncontainedBuilder.clear();
+    entitySets.exportEntitySets(uncontainedBuilder);
+    gmshWriter = GmshWriter(uncontainedBuilder.build());
+    gmshWriter.write("uncontained_unconfined", 2.5);
 
     return 0;
 }
