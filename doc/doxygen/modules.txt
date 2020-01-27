@@ -43,3 +43,8 @@
      * \defgroup Intersection Intersection
      * \brief Classes and functions related to intersections between geometries.
      */
+
+/*!
+ * \defgroup IO Input-Output
+ * \brief Classes and functions for file input/output.
+ */

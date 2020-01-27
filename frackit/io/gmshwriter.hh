@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup IO
  * \brief Class that writes entity networks into Gmsh .geo file format.
  *        Effectively, this will write a .brep file and a .geo file in
  *        which the .brep file is included. Then, physical definitions
@@ -34,6 +35,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup IO
  * \brief Class that writes entity networks into Gmsh .geo file format.
  *        Effectively, this will write a .brep file and a .geo file in
  *        which the .brep file is included. Then, physical definitions
