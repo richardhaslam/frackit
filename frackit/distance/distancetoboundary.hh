@@ -36,7 +36,8 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
-#include <frackit/geometry/name.hh>
+
+#include <frackit/geometryutilities/name.hh>
 
 #include "distance.hh"
 

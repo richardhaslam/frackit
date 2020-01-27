@@ -31,6 +31,8 @@
 
 #include <frackit/distance/distance.hh>
 #include <frackit/magnitude/magnitude.hh>
+
+#include <frackit/geometryutilities/applyongeometry.hh>
 #include <frackit/intersection/intersect.hh>
 #include <frackit/intersection/emptyintersection.hh>
 
@@ -81,6 +83,13 @@ EntityNetworkConstraints<ST> makeDefaultConstraints()
 template<class ST, class AE>
 class EntityNetworkConstraints
 {
+    // Helper struct to determine if something is a shared_ptr
+    template<class T>
+    struct IsSharedPtr : public std::false_type {};
+
+    // Specialization for shared_ptr
+    template<class T>
+    struct IsSharedPtr<std::shared_ptr<T>> : public std::true_type {};
 
 public:
     //! Export type used for constraints
@@ -98,7 +107,7 @@ public:
     {
         static_assert(std::is_default_constructible<AE>::value,
                       "Angle computation engine not default constructible. "
-                      "Use constructor taking the engines as arguments instead");
+                      "Use constructor taking the engine as argument instead");
     }
 
     /*!
@@ -175,20 +184,16 @@ public:
     { allowEquiDimIS_ = value; }
 
     /*!
-     * \brief Set the engine used for angle computations
-     * \param angleEngine An instance of the engine
-     */
-    void setAngleComputationEngine(const AngleComputationEngine& angleEngine)
-    { angleEngine_ = angleEngine; }
-
-    /*!
      * \brief Check if a pair of geometries fulfills the constraints
      * \param geo1 The first geometry
      * \param geo2 The second geometry
      * \returns True if all constraints are fulfilled, false otherwise
+     * \note The enable_if here is it avoid overload ambiguity with the
+     *       overloads receiving a shared pointer as on of the arguments.
      */
-    template<class Geo1, class Geo2>
-    bool evaluate(const Geo1& geo1, const Geo2& geo2)
+    template<class Geo1, class Geo2,
+             std::enable_if_t< (!IsSharedPtr<Geo1>::value && !IsSharedPtr<Geo2>::value), int> = 0>
+    bool evaluate(const Geo1& geo1, const Geo2& geo2) const
     {
         static constexpr int dim = DimensionalityTraits<Geo1>::geometryDimension();
         static_assert(dim == DimensionalityTraits<Geo2>::geometryDimension(),
@@ -240,14 +245,46 @@ public:
      * \param entitySet An entity network
      * \param entity The geometry of the entity to be checked
      * \returns True if all constraints are fulfilled, false otherwise
+     * \note The enable_if here is it avoid overload ambiguity with the
+     *       overload receiving a shared pointer as second argument.
      */
-    template<class Geo1, class Geo2>
-    bool evaluate(const std::vector<Geo1>& entitySet, const Geo2& entity)
+    template<class Geo1, class Geo2, std::enable_if_t<!IsSharedPtr<Geo2>::value, int> = 0>
+    bool evaluate(const std::vector<Geo1>& entitySet, const Geo2& entity) const
     {
         return std::all_of(entitySet.begin(),
                            entitySet.end(),
                            [&] (const auto& e) { return evaluate(e, entity); });
     }
+
+    /*!
+     * \brief Overload for one of the arguments being a shared_ptr
+     *        to a generic geometry. This requires parsing the
+     *        pointer to its original geometry type.
+     * \tparam T either a entity type or an entity set
+     * \param entityOrSet An entity or an entity set
+     * \param geo2 Pointer to a generic geometry type
+     * \returns True if all constraints are fulfilled, false otherwise
+     */
+    template<class T>
+    bool evaluate(const T& entityOrSet, std::shared_ptr<Geometry> geo2Ptr) const
+    {
+        // encapsulate the constraint evaluation in a lambda
+        auto eval = [&] (const auto& actualGeo2) { return evaluate(entityOrSet, actualGeo2); };
+        return applyOnGeometry(eval, geo2Ptr);
+    }
+
+    /*!
+     * \brief Overload for one of the arguments being a shared_ptr
+     *        to a generic geometry. Unfortunately, this requires
+     *        parsing the pointer to its original geometry type.
+     * \tparam T either a entity type or an entity set
+     * \param geo1 Pointer to a generic geometry type
+     * \param entityOrSet An entity or an entity set
+     * \returns True if all constraints are fulfilled, false otherwise
+     */
+    template<class T>
+    bool evaluate(std::shared_ptr<Geometry> geo1Ptr, const T& entityOrSet) const
+    { return evaluate(entityOrSet, geo1Ptr); }
 
 private:
     AngleComputationEngine angleEngine_; //! Algorithms to compute angles between intersecting geometries
@@ -266,7 +303,6 @@ private:
 
     Scalar intersectionEps_;  //! Tolerance value to be used for intersections
     bool useIntersectionEps_; //! Stores wether or not a user-defined epsilon value was set
-
 };
 
 } // end namespace Frackit

@@ -18,48 +18,24 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Simple wrapper class to define ids/indices.
+ * \brief Defines classes to obtain type information at compile-time.
  */
-#ifndef FRACKIT_ID_HH
-#define FRACKIT_ID_HH
+#ifndef FRACKIT_COMMON_TYPE_TRAITS_HH
+#define FRACKIT_COMMON_TYPE_TRAITS_HH
+
+#include <type_traits>
 
 namespace Frackit {
 
 /*!
- * \brief Simple wrapper class to define ids/indices.
- *        This can be used wherever indices are passed
- *        to interfaces to avoid implicit conversion of
- *        function arguments.
+ * \brief Helper struct to detect if a type T
+ *        is contained in a parameter pack Ts
+ * \tparam T The type of which an ocurrence in the pack is to be checked
+ * \tparam Ts The parameter pack
  */
-class Id
-{
-public:
-    //! Default constructor
-    Id() = default;
-
-    /*!
-     * \brief Construction from an index.
-     */
-    explicit Id(std::size_t id)
-    : id_(id)
-    {}
-
-    /*!
-     * \brief Retrieve the index.
-     */
-    std::size_t get() const
-    { return id_; }
-
-    /*!
-     * \brief Equality check.
-     */
-    bool operator== (const Id& otherId) const
-    { return id_ == otherId.get(); }
-
-private:
-    std::size_t id_;
-};
+template<class T, class... Ts>
+struct Contains : std::disjunction<std::is_same<T, Ts>...> {};
 
 } // end namespace Frackit
 
-#endif // FRACKIT_ID_HH
+#endif // FRACKIT_COMMON_TYPE_TRAITS_HH

@@ -18,48 +18,55 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Simple wrapper class to define ids/indices.
+ * \brief Interface for sampling strategies, which can be used in conjunction
+ *        with, for instance, instances of 'MultiGeometrySampler'. A strategy
+ *        allows for defining a number of ids, and it provides the function
+ *        getNextId(), which returns an id following a specific strategy. An
+ *        exemplary implementation can be found in the class
+ *        'SequentialSamplingStrategy', which returns the defined ids successively.
  */
-#ifndef FRACKIT_ID_HH
-#define FRACKIT_ID_HH
+#ifndef FRACKIT_SAMPLING_STRATEGY_HH
+#define FRACKIT_SAMPLING_STRATEGY_HH
+
+#include <algorithm>
+#include <vector>
+
+#include <frackit/common/id.hh>
 
 namespace Frackit {
 
 /*!
- * \brief Simple wrapper class to define ids/indices.
- *        This can be used wherever indices are passed
- *        to interfaces to avoid implicit conversion of
- *        function arguments.
+ * \brief Interface for sampling strategies.
  */
-class Id
+class SamplingStrategy
 {
+
 public:
-    //! Default constructor
-    Id() = default;
 
     /*!
-     * \brief Construction from an index.
+     * \brief Returns the next id following the srategy.
      */
-    explicit Id(std::size_t id)
-    : id_(id)
-    {}
+    virtual Id getNextId() = 0;
 
     /*!
-     * \brief Retrieve the index.
+     * \brief Adds a new id to be considered.
      */
-    std::size_t get() const
-    { return id_; }
+    void addId(const Id& id)
+    {
+        if (!std::count(idList_.begin(), idList_.end(), id))
+            idList_.push_back(id);
+    }
 
     /*!
-     * \brief Equality check.
+     * \brief Returns true if an id has been added.
      */
-    bool operator== (const Id& otherId) const
-    { return id_ == otherId.get(); }
+    bool hasId(const Id& id) const
+    { return std::count(idList_.begin(), idList_.end(), id); }
 
-private:
-    std::size_t id_;
+protected:
+    std::vector<Id> idList_;
 };
 
 } // end namespace Frackit
 
-#endif // FRACKIT_ID_HH
+#endif // FRACKIT_SAMPLING_STRATEGY_HH

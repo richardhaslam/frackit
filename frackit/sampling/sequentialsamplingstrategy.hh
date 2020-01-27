@@ -18,48 +18,50 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Simple wrapper class to define ids/indices.
+ * \brief Sampling strategy implementation which goes
+ *        over the defined ids successively.
  */
-#ifndef FRACKIT_ID_HH
-#define FRACKIT_ID_HH
+#ifndef FRACKIT_SEQUENTIAL_SAMPLING_STRATEGY_HH
+#define FRACKIT_SEQUENTIAL_SAMPLING_STRATEGY_HH
+
+#include <stdexcept>
+
+#include "samplingstrategy.hh"
 
 namespace Frackit {
 
 /*!
- * \brief Simple wrapper class to define ids/indices.
- *        This can be used wherever indices are passed
- *        to interfaces to avoid implicit conversion of
- *        function arguments.
+ * \brief Sampling strategy implementation which goes
+ *        over the defined ids successively.
  */
-class Id
+class SequentialSamplingStrategy
+: public SamplingStrategy
 {
+
 public:
-    //! Default constructor
-    Id() = default;
 
     /*!
-     * \brief Construction from an index.
+     * \brief Returns the next id.
      */
-    explicit Id(std::size_t id)
-    : id_(id)
-    {}
+    Id getNextId() override
+    {
+        if (this->idList_.empty())
+            throw std::runtime_error("Id list is empty!");
 
-    /*!
-     * \brief Retrieve the index.
-     */
-    std::size_t get() const
-    { return id_; }
+        // The id about to returned
+        const auto curId = this->idList_[curIdx_];
 
-    /*!
-     * \brief Equality check.
-     */
-    bool operator== (const Id& otherId) const
-    { return id_ == otherId.get(); }
+        // Update internal index for next call
+        if (curIdx_ != this->idList_.size() - 1) curIdx_++;
+        else curIdx_ = 0;
+
+        return curId;
+    }
 
 private:
-    std::size_t id_;
+    std::size_t curIdx_ = 0;
 };
 
 } // end namespace Frackit
 
-#endif // FRACKIT_ID_HH
+#endif // FRACKIT_SEQUENTIAL_SAMPLING_STRATEGY_HH

@@ -11,7 +11,6 @@ ellipse.hh
 ellipticalgeometry.hh
 geometry.hh
 line.hh
-name.hh
 plane.hh
 point.hh
 quadrilateral.hh

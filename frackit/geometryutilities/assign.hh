@@ -18,48 +18,56 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Simple wrapper class to define ids/indices.
+ * \brief Utility functionality to cast pointers on objects of
+ *        the geometry interface into the corresponding geometry type.
  */
-#ifndef FRACKIT_ID_HH
-#define FRACKIT_ID_HH
+#ifndef FRACKIT_GEOMETRY_UTILITY_ASSIGN_HH
+#define FRACKIT_GEOMETRY_UTILITY_ASSIGN_HH
+
+#include <memory>
+#include <type_traits>
+
+#include <frackit/geometry/geometry.hh>
+#include <frackit/geometryutilities/name.hh>
 
 namespace Frackit {
 
 /*!
- * \brief Simple wrapper class to define ids/indices.
- *        This can be used wherever indices are passed
- *        to interfaces to avoid implicit conversion of
- *        function arguments.
+ * \brief Try to cast a pointer on a geometrical object
+ *        into the provided instance of a geometry.
+ * \param geoPtr Pointer to an object of the geometry interface
+ * \param geo The geometry object in which it should be casted
  */
-class Id
+template<class GeoType>
+bool assign(Geometry* geoPtr, GeoType& geo)
 {
-public:
-    //! Default constructor
-    Id() = default;
+    static_assert(std::is_base_of<Geometry, GeoType>::value,
+                  "Provided geometry does not inherit from the geometry interface");
 
-    /*!
-     * \brief Construction from an index.
-     */
-    explicit Id(std::size_t id)
-    : id_(id)
-    {}
+    if (geometryName(geo) == geoPtr->name())
+    {
+        GeoType* actualGeoPtr = dynamic_cast<GeoType*>(geoPtr);
+        geo = GeoType(*actualGeoPtr);
+        return true;
+    }
 
-    /*!
-     * \brief Retrieve the index.
-     */
-    std::size_t get() const
-    { return id_; }
+    return false;
+}
 
-    /*!
-     * \brief Equality check.
-     */
-    bool operator== (const Id& otherId) const
-    { return id_ == otherId.get(); }
+/*!
+ * \brief Overload for std::shared_ptr.
+ */
+template<class GeoType>
+bool assign(std::shared_ptr<Geometry> geoPtr, GeoType& geo)
+{ return assign(geoPtr.get(), geo); }
 
-private:
-    std::size_t id_;
-};
+/*!
+ * \brief Overload for std::unique_ptr.
+ */
+template<class GeoType>
+bool assign(std::unique_ptr<Geometry> geoPtr, GeoType& geo)
+{ return assign(geoPtr.get(), geo); }
 
 } // end namespace Frackit
 
-#endif // FRACKIT_ID_HH
+#endif // FRACKIT_GEOMETRY_UTILITY_ASSIGN_HH
