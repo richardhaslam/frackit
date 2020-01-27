@@ -58,3 +58,8 @@
  * \defgroup IO Input-Output
  * \brief Classes and functions for file input/output.
  */
+
+/*!
+ * \defgroup Precision Precision
+ * \brief Definitions of tolerance values to be used for floating point comparisons.
+ */

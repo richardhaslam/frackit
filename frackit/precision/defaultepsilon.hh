@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Precision
  * \brief Defines epsilons to be used for floating point
  *        arithmetic on geometries, e.g. to determine if
  *        a point lies on a geometry or for computing the
@@ -45,6 +46,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Precision
  * \brief Default epsilon for geometries.
  *        We use the base epsilon here and provide
  *        overloads for geometries having a magnitude.
@@ -54,6 +56,7 @@ typename Geometry::ctype defaultEpsilon(const Geometry& geom)
 { return Precision<typename Geometry::ctype>::confusion(); }
 
 /*!
+ * \ingroup Precision
  * \brief Default epsilon for operations on segments.
  */
 template<class ctype, int worldDim>
@@ -61,6 +64,7 @@ ctype defaultEpsilon(const Segment<ctype, worldDim>& seg)
 { return Precision<ctype>::confusion()*seg.length(); }
 
 /*!
+ * \ingroup Precision
  * \brief Default epsilon for operations on circles.
  */
 template<class ctype, int worldDim>
@@ -68,6 +72,7 @@ ctype defaultEpsilon(const Circle<ctype, worldDim>& circle)
 { return Precision<ctype>::confusion()*circle.radius(); }
 
 /*!
+ * \ingroup Precision
  * \brief Default epsilon for operations on ellipses.
  */
 template<class ctype, int worldDim>
@@ -78,6 +83,7 @@ ctype defaultEpsilon(const Ellipse<ctype, worldDim>& ellipse)
 }
 
 /*!
+ * \ingroup Precision
  * \brief Default epsilon for operations on disks.
  */
 template<class ctype>
@@ -85,6 +91,7 @@ ctype defaultEpsilon(const Disk<ctype>& disk)
 { return defaultEpsilon(disk.boundingEllipse()); }
 
 /*!
+ * \ingroup Precision
  * \brief Default epsilon for operations on quadrilaterals.
  */
 template<class ctype>
@@ -95,6 +102,7 @@ ctype defaultEpsilon(const Quadrilateral<ctype, 3>& quad)
 }
 
 /*!
+ * \ingroup Precision
  * \brief Default epsilon for operations on cylinder surfaces.
  */
 template<class ctype>
@@ -105,6 +113,7 @@ ctype defaultEpsilon(const CylinderSurface<ctype>& cylSurface)
 }
 
 /*!
+ * \ingroup Precision
  * \brief Default epsilon for operations on boxes.
  */
 template<class ctype>
@@ -115,6 +124,7 @@ ctype defaultEpsilon(const Box<ctype>& box)
 }
 
 /*!
+ * \ingroup Precision
  * \brief Default epsilon for operations on shapes.
  */
 template<class ctype = double>

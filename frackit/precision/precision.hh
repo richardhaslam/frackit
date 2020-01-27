@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Precision
  * \brief Defines base epsilons to be used for floating point arithmetic.
  */
 #ifndef FRACKIT_PRECISION_HH
@@ -32,6 +33,7 @@ namespace Frackit {
 using OCCPrecision = Precision;
 
 /*!
+ * \ingroup Precision
  * \brief Defines base epsilons to be used for floating point arithmetic.
  */
 template<class ctype>
