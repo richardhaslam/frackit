@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Base class for elliptical geometries.
  */
 #ifndef FRACKIT_GEOMETRY_ELLIPTICAL_GEOMETRY_HH
@@ -41,8 +42,9 @@ template<class CT, int wd> class Vector;
 template<class CT, int wd> class Plane;
 
 /*!
+ * \ingroup Geometry
  * \brief Base class for elliptical geometries
- *        in a space with dimension worldDim.
+ *        in n-dimensional space.
  * \tparam CT The type used for coordinates
  * \tparam wd The dimension of the space
  */
@@ -50,6 +52,7 @@ template<class CT, int worldDim>
 class EllipticalGeometry;
 
 /*!
+ * \ingroup Geometry
  * \brief Base class for ellipticcal geometries
  *        in three-dimensional space.
  * \tparam CT The type used for coordinates

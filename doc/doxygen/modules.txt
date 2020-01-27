@@ -26,3 +26,8 @@
      *        geometric constraints (distance, intersection angle etc)
      *        between entities in entity networks.
      */
+
+/*!
+ * \defgroup Geometry Geometry
+ * \brief Classes that define basic geometrical objects.
+ */

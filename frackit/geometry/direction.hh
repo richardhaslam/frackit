@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Class that implements directions (unit vectors).
  */
 #ifndef FRACKIT_GEOMETRY_DIRECTION_HH
@@ -34,6 +35,7 @@ namespace Frackit {
 template<class CT, int wd> class Vector;
 
 /*!
+ * \ingroup Geometry
  * \brief Class representing directions (unit vectors).
  * \tparam CT The type used for coordinates
  * \tparam wd The dimension of the space
@@ -42,6 +44,7 @@ template<class CT, int wd>
 class Direction;
 
 /*!
+ * \ingroup Geometry
  * \brief Direction class implementation in 1d space.
  * \tparam CT The type used for coordinates
  */
@@ -93,6 +96,7 @@ private:
 };
 
 /*!
+ * \ingroup Geometry
  * \brief Direction class implementation in 2d space.
  * \tparam CT The type used for coordinates
  */
@@ -148,6 +152,7 @@ private:
 };
 
 /*!
+ * \ingroup Geometry
  * \brief Direction class implementation in 3d space.
  * \tparam CT The type used for coordinates
  */
@@ -207,6 +212,7 @@ private:
 };
 
 /*!
+ * \ingroup Geometry
  * \brief Writes out a direction in 1d space.
  * \relates Direction
  *
@@ -223,6 +229,7 @@ std::ostream& operator<< (std::ostream& s, const Direction<CT, 1>& d)
 }
 
 /*!
+ * \ingroup Geometry
  * \brief Writes out a direction in 2d space.
  * \relates Direction
  *
@@ -239,6 +246,7 @@ std::ostream& operator<< (std::ostream& s, const Direction<CT, 2>& d)
 }
 
 /*!
+ * \ingroup Geometry
  * \brief Writes out a direction in 2d space.
  * \relates Direction
  *

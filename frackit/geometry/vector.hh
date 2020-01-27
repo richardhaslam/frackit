@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Classes that implement vectors in n-dimensional space.
  */
 #ifndef FRACKIT_GEOMETRY_VECTOR_HH
@@ -39,6 +40,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements vectors in
  *        a coordinate space of dimension wd
  * \tparam CT The type used for coordinates
@@ -133,6 +135,7 @@ namespace VectorImpl {
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
 /*!
+ * \ingroup Geometry
  * \brief Base class of the dimension-specific Vector implementations.
  * \tparam Impl The actual vector class implementation
  * \tparam CT The type used for coordinates
@@ -247,14 +250,7 @@ private:
 };
 
 /*!
- * \brief Vector class implementation.
- * \tparam CT The type used for coordinates
- * \tparam wd The dimension of the space
- */
-template<class CT, int wd>
-class Vector;
-
-/*!
+ * \ingroup Geometry
  * \brief Vector class implementation in 1d space.
  */
 template<class CT>
@@ -302,6 +298,7 @@ public:
 };
 
 /*!
+ * \ingroup Geometry
  * \brief Vector class implementation in 2d space.
  */
 template<class CT>
@@ -353,6 +350,7 @@ public:
 };
 
 /*!
+ * \ingroup Geometry
  * \brief Vector class implementation for 3d space.
  */
 template<class CT>
@@ -425,6 +423,7 @@ Vector<ctype, 3> makeOrthogonalVector(const Vector<ctype, 3>& v)
 }
 
 /*!
+ * \ingroup Geometry
  * \brief Writes out a vector in 1d space.
  * \relates Vector
  *
@@ -441,6 +440,7 @@ std::ostream& operator<< (std::ostream& s, const Vector<CT, 1>& v)
 }
 
 /*!
+ * \ingroup Geometry
  * \brief Writes out a vector in 2d space.
  * \relates Vector
  *
@@ -457,6 +457,7 @@ std::ostream& operator<< (std::ostream& s, const Vector<CT, 2>& v)
 }
 
 /*!
+ * \ingroup Geometry
  * \brief Writes out a vector in 2d space.
  * \relates Vector
  *

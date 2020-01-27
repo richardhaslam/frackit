@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Geometry
  * \brief Class that implements axis-aligned boxes in 3d space.
  */
 #ifndef FRACKIT_GEOMETRY_BOX_HH
@@ -35,6 +36,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Geometry
  * \brief Class that implements axis-aligned boxes in 3d space.
  * \tparam CT The type used for coordinates
  */
