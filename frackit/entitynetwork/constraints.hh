@@ -39,9 +39,9 @@
 // default engines to be used for intersection angles, etc.
 #include <frackit/intersection/intersectionangle.hh>
 
-#include "impl_admissibledimension.hh"
-#include "impl_admissiblemagnitude.hh"
-#include "impl_distancetoboundary.hh"
+#include "constraints_impl/admissibledimension.hh"
+#include "constraints_impl/admissiblemagnitude.hh"
+#include "constraints_impl/distancetoboundary.hh"
 
 namespace Frackit {
 

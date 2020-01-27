@@ -27,8 +27,13 @@
 
 #include <type_traits>
 
-#include <frackit/precision/defaultepsilon.hh>
 #include <frackit/occ/breputilities.hh>
+#include <frackit/common/extractctype.hh>
+#include <frackit/precision/defaultepsilon.hh>
+
+#include <frackit/geometry/geometry.hh>
+#include <frackit/geometryutilities/applyongeometry.hh>
+
 #include "magnitude.hh"
 
 namespace Frackit {
@@ -39,8 +44,9 @@ namespace Frackit {
  *       are contained in the geometry or not.
  */
 template<class Geometry, class Domain, std::enable_if_t<Geometry::myDimension() == 0, int> = 0>
-typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
-                                                   const Domain& domain)
+typename CoordinateTypeTraits<Geometry>::type
+computeContainedMagnitude(const Geometry& geometry,
+                          const Domain& domain)
 { return 0.0; }
 
 /*!
@@ -48,8 +54,9 @@ typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
  *        geometry that is contained in a domain geometry.
  */
 template<class Geometry, class Domain, std::enable_if_t<Geometry::myDimension() == 1, int> = 0>
-typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
-                                                   const Domain& domain)
+typename CoordinateTypeTraits<Geometry>::type
+computeContainedMagnitude(const Geometry& geometry,
+                          const Domain& domain)
 {
     const auto geomShape = OCCUtilities::getShape(geometry);
     const auto domainShape = OCCUtilities::getShape(domain);
@@ -70,8 +77,9 @@ typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
  *        geometry that is contained in a domain geometry.
  */
 template<class Geometry, class Domain, std::enable_if_t<Geometry::myDimension() == 2, int> = 0>
-typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
-                                                   const Domain& domain)
+typename CoordinateTypeTraits<Geometry>::type
+computeContainedMagnitude(const Geometry& geometry,
+                          const Domain& domain)
 {
     const auto geomShape = OCCUtilities::getShape(geometry);
     const auto domainShape = OCCUtilities::getShape(domain);
@@ -87,6 +95,23 @@ typename Geometry::ctype computeContainedMagnitude(const Geometry& geometry,
                                  defaultEpsilon(domain),
                                  OCCUtilities::point(geometry.center()));
     return size;
+}
+
+/*!
+ * \brief TODO doc
+ */
+template<class Domain>
+typename CoordinateTypeTraits<Domain>::type
+computeContainedMagnitude(std::shared_ptr<Geometry> geometry,
+                          const Domain& domain)
+{
+    using ctype = typename CoordinateTypeTraits<Domain>::type;
+
+    // lambda to evaluate the contained magnitude
+    auto doComputation = [&] (const auto& geometry) -> ctype
+    { return computeContainedMagnitude(geometry, domain); };
+
+    return applyOnGeometry(doComputation, geometry);
 }
 
 } // end namespace Frackit
