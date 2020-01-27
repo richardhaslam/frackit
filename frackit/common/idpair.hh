@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Common
  * \brief Simple class to define pairs of ids.
  */
 #ifndef FRACKIT_ID_PAIR_HH
@@ -30,6 +31,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Common
  * \brief Simple class to define pairs of ids.
  */
 class IdPair

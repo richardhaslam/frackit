@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Common
  * \brief Type traits to extract the dimensionality of geometric objects.
  */
 #ifndef FRACKIT_COMMON_EXTRACT_DIMENSION_HH
@@ -37,6 +38,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Common
  * \brief Traits class to extract the dimensionalty of a geometry.
  * \note This is the specialization used for internal geometry types
  *       which carry the information of the dimensions themselves.

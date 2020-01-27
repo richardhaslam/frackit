@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Common
  * \brief Type traits to extract the coordinate type of geometric objects.
  */
 #ifndef FRACKIT_COMMON_COORDINATE_TYPE_HH
@@ -37,6 +38,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Common
  * \brief Traits class to extract the coordinate type from a geometry.
  * \note This is the specialization used for internal geometry types
  *       which carry the information of the coordinate type themselves.

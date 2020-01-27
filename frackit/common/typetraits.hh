@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Common
  * \brief Defines classes to obtain type information at compile-time.
  */
 #ifndef FRACKIT_COMMON_TYPE_TRAITS_HH
@@ -28,6 +29,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Common
  * \brief Helper struct to detect if a type T
  *        is contained in a parameter pack Ts
  * \tparam T The type of which an ocurrence in the pack is to be checked
