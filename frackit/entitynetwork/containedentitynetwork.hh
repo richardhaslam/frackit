@@ -18,6 +18,7 @@
  *****************************************************************************/
  /*!
   * \file
+  * \ingroup EntityNetwork
   * \brief Class representing a network of entities, contained
   *        in (possibly multiple) sub-domains. Sub-networks might
   *        be defined on each sub-domain.
@@ -38,6 +39,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup EntityNetwork
  * \relates ContainedEntityNetworkBuilder
  * \brief Class representing a network of entities, contained
  *        in (possibly multiple) sub-domains. Sub-networks might

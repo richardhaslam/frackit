@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup EntityNetwork
  * \brief Interface defining networks of entities.
  */
 #ifndef FRACKIT_ENTITY_NETWORK_INTERFACE_HH
@@ -30,6 +31,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup EntityNetwork
  * \brief Interface defining networks of entities.
  */
 class EntityNetworkInterface

@@ -13,3 +13,16 @@
  * \defgroup Distance Distance
  * \brief Functionality related to distance computations between geometrical objects.
  */
+
+/*!
+ * \defgroup EntityNetwork Entity Networks
+ * \brief Classes, functions and concepts related to networks of geometrical entities.
+ */
+
+    /*!
+     * \ingroup EntityNetwork
+     * \defgroup Constraints Constraints
+     * \brief Classes and functions related to the enforcement
+     *        geometric constraints (distance, intersection angle etc)
+     *        between entities in entity networks.
+     */

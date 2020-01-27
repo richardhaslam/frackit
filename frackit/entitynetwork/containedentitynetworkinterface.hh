@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup EntityNetwork
  * \brief Interface defining networks of entities contained
  *        in (possibly multiple) sub-domains.
  */
@@ -35,6 +36,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup EntityNetwork
  * \brief Interface defining networks of entities contained
  *        in (possibly multiple) sub-domains.
  */
