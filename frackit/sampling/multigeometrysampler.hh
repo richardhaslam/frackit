@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Sampler which can sample multiple geometry types.
  *        For each geometry type, various sampler classes can be defined,
  *        each of which is associated with a unique id. The sampling strategy
@@ -43,6 +44,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Sampler which can sample multiple geometry types.
  * \note Per default, we use a sequential sampling strategy here.
  */

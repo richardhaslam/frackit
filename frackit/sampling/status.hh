@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Class that can be used to define target counters in
  *        sampling procedures and which outputs the current status.
  */
@@ -32,6 +33,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Class that can be used to define target counters in
  *        sampling procedures and which outputs the current status.
  */
@@ -41,7 +43,7 @@ class SamplingStatus
 public:
 
     /*!
-     * \brief TODO: Doc
+     * \brief Set the target sample count for a specific id.
      */
     void setTargetCount(const Id& id, std::size_t targetCount)
     {
@@ -53,7 +55,8 @@ public:
     }
 
     /*!
-     * \brief TODO: Doc
+     * \brief Returns true when the target
+     *        sample count is reached.
      */
     bool finished()
     {
@@ -64,7 +67,8 @@ public:
     }
 
     /*!
-     * \brief TODO: Doc
+     * \brief Returns true when the target count
+     *        for a specific id is reached.
      */
     bool finished(const Id& id)
     {
@@ -75,7 +79,7 @@ public:
     }
 
     /*!
-     * \brief TODO: Doc
+     * \brief Increase counter for a specific id.
      */
     void increaseCounter(const Id& id)
     {
@@ -83,7 +87,7 @@ public:
     }
 
     /*!
-     * \brief TODO: Doc
+     * \brief Increase counter of rejected samples.
      */
     void increaseRejectedCounter()
     {
@@ -91,7 +95,7 @@ public:
     }
 
     /*!
-     * \brief TODO: Doc
+     * \brief Print current status to terminal.
      */
     void print(bool forceHeaderPrint = false)
     {

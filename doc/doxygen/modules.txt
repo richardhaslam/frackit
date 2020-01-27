@@ -49,6 +49,11 @@
      * \brief Functionality related to magnitude (length/area/volume) computations of geometrical objects.
      */
 
+    /*!
+     * \defgroup Sampling Sampling
+     * \brief Functionality related to random generation (sampling) of geometries.
+     */
+
 /*!
  * \defgroup OpenCascade OpenCascade
  * \brief Utility functions for communication with the OpenCascade library.

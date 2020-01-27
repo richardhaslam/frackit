@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Class to randomly generate points on boxes.
  */
 #ifndef FRACKIT_BOX_POINT_SAMPLER_HH
@@ -30,6 +31,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Class to randomly generate points within boxes
  *        following the provided distributions. The type of
  *        distribution to be used can be specified via traits,

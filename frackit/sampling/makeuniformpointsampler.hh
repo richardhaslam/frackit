@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Free functions to create point samplers from geometries with
  *        uniform distributions used for all coordinate directions.
  */
@@ -33,6 +34,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Overload of the free function to create point
  *        samplers, for the provided geometry, with uniform
  *        distributions for all coordinate directions.

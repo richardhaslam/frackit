@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Interface for classes that randomly generate points.
  */
 #ifndef FRACKIT_POINT_SAMPLER_HH
@@ -26,6 +27,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Defines the interface for point samplers.
  * \tparam P The type used for points
  */

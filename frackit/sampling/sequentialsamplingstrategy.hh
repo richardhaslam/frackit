@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Sampling strategy implementation which goes
  *        over the defined ids successively.
  */
@@ -31,6 +32,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Sampling strategy implementation which goes
  *        over the defined ids successively.
  */

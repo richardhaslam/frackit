@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Sampling
  * \brief Free functions to create point samplers from geometries.
  */
 #ifndef FRACKIT_MAKE_POINT_SAMPLER_HH
@@ -29,6 +30,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Sampling
  * \brief Overload of the free function to create point
  *        samplers for cylinders.
  * \note Sampling along the radius coordinate occurs in the interval [0, r^2]
@@ -47,6 +49,7 @@ makePointSampler(const Cylinder<ctype>& cylinder)
 }
 
 /*!
+ * \ingroup Sampling
  * \brief Overload of the free function to create point
  *        samplers for boxes.
  */
