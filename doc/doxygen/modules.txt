@@ -8,3 +8,8 @@
  * \defgroup Common Common
  * \brief Common classes, functions, properties and concepts
  */
+
+/*!
+ * \defgroup Distance Distance
+ * \brief Functionality related to distance computations between geometrical objects.
+ */

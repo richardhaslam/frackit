@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Distance
  * \brief Contains functionality for computing
  *        the distance between geometries.
  */
@@ -51,6 +52,7 @@ namespace Impl {
 }
 
 /*!
+ * \ingroup Distance
  * \brief Computes the distance between two TopoDS_Shape objects.
  * \param shape1 The first shape
  * \param shape2 The second shape
@@ -72,6 +74,7 @@ ctype computeDistance(const TopoDS_Shape& shape1,
 }
 
 /*!
+ * \ingroup Distance
  * \brief In the general case we compute the distance based on
  *        the basis of the BRep of the geometries. Overloads for
  *        geometries for which the distance can be computed more
@@ -102,7 +105,8 @@ computeDistance(const Geom1& geo1,
 }
 
 /*!
- * \brief Overload for one of the geometries being a shape object.
+ * \ingroup Distance
+ * \brief Computes the distance between a TopoDS_Shape and an internal geometry type.
  * \param shape The shape of one geometry
  * \param geo The second geometry
  * \param deflection The epsilon used in the BrepExtrema command
@@ -119,7 +123,8 @@ computeDistance(const TopoDS_Shape& shape,
 { return computeDistance(shape, OCCUtilities::getShape(geo), deflection, extFlag, extAlgo); }
 
 /*!
- * \brief Overload for one of the geometries being a shape object.
+ * \ingroup Distance
+ * \brief Computes the distance between an internal geometry type and a TopoDS_Shape.
  * \param geo The second geometry
  * \param shape The shape of one geometry
  * \param deflection The epsilon used in the BrepExtrema command
@@ -136,6 +141,7 @@ computeDistance(const Geom& geo,
 { return computeDistance(OCCUtilities::getShape(geo), shape, deflection, extFlag, extAlgo); }
 
 /*!
+ * \ingroup Distance
  * \brief Returns the euclidian distance between two points.
  * \param p1 The first point
  * \param p2 The second point
@@ -146,6 +152,7 @@ PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p1,
 { return Vector<PromotedType<ctype1, ctype2>, worldDim>(p1, p2).length(); }
 
 /*!
+ * \ingroup Distance
  * \brief Returns the euclidian distance between a point and a line.
  * \param p The point
  * \param line The line
@@ -156,6 +163,7 @@ PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p,
 { return Vector<PromotedType<ctype1, ctype2>, worldDim>(p, line.projection(p)).length(); }
 
 /*!
+ * \ingroup Distance
  * \brief Returns the euclidian distance between a line and a point.
  * \param line The line
  * \param p The point
@@ -166,6 +174,7 @@ PromotedType<ctype1, ctype2> computeDistance(const Line<ctype1, worldDim>& line,
 { return computeDistance(p, line); }
 
 /*!
+ * \ingroup Distance
  * \brief Returns the euclidian distance between a point and a segment.
  * \param p The point
  * \param seg The segment
@@ -188,6 +197,7 @@ PromotedType<ctype1, ctype2> computeDistance(const Point<ctype1, worldDim>& p,
 }
 
 /*!
+ * \ingroup Distance
  * \brief Returns the euclidian distance between a segment and a point.
  * \param seg The segment
  * \param p The point
