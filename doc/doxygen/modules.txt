@@ -31,3 +31,9 @@
  * \defgroup Geometry Geometry
  * \brief Classes that define basic geometrical objects.
  */
+
+    /*!
+     * \ingroup Geometry
+     * \defgroup GeometryUtilities Geometry Utilities
+     * \brief Utility functionality for geometrical objects.
+     */
