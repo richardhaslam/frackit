@@ -212,6 +212,28 @@ public:
     }
 
     /*!
+     * \brief Export all entity sets into the provided
+     *        entity network builder.
+     * \param builder An instance of a builder class.
+     * \note This overload works with builders that create
+     *       uncontained network, i.e. only the network is built
+     *       independent of the embedding domain.
+     */
+    template<class NetworkBuilder>
+    void exportEntitySets(NetworkBuilder& builder) const
+    {
+        // lambda to add sets of a specific geometry type
+        auto addSets = [&] (const auto& geomVectorIdPairVector) -> void
+        {
+            for (const auto& vectorIdPair : geomVectorIdPairVector)
+                builder.addEntities(vectorIdPair.first);
+        };
+
+        // find the id and apply function
+        std::apply([&](auto& ...x){(..., addSets(x));}, entitySets_);
+    }
+
+    /*!
      * \brief Export various entity sets into the
      *        provided entity network builder.
      * \param idList The list containing the ids of the entity sets to be exported.
