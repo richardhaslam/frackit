@@ -84,8 +84,8 @@ int main()
 
     // use the status class to define when to stop sampling
     SamplingStatus status;
-    status.setTargetCount(idSet1, 10); // we want 10 entities in set 1
-    status.setTargetCount(idSet2, 10); // we want 10 entities in set 2
+    status.setTargetCount(idSet1, 15); // we want 15 entities in set 1
+    status.setTargetCount(idSet2, 15); // we want 15 entities in set 2
 
     // start sampling into set 1 and keep alternating
     bool sampleIntoSet1 = true;
