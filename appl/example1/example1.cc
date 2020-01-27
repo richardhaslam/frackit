@@ -71,11 +71,8 @@ int main()
     constraintsOnSelf.setMinIntersectionDistance(0.05);
 
     // with respect to entities of the other set, we want to have larger intersection angles
-    EntityNetworkConstraints constraintsOnOther;
-    constraintsOnOther.setMinDistance(0.05);
+    auto constraintsOnOther = constraintsOnSelf;
     constraintsOnOther.setMinIntersectingAngle(toRadians(40.0));
-    constraintsOnOther.setMinIntersectionMagnitude(0.05);
-    constraintsOnOther.setMinIntersectionDistance(0.05);
 
     // container to store created entities
     std::vector<Quad> entitySet1;
