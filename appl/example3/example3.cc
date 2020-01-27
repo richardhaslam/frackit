@@ -1,6 +1,4 @@
 #include <iostream>
-#include <fstream>
-#include <string>
 #include <stdexcept>
 #include <random>
 
@@ -18,7 +16,6 @@
 #include <frackit/sampling/disksampler.hh>
 #include <frackit/sampling/quadrilateralsampler.hh>
 #include <frackit/sampling/multigeometrysampler.hh>
-#include <frackit/sampling/sequentialsamplingstrategy.hh>
 #include <frackit/sampling/status.hh>
 
 // constraints to be enforced on the network (distance, angles, etc.)
@@ -74,22 +71,25 @@ int main(int argc, char** argv)
     //    and disk/quadrilaterals as entities (using the sampled center points) //
     //////////////////////////////////////////////////////////////////////////////
 
+    // we use the default sampler types -> normal distributions for all parameters
+    using Distro = std::normal_distribution<ctype>;
+
     // Bounding box of the domain in which we want to place the entities
     const auto domainBBox = OCCUtilities::getBoundingBox(networkDomain);
 
     // sampler for disks (orientation 1)
     DiskSampler diskSampler(makeUniformPointSampler(domainBBox),                               // sampler for disk center points
-                            std::normal_distribution<ctype>(30.0, 6.5),                        // major axis length: mean value & standard deviation
-                            std::normal_distribution<ctype>(24.0, 4.5),                        // minor axis length: mean value & standard deviation
-                            std::normal_distribution<ctype>(toRadians(0.0), toRadians(7.5)),   // rotation around x-axis: mean value & standard deviation
-                            std::normal_distribution<ctype>(toRadians(0.0), toRadians(7.5)),   // rotation around y-axis: mean value & standard deviation
-                            std::normal_distribution<ctype>(toRadians(0.0), toRadians(7.5)));  // rotation around z-axis: mean value & standard deviation
+                            Distro(30.0, 6.5),                        // major axis length: mean value & standard deviation
+                            Distro(24.0, 4.5),                        // minor axis length: mean value & standard deviation
+                            Distro(toRadians(0.0), toRadians(7.5)),   // rotation around x-axis: mean value & standard deviation
+                            Distro(toRadians(0.0), toRadians(7.5)),   // rotation around y-axis: mean value & standard deviation
+                            Distro(toRadians(0.0), toRadians(7.5)));  // rotation around z-axis: mean value & standard deviation
 
     // sampler for quadrilaterals (orientation 2)
     QuadrilateralSampler<3> quadSampler(makeUniformPointSampler(domainBBox),                               // sampler for quadrilateral center points
-                                        std::normal_distribution<ctype>(toRadians(0.0), toRadians(5.0)),   // strike angle: mean value & standard deviation
-                                        std::normal_distribution<ctype>(toRadians(45.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
-                                        std::normal_distribution<ctype>(35.0, 5.0),                        // edge length: mean value & standard deviation
+                                        Distro(toRadians(45.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
+                                        Distro(toRadians(90.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
+                                        Distro(45.0, 5.0),                        // edge length: mean value & standard deviation
                                         5.0);                                                              // threshold for minimum edge length
 
     // Define ids for the two entity sets
@@ -114,26 +114,22 @@ int main(int argc, char** argv)
     // Define constraints between entities of orientation 1
     using Constraints = EntityNetworkConstraints<ctype>;
     Constraints constraints1;
-    constraints1.setMinDistance(1.5);
+    constraints1.setMinDistance(2.5);
     constraints1.setMinIntersectingAngle(toRadians(25.0));
-    constraints1.setMinIntersectionMagnitude(2.5);
-    constraints1.setMinIntersectionDistance(2.0);
+    constraints1.setMinIntersectionMagnitude(5.0);
+    constraints1.setMinIntersectionDistance(2.5);
 
     // Define constraints between entities of orientation 2
-    Constraints constraints2;
-    constraints2.setMinDistance(10.0);
-    constraints2.setMinIntersectingAngle(toRadians(25.0));
-    constraints2.setMinIntersectionMagnitude(2.5);
-    constraints2.setMinIntersectionDistance(2.0);
+    // we want to enforce larger spacing between those entities
+    auto constraints2 = constraints1;
+    constraints2.setMinDistance(5.0);
 
     // Define constraints between entities of different sets
-    Constraints constraintsOnOther;
+    auto constraintsOnOther = constraints1;
     constraintsOnOther.setMinDistance(2.5);
     constraintsOnOther.setMinIntersectingAngle(toRadians(40.0));
-    constraintsOnOther.setMinIntersectionMagnitude(2.5);
-    constraintsOnOther.setMinIntersectionDistance(2.0);
 
-    // We can use a constraint matrix to facilitate constraint evaluation
+    // We can use the constraints matrix to facilitate constraint evaluation
     EntityNetworkConstraintsMatrix<Constraints> constraintsMatrix;
     constraintsMatrix.addConstraints(constraints1,                  // constraint instance
                                      IdPair(diskSetId, diskSetId)); // set between which to use these constraints
@@ -146,11 +142,8 @@ int main(int argc, char** argv)
                                       IdPair(quadSetId, diskSetId)}); // sets between which to use these constraints
 
     // Moreover, we define constraints w.r.t. the domain boundary
-    EntityNetworkConstraints constraintsOnDomain;
-    constraintsOnDomain.setMinDistance(1.5);
-    constraintsOnDomain.setMinIntersectingAngle(toRadians(5.0));
-    constraintsOnDomain.setMinIntersectionMagnitude(20.0);
-    constraintsOnDomain.setMinIntersectionDistance(2.0);
+    auto constraintsOnDomain = constraints1;
+    constraintsOnDomain.setMinIntersectingAngle(toRadians(15.0));
 
 
 
@@ -166,8 +159,8 @@ int main(int argc, char** argv)
     // Helper class for terminal output of the creation
     // progress and definition of stop criterion etc
     SamplingStatus status;
-    status.setTargetCount(diskSetId, 10); // we want 10 entities of orientation 1
-    status.setTargetCount(quadSetId, 10); // we want 10 entities of orientation 2
+    status.setTargetCount(diskSetId, 12); // we want 11 entities of orientation 1
+    status.setTargetCount(quadSetId, 16); // we want 13 entities of orientation 2
 
     // The actual network generation loop
     ctype containedNetworkArea = 0.0;
@@ -184,7 +177,7 @@ int main(int argc, char** argv)
 
         // Moreover, we want to avoid small fragments (< 250 m²)
         const auto containedArea = computeContainedMagnitude(geom, networkDomain);
-        if (containedArea < 250.0)
+        if (containedArea < 350.0)
         { status.increaseRejectedCounter(); continue; }
 
         // enforce constraints w.r.t. to the other entities
