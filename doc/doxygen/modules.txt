@@ -40,16 +40,19 @@
      */
 
     /*!
+     * \ingroup Geometry
      * \defgroup Distance Distance
      * \brief Functionality related to distance computations between geometrical objects.
      */
 
     /*!
+     * \ingroup Geometry
      * \defgroup Magnitude Magnitude
      * \brief Functionality related to magnitude (length/area/volume) computations of geometrical objects.
      */
 
     /*!
+     * \ingroup Geometry
      * \defgroup Sampling Sampling
      * \brief Functionality related to random generation (sampling) of geometries.
      */
