@@ -10,5 +10,6 @@ pointsampler.hh
 quadrilateralsampler.hh
 samplingstrategy.hh
 sequentialsamlingstrategy.hh
+status.hh
 uniformpointsamplertraits.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/sampling)
