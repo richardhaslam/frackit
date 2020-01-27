@@ -143,7 +143,8 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
             majAxis.invert();
 
         using std::cos;
-        const ctype majAxisLength = cylSurface.radius()/cos(dn.Angle(ca));
+        using std::abs;
+        const ctype majAxisLength = abs(cylSurface.radius()/cos(dn.Angle(ca)));
         const auto& cylAxisLine = cylSurface.centerSegment().supportingLine();
         const auto center = std::get<Point>(intersect(faceGeomPlane, cylAxisLine, eps));
         infEllipse = Ellipse(center, majAxis, minAxis, majAxisLength, cylSurface.radius());
@@ -174,7 +175,7 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
         const auto p1 = OCCUtilities::point(v1);
         const auto p2 = OCCUtilities::point(v2);
 
-        if (!faceGeomIsParallel)
+        if (faceGeomIsOrthogonal || !faceGeomIsParallel)
         {
             // select the arc whose center is on the set of given edges
             EllipseArc arc1(infEllipse, p1, p2);
