@@ -1,0 +1,10 @@
+/*!
+ * \file
+ * \brief This file contains all module definitions for the doxygen documentation.
+ */
+
+/* ***************** Porousmediumflow ******************/
+/*!
+ * \defgroup Common Common
+ * \brief Common classes, functions, properties and concepts
+ */
