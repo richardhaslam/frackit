@@ -50,6 +50,11 @@
      */
 
 /*!
+ * \defgroup OpenCascade OpenCascade
+ * \brief Utility functions for communication with the OpenCascade library.
+ */
+
+/*!
  * \defgroup IO Input-Output
  * \brief Classes and functions for file input/output.
  */

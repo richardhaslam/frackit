@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup OpenCascade
  * \brief Contains utility functionality related
  *        to objects & algorithms related to the
  *        geometric processors package in OpenCascade.
@@ -38,7 +39,11 @@
 namespace Frackit {
 namespace OCCUtilities {
 
-    //! converts a point to an object from the geometric processors package
+    /*!
+     * \ingroup OpenCascade
+     * \brief Converts a point to an object from
+     *        the geometric processors package.
+     */
     template<class ctype, int dim>
     gp_Pnt point(const Point<ctype, dim>& p)
     {
@@ -48,11 +53,19 @@ namespace OCCUtilities {
         else if (dim == 3) return gp_Pnt(p.x(), p.y(), p.z());
     }
 
-    //! casts a point from the geometric processors package
+    /*!
+     * \ingroup OpenCascade
+     * \brief Casts a point from the geometric
+     *        processors package.
+     */
     Point<double, 3> point(const gp_Pnt& p)
     { return {p.X(), p.Y(), p.Z()}; }
 
-    //! converts an internal direction into gp direction object
+    /*!
+     * \ingroup OpenCascade
+     * \brief Converts an internal direction
+     *        into gp direction object.
+     */
     template<class ctype, int dim>
     gp_Dir direction(const Direction<ctype, dim>& dir)
     {
@@ -62,7 +75,11 @@ namespace OCCUtilities {
         else if (dim == 3) return gp_Dir(dir.x(), dir.y(), dir.z());
     }
 
-    //! converts a gp direction object into an internal one
+    /*!
+     * \ingroup OpenCascade
+     * \brief Converts a direction object of the
+     *        gp package into an internal direction.
+     */
     template<class ctype = double, int dim = 3>
     Direction<ctype, dim> direction(const gp_Dir& dir)
     {
@@ -71,7 +88,11 @@ namespace OCCUtilities {
         return Direction<ctype, dim>(Vector(dir.X(), dir.Y(), dir.Z()));
     }
 
-    //! converts a gp vector object into an internal one
+    /*!
+     * \ingroup OpenCascade
+     * \brief Converts a gp vector object
+     *        into an internal one.
+     */
     template<class ctype = double, int dim = 3>
     Vector<ctype, dim> vector(const gp_Vec& v)
     {

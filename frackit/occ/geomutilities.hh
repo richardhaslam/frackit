@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup OpenCascade
  * \brief Contains utility functionality related
  *        to objects & algorithms related to the
  *        Geometry package in OpenCascade.
@@ -54,7 +55,10 @@
 namespace Frackit {
 namespace OCCUtilities {
 
-    //! returns a Geom_Curve handle for an ellipse
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the Geom_Curve handle for an ellipse in 3d space.
+     */
     template<class ctype>
     Handle(Geom_Curve) getGeomHandle(const Ellipse<ctype, 3>& ellipse)
     {
@@ -67,7 +71,10 @@ namespace OCCUtilities {
         return new Geom_Ellipse(gpEllipse);
     }
 
-    //! returns a Geom_Curve handle for an ellipse arc
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the Geom_Curve handle for an ellipse arc in 3d space.
+     */
     template<class ctype>
     Handle(Geom_Curve) getGeomHandle(const EllipseArc<ctype, 3>& ellipseArc)
     {
@@ -81,7 +88,10 @@ namespace OCCUtilities {
         return new Geom_TrimmedCurve(geomEllipseHandle, angleSource, angleTarget);
     }
 
-    //! returns a Geom_Curve handle for an edge
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the Geom_Curve handle for an edge shape.
+     */
     Handle(Geom_Curve) getGeomHandle(const TopoDS_Edge& edge)
     {
         // get unbounded curve and parameter bounds (umin, umax)
@@ -92,7 +102,10 @@ namespace OCCUtilities {
         return new Geom_TrimmedCurve(curve, uMin, uMax);
     }
 
-    //! returns a Geom_Surface handle for a face
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the Geom_Surface handle for a face shape.
+     */
     Handle(Geom_Surface) getGeomHandle(const TopoDS_Face& face)
     { return BRep_Tool::Surface(face); }
 
