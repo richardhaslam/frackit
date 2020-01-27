@@ -73,6 +73,7 @@ function(frackit_add_test)
     set(ADDTEST_TARGET ${ADDTEST_NAME})
   endif()
 
+
   # Now add the actual test
   add_test(NAME ${ADDTEST_NAME} COMMAND "${ADDTEST_COMMAND}" ${ADDTEST_CMD_ARGS})
 
