@@ -2,6 +2,7 @@
 #include <string>
 
 #include <frackit/geometry/circle.hh>
+#include <frackit/precision/precision.hh>
 
 //! test some functionality of circles
 int main()
@@ -31,6 +32,12 @@ int main()
     // point that is on
     if (!circle.contains(Point(1.0, 0.0, 0.0)))
         throw std::runtime_error("False negative contains() result");
+
+    // start and end point should be the same
+    const auto p1 = circle.getPoint(0.0);
+    const auto p2 = circle.getPoint(1.0);
+    if (!p1.isEqual(p2, Frackit::Precision<ctype>::confusion()))
+        throw std::runtime_error("Start and end point not equal");
 
     std::cout << "All tests passed" << std::endl;
     return 0;
