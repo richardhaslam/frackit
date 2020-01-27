@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Magnitude
  * \brief Contains functionality for computing the
  *        magnitude (length/area/volume) of the part
  *        of a geometry contained within another geometry.
@@ -39,6 +40,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the magnitude of zero-dimensional geometries (points)
  * \note The magnitude of points is always zero independent on if they
  *       are contained in the geometry or not.
@@ -50,6 +52,7 @@ computeContainedMagnitude(const Geometry& geometry,
 { return 0.0; }
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the length of the part of a one-dimensional
  *        geometry that is contained in a domain geometry.
  */
@@ -73,6 +76,7 @@ computeContainedMagnitude(const Geometry& geometry,
 }
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the surface area of the part of a two-dimensional
  *        geometry that is contained in a domain geometry.
  */
@@ -98,7 +102,9 @@ computeContainedMagnitude(const Geometry& geometry,
 }
 
 /*!
- * \brief TODO doc
+ * \ingroup Magnitude
+ * \brief Returns the magnitude of that part of a
+ *        geometry that is contained in a domamin.
  */
 template<class Domain>
 typename CoordinateTypeTraits<Domain>::type

@@ -18,6 +18,7 @@
  *****************************************************************************/
 /*!
  * \file
+ * \ingroup Magnitude
  * \brief Contains functionality for computing the
  *        areas of two-dimensional geometries.
  */
@@ -36,6 +37,7 @@
 namespace Frackit {
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the area of an internal geometry
  *        that has an area() function available.
  */
@@ -44,6 +46,7 @@ typename Geometry::ctype computeArea(const Geometry& geometry)
 { return geometry.area(); }
 
 /*!
+ * \ingroup Magnitude
  * \brief Returns the area of a TopoDS_Face.
  * \param face The face
  * \param eps Tolerance value to be used

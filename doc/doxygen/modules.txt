@@ -10,11 +10,6 @@
  */
 
 /*!
- * \defgroup Distance Distance
- * \brief Functionality related to distance computations between geometrical objects.
- */
-
-/*!
  * \defgroup EntityNetwork Entity Networks
  * \brief Classes, functions and concepts related to networks of geometrical entities.
  */
@@ -42,6 +37,16 @@
      * \ingroup Geometry
      * \defgroup Intersection Intersection
      * \brief Classes and functions related to intersections between geometries.
+     */
+
+    /*!
+     * \defgroup Distance Distance
+     * \brief Functionality related to distance computations between geometrical objects.
+     */
+
+    /*!
+     * \defgroup Magnitude Magnitude
+     * \brief Functionality related to magnitude (length/area/volume) computations of geometrical objects.
      */
 
 /*!
