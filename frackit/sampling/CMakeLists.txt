@@ -5,6 +5,7 @@ disksampler.hh
 geometrysampler.hh
 makepointsampler.hh
 makeuniformpointsampler.hh
+multigeometrysampler.hh
 pointsampler.hh
 quadrilateralsampler.hh
 samplingstrategy.hh
