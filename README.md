@@ -131,14 +131,14 @@ find_library(OCC_LIB ${OCC}
              PATH_SUFFIXES lib ${OCC_SYS_NAME}/lib ${OCC_SYS_NAME}/vc8/lib)
 ```
 
-you can define HINTS to your installation of [OpenCascade][2]. Once cmake finished
-successfully, you could now compile the class documentation:
+you can define HINTS for cmake to find your installation folder of [OpenCascade][2].
+Once cmake finished successfully, you could now compile the class documentation:
 
 ```sh
 make doc_doxygen
 ```
 
-and open it using a web browser, for example [chrome][9]:
+and open it using a web browser, for example _chrome_:
 
 ```sh
 google-chrome doc/doxygen/html/index.html
@@ -162,6 +162,30 @@ cd appl/example1
 License
 =======
 
+Frackit is licensed under the terms and conditions of the GNU General
+Public License (GPL) version 3 or - at your option - any later
+version. The GPL can be [read online][9] or in the [LICENSE.md](LICENSE.md) file
+provided in the top folder of Frackit. See the file [LICENSE.md](LICENSE.md) for
+full copying permissions.
+
+
+Contributing
+=============
+
+Contributions are highly appreciated.
+Before you start coding, please have a look at the [styleguide][doc/styleguide.md].
+For bug reports, please file an [issue](https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/issues).
+If you want to contribute with new features of improvements of existing code, please
+
+* Get an account for our GitLab instance at https://git.iws.uni-stuttgart.de/
+* Fork this project
+* Push your changes to your fork on some branch.
+* Open a merge request using the branch you pushed your changes to as the source branch and the master
+of the Frackit repository as the target branch.
+* Follow the discussion on the merge request to see what improvements should be done to the branch
+before merging.
+* If you have developer status you don't need to do a fork and you can create branches directly.
+
 
 [0]: https://dumux.org
 [1]: http://gmsh.info/
@@ -172,4 +196,4 @@ License
 [6]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example2
 [7]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/
 [8]: http://www.doxygen.org/index.html
-[9]: google-chrome-todo
+[9]: https://www.gnu.org/licenses/gpl-3.0.en.html
