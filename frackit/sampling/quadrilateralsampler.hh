@@ -104,7 +104,7 @@ public:
      * \param strikeDistro The distribution used for the strike angle
      * \param dipDistro The distribution used for the dip angle
      * \param edgeDistro The distribution used for the edge length
-     * \minEdgeLength Minimum allowed edge length
+     * \param minEdgeLength Minimum allowed edge length
      * \note The edge distribution is sampled until an admissible value
      *       above the minimum allowed edge length is obtained. Thus,
      *       if you choose a high minimum length, depending on the chosen

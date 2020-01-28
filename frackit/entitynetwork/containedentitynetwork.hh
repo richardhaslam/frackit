@@ -54,11 +54,11 @@ public:
     /*!
      * \brief Constructor.
      * \param entityDim Dimension of the network entities
-     * \param fragmentList List containing all entity fragments
-     * \param fragmentIndexMap Map containing the fragments
-     *                         of a network, where each fragment
-     *                         is mapped to the index of the primary
-     *                         entity of the network.
+     * \param sdFragments The sub-domains, split into fragments by the entities
+     * \param entityFragments Contains the entity fragments of each sub-domain
+     * \param entityFragmentMaps Map containing the fragments of the sub-domains,
+     *                           where each fragment is mapped to the index of the
+     *                           primary entity of the network from which is was created.
      */
     ContainedEntityNetwork(int entityDim,
                            int domainDim,
@@ -83,21 +83,21 @@ public:
 
     /*!
      * \brief Returns the fragments of a sub-domain
-     * \param subDomainIdx The index of the sub-domain
+     * \param subDomainId The id of the sub-domain
      */
     const TopTools_ListOfShape& subDomainFragments(Id subDomainId) const override
     { return subDomainFragments_.at(subDomainId.get()); }
 
     /*!
      * \brief Returns the entity fragments of the network defined for a sub-domain
-     * \param subDomainIdx The index of the sub-domain
+     * \param subDomainId The id of the sub-domain
      */
     const TopTools_ListOfShape& subDomainEntityFragments(Id subDomainId) const override
     { return subDomainEntityFragments_.at(subDomainId.get()); }
 
     /*!
      * \brief Returns the map which maps each fragment the network of a sub-domain to its primary entity index.
-     * \param subDomainIdx The index of the sub-domain
+     * \param subDomainId The id of the sub-domain
      */
     const TopTools_DataMapOfShapeInteger& subDomainEntityFragmentsIndexMap(Id subDomainId) const override
     { return subDomainEntityFragmentIndexMap_.at(subDomainId.get()); }

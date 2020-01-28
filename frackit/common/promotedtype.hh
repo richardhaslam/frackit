@@ -40,7 +40,11 @@ struct PromotionTraits
     using PromotedType = decltype(std::declval<T1>()+std::declval<T2>());
 };
 
-// Specialization for the case of two equal types
+/*!
+ * \ingroup Common
+ * \brief Specialization of the PromotionTraits
+ *        for the case of two equal types.
+ */
 template<class T1>
 struct PromotionTraits<T1,T1> { typedef T1 PromotedType; };
 
