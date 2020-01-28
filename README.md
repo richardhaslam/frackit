@@ -25,7 +25,7 @@ by the open-source simulator [DuMuX][0] for flow and transport in porous media.
 The .geo files produced by Frackit lead to three-dimensional meshes that are aligned
 with the fracture geometries such that the element faces coincide with the fractures,
 which can be directly plugged into the [DuMuX][0] module for discrete fracture-matrix
-simulations (see e.g. https://arxiv.org/pdf/1909.05052.pdf).
+simulations of single- and two-phase flow (see e.g. https://arxiv.org/pdf/1909.05052.pdf).
 
 
 General Concept
@@ -189,6 +189,13 @@ before merging.
 
 In this project, we follow the [styleguide][2] of the [DuMuX][0] project.
 Please have a look at these before you start coding your contributions.
+
+
+Ongoing Developments
+====================
+
+* Kernel for fracture network characterization (e.g. connectivity)
+* Capabilities for translation of fracture networks into graphs, allowing for efficient characterization of the network based on its graph representation.
 
 [0]: https://dumux.org
 [1]: http://gmsh.info/
