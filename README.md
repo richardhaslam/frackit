@@ -146,6 +146,13 @@ and open it using a web browser, for example _chrome_:
 google-chrome doc/doxygen/html/index.html
 ```
 
+To build and run all unit tests, type
+
+```sh
+make build_tests
+ctest
+```
+
 Moreover, you can build all example applications by typing
 
 ```sh
