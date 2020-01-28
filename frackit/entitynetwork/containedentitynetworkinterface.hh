@@ -75,19 +75,19 @@ public:
 
     /*!
      * \brief Returns the fragments of a sub-domain
-     * \param subDomainIdx The index of the sub-domain
+     * \param subDomainId The id of the sub-domain
      */
     virtual const TopTools_ListOfShape& subDomainFragments(Id subDomainId) const = 0;
 
     /*!
      * \brief Returns the entity fragments of the network defined for a sub-domain
-     * \param subDomainIdx The index of the sub-domain
+     * \param subDomainId The id of the sub-domain
      */
     virtual const TopTools_ListOfShape& subDomainEntityFragments(Id subDomainId) const = 0;
 
     /*!
      * \brief Returns the map which maps each fragment the network of a sub-domain to its primary entity index.
-     * \param subDomainIdx The index of the sub-domain
+     * \param subDomainId The id of the sub-domain
      */
     virtual const TopTools_DataMapOfShapeInteger& subDomainEntityFragmentsIndexMap(Id subDomainId) const = 0;
 

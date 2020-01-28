@@ -265,7 +265,7 @@ public:
      *        pointer to its original geometry type.
      * \tparam T either a entity type or an entity set
      * \param entityOrSet An entity or an entity set
-     * \param geo2 Pointer to a generic geometry type
+     * \param geo2Ptr Pointer to a generic geometry type
      * \returns True if all constraints are fulfilled, false otherwise
      */
     template<class T>
@@ -281,7 +281,7 @@ public:
      *        to a generic geometry. Unfortunately, this requires
      *        parsing the pointer to its original geometry type.
      * \tparam T either a entity type or an entity set
-     * \param geo1 Pointer to a generic geometry type
+     * \param geo1Ptr Pointer to a generic geometry type
      * \param entityOrSet An entity or an entity set
      * \returns True if all constraints are fulfilled, false otherwise
      */

@@ -62,7 +62,7 @@ public:
     /*!
      * \brief Adds an entity to the set with the given id.
      * \param entity The entity to be added.
-     * \param if The id of the entity set.
+     * \param id The id of the entity set.
      */
     template<class Entity>
     void addEntity(const Entity& entity, const Id& id)
@@ -103,7 +103,7 @@ public:
     /*!
      * \brief Adds an entity to the set with the given id.
      * \param entity Pointer to the abstract geometry base class
-     * \param if The id of the entity set.
+     * \param id The id of the entity set.
      */
     void addEntity(std::shared_ptr<Geometry> entity, const Id& id)
     {

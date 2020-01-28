@@ -18,8 +18,9 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "$GXX_RELEASE_OPTS $GXX_RELEASE_WARNING_OPTS 
 set(CMAKE_BUILD_TYPE Release)
 
 # Find OpenCascade
-find_path(OCC_INC "Standard_Version.hxx" HINTS ~/Software/opencascade-7.3.0/occ-build/include/opencascade)
-          # PATH_SUFFIXES opencascade include/opencascade)
+find_path(OCC_INC "Standard_Version.hxx"
+          PATH_SUFFIXES opencascade include/opencascade
+          HINTS ~/Software/opencascade-7.3.0/occ-build/include/opencascade)
 
 if (OCC_INC)
     include_directories( ${OCC_INC} )
@@ -55,7 +56,9 @@ if (OCC_INC)
     else()
       set(OCC_LIBS)
       foreach(OCC ${OCC_LIBS_REQUIRED})
-        find_library(OCC_LIB ${OCC} HINTS ~/Software/opencascade-7.3.0/occ-build/lin64/gcc/lib)
+        find_library(OCC_LIB ${OCC}
+                     PATH_SUFFIXES lib ${OCC_SYS_NAME}/lib ${OCC_SYS_NAME}/vc8/lib
+                     HINTS ~/Software/opencascade-7.3.0/occ-build/lin64/gcc/lib)
         if(OCC_LIB)
 	        list(APPEND OCC_LIBS ${OCC_LIB})
         else()

@@ -217,7 +217,7 @@ private:
  * \relates Direction
  *
  * \param s std::ostream to write to
- * \param v Direction to write
+ * \param d Direction to write
  *
  * \returns the output stream (s)
  */
@@ -234,7 +234,7 @@ std::ostream& operator<< (std::ostream& s, const Direction<CT, 1>& d)
  * \relates Direction
  *
  * \param s std::ostream to write to
- * \param v Direction to write
+ * \param d Direction to write
  *
  * \returns the output stream (s)
  */

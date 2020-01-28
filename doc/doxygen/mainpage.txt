@@ -2,3 +2,26 @@
  * \file
  * \brief documentation for the doxygen main page
  */
+ /** \mainpage Frackit Documentation
+
+ Welcome to the Frackit documentation pages. This documentation has been
+ generated using <a href="http://www.doxygen.org/index.html">Doxygen</a>, a free
+ source code documentation system for documenting C/C++ code.
+
+ \section intro Introduction
+
+ Frackit is an open-source framework for the stochastic generation of fracture networks.
+ The implementation is written in C++ language and extensively uses
+ <a href="https://www.opencascade.com/content/download-center">OpenCascade</a>,
+ an open-source Computer Aided Design (CAD) library.
+
+ \section mods Modules
+
+ The best way to start is from the <a href="modules.html">Modules</a> page which gives
+ you access to the documentation by category.
+
+ \section features Features
+
+ An overview of all availabe parameters will be available soon.
+
+ */

@@ -73,6 +73,7 @@ public:
      * \param center The center point of the circle
      * \param normal The normal direction of the plane
      *               the circle is embedded in
+     * \param radius The radius of the circle
      */
     Circle(const Point& center,
            const Direction& normal,
