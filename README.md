@@ -61,8 +61,8 @@ blocks enables users to fully customize each step to their needs. Three exemplar
 applications are contained in this repository:
 
 * [Example 1][5] Generation of a simple network consisting of quadrilaterals with two main orientations.
-* [Example 2][6] Generation of a network of quadrilaterals embedded in a cylindrical domain, mimicking a core sample of a fractured porous medium.
-* [Example 3][4] Generation of a network consisting of both disks and quadrilaterals, embedded in one layer of a domain that composed of three layers.
+* [Example 2][6] Generation of a network of quadrilaterals embedded in a cylindrical domain (mimicking a core sample).
+* [Example 3][4] Generation of a network consisting of both disks and quadrilaterals, confined and contained in one layer of a domain that is composed of three layers.
 
 
 Documentation
@@ -81,14 +81,17 @@ Installation
 Please note that the following requirements need to be installed:
 
 * OpenCascade (>= 7.3.0)
-* CMake (>2.8.12)
+* CMake (>3.0)
 * C, C++ compiler (C++17 required)
 * Optional: Doxygen (>= 1.8)
 
 ### Installation of OpenCascade
 Frackit requires the [OpenCascade][2] library to be installed on your system.
-You can download the source code at https://www.opencascade.com/content/download-center,
-and for details on the installation we refer to TODO:PUT_LINK.
+You can download the source code [HERE][2],
+and details on the installation can be found [HERE][10].
+Please note that [OpenCascade][2] requires further 3rd party libraries, of which
+the mandatory ones are Tcl/Tk and FreeType (see this [link][11]).
+On Ubuntu, both of these can be installed from the command line.
 
 ### Building Frackit under Linux
 After [OpenCascade][2] and the other requirements listed above have been installed,
@@ -173,7 +176,6 @@ Contributing
 =============
 
 Contributions are highly appreciated.
-Before you start coding, please have a look at the [styleguide][doc/styleguide.md].
 For bug reports, please file an [issue](https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/issues).
 If you want to contribute with new features of improvements of existing code, please
 
@@ -186,6 +188,8 @@ of the Frackit repository as the target branch.
 before merging.
 * If you have developer status you don't need to do a fork and you can create branches directly.
 
+In this project, we follow the [styleguide][2] of the [DuMuX][0] project.
+Please have a look at these before you start coding your contributions.
 
 [0]: https://dumux.org
 [1]: http://gmsh.info/
@@ -197,3 +201,7 @@ before merging.
 [7]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/
 [8]: http://www.doxygen.org/index.html
 [9]: https://www.gnu.org/licenses/gpl-3.0.en.html
+
+[10]: https://www.opencascade.com/doc/occt-6.9.1/overview/html/occt_dev_guides__building_cmake.html
+[11]: https://www.opencascade.com/doc/occt-6.9.1/overview/html/occt_dev_guides__building_3rdparty_linux.html
+[12]: https://git.iws.uni-stuttgart.de/dumux-repositories/dumux/blob/master/doc/styleguide.md
