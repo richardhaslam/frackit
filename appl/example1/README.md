@@ -7,7 +7,9 @@ Example 1
 =========
 
 In this exemplary application, a network of quadrilateral fractures is generated
-within the unit cube (see image above).
+within the unit cube (see image above). The main file containing the source code
+to this example is the file `example1.cc` which is located in this folder.
+
 Two main orientations are considered for the quadrilaterals, for both of which
 a corresponding instance of the `QuadrilateralSampler` class is created.
 For example, we instantiate the sampler class for the second orientation with:
@@ -31,11 +33,20 @@ a mean value of 0° and a standard deviation of 5°. The fourth argument is the
 distribution to be used for sampling the edge lengths, while the last argument
 defines a minimum value below which the edge length must not fall.
 
-The quadrilaterals are then sampled from the two samplers `quadSampler1` and `quadSampler2`
-until the desired number of quadrilaterals has been created. However, we want to
-enforce certain constraints such as a minimum distance between entities. For this
-we use instances of the `EntityNetworkConstraints` class and configure it as desired.
-For example, the constraints on entities of the same orientation are defined as follows:
+The quadrilaterals are then sampled from the two samplers `quadSampler1` and
+`quadSampler2`, using the `()` operator:
+
+```cpp
+auto quad = sampleIntoSet1 ? quadSampler1() : quadSampler2();
+```
+
+In this example we use the boolean variable `sampleIntoSet1` to determine from
+which sampler we should sample the next quadrilateral (more details follow below).
+The variable `quad` holds a new candidate for an entity of the network, however,
+However, we want to enforce certain constraints such as a minimum distance between
+entities. For this we use instances of the `EntityNetworkConstraints` class and
+configure it as desired. For example, the constraints on entities of the same
+orientation are defined in this example as follows:
 
 ```cpp
 EntityNetworkConstraints constraintsOnSelf;
@@ -55,10 +66,11 @@ if (!constraintsOnSelf.evaluate(entitySet, quad))
 ```
 
 where `entityset1` and `entitySet2` are of type `std::vector<Quadrilateral>` and
-store all quadrilaterals that are accepted. The sampling of quadrilaterals of the
-two orientations happens subsequently, and the boolean variable `sampleIntoSet1`
-contains the information from which orientation it is currently sampled. After an
-admissible quadrilateral has been generated, the line
+store all quadrilaterals that are accepted. The function `evaluate` of the
+`EntityNetworkConstraints` class evaluates the constraints for `quad` against all
+entities contained in `entitySet` and returns `true` only if there no violation of
+any of the defined constraints has been found. After an admissible quadrilateral
+has been generated, the line
 
 ```cpp
 // sample into the other set the next time
