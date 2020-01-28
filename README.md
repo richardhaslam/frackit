@@ -1,6 +1,6 @@
 <!--- Example picture --->
 <p align="center">
-    <img src="doc/img/example3_network.png" alt="frackit example" width="800"/>
+    <img src="doc/img/titlepicture.png" alt="frackit example" width="800"/>
 </p>
 
 What is Frackit?
@@ -144,6 +144,13 @@ and open it using a web browser, for example _chrome_:
 
 ```sh
 google-chrome doc/doxygen/html/index.html
+```
+
+To build and run all unit tests, type
+
+```sh
+make build_tests
+ctest
 ```
 
 Moreover, you can build all example applications by typing
