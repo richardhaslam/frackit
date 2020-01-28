@@ -21,7 +21,7 @@ Coupling to [DuMuX][0]
 Frackit also features output routines to [Gmsh][1] file format (.geo), where mesh
 size specifications can be defined upon fracture network generation. This allows
 for the generation of computational meshes using [Gmsh][1], which are supported
-by the open-source simulator for flow and transport in porous media [DuMuX][0].
+by the open-source simulator [DuMuX][0] for flow and transport in porous media.
 The .geo files produced by Frackit lead to three-dimensional meshes that are aligned
 with the fracture geometries such that the element faces coincide with the fractures,
 which can be directly plugged into the [DuMuX][0] module for discrete fracture-matrix
@@ -32,13 +32,13 @@ can be found in [example 3][4] of this repository.
 General Concept
 ===============
 
-### Step 1: sampling
+### Geometry Sampling
 The generation of the fracture networks occurs by randomly sampling instances of the
 desired fracture geometry on the basis of probability distribution functions, which
 can be defined by the user. The implementation allows for both selecting the type of
 distribution (uniform, exponential, etc.) as well as the distribution parameters.
 
-### Step 2: checking constraints
+### Constraints Evaluation
 After the generation of a new candidate for a fracture, a number of constraints can
 be evaluated for it. These can be used to enforce topological characteristics of the
 fracture network, e.g. fracture spacing, by defining a minimum distance between entities.
@@ -49,7 +49,7 @@ minimum intersection angle, and a minimum distance of the intersection geometry 
 of the intersecting entities. If the user-defined constraints are not fulfilled, the candidate
 is rejected.
 
-### Step 3: fragmentation of the network
+### Fragmentation of the network
 After the desired number of fracture entities have been generated, an __EntityNetwork__
 can be constructed from the raw entities. This intersects and fragments all entities, and
 if desired, one can confine the network to a domain of choice.
