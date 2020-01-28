@@ -68,16 +68,95 @@ applications are contained in this repository:
 Documentation
 =============
 
-A class documentation can be generated from the source code (see Installation notes).
+A class documentation can be generated from the source code using
+[Doxygen][8] (see Installation notes).
 Moreover, the [Examples][7] contained in this repository provide a good overview over
-the capabilities of Frackit. Moreover, extensive comments can be found in the source
-code to these exemplary applications.
+the capabilities of Frackit and can serve as a starting point to develop your own
+application.
 
 
 Installation
 ============
 
-TODO:
+Please note that the following requirements need to be installed:
+
+* OpenCascade (>= 7.3.0)
+* CMake (>2.8.12)
+* C, C++ compiler (C++17 required)
+* Optional: Doxygen (>= 1.8)
+
+### Installation of OpenCascade
+Frackit requires the [OpenCascade][2] library to be installed on your system.
+You can download the source code at https://www.opencascade.com/content/download-center,
+and for details on the installation we refer to TODO:PUT_LINK.
+
+### Building Frackit under Linux
+After [OpenCascade][2] and the other requirements listed above have been installed,
+clone this repository within your folder of choice by typing:
+
+```sh
+git clone https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit.git
+```
+
+Then, create the build directory in which you want to compile the applications
+and run cmake from it. For instance:
+
+```sh
+mkdir build
+cd build
+cmake ../
+```
+
+If cmake cannot find your installation of [OpenCascade][2], you probably installed it
+into a non-standard location. In this case, you can define __HINTS__ for cmake to search
+for it. In particular, you would have to change the line
+
+```cmake
+find_path(OCC_INC "Standard_Version.hxx" PATH_SUFFIXES opencascade include/opencascade)
+```
+
+to
+
+```cmake
+find_path(OCC_INC "Standard_Version.hxx" HINTS MY_OCC_INCLUDE_FOLDER)
+```
+
+in the _CMakeLists.txt_ file of the top folder of Frackit, substituting
+MY_OCC_INCLUDE_FOLDER with the path to the source files of [OpenCascade][2]
+on your system. The same has to be done for the required packages of
+[OpenCascade][2], i.e. in the line
+
+```cmake
+find_library(OCC_LIB ${OCC}
+             PATH_SUFFIXES lib ${OCC_SYS_NAME}/lib ${OCC_SYS_NAME}/vc8/lib)
+```
+
+you can define HINTS to your installation of [OpenCascade][2]. Once cmake finished
+successfully, you could now compile the class documentation:
+
+```sh
+make doc_doxygen
+```
+
+and open it using a web browser, for example [chrome][9]:
+
+```sh
+google-chrome doc/doxygen/html/index.html
+```
+
+Moreover, you can build all example applications by typing
+
+```sh
+make build_example_applications
+```
+
+If this compiled successfully, you can go to the folder of the first example and
+run it by typing:
+
+```sh
+cd appl/example1
+./example1
+```
 
 
 License
@@ -92,3 +171,5 @@ License
 [5]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example1
 [6]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example2
 [7]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/
+[8]: http://www.doxygen.org/index.html
+[9]: google-chrome-todo
