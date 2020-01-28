@@ -25,8 +25,7 @@ by the open-source simulator [DuMuX][0] for flow and transport in porous media.
 The .geo files produced by Frackit lead to three-dimensional meshes that are aligned
 with the fracture geometries such that the element faces coincide with the fractures,
 which can be directly plugged into the [DuMuX][0] module for discrete fracture-matrix
-simulations (see e.g. https://arxiv.org/pdf/1909.05052.pdf). An example for this
-can be found in [example 3][4] of this repository.
+simulations (see e.g. https://arxiv.org/pdf/1909.05052.pdf).
 
 
 General Concept
