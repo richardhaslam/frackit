@@ -1,6 +1,6 @@
 <!--- Example picture --->
 <p align="center">
-    <img src="doc/img/example3_network.png" alt="frackit example" width="800"/>
+    <img src="doc/img/titlepicture.png" alt="frackit example" width="800"/>
 </p>
 
 What is Frackit?
