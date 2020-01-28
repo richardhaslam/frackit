@@ -38,7 +38,7 @@ can be defined by the user. The implementation allows for both selecting the typ
 distribution (uniform, exponential, etc.) as well as the distribution parameters.
 
 ### Constraints Evaluation
-After the generation of a new candidate for a fracture, a number of constraints can
+After the generation of a new candidate for a fracture entity, a number of constraints can
 be evaluated for it. These can be used to enforce topological characteristics of the
 fracture network, e.g. fracture spacing, by defining a minimum distance between entities.
 Other constraints are targeted mainly at guaranteeing certain mesh properties by avoiding
