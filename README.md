@@ -203,6 +203,7 @@ Ongoing Developments
 
 * Kernel for fracture network characterization (e.g. connectivity)
 * Capabilities for translation of fracture networks into graphs, allowing for efficient characterization of the network based on its graph representation.
+* Python bindings
 
 [0]: https://dumux.org
 [1]: http://gmsh.info/
