@@ -27,6 +27,15 @@ with the fracture geometries such that the element faces coincide with the fract
 which can be directly plugged into the [DuMuX][0] module for discrete fracture-matrix
 simulations of single- and two-phase flow (see e.g. https://arxiv.org/pdf/1909.05052.pdf).
 
+For example, the pressure distribution on the fractures and the fluid velocities
+in the domain, for the fracture network shown above, could look like this:
+
+<p align="center">
+    <img src="doc/img/pressuresolution.png" alt="dumux frackit example" width="800"/>
+</p>
+
+The source code to this example, including installation instructions, can be found
+[here][13].
 
 General Concept
 ===============
@@ -219,3 +228,4 @@ Ongoing Developments
 [10]: https://www.opencascade.com/doc/occt-6.9.1/overview/html/occt_dev_guides__building_cmake.html
 [11]: https://www.opencascade.com/doc/occt-6.9.1/overview/html/occt_dev_guides__building_3rdparty_linux.html
 [12]: https://git.iws.uni-stuttgart.de/dumux-repositories/dumux/blob/master/doc/styleguide.md
+[12]: TODO:DUMUXPUB
