@@ -1,6 +1,6 @@
 <!--- Example picture --->
 <p align="center">
-    <img src="../../doc/img/example3_network.png" alt="frackit example 1" width="800"/>
+    <img src="../../doc/img/example3_network.png" alt="frackit example 3" width="800"/>
 </p>
 
 Example 3
