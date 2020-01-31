@@ -30,7 +30,7 @@ and write
 auto constraintsOnBoundary = constraintsOnSelf;
 ```
 
-to create a new constraints object. Within the loop in which the entities are created
+to create a new constraints object. Within the loop in which the entities are created,
 these constraints are enforced:
 
 ```cpp
@@ -61,7 +61,7 @@ where `computeContainedMagnitude()` is a free function that returns the length/a
 of the part of a geometry that is contained inside of another geometry.
 
 Finally, after the desired number of entities has been created, we cast the entities
-into an instance of a `ContainedEntityNetwork`, using the corresponding builder class:
+into an instance of the class `ContainedEntityNetwork`, using the corresponding builder class:
 
 ```cpp
 ContainedEntityNetworkBuilder builder;
@@ -74,10 +74,10 @@ The class `ContainedEntityNetworkBuilder` returns an instance of a `ContainedEnt
 when the `build()` function is called (see below). This network implementation contains information
 on (sub-)domains and which entities are embedded in which (sub-)domain. Each (sub-)domain
 receives a unique identifier by means of the `Id` class. By calling
-`builder.addConfiningSubDomain(domain, Id(1));`, we define the (sub-)domain to be
+`builder.addConfiningSubDomain(domain, Id(1))`, we define the (sub-)domain to be
 confining, i.e. entities that are added to this (sub-)domain will be confined to it
 by cutting away all parts that lie outside the (sub-)domain. In contrast to that,
-one could call `builder.addSubDomain(domain, Id(1));`, in which case embedded networks
+one could call `builder.addSubDomain(domain, Id(1))`, in which case embedded networks
 will not be confined (see [example 3][2]). Entities are associated with the (sub-)
 domain they are embedded in, and are added to the builder class by writing
 
