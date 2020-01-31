@@ -34,6 +34,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <Standard_TypeDef.hxx>
 
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
@@ -226,12 +227,15 @@ private:
     {
         BRep_Builder b;
         b.MakeCompound(compound_);
-        for(std::size_t i = 1; i <= vmap_.Extent(); i++) b.Add(compound_, vmap_(i));
-        for(std::size_t i = 1; i <= emap_.Extent(); i++) b.Add(compound_, emap_(i));
-        for(std::size_t i = 1; i <= wmap_.Extent(); i++) b.Add(compound_, wmap_(i));
-        for(std::size_t i = 1; i <= fmap_.Extent(); i++) b.Add(compound_, fmap_(i));
-        for(std::size_t i = 1; i <= shmap_.Extent(); i++) b.Add(compound_, shmap_(i));
-        for(std::size_t i = 1; i <= somap_.Extent(); i++) b.Add(compound_, somap_(i));
+
+        // use Standard_Integer (as OCC uses this type) instead of
+        // std::size_t here to avoid compiler warning
+        for(Standard_Integer i = 1; i <= vmap_.Extent(); i++) b.Add(compound_, vmap_(i));
+        for(Standard_Integer i = 1; i <= emap_.Extent(); i++) b.Add(compound_, emap_(i));
+        for(Standard_Integer i = 1; i <= wmap_.Extent(); i++) b.Add(compound_, wmap_(i));
+        for(Standard_Integer i = 1; i <= fmap_.Extent(); i++) b.Add(compound_, fmap_(i));
+        for(Standard_Integer i = 1; i <= shmap_.Extent(); i++) b.Add(compound_, shmap_(i));
+        for(Standard_Integer i = 1; i <= somap_.Extent(); i++) b.Add(compound_, somap_(i));
     }
 
     /*!
