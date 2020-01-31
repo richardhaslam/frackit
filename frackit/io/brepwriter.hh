@@ -201,18 +201,12 @@ private:
     void makeSubShapeMaps_(const ContainedEntityNetwork& network)
     {
         for (auto id : network.subDomainIds())
-        {
-            const auto& sdFragments = network.subDomainFragments(id);
-            for (TopTools_ListIteratorOfListOfShape it(sdFragments); it.More(); it.Next())
-                addSolids_(it.Value(), id.get());
-        }
+            for (const auto& fragment : network.subDomainFragments(id))
+                addSolids_(fragment, id.get());
 
         for (auto id : network.subDomainIds())
-        {
-            const auto& sdEntityFragments = network.subDomainEntityFragments(id);
-            for (TopTools_ListIteratorOfListOfShape it(sdEntityFragments); it.More(); it.Next())
-                addFaces_(it.Value());
-        }
+            for (const auto& fragment : network.subDomainEntityFragments(id))
+                addFaces_(fragment);
     }
 
     /*!
@@ -221,9 +215,8 @@ private:
      */
     void makeSubShapeMaps_(const EntityNetwork& network)
     {
-        const auto& sdEntityFragments = network.entityFragments();
-        for (TopTools_ListIteratorOfListOfShape it(sdEntityFragments); it.More(); it.Next())
-            addFaces_(it.Value());
+        for (const auto& fragment : network.entityFragments())
+            addFaces_(fragment);
     }
 
     /*!
