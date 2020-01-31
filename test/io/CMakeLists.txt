@@ -3,4 +3,4 @@ frackit_add_test(NAME test_write_gmsh
                  SOURCES test_write_gmsh.cc
                  LABELS io gmsh)
 
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)

@@ -29,4 +29,4 @@ frackit_add_test(NAME test_generate_disk_network_shape
                  COMPILE_DEFINITIONS BREPFILE="${CMAKE_SOURCE_DIR}/test/entitynetwork/layer.brep"
                  COMMAND ./test_generate_disk_network_shape)
 
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
