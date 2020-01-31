@@ -9,7 +9,7 @@ Example 3
 In contrast to the [previous example][0], we now want to create a network within
 a complex domain that cannot be represented by the internal geometry classes.
 The domain has been created with [Gmsh][1] and has been saved in .brep file format.
-In a first step, we want to read the file and parse it into an instance of the
+In a first step, we need to read the file and parse it into an instance of the
 `TopoDS_Shape` class of [OpenCascade][2]. To this end, we use the utility function
 provided by Frackit in the namespace OCCUtilities:
 
@@ -108,8 +108,8 @@ auto geom = multiSampler(id);
 stores in `id` the identifier of the sampler from which `geom` was sampled.
 The variable `geom` holds an instance of an abstract geometry class as the
 return type of the `()` operator of the `MultiGeometrySampler` must be uniquely
-defined. Hoever, instances of the abstract geometry class can be cast back into
-the actual geometry (in this cas `Disk` or `Quad`).
+defined. However, instances of the abstract geometry class can be cast back into
+the actual geometry (in this case `Disk` or `Quad`).
 
 In this context, another useful class is the `MultiGeometryEntitySet`. It can
 store arbitrarily many sets of entities of different types. These
@@ -137,10 +137,10 @@ auto geom = multiSampler(id);
 entitySets.addEntity(geom, id);
 ```
 
-This allows the generation and storage of multiple geometry types of multiple orientations
+This allows the generation and storage of multiple geometry types and multiple orientations
 in a compact way.
 
-In the previous examples, the constraints, for a new entity candidate, were evaluated
+In the previous examples, the constraints for a new entity candidate were evaluated
 manually against the previously admitted entities obtained from the different samplers.
 This becomes increasingly cumbersome the more directions are to be considered, especially
 if individual constraints are chosen between entities obtained from different samplers.
@@ -183,7 +183,7 @@ using `constraintsOnOther`.
 
 After successful generation of the desired number of entities, we again want to
 construct an entity network from the raw entities and write it out in [Gmsh][1]
-file format. In a first step, we again create an instance of the network builder
+file format. In a first step, we create an instance of the network builder
 class for contained networks and define the sub-domains:
 
 ```cpp

@@ -98,7 +98,7 @@ Installation
 
 Please note that the following requirements need to be installed:
 
-* OpenCascade (>= 7.3.0)
+* OpenCascade (>= 7.3.0) (Note: Testing occurs with 7.3.0, no guarantee to work with higher versions)
 * CMake (>3.0)
 * C, C++ compiler (C++17 required)
 * Optional: Doxygen (>= 1.8)
@@ -109,7 +109,8 @@ You can download the source code [HERE][2],
 and details on the installation can be found [HERE][10].
 Please note that [OpenCascade][2] requires further 3rd party libraries, of which
 the mandatory ones are Tcl/Tk and FreeType (see this [link][11]).
-On Ubuntu, both of these can be installed from the command line.
+On Linux systems, both of these can be installed from the command line using the
+package manager. For more details, see [HERE][11].
 
 ### Building Frackit under Linux
 After [OpenCascade][2] and the other requirements listed above have been installed,
@@ -254,4 +255,4 @@ Advances in Water Resources, 110. doi:10.1016/j.advwatres.2017.10.031
 [10]: https://www.opencascade.com/doc/occt-6.9.1/overview/html/occt_dev_guides__building_cmake.html
 [11]: https://www.opencascade.com/doc/occt-6.9.1/overview/html/occt_dev_guides__building_3rdparty_linux.html
 [12]: https://git.iws.uni-stuttgart.de/dumux-repositories/dumux/blob/master/doc/styleguide.md
-[12]: TODO:DUMUXPUB
+[13]: https://git.iws.uni-stuttgart.de/dumux-pub/glaeser2020a
