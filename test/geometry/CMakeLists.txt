@@ -14,4 +14,4 @@ frackit_add_test(NAME test_quadrilateral SOURCES test_quadrilateral.cc LABELS ge
 frackit_add_test(NAME test_box SOURCES test_box.cc LABELS geometry)
 frackit_add_test(NAME test_name SOURCES test_name.cc LABELS geometry)
 
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
