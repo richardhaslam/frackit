@@ -70,8 +70,8 @@ int main()
     const Id idSet2(2);
 
     SamplingStatus status;
-    status.setTargetCount(idSet1, 15);
-    status.setTargetCount(idSet2, 15);
+    status.setTargetCount(idSet1, 12);
+    status.setTargetCount(idSet2, 12);
 
     bool sampleIntoSet1 = true;
 
