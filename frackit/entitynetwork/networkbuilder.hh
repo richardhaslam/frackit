@@ -211,10 +211,10 @@ protected:
             std::size_t idx = 1;
             auto& fragmentList = networkFragmentLists_[subDomainIndex];
             auto& fragmentMap = networkFragmentMaps_[subDomainIndex];
-            for (TopTools_ListIteratorOfListOfShape it(network); it.More(); it.Next())
+            for (const auto& entityShape : network)
             {
-                fragmentList.Append(it.Value());
-                fragmentMap.Bind(it.Value(), idx++);
+                fragmentList.Append(entityShape);
+                fragmentMap.Bind(entityShape, idx++);
             }
 
             // confine network only if sub-domain was set
@@ -240,30 +240,30 @@ protected:
             // keep track of original entity indices
             TopTools_ListOfShape newList;
             TopTools_DataMapOfShapeInteger newIndexMap;
-            for (TopTools_ListIteratorOfListOfShape it(network); it.More(); it.Next())
+            for (const auto& entityShape : network)
             {
                 int entityIdx;
-                if (!fragmentMap.Find(it.Value(), entityIdx))
+                if (!fragmentMap.Find(entityShape, entityIdx))
                     throw std::runtime_error("Could not find entity index");
 
                 // map all fragments to this new index
-                const bool isDeleted = intersection.IsDeleted(it.Value());
-                const auto& generated = intersection.Generated(it.Value());
-                const auto& modified = intersection.Modified(it.Value());
+                const bool isDeleted = intersection.IsDeleted(entityShape);
+                const auto& generated = intersection.Generated(entityShape);
+                const auto& modified = intersection.Modified(entityShape);
                 if (!isDeleted && generated.IsEmpty() && modified.IsEmpty())
                 {
-                    newIndexMap.Bind(it.Value(), entityIdx);
-                    newList.Append(it.Value());
+                    newIndexMap.Bind(entityShape, entityIdx);
+                    newList.Append(entityShape);
                 }
-                for (TopTools_ListIteratorOfListOfShape it2(generated); it2.More(); it2.Next())
+                for (const auto& fragment : generated)
                 {
-                    if (!newIndexMap.IsBound(it2.Value())) newIndexMap.Bind(it2.Value(), entityIdx);
-                    if (!newList.Contains(it2.Value())) newList.Append(it2.Value());
+                    if (!newIndexMap.IsBound(fragment)) newIndexMap.Bind(fragment, entityIdx);
+                    if (!newList.Contains(fragment)) newList.Append(fragment);
                 }
-                for (TopTools_ListIteratorOfListOfShape it2(modified); it2.More(); it2.Next())
+                for (const auto& fragment : modified)
                 {
-                    if (!newIndexMap.IsBound(it2.Value())) newIndexMap.Bind(it2.Value(), entityIdx);
-                    if (!newList.Contains(it2.Value())) newList.Append(it2.Value());
+                    if (!newIndexMap.IsBound(fragment)) newIndexMap.Bind(fragment, entityIdx);
+                    if (!newList.Contains(fragment)) newList.Append(fragment);
                 }
             }
 
@@ -309,10 +309,10 @@ protected:
 
         // List of both entity and sub-domain shapes
         TopTools_ListOfShape allShapes;
-        for (TopTools_ListIteratorOfListOfShape it(allEntities); it.More(); it.Next())
-            allShapes.Append(it.Value());
-        for (TopTools_ListIteratorOfListOfShape it(allDomains); it.More(); it.Next())
-            allShapes.Append(it.Value());
+        for (const auto& entityShape : allEntities)
+            allShapes.Append(entityShape);
+        for (const auto& domainShape : allDomains)
+            allShapes.Append(domainShape);
 
         // fragment all shapes
         BRepAlgoAPI_BuilderAlgo fragmentAlgo;
@@ -326,39 +326,39 @@ protected:
         // map the resulting entities back to the original entity index
         std::unordered_map<std::size_t, TopTools_ListOfShape> newFragmentLists;
         std::unordered_map<std::size_t, TopTools_DataMapOfShapeInteger> newFragmentMaps;
-        for (TopTools_ListIteratorOfListOfShape it(allEntities); it.More(); it.Next())
+        for (const auto& shape : allEntities)
         {
             // get subdomain index
             int subDomainIdx;
-            if (!entityToSubDomainIndex.Find(it.Value(), subDomainIdx))
+            if (!entityToSubDomainIndex.Find(shape, subDomainIdx))
                 throw std::runtime_error("Could not find sub-domain index");
 
             // get original entity index
             int entityIdx;
             const auto& map = networkFragmentMaps_.at(subDomainIdx);
-            if (!map.Find(it.Value(), entityIdx))
+            if (!map.Find(shape, entityIdx))
                 throw std::runtime_error("Could not find original entity index");
 
             // map all fragments to this new index
-            const bool isDeleted = fragmentAlgo.IsDeleted(it.Value());
-            const auto& generated = fragmentAlgo.Generated(it.Value());
-            const auto& modified = fragmentAlgo.Modified(it.Value());
+            const bool isDeleted = fragmentAlgo.IsDeleted(shape);
+            const auto& generated = fragmentAlgo.Generated(shape);
+            const auto& modified = fragmentAlgo.Modified(shape);
             auto& newList = newFragmentLists[subDomainIdx];
             auto& newMap = newFragmentMaps[subDomainIdx];
             if (!isDeleted && generated.IsEmpty() && modified.IsEmpty())
             {
-                newMap.Bind(it.Value(), entityIdx);
-                newList.Append(it.Value());
+                newMap.Bind(shape, entityIdx);
+                newList.Append(shape);
             }
-            for (TopTools_ListIteratorOfListOfShape it2(generated); it2.More(); it2.Next())
+            for (const auto& fragment : generated)
             {
-                if (!newMap.IsBound(it2.Value())) newMap.Bind(it2.Value(), entityIdx);
-                if (!newList.Contains(it2.Value())) newList.Append(it2.Value());
+                if (!newMap.IsBound(fragment)) newMap.Bind(fragment, entityIdx);
+                if (!newList.Contains(fragment)) newList.Append(fragment);
             }
-            for (TopTools_ListIteratorOfListOfShape it2(modified); it2.More(); it2.Next())
+            for (const auto& fragment : modified)
             {
-                if (!newMap.IsBound(it2.Value())) newMap.Bind(it2.Value(), entityIdx);
-                if (!newList.Contains(it2.Value())) newList.Append(it2.Value());
+                if (!newMap.IsBound(fragment)) newMap.Bind(fragment, entityIdx);
+                if (!newList.Contains(fragment)) newList.Append(fragment);
             }
         }
 
@@ -369,27 +369,27 @@ protected:
             networkFragmentMaps_[dataPair.first] = std::move(dataPair.second);
 
         // map the resulting domain entities back to the original entity index
-        for (TopTools_ListIteratorOfListOfShape it(allDomains); it.More(); it.Next())
+        for (const auto& domainShape : allDomains)
         {
             // get subdomain index
             int subDomainIdx;
-            if (!domainToSubDomainIndex.Find(it.Value(), subDomainIdx))
+            if (!domainToSubDomainIndex.Find(domainShape, subDomainIdx))
                 throw std::runtime_error("Could not find sub-domain index");
 
             // store the fragments of this sub-domain
-            const bool isDeleted = fragmentAlgo.IsDeleted(it.Value());
-            const auto& generated = fragmentAlgo.Generated(it.Value());
-            const auto& modified = fragmentAlgo.Modified(it.Value());
+            const bool isDeleted = fragmentAlgo.IsDeleted(domainShape);
+            const auto& generated = fragmentAlgo.Generated(domainShape);
+            const auto& modified = fragmentAlgo.Modified(domainShape);
 
             auto& sdFragmentList = subDomainFragmentLists_[subDomainIdx];
             if (!isDeleted && generated.IsEmpty() && modified.IsEmpty())
-                sdFragmentList.Append(it.Value());
-            for (TopTools_ListIteratorOfListOfShape it2(generated); it2.More(); it2.Next())
-                if (!sdFragmentList.Contains(it2.Value()))
-                    sdFragmentList.Append(it2.Value());
-            for (TopTools_ListIteratorOfListOfShape it2(modified); it2.More(); it2.Next())
-                if (!sdFragmentList.Contains(it2.Value()))
-                    sdFragmentList.Append(it2.Value());
+                sdFragmentList.Append(domainShape);
+            for (const auto& fragment : generated)
+                if (!sdFragmentList.Contains(fragment))
+                    sdFragmentList.Append(fragment);
+            for (const auto& fragment : modified)
+                if (!sdFragmentList.Contains(fragment))
+                    sdFragmentList.Append(fragment);
         }
     }
 
