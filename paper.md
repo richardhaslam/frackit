@@ -1,5 +1,5 @@
 ---
-title: 'Frackit: A framework for stochastic fracture network generation and analysis'
+title: 'Frackit: a framework for stochastic fracture network generation and analysis'
 tags:
   - Fractures
   - Fracture network
@@ -20,15 +20,15 @@ bibliography: paper.bib
 
 # Summary
 
-The numerical simulation of flow and transport phenomena in fractured porous media
+Numerical simulations of flow and transport phenomena in fractured porous media
 is an active active field of research, given the importance of fractures in many
 geotechnical engineering applications, as for example groundwater management
-[Qian et al., 2014], enhanced oil recovery techniques [Torabi et al., 2012],
-geothermal energy [McFarland and Murphy, 1976, Shaik et al., 2011] or unconventional
-natural gas production [Sovacool, 2014]. Numerous mathematical models and numerical
+[@qian2014], enhanced oil recovery techniques [@torabi2012],
+geothermal energy [@mcfarland1976; @shaik2011] or unconventional
+natural gas production [@sovacool2014]. Numerous mathematical models and numerical
 schemes aiming at an accurate description of flow through fracture rock have been
 presented recently
-`[@ahmed2015; @ahmed2017; @brenner2018; @koppel2019; @schadle2019; @nordbotten2019]`. Many of these describe the fractures as lower-dimensional
+(see e.g. @ahmed2015; @ahmed2017; @brenner2018; @koppel2019; @schadle2019; @nordbotten2019). Many of these describe the fractures as lower-dimensional
 geometries, i.e. as curves or planes embedded in two- or three-dimensional
 space, respectively. On those, integrated balance equations are solved together
 with transmission conditions describing the interaction with the surrounding medium.
@@ -43,9 +43,9 @@ difficult to determine. In response to this, a common approach is to study
 the hydraulic properties of rock in function of the fracture network topology by means
 of numerical simulations performed on stochastically generated fracture networks.
 Such investigations have been presented, among others, in
-`@Kazumasa2003; @Assteerawatt2008; @lee2015fracture; @zhang2015finite; @lee2019stochastic`.
+@Kazumasa2003; @Assteerawatt2008; @lee2015fracture; @zhang2015finite; @lee2019stochastic.
 An open-source Matlab code for the stochastic generation and analysis fracture
-networks in two- and three-dimensional space has been presented in `[@alghalandis2017]`.
+networks in two- and three-dimensional space has been presented in [@alghalandis2017].
 However, the code is limited to linear (polygonal) fracture geometries, embedded
 in hexahedral domains.
 
@@ -60,18 +60,18 @@ to read in externally generated domain shapes
 and to generate fracture networks within these domains. Output routines to standard
 file formats enable users to then construct computational meshes of the generated
 geometries using a variety of tools. In particular, ``Frackit`` offers
-output routines to the (.geo) file format used by [Gmsh][2] `[@gmsh2009]`,
+output routines to the (.geo) file format used by [Gmsh][2] [@gmsh2009],
 which is an open-source mesh generator that is widely used in academic
-research (see e.g. `@keilegavlen2017; @berge2019;`).
+research (see e.g. @keilegavlen2017; @berge2019;).
 
 The geometric data produced by ``Frackit`` contains the complete fragmentation
 of all geometric entities involved, i.e. the intersection geometries between
 all entities, and if desired with the domain, are computed. Thus, this information
 can directly be used in the context of discrete fracture-matrix (dfm) simulations in
 a conforming way as described above. For instance, the open-source simulator
-[DuMuX][3] `[@Dumux; @koch2019dumux31]`contains a module for conforming dfm simulations of single- and multi-phase
+[DuMuX][3] [@Dumux; @koch2019dumux31] contains a module for conforming dfm simulations of single- and multi-phase
 flow through fractured porous media, which has been used in several works
-`[@glaeser2017, @glaeser2019; @andrianov2019;]`.
+[@glaeser2017, @glaeser2019; @andrianov2019;].
 It  supports the [Gmsh][2] file format (.msh), and thus, ``Frackit`` can be used in
 a fully open-source toolchain with [Gmsh][2] and [DuMuX][3] to generate random
 fracture networks, construct computational meshes, and perform analyses on them
@@ -115,10 +115,10 @@ static constexpr int spaceDimension = 3;
 // the type used for coordinates values
 using ctype = double;
 
-// define an axis-aligned box in which to sample the centers of quadrilaterals
+// define axis-aligned box in which to sample the centers points
 using Domain = Frackit::Box<ctype>;
-Domain domain(0.0, 0.0, 0.0,  // coordinates of the first corner of the box
-              1.0, 1.0, 1.0); // coordinates of the last corner of the box
+Domain domain(0.0, 0.0, 0.0,  // first corner of the box
+              1.0, 1.0, 1.0); // last corner of the box
 
 // let us uniformly sample points within this box
 const auto pointSampler = Frackit::makeUniformPointSampler(domain);
@@ -127,12 +127,20 @@ const auto pointSampler = Frackit::makeUniformPointSampler(domain);
 using Distro = std::normal_distribution<ctype>;
 using QuadSampler = Frackit::QuadrilateralSampler<spaceDimension>;
 
+// Distributions used for strike and dip angle
+Distro strikeAngleDistro(toRadians(45.0), // mean value
+                         toRadians(5.0)); // standard deviation
+Distro dipAngleDistro(toRadians(45.0), // mean value
+                     toRadians(5.0));  // standard deviation
+Distro edgeLengthDistro(0.5,  // mean value
+                        0.1); // standard deviation
+
 // instance of the quadrilateral sampler class
-QuadSampler quadSampler(pointSampler,                             // point sampler that samples the center points of the quadrilaterals
-                        Distro(toRadians(45.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
-                        Distro(toRadians(0.0), toRadians(5.0)),   // dip angle: mean value & standard deviation
-                        Distro(0.5, 0.1),                         // edge length: mean value & standard deviation
-                        0.05);                                    // threshold for minimum edge length
+QuadSampler quadSampler(pointSampler,
+                        strikeAngleDistro,
+                        dipAngleDistro,
+                        edgeLengthDistro,
+                        0.05); // threshold for minimum edge length
 ```
 
 `PointSampler` classes are used to sample the spatial distribution of the geometries
@@ -143,18 +151,17 @@ around this point using the provided distributions for its size and orientation.
 The `QuadrilateralSampler` class expects distributions for the strike angle,
 dip angle, edge length and a threshold value for the minimum allowed edge length.
 
-![Exemplary grids used with numerical schemes that require conformity of the discretizations.](doc/img/quadsampler.png)
+![Illustration of the strike and dip angles involved in the random generation of quadrilaterals.](doc/img/quadsampler.png)
 
 The above figure illustrates the strike and dip angles. Consider a quadrilateral
-which lies in the plane spanned by the two basis vectors $\mathbf{b}_1$ and
-$\mathbf{b}_2$. The latter lies in the $x$-$y$-plane and the strike angle is the
-angle between the $y$-axis and $\mathbf{b}_2$. The dip angle describes the angle
-between $\mathbf{b}_1$ and the $x$-$y$-plane. After instantion of a sampler class,
-a new quadrilateral can be sampled using the `()` operator:
+whose center is the origin and which lies in the plae defined by the two basis
+vectors $\mathbf{b}_1$ and $\mathbf{b}_2$. The latter lies in the $x$-$y$-plane
+and the strike angle is the angle between the $y$-axis and $\mathbf{b}_2$. The
+dip angle describes the angle between $\mathbf{b}_1$ and the $x$-$y$-plane.
+After instantiation of a sampler class, quadrilaterals can be sampled from it by
+calling the `()` operator, that is, from the sampler defined in the above piece
+of code we can obtain a random quadrilateral by writing `quadSampler`.
 
-```cpp
-auto quad = quadSampler();
-```
 
 ## Evaluation of geometric constraints
 
@@ -164,7 +171,7 @@ to guarantee topological features (e.g. fracture spacing). Besides this, constra
 can be used to avoid very small length scales that could cause problems during
 mesh generation or could lead to ill-shaped elements.
 
-![Exemplary grids used with numerical schemes that require conformity of the discretizations.](doc/img/constraints.png)
+![Overview of the geometric constraints that can be defined between entities.](doc/img/constraints.png)
 
 The above image illustrates geometric settings that one may want to avoid by
 defining geometric constraints. These have to be fulfilled by a new fracture
@@ -219,18 +226,16 @@ fulfills the constraints against all entities stored in `quadSet`.
 In this exemplary application we want to briefly outline what the workflow using
 `Frackit` together with [Gmsh][2] and [DuMuX][3] could look like. The images are
 taken from the `Frackit` documentation ([git.iws.uni-stuttgart.de/tools/frackit][0])
-and the setup is, apart from small modifications, very similar to the one presented
-in [example 3][1] provided in the `Frackit` repository. For further details on how
-to set up such configurations we refer to the source code and the documentation of
-that example in the repository.
+and the configurations of the geometry sampler are, apart from small modifications,
+very similar to the ones used in [example 3][1] provided in the `Frackit` repository.
+For further details on how to set up such configurations we refer to the source code
+and the documentation of that example in the repository.
 
-Let us consider a domain consisting of three solid layers, which has been created
-using [Gmsh][2] and which is shown in the figure below.
-
-![Exemplary grids used with numerical schemes that require conformity of the discretizations.](doc/img/example_domain.png)
-
-We want to generate a fracture network only in the center volume, which we obtain
-after reading in the geometry:
+Let us consider a domain consisting of three solid layers, of which we want to
+generate a fracture network only in the center volume. With the following piece
+of code we read in the domain geometry from the provided file, extract the three
+volumes of it and select the middle one as the one in which we want to place the
+fracture network.
 
 ```cpp
 /////////////////////////////////////////////////////
@@ -266,24 +271,25 @@ is carried out using [DuMuX][3]. The image below depicts the obtained fracture n
 as well as the pressure distribution on the fractures and the velocities in the
 domain as computed with [DuMuX][3] using the illustrated boundary conditions.
 
-![Exemplary grids used with numerical schemes that require conformity of the discretizations.](doc/img/network_and_solution.png)
+![Illustration of the workflow using Frackit, Gmsh and DuMuX.](doc/img/network_and_solution.png)
 
+The source code of this example, including installation instructions, can be found
+at https://git.iws.uni-stuttgart.de/dumux-pub/glaeser2020a.
 
-# Citations
+# Future developments
 
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
+We are planning to add fracture network characterization capabilities, such as
+the detection of isolated clusters of fractures or the determination of connectivity
+measures. In order to do this efficiently, we are planning to integrate data
+structures and algorithms for graphs, together with functionalities to translate
+the generated fracture networks into graph representations. Besides this, we want
+to develop python bindings for ``Frackit`` to provide an easy-to-use and high-level
+interface.
 
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
 
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+Todo: Mention SFB
 
 # References
 
