@@ -117,7 +117,7 @@ After [OpenCascade][2] and the other requirements listed above have been install
 clone this repository within your folder of choice by typing:
 
 ```sh
-git clone https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit.git
+git clone https://git.iws.uni-stuttgart.de/tools/frackit.git
 ```
 
 Then, create the build directory in which you want to compile the applications
@@ -202,7 +202,7 @@ Contributing
 =============
 
 Contributions are highly appreciated.
-For bug reports, please file an [issue](https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/issues).
+For bug reports, please file an [issue](https://git.iws.uni-stuttgart.de/tools/frackit/issues).
 If you want to contribute with new features of improvements of existing code, please
 
 * Get an account for our GitLab instance at https://git.iws.uni-stuttgart.de/
@@ -245,10 +245,10 @@ Advances in Water Resources, 110. doi:10.1016/j.advwatres.2017.10.031
 [1]: http://gmsh.info/
 [2]: https://www.opencascade.com/content/download-center
 [3]: https://www.opencascade.com/content/cad-assistant
-[4]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example3
-[5]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example1
-[6]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example2
-[7]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/
+[4]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example3
+[5]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example1
+[6]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example2
+[7]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/
 [8]: http://www.doxygen.org/index.html
 [9]: https://www.gnu.org/licenses/gpl-3.0.en.html
 
