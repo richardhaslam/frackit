@@ -52,7 +52,7 @@ in hexahedral domains.
 ``Frackit`` is a C++-framework for the stochastic generation of fracture networks
 composed of polygonal and/or elliptical geometries, embedded in arbitrary domain
 shapes. It makes extensive use of the open-source Computed-Aided-Design (CAD)
-library [OpenCascade][4] ([opencascade.com][https://www.opencascade.com]), which offers great flexibility with respect to the
+library [OpenCascade][4] ([opencascade.com][5]), which offers great flexibility with respect to the
 geometries that can be used. Moreover, a large number of standard CAD file formats
 is supported for input/output of geometrical shapes. This allows users of ``Frackit``
 to read in externally generated domain shapes
@@ -62,7 +62,7 @@ file formats enable users to then construct computational meshes of the generate
 geometries using a variety of tools. In particular, ``Frackit`` offers
 output routines to the (.geo) file format used by [Gmsh][2] [@gmsh2009],
 which is an open-source mesh generator that is widely used in academic
-research (see e.g. @keilegavlen2017; @berge2019;).
+research (see e.g. @keilegavlen2017; @berge2019).
 
 The geometric data produced by ``Frackit`` contains the complete fragmentation
 of all geometric entities involved, i.e. the intersection geometries between
@@ -124,10 +124,19 @@ Domain domain(0.0, 0.0, 0.0,  // xmin, ymin, zmin
 const auto pointSampler = Frackit::makeUniformPointSampler(domain);
 ```
 
-Inside a geometry sampler class, the geometries are created by sampling a
+The convenience function `makeUniformPointSampler()` can be used for uniform
+sampling over the provided domain geometry. For nun-uniform samplers, one can write
+
+```cpp
+const auto pointSampler = Frackit::makePointSampler<Traits>(domain);
+```
+
+where in the `Traits` class users define the type of distribution to be used
+for each coordinate direction.
+Inside a geometry sampler class, a geometry is created by sampling a
 point from the point sampler, and then constructing a geometry around this
-point using the provided distributions for its size and orientation.
-The `QuadrilateralSampler` class expects distributions for the strike angle,
+point using the provided distributions for its size and orientation. For example,
+the `QuadrilateralSampler` class expects distributions for the strike angle,
 dip angle, edge length and a threshold value for the minimum allowed edge length.
 The following piece of code shows how an instance of the `QuadrilateralSampler`
 class, using uniform distributions for all parameters regarding orientation and
@@ -155,18 +164,20 @@ QuadSampler quadSampler(pointSampler,
                         0.05); // threshold for minimum edge length
 ```
 
-The definitions of the strike and dip angles as used within the `QuadrilateralSampler`
-class are illustrated in the figure below. Consider a quadrilateral
-whose center is the origin and which lies in the plane defined by the two basis
-vectors $\mathbf{b}_1$ and $\mathbf{b}_2$. The latter lies in the $x$-$y$-plane
-and the strike angle is the angle between the $y$-axis and $\mathbf{b}_2$. The
-dip angle describes the angle between $\mathbf{b}_1$ and the $x$-$y$-plane.
+As for point samplers, one can use non-uniform distributions by implementing
+a `Traits` class which is then passed to the `QuadrilateralSampler` as template
+argument. The definitions of the strike and dip angles as used within the
+`QuadrilateralSampler` class are illustrated in the figure below. Consider a
+quadrilateral whose center is the origin and which lies in the plane defined by
+the two basis vectors $\mathbf{b}_1$ and $\mathbf{b}_2$. The latter lies in the
+$x$-$y$-plane and the strike angle is the angle between the $y$-axis and $\mathbf{b}_2$.
+The dip angle describes the angle between $\mathbf{b}_1$ and the $x$-$y$-plane.
 
 ![Illustration of the strike and dip angles involved in the random generation of quadrilaterals. The grey plane with the structured mesh illustrates the $x$-$y$-plane.](doc/img/quadsampler.png)
 
-In the code, random generation of geometries from sampler classes occurs using
+In the code, random generation of geometries from sampler classes occurs by using
 the `()` operator. For example, from the `quadSampler` variable defined in the
-previous code snippet, we could obtain a random quadrilateral by writing:
+previous code snippet, we obtain a random quadrilateral by writing:
 
 ```cpp
 // generate random quadrilateral
@@ -323,3 +334,4 @@ We thank the German Research Foundation (DFG) for supporting this work by fundin
 [2]: http://www.gmsh.info/
 [3]: https://dumux.org/
 [4]: https://www.opencascade.com/content/download-center
+[5]: https://www.opencascade.com
