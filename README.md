@@ -51,7 +51,7 @@ General Concept
 
 ### Geometry Sampling
 The generation of the fracture networks occurs by randomly sampling instances of the
-desired fracture geometry on the basis of probability distribution functions, which
+desired fracture geometry on the basis of probability distributions, which
 can be defined by the user. The implementation allows for both selecting the type of
 distribution (uniform, exponential, etc.) as well as the distribution parameters.
 
@@ -203,7 +203,7 @@ Contributing
 
 Contributions are highly appreciated.
 For bug reports, please file an [issue](https://git.iws.uni-stuttgart.de/tools/frackit/issues).
-If you want to contribute with new features of improvements of existing code, please
+If you want to contribute with new features or improvements of existing code, please
 
 * Get an account for our GitLab instance at https://git.iws.uni-stuttgart.de/
 * Fork this project

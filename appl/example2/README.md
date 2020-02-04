@@ -8,7 +8,7 @@ Example 2
 
 In this exemplary application, a network of quadrilaterals, following the same
 distributions as the network of [example 1][0], is created. However, in this
-example we want to confined the network to a cylindrical domain (see image above).
+example we want to confine the network to a cylindrical domain (see image above).
 We represent the domain via an instance of the internal cylinder class:
 
 ```cpp
@@ -30,7 +30,9 @@ and write
 auto constraintsOnBoundary = constraintsOnSelf;
 ```
 
-to create a new constraints object. Within the loop in which the entities are created,
+to create a new constraints object. We create this copy here to improve readability
+of the code when evaluating the constraints.
+Within the loop in which the entities are created,
 these constraints are enforced:
 
 ```cpp
@@ -72,13 +74,13 @@ builder.addConfiningSubDomain(domain, Id(1));
 
 The class `ContainedEntityNetworkBuilder` returns an instance of a `ContainedEntityNetwork`
 when the `build()` function is called (see below). This network implementation contains information
-on (sub-)domains and which entities are embedded in which (sub-)domain. Each (sub-)domain
+on sub-domains, and which entities are embedded in which sub-domain. Each sub-domain
 receives a unique identifier by means of the `Id` class. By calling
-`builder.addConfiningSubDomain(domain, Id(1))`, we define the (sub-)domain to be
-confining, i.e. entities that are added to this (sub-)domain will be confined to it
-by cutting away all parts that lie outside the (sub-)domain. In contrast to that,
+`builder.addConfiningSubDomain(domain, Id(1))`, we define the sub-domain to be
+confining, i.e. entities that are added to this sub-domain will be confined to it
+by cutting away all parts that lie outside the sub-domain. In contrast to that,
 one could call `builder.addSubDomain(domain, Id(1))`, in which case embedded networks
-will not be confined (see [example 3][2]). Entities are associated with the (sub-)
+will not be confined (see [example 3][2]). Entities are associated with the sub-
 domain they are embedded in, and are added to the builder class by writing
 
 ```cpp
@@ -101,6 +103,8 @@ writer.write("network", // filename of the .geo files (will add extension .geo a
 
 As you can see, one can specify different mesh sizes to be used on the fracture
 entities and in the rest of the domain.
+
+[go to example 3][2]
 
 [0]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example1
 [1]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/geometry/cylinder.hh
