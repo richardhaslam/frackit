@@ -10,6 +10,10 @@ authors:
     affiliation: 1
   - name: Bernd Flemisch
     affiliation: 1
+  - name: Holger Class
+    affiliation: 1
+  - name: Rainer Helmig
+    affiliation: 1
 affiliations:
  - name: Department of Hydromechanics and Modelling of Hydrosystems, University of Stuttgart, Pfaffenwaldring 61, 70569 Stuttgart, Germany
    index: 1
