@@ -21,7 +21,7 @@ bibliography: paper.bib
 # Summary
 
 The numerical simulation of flow and transport phenomena in fractured porous media
-is an active active field of research, given the importance of fractures in many
+is an active field of research, given the importance of fractures in many
 geotechnical engineering applications, as for example groundwater management
 [@qian2014], enhanced oil recovery techniques [@torabi2012],
 geothermal energy [@mcfarland1976; @shaik2011] or unconventional
@@ -94,8 +94,8 @@ the network generation into three basic steps:
   previously generated entities
 * Fragmentation of the generated raw entities and the embedding domain
 
-The last of the above-mentioned steps and the motivation for it has been discussed
-earlier. In the following, we want to discuss the other two steps in more detail.
+The last of these steps and the motivation for it has been discussed
+above. In the following, we want to discuss the other two steps in more detail.
 
 ## Random generation of raw fracture entities
 
@@ -103,7 +103,7 @@ In the network generation procedure, a domain is populated with fracture entitie
 that are generated following user-defined statistical properties regarding their
 size, orientation and spatial distribution. In ``Frackit``, this process is termed
 _geometry sampling_ and is realized in the code in _sampler_ classes. In the current
-implementation there are two such sampler classes available, which sample quadrilaterals
+implementation, there are two such sampler classes available, which sample quadrilaterals
 and elliptical disks in three-dimensional space. A sampler class of ``Frackit``
 receives an instance of a `PointSampler` implementation and a number of probability
 distributions that define the size and orientation of the raw entities.
@@ -282,7 +282,7 @@ const auto bBox = Frackit::OCCUtilities::getBoundingBox(networkDomain);
 The last command constructs the bounding box of the center volume of our domain,
 which we can then use to instantiate point sampler classes that define
 the spatial distribution of the fracture entities. With these, we can construct
-geometry samplers as outlined earlier. In this example we define three
+geometry samplers as outlined above. In this example, we define three
 geometry sampler instances to sample from three different orientations of fractures,
 and we use quadrilaterals for two of the orientations and elliptical disks for
 the third orientation. Moreover, we define different constraints that should be
@@ -291,7 +291,7 @@ on how to implement such settings can be found in [example 3][1] in the `Frackit
 
 A number of fractures is then generated for each orientation. Subsequently, the
 raw entities and the three volumes of the domain are cast into an instance
-of the `ContainedEntityNetwork` class. This can be used to define arbitrary many
+of the `ContainedEntityNetwork` class. This can be used to define arbitrarily many
 (sub-)domains, and to insert entities to be embedded in a specific sub-domain.
 The `ContainedEntityNetwork` computes and stores the fragments of all entities
 and sub-domains resulting from mutual intersection. Output routines for instances
@@ -323,8 +323,8 @@ interface.
 
 # Acknowledgements
 
-We thank the German Research Foundation (DFG) for supporting this work by funding SFB
-394 1313.
+We thank the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation)
+for supporting this work by funding SFB 1313, Project Number 327154368.
 
 # References
 
