@@ -71,7 +71,7 @@ context of discrete fracture-matrix (dfm) simulations in a conforming way as
 described above. For instance, the open-source simulator [DuMuX][3] [@Dumux; @koch2019dumux31]
 contains a module for conforming dfm simulations of single- and multi-phase
 flow through fractured porous media, which has been used in several works
-[@glaeser2017, @glaeser2019; @andrianov2019;].
+[@glaeser2017, @glaeser2019; @andrianov2019].
 It  supports the [Gmsh][2] file format (.msh), and thus, ``Frackit`` can be used in
 a fully open-source toolchain with [Gmsh][2] and [DuMuX][3] to generate random
 fracture networks, construct computational meshes, and perform analyses on them
@@ -106,7 +106,7 @@ _geometry sampling_ and is realized in the code in _sampler_ classes. In the cur
 implementation there are two such sampler classes available, which sample quadrilaterals
 and elliptical disks in three-dimensional space. A sampler class of ``Frackit``
 receives an instance of a `PointSampler` implementation and a number of probability
-distribution functions that define the size and orientation of the raw entities.
+distributions that define the size and orientation of the raw entities.
 `PointSampler` classes are used to sample the spatial distribution of the geometries
 inside a domain geometry. For example, a point sampler that samples points uniformly
 within the unit cube (defined in the variable `domain`) could be constructed like this:
@@ -191,7 +191,7 @@ possibility to enforce geometric constraints between different entities in order
 to enforce topological characteristics as e.g. fracture spacing. Besides this,
 constraints can be used to avoid very small length scales that could cause problems
 during mesh generation or could lead to ill-shaped elements. In the code, constraints
-can defined and evaluated using the `EntityNetworkConstraints` class. These have
+can be defined and evaluated using the `EntityNetworkConstraints` class. These have
 to be fulfilled by a new fracture entity candidate against previously accepted
 entities. If any of the defined constraints is violated, the candidate may be
 rejected and a new one is sampled. The current implementation of the
