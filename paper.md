@@ -252,8 +252,8 @@ to evaluate the constraints between `quad` and all entities stored in `quadSet`.
 
 # Example application
 
-In this exemplary application we want to briefly outline what the workflow using
-`Frackit` together with [Gmsh][2] and [DuMuX][3] could look like. The images are
+In the following we want to illustrate an exemplary workflow using
+`Frackit` together with [Gmsh][2] and [DuMuX][3]. The images are
 taken from the `Frackit` documentation ([git.iws.uni-stuttgart.de/tools/frackit][0])
 and the configurations of the geometry samplers are, apart from small modifications,
 very similar to the ones used in [example 3][1] provided in the `Frackit` repository.
