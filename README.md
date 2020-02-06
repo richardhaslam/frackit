@@ -121,9 +121,11 @@ sudo apt-get install libocct-modeling-algorithms-7.3 libocct-modeling-algorithms
 ```
 
 If you prefer building [OpenCASCADE][2] from the sources, you can download the
-source code [HERE][2], and details on the installation can be found [HERE][10].
-Please note that [OpenCASCADE][2] requires further 3rd party products, which are
-listed [HERE][11].
+source code [HERE][2] after registration, or get the tarballs from their
+development portal at http://dev.opencascade.org. Click [this link][16] to download
+the tarball for the version 7.3 release. Details on building [OpenCASCADE][2]
+can be found [HERE][10]. Please note that [OpenCASCADE][2] requires further 3rd
+party products, which are listed [HERE][11].
 
 <!-- On Debian-based distributions, all of these can be installed
 from the command line via:
@@ -278,3 +280,4 @@ Advances in Water Resources, 110. doi:10.1016/j.advwatres.2017.10.031
 [13]: https://git.iws.uni-stuttgart.de/dumux-pub/glaeser2020a
 [14]: https://launchpad.net/~freecad-maintainers/+archive/ubuntu/occt-releases
 [15]: https://www.freecadweb.org/
+[16]: https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=1630119c3a5ec5a3268ddf8775a7085b5f6b06de;sf=tgz
