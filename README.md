@@ -104,14 +104,29 @@ Please note that the following requirements need to be installed:
 * Optional: Doxygen (>= 1.8)
 
 ### Installation of OpenCascade
-Frackit requires the [OpenCascade][2] library to be installed on your system.
-You can download the source code [HERE][2],
-and details on the installation can be found [HERE][10].
+Frackit requires parts of the [OpenCascade][2] library to be installed on your system.
+Thanks to the ["FreeCAD maintainers" team][15], there are Debian packages of
+[OpenCascade][2] available (see [this link][14]). To install the required packages,
+you have to add the repository by typing
+
+```sh
+sudo add-apt-repository ppa:freecad-maintainers/occt-releases
+sudo apt-get update
+```
+
+into the terminal. Then, you can install the packages with
+
+```sh
+sudo apt-get install libocct-modeling-algorithms-7.3 libocct-modeling-algorithms-dev libocct-foundation-7.3 libocct-foundation-dev libocct-modeling-data-7.3 libocct-modeling-data-dev
+```
+
+If you prefer building [OpenCascade][2] from the sources, you can download the
+source code [HERE][2], and details on the installation can be found [HERE][10].
 Please note that [OpenCascade][2] requires further 3rd party products, which are
 listed [HERE][11]. On Debian-based distributions, all of these can be installed
 from the command line via:
 
-```cpp
+```sh
 sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libfreeimage-dev libtbb-dev libgl2ps-dev
 ```
 
@@ -259,3 +274,5 @@ Advances in Water Resources, 110. doi:10.1016/j.advwatres.2017.10.031
 [11]: https://www.opencascade.com/doc/occt-6.9.1/overview/html/occt_dev_guides__building_3rdparty_linux.html
 [12]: https://git.iws.uni-stuttgart.de/dumux-repositories/dumux/blob/master/doc/styleguide.md
 [13]: https://git.iws.uni-stuttgart.de/dumux-pub/glaeser2020a
+[14]: https://launchpad.net/~freecad-maintainers/+archive/ubuntu/occt-releases
+[15]: https://www.freecadweb.org/
