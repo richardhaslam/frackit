@@ -19,7 +19,7 @@ set(CMAKE_BUILD_TYPE Release)
 
 # Find OpenCascade
 find_path(OCC_INC "Standard_Version.hxx"
-          PATH_SUFFIXES opencascade include/opencascade)
+          PATH_SUFFIXES opencascade include/opencascade occt/)
 
 if (OCC_INC)
     include_directories( ${OCC_INC} )
