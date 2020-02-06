@@ -123,12 +123,14 @@ sudo apt-get install libocct-modeling-algorithms-7.3 libocct-modeling-algorithms
 If you prefer building [OpenCascade][2] from the sources, you can download the
 source code [HERE][2], and details on the installation can be found [HERE][10].
 Please note that [OpenCascade][2] requires further 3rd party products, which are
-listed [HERE][11]. On Debian-based distributions, all of these can be installed
+listed [HERE][11].
+
+<!-- On Debian-based distributions, all of these can be installed
 from the command line via:
 
 ```sh
 sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libfreeimage-dev libtbb-dev libgl2ps-dev
-```
+``` -->
 
 ### Building Frackit under Linux
 After [OpenCascade][2] and the other requirements listed above have been installed,
