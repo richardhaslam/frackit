@@ -10,6 +10,10 @@ authors:
     affiliation: 1
   - name: Bernd Flemisch
     affiliation: 1
+  - name: Holger Class
+    affiliation: 1
+  - name: Rainer Helmig
+    affiliation: 1
 affiliations:
  - name: Department of Hydromechanics and Modelling of Hydrosystems, University of Stuttgart, Pfaffenwaldring 61, 70569 Stuttgart, Germany
    index: 1
@@ -21,7 +25,7 @@ bibliography: paper.bib
 # Summary
 
 The numerical simulation of flow and transport phenomena in fractured porous media
-is an active active field of research, given the importance of fractures in many
+is an active field of research, given the importance of fractures in many
 geotechnical engineering applications, as for example groundwater management
 [@qian2014], enhanced oil recovery techniques [@torabi2012],
 geothermal energy [@mcfarland1976; @shaik2011] or unconventional
@@ -52,7 +56,7 @@ in hexahedral domains.
 ``Frackit`` is a C++-framework for the stochastic generation of fracture networks
 composed of polygonal and/or elliptical geometries, embedded in arbitrary domain
 shapes. It makes extensive use of the open-source Computed-Aided-Design (CAD)
-library [OpenCascade][4] ([opencascade.com][https://www.opencascade.com]), which offers great flexibility with respect to the
+library [OpenCascade][4] ([opencascade.com][5]), which offers great flexibility with respect to the
 geometries that can be used. Moreover, a large number of standard CAD file formats
 is supported for input/output of geometrical shapes. This allows users of ``Frackit``
 to read in externally generated domain shapes
@@ -62,7 +66,7 @@ file formats enable users to then construct computational meshes of the generate
 geometries using a variety of tools. In particular, ``Frackit`` offers
 output routines to the (.geo) file format used by [Gmsh][2] [@gmsh2009],
 which is an open-source mesh generator that is widely used in academic
-research (see e.g. @keilegavlen2017; @berge2019;).
+research (see e.g. @keilegavlen2017; @berge2019).
 
 The geometric data produced by ``Frackit`` contains the complete fragmentation
 of all geometric entities involved, i.e. the intersection geometries between
@@ -71,7 +75,7 @@ context of discrete fracture-matrix (dfm) simulations in a conforming way as
 described above. For instance, the open-source simulator [DuMuX][3] [@Dumux; @koch2019dumux31]
 contains a module for conforming dfm simulations of single- and multi-phase
 flow through fractured porous media, which has been used in several works
-[@glaeser2017, @glaeser2019; @andrianov2019;].
+[@glaeser2017, @glaeser2019; @andrianov2019].
 It  supports the [Gmsh][2] file format (.msh), and thus, ``Frackit`` can be used in
 a fully open-source toolchain with [Gmsh][2] and [DuMuX][3] to generate random
 fracture networks, construct computational meshes, and perform analyses on them
@@ -94,8 +98,8 @@ the network generation into three basic steps:
   previously generated entities
 * Fragmentation of the generated raw entities and the embedding domain
 
-The last of the above-mentioned steps and the motivation for it has been discussed
-earlier. In the following, we want to discuss the other two steps in more detail.
+The last of these steps and the motivation for it has been discussed
+above. In the following, we want to discuss the other two steps in more detail.
 
 ## Random generation of raw fracture entities
 
@@ -103,10 +107,10 @@ In the network generation procedure, a domain is populated with fracture entitie
 that are generated following user-defined statistical properties regarding their
 size, orientation and spatial distribution. In ``Frackit``, this process is termed
 _geometry sampling_ and is realized in the code in _sampler_ classes. In the current
-implementation there are two such sampler classes available, which sample quadrilaterals
+implementation, there are two such sampler classes available, which sample quadrilaterals
 and elliptical disks in three-dimensional space. A sampler class of ``Frackit``
 receives an instance of a `PointSampler` implementation and a number of probability
-distribution functions that define the size and orientation of the raw entities.
+distributions that define the size and orientation of the raw entities.
 `PointSampler` classes are used to sample the spatial distribution of the geometries
 inside a domain geometry. For example, a point sampler that samples points uniformly
 within the unit cube (defined in the variable `domain`) could be constructed like this:
@@ -124,10 +128,19 @@ Domain domain(0.0, 0.0, 0.0,  // xmin, ymin, zmin
 const auto pointSampler = Frackit::makeUniformPointSampler(domain);
 ```
 
-Inside a geometry sampler class, the geometries are created by sampling a
+The convenience function `makeUniformPointSampler()` can be used for uniform
+sampling over the provided domain geometry. For nun-uniform samplers, one can write
+
+```cpp
+const auto pointSampler = Frackit::makePointSampler<Traits>(domain);
+```
+
+where in the `Traits` class users define the type of distribution to be used
+for each coordinate direction.
+Inside a geometry sampler class, a geometry is created by sampling a
 point from the point sampler, and then constructing a geometry around this
-point using the provided distributions for its size and orientation.
-The `QuadrilateralSampler` class expects distributions for the strike angle,
+point using the provided distributions for its size and orientation. For example,
+the `QuadrilateralSampler` class expects distributions for the strike angle,
 dip angle, edge length and a threshold value for the minimum allowed edge length.
 The following piece of code shows how an instance of the `QuadrilateralSampler`
 class, using uniform distributions for all parameters regarding orientation and
@@ -155,18 +168,20 @@ QuadSampler quadSampler(pointSampler,
                         0.05); // threshold for minimum edge length
 ```
 
-The definitions of the strike and dip angles as used within the `QuadrilateralSampler`
-class are illustrated in the figure below. Consider a quadrilateral
-whose center is the origin and which lies in the plane defined by the two basis
-vectors $\mathbf{b}_1$ and $\mathbf{b}_2$. The latter lies in the $x$-$y$-plane
-and the strike angle is the angle between the $y$-axis and $\mathbf{b}_2$. The
-dip angle describes the angle between $\mathbf{b}_1$ and the $x$-$y$-plane.
+As for point samplers, one can use non-uniform distributions by implementing
+a `Traits` class which is then passed to the `QuadrilateralSampler` as template
+argument. The definitions of the strike and dip angles as used within the
+`QuadrilateralSampler` class are illustrated in the figure below. Consider a
+quadrilateral whose center is the origin and which lies in the plane defined by
+the two basis vectors $\mathbf{b}_1$ and $\mathbf{b}_2$. The latter lies in the
+$x$-$y$-plane and the strike angle is the angle between the $y$-axis and $\mathbf{b}_2$.
+The dip angle describes the angle between $\mathbf{b}_1$ and the $x$-$y$-plane.
 
 ![Illustration of the strike and dip angles involved in the random generation of quadrilaterals. The grey plane with the structured mesh illustrates the $x$-$y$-plane.](doc/img/quadsampler.png)
 
-In the code, random generation of geometries from sampler classes occurs using
+In the code, random generation of geometries from sampler classes occurs by using
 the `()` operator. For example, from the `quadSampler` variable defined in the
-previous code snippet, we could obtain a random quadrilateral by writing:
+previous code snippet, we obtain a random quadrilateral by writing:
 
 ```cpp
 // generate random quadrilateral
@@ -180,7 +195,7 @@ possibility to enforce geometric constraints between different entities in order
 to enforce topological characteristics as e.g. fracture spacing. Besides this,
 constraints can be used to avoid very small length scales that could cause problems
 during mesh generation or could lead to ill-shaped elements. In the code, constraints
-can defined and evaluated using the `EntityNetworkConstraints` class. These have
+can be defined and evaluated using the `EntityNetworkConstraints` class. These have
 to be fulfilled by a new fracture entity candidate against previously accepted
 entities. If any of the defined constraints is violated, the candidate may be
 rejected and a new one is sampled. The current implementation of the
@@ -237,8 +252,8 @@ to evaluate the constraints between `quad` and all entities stored in `quadSet`.
 
 # Example application
 
-In this exemplary application we want to briefly outline what the workflow using
-`Frackit` together with [Gmsh][2] and [DuMuX][3] could look like. The images are
+In the following we want to illustrate an exemplary workflow using
+`Frackit` together with [Gmsh][2] and [DuMuX][3]. The images are
 taken from the `Frackit` documentation ([git.iws.uni-stuttgart.de/tools/frackit][0])
 and the configurations of the geometry samplers are, apart from small modifications,
 very similar to the ones used in [example 3][1] provided in the `Frackit` repository.
@@ -271,7 +286,7 @@ const auto bBox = Frackit::OCCUtilities::getBoundingBox(networkDomain);
 The last command constructs the bounding box of the center volume of our domain,
 which we can then use to instantiate point sampler classes that define
 the spatial distribution of the fracture entities. With these, we can construct
-geometry samplers as outlined earlier. In this example we define three
+geometry samplers as outlined above. In this example, we define three
 geometry sampler instances to sample from three different orientations of fractures,
 and we use quadrilaterals for two of the orientations and elliptical disks for
 the third orientation. Moreover, we define different constraints that should be
@@ -280,7 +295,7 @@ on how to implement such settings can be found in [example 3][1] in the `Frackit
 
 A number of fractures is then generated for each orientation. Subsequently, the
 raw entities and the three volumes of the domain are cast into an instance
-of the `ContainedEntityNetwork` class. This can be used to define arbitrary many
+of the `ContainedEntityNetwork` class. This can be used to define arbitrarily many
 (sub-)domains, and to insert entities to be embedded in a specific sub-domain.
 The `ContainedEntityNetwork` computes and stores the fragments of all entities
 and sub-domains resulting from mutual intersection. Output routines for instances
@@ -312,8 +327,8 @@ interface.
 
 # Acknowledgements
 
-We thank the German Research Foundation (DFG) for supporting this work by funding SFB
-394 1313.
+We thank the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation)
+for supporting this work by funding SFB 1313, Project Number 327154368.
 
 # References
 
@@ -323,3 +338,4 @@ We thank the German Research Foundation (DFG) for supporting this work by fundin
 [2]: http://www.gmsh.info/
 [3]: https://dumux.org/
 [4]: https://www.opencascade.com/content/download-center
+[5]: https://www.opencascade.com
