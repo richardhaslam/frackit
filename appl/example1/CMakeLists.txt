@@ -1,5 +1,5 @@
 frackit_add_application(NAME example1
                         SOURCES example1.cc
-                        LABELS examples)
+                        LABELS example)
 
 set(CMAKE_BUILD_TYPE Release)
