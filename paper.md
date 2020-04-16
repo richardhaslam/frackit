@@ -206,7 +206,7 @@ curve, a minimum intersection angle and a minimum distance between the intersect
 curve and the boundaries of the intersecting entities. An illustration of this
 is shown in the figure below.
 
-![Overview of the geometric constraints that can be defined between entities.](doc/img/constraints.png)
+![Illustration of the geometric settings that can be avoided using geometric constraints.](doc/img/constraints.png)
 
 The following code snippet illustrates how to set up an instance of the
 `EntityNetworkConstraints` class:
