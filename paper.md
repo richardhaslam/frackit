@@ -75,7 +75,7 @@ context of discrete fracture-matrix (dfm) simulations in a conforming way as
 described above. For instance, the open-source simulator [DuMuX][3] [@Dumux; @koch2019dumux31]
 contains a module for conforming dfm simulations of single- and multi-phase
 flow through fractured porous media, which has been used in several works
-[@glaeser2017, @glaeser2019; @andrianov2019].
+[@glaeser2017; @glaeser2019; @andrianov2019].
 It  supports the [Gmsh][2] file format (.msh), and thus, ``Frackit`` can be used in
 a fully open-source toolchain with [Gmsh][2] and [DuMuX][3] to generate random
 fracture networks, construct computational meshes, and perform analyses on them
