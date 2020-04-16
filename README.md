@@ -121,9 +121,14 @@ sudo apt-get install libocct-modeling-algorithms-7.3 libocct-modeling-algorithms
 ```
 
 If you prefer building [OpenCASCADE][2] from the sources, you can download the
-source code [HERE][2] after registration, or get the tarballs from their
+source code [HERE][2] after registration. For the version 7.3 release, you can
+click [this link][16] to download the tarball without registration.
+<!-- EDIT: PUBLIC ACCESS TO THE DEVELOPMENT PORTAL HAS BEEN STOPPED, MAYBE PUT
+THE FOLLOWING PHRASE BACK IN IF THEY RE-OPEN IT!
+, or get the tarballs from their
 development portal at http://dev.opencascade.org. Click [this link][16] to download
-the tarball for the version 7.3 release. Details on building [OpenCASCADE][2]
+the tarball for the version 7.3 release. -->
+Details on building [OpenCASCADE][2]
 can be found [HERE][10]. Please note that [OpenCASCADE][2] requires further 3rd
 party products, which are listed [HERE][11].
 
