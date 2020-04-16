@@ -93,7 +93,7 @@ int main()
         { status.increaseRejectedCounter(); continue; }
         if (!constraintsOnBoundary.evaluate(domain.bottomFace(), quad))
         { status.increaseRejectedCounter(); continue; }
-        if (!constraintsOnBoundary.evaluate(domain.lateralFace(), quad))
+        if (!constraintsOnBoundary.evaluate(OCCUtilities::getShape(domain.lateralFace()), quad))
         { status.increaseRejectedCounter(); continue; }
 
         // we also want to neglect quadrilaterals of which only

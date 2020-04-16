@@ -41,14 +41,37 @@ if (!constraintsOnBoundary.evaluate(domain.topFace(), quad))
 { status.increaseRejectedCounter(); continue; }
 if (!constraintsOnBoundary.evaluate(domain.bottomFace(), quad))
 { status.increaseRejectedCounter(); continue; }
-if (!constraintsOnBoundary.evaluate(domain.lateralFace(), quad))
+if (!constraintsOnBoundary.evaluate(OCCUtilities::getShape(domain.lateralFace()), quad))
 { status.increaseRejectedCounter(); continue; }
 ```
 
 As you can see, the `Cylinder` class provides functions for obtaining the representations
 of the top, bottom and lateral boundaries. The top and bottom boundaries are represented
 by instances of the `Disk` class, while the lateral surface is described by the class
-`CylinderSurface`. Moreover, we want to reject all those quadrilaterals of which only
+`CylinderSurface`. Please also note that for the lateral surface, we enforce the constraints
+using its representation in OpenCascade, which we obtain by calling `OCCUtilities::getShape`.
+We could also write `if (!constraintsOnBoundary.evaluate(domain.lateralFace(), quad)) {...}`,
+but the behaviour is different. This is because in the OpenCascade representation of cylindrical
+surfaces, there is an edge connecting the upper and lower circles. This has implications on the
+constraint regarding the minimum allowed length of intersection edges, as these possibly
+intersect with the edge of the cylindrical surface. The figure below illustrates the intersections
+of a fracture quadrilateral with both the internal and the OpenCascade representations of cylindrical
+surfaces.
+
+<!--- Intersection with cylinder, nternal vs OCC representation --->
+<p align="center">
+    <img src="../../doc/img/example2_isection.png" alt="frackit example 2 - cylindrical surface intersection" width="800"/>
+</p>
+
+As you can see, when the internal representation of cylindrical surfaces is used, the result
+is a single intersection edge, while this edge is split into two sub-edges in case the
+OpenCascade representation is used. As a result, when evaluating the constraints against
+the OpenCascade representation of the cylindrical surface, the constraint on the minimum
+allowed length of intersection edges is checked for each sub-edge. Thus, this approach should
+be preferred when using cylindrical domains in order to detect small length scales originating
+from intersections with the auxiliary edge used by OpenCascade.
+
+Moreover, we want to reject all those quadrilaterals of which only
 a very small portion is inside the cylinder. This is done in the lines
 
 ```cpp

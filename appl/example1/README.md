@@ -54,6 +54,12 @@ configure it as desired. For example, the constraints on entities of the same
 orientation are defined in this example as follows:
 
 ```cpp
+// We want to enforce some constraints on the set of quadrilaterals.
+// In particular, for entities of the same set we want a minimum spacing
+// distance of 5cm, and the quadrilaterals must not intersect in angles
+// less than 30°. Moreover, if they intersect, we don't want intersection
+// edges whose length is smaller than 5cm, and, the intersection should not
+// be too close to the boundary of one of two intersecting quadrilaterals. Here: 5cm.
 EntityNetworkConstraints constraintsOnSelf;
 constraintsOnSelf.setMinDistance(0.05);
 constraintsOnSelf.setMinIntersectingAngle(toRadians(30.0));
