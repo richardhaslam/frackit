@@ -173,13 +173,8 @@ public:
      */
     bool contains(const Point& p, ctype eps = Precision<ctype>::confusion()) const
     {
-        auto d = Vector(supportPoint_, p);
-        const auto length = d.length();
-        if (length != 0.0)
-            d /= length;
-
         using std::abs;
-        return abs(d*Vector(normal_)) < Precision<ctype>::confusion();
+        return abs( Vector(supportPoint_, p)*Vector(normal_) ) < eps;
     }
 
 private:
