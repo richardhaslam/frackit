@@ -27,10 +27,15 @@
 #include <cmath>
 #include <vector>
 
-#include <frackit/geometry/vector.hh>
 #include <frackit/precision/precision.hh>
+#include <frackit/geometry/vector.hh>
+#include <frackit/geometry/direction.hh>
 
 namespace Frackit {
+
+// forward declaration
+template<class ctype, int wd> class Vector;
+template<class ctype, int wd> class Direction;
 
 /*!
  * \ingroup Common
