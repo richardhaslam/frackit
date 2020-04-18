@@ -62,30 +62,6 @@ template<class CT, int wd> class Direction;
 namespace VectorImpl {
 
     /*!
-     * \brief Computes the sum of two 1d vectors.
-     * \tparam CT1 The type used for coordinates of vector 1
-     * \tparam CT2 The type used for the coordinatex of vector 2
-     *
-     * \param v1 the first vector
-     * \param v2 the second vector
-     * \result the sum of the vectors, i.e. v1+v2
-     * \note We use CT1 as the underlying data type for the result
-     */
-    template<class CT1, class CT2>
-    Vector<CT1, 1> sumVectors(const Vector<CT1, 1>& v1, const Vector<CT2, 1>& v2)
-    { return {v1.x()+v2.x()}; }
-
-    //! Specialization for 2d vectors
-    template<class CT1, class CT2>
-    Vector<CT1, 2> sumVectors(const Vector<CT1, 2>& v1, const Vector<CT2, 2>& v2)
-    { return {v1.x()+v2.x(), v1.y()+v2.y()}; }
-
-    //! Specialization for 3d vectors
-    template<class CT1, class CT2>
-    Vector<CT1, 3> sumVectors(const Vector<CT1, 3>& v1, const Vector<CT2, 3>& v2)
-    { return {v1.x()+v2.x(), v1.y()+v2.y(), v1.z()+v2.z()}; }
-
-    /*!
      * \brief Computes the result of subtraction of two vectors.
      * \tparam CT1 The type used for coordinates of vector 1
      * \tparam CT2 The type used for the coordinatex of vector 2
@@ -186,7 +162,17 @@ public:
     //! Add vector to this one
     template<class CT>
     Impl operator+(const Frackit::Vector<CT, wd>& other) const
-    { return VectorImpl::sumVectors(asImp_(), other); }
+    {
+        if constexpr (wd == 1)
+            return {asImp_().x() + other.x()};
+        if constexpr (wd == 2)
+            return {asImp_().x() + other.x(),
+                    asImp_().y() + other.y()};
+        if constexpr (wd == 3)
+            return {asImp_().x() + other.x(),
+                    asImp_().y() + other.y(),
+                    asImp_().z() + other.z()};
+    }
 
     //! Subtract vector from this one
     template<class CT>
