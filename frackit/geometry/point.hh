@@ -91,6 +91,48 @@ public:
         return isEqual(other, eps);
     }
 
+    //! Move this point with the vector v
+    template<class C>
+    Impl& operator+= (const Vector<C, wd>& v)
+    {
+        coordinates()[0] += v.x();
+        if constexpr (wd > 1)
+            coordinates()[1] += v.y();
+        if constexpr (wd > 2)
+            coordinates()[2] += v.z();
+        return asImp_();
+    }
+
+    //! Move this point with the vector v
+    template<class C>
+    Impl operator+ (const Vector<C, wd>& v) const
+    {
+        auto result(asImp_());
+        result += v;
+        return result;
+    }
+
+    //! Move this point with the vector v
+    template<class C>
+    Impl& operator-= (const Vector<C, wd>& v)
+    {
+        coordinates()[0] -= v.x();
+        if constexpr (wd > 1)
+            coordinates()[1] -= v.y();
+        if constexpr (wd > 2)
+            coordinates()[2] -= v.z();
+        return asImp_();
+    }
+
+    //! Move this point with the vector v
+    template<class C>
+    Impl operator- (const Vector<C, wd>& v) const
+    {
+        auto result(asImp_());
+        result -= v;
+        return result;
+    }
+
 protected:
     //! Provide access to the underlying coordinates
     ctype operator[] (unsigned int i) const
@@ -143,40 +185,6 @@ public:
 
     //! Return the x-coordinate of the vector
     CT x() const { return (*this)[0]; }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType& operator+= (const Vector<C, 1>& v)
-    {
-        this->coordinates()[0] += v.x();
-        return *this;
-    }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType operator+ (const Vector<C, 1>& v) const
-    {
-        auto tmp(*this);
-        tmp += v;
-        return tmp;
-    }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType& operator-= (const Vector<C, 1>& v)
-    {
-        this->coordinates()[0] -= v.x();
-        return *this;
-    }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType operator- (const Vector<C, 1>& v) const
-    {
-        auto tmp(*this);
-        tmp -= v;
-        return tmp;
-    }
 };
 
 /*!
@@ -204,42 +212,6 @@ public:
 
     //! Return the y-coordinate of the vector
     CT y() const { return (*this)[1]; }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType& operator+= (const Vector<C, 2>& v)
-    {
-        this->coordinates()[0] += v.x();
-        this->coordinates()[1] += v.y();
-        return *this;
-    }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType operator+ (const Vector<C, 2>& v) const
-    {
-        auto tmp(*this);
-        tmp += v;
-        return tmp;
-    }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType& operator-= (const Vector<C, 2>& v)
-    {
-        this->coordinates()[0] -= v.x();
-        this->coordinates()[1] -= v.y();
-        return *this;
-    }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType operator- (const Vector<C, 2>& v) const
-    {
-        auto tmp(*this);
-        tmp -= v;
-        return tmp;
-    }
 };
 
 /*!
@@ -270,44 +242,6 @@ public:
 
     //! Return the z-coordinate of the vector
     CT z() const { return (*this)[2]; }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType& operator+= (const Vector<C, 3>& v)
-    {
-        this->coordinates()[0] += v.x();
-        this->coordinates()[1] += v.y();
-        this->coordinates()[2] += v.z();
-        return *this;
-    }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType operator+ (const Vector<C, 3>& v) const
-    {
-        auto tmp(*this);
-        tmp += v;
-        return tmp;
-    }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType& operator-= (const Vector<C, 3>& v)
-    {
-        this->coordinates()[0] -= v.x();
-        this->coordinates()[1] -= v.y();
-        this->coordinates()[2] -= v.z();
-        return *this;
-    }
-
-    //! Move this point with the vector v
-    template<class C>
-    ThisType operator- (const Vector<C, 3>& v) const
-    {
-        auto tmp(*this);
-        tmp -= v;
-        return tmp;
-    }
 };
 
 /*!
