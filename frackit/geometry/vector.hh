@@ -159,13 +159,11 @@ public:
     using Direction = typename Frackit::Direction<ctype, wd>;
 
     /*!
-     * \brief Constructs a vector from a single scalar value
-     *        assigning this value to each coordinate direction.
-     * \param value The coordinate value
+     * \brief Default constructor. Creates a zero vector.
      */
-    VectorBase(ctype value = 0.0)
+    VectorBase()
     {
-        std::fill(coordinates_.begin(), coordinates_.end(), value);
+        std::fill(coordinates_.begin(), coordinates_.end(), 0.0);
     }
 
     /*!
