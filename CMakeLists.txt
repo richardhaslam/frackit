@@ -2,7 +2,12 @@
 cmake_minimum_required(VERSION 3.0)
 
 # project name
-project(frackit)
+project(frackit VERSION 1.0.0)
+
+# project version
+set(FRACKIT_VERSION ${frackit_VERSION} CACHE STRING "project version")
+set(FRACKIT_VERSION_MAJOR ${frackit_VERSION_MAJOR} CACHE STRING "major project version")
+set(FRACKIT_VERSION_MINOR ${frackit_VERSION_MINOR} CACHE STRING "minor project version")
 
 # make sure our own modules are found
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules")
