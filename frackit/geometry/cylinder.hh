@@ -162,7 +162,7 @@ public:
         if (!centerSegment().contains(proj, eps))
             return false;
 
-        return Vector(proj, p).length() <= radius();
+        return Vector(proj, p).squaredLength() <= radius()*radius() + eps*eps;
     }
 
     /*!
