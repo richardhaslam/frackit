@@ -19,7 +19,9 @@
 #ifndef FRACKIT_PYTHON_GEOMETRY_VECTOR_HH
 #define FRACKIT_PYTHON_GEOMETRY_VECTOR_HH
 
+#include <array>
 #include <string>
+#include <algorithm>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
@@ -42,7 +44,6 @@ namespace Detail {
         std::string className("VectorBase_" + std::to_string(Base::worldDimension()));
         py::class_<Base, Geometry> cls(module, className.c_str());
 
-        cls.def(py::init<>());
         cls.def("name", &Base::name, "name of the geometry class");
         cls.def("squaredLength", &Base::squaredLength, "squared length of the vector");
         cls.def("length", &Base::length, "length of the vector");
@@ -76,6 +77,23 @@ namespace Detail {
         cls.def(py::init<>());
         cls.def(py::init<const Point&, const Point&>(), "source"_a, "target"_a);
         cls.def(py::init<const Direction&>(), "direction"_a);
+        cls.def(py::init( [] (py::list x) -> Vector
+                          {
+                            // create array of matching size and fill with values
+                            // from the list. Use zeros at the end if list is shorter.
+                            std::array<ctype, worldDim> vals;
+                            std::fill(vals.begin(), vals.end(), 0.0);
+                            unsigned int minDim = std::min(worldDim, static_cast<int>(x.size()));
+                            for (unsigned int i = 0; i < minDim; ++i)
+                                vals[i] = x[i].template cast<ctype>();
+
+                            if constexpr (worldDim == 1)
+                                return {vals[0]};
+                            else if constexpr (worldDim == 2)
+                                return {vals[0], vals[1]};
+                            else
+                                return {vals[0], vals[1], vals[2]};
+                          } ), "coordinates"_a);
 
         if constexpr (worldDim == 1)
             cls.def(py::init<ctype>(), "x"_a);
