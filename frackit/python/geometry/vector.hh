@@ -110,6 +110,20 @@ namespace Detail {
         cls.def("x", &Vector::x, "x-coordinate of the vector");
         if constexpr (worldDim > 1) cls.def("y", &Vector::y, "y-coordinate of the vector");
         if constexpr (worldDim > 2) cls.def("z", &Vector::z, "z-coordinate of the vector");
+
+        using std::to_string;
+        if constexpr (worldDim == 1)
+            cls.def("__repr__", [&] (const Vector& v)
+                                    { return "Frackit::Vector<1> (" + to_string(v.x()) + ")"; });
+        else if constexpr (worldDim == 2)
+            cls.def("__repr__", [&] (const Vector& v)
+                                    { return "Frackit::Vector<2> (" + to_string(v.x()) + ", "
+                                                                    + to_string(v.y()) + ")"; });
+        else
+            cls.def("__repr__", [&] (const Vector& v)
+                                    { return "Frackit::Vector<3> (" + to_string(v.x()) + ", "
+                                                                    + to_string(v.y()) + ", "
+                                                                    + to_string(v.z()) + ")"; });
     }
 
 } // end namespace detail
