@@ -67,6 +67,20 @@ def Vector(*args, **kwargs):
     # last option: construction from the raw coordinates
     return makeVector(numArgs)
 
+
+############################################
+# Argument-dependent n-d direction construction
+def Direction(*args, **kwargs):
+    numArgs = len(args) + len(kwargs)
+    if numArgs != 1: raiseGeometryConstructorException("direction", "numArgs")
+    try: dim = args[0].worldDimension
+    except: raiseGeometryConstructorException("direction")
+
+    if dim == 1: return Direction_1(*args, **kwargs)
+    elif dim == 2: return Direction_2(*args, **kwargs)
+    else: return Direction_3(*args, **kwargs)
+
+
 ############################################
 # Argument-dependent n-d circle construction
 def Circle(*args, **kwargs):
