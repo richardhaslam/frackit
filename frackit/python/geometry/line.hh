@@ -58,6 +58,8 @@ namespace Detail {
                 "point"_a, "eps"_a, "returns true if the given point is on the line (given tolerance)");
         cls.def("contains", py::overload_cast<const Point&>(&Line::contains, py::const_),
                 "point"_a, "returns true if the given point is on the line (default tolerance)");
+
+        cls.def("__repr__", [&] (const Line& l) { return "Frackit::Line<" + std::to_string(worldDim) + ">"; });
     }
 
 } // end namespace detail

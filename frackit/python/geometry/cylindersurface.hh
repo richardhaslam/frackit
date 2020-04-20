@@ -69,6 +69,8 @@ void registerCylinderSurface(py::module& module)
             "point"_a, "returns true if the given point is on the cylinder surface (default tolerance)");
     cls.def("contains", py::overload_cast<const Point&, ctype>(&CylinderSurface::contains, py::const_),
             "point"_a, "eps"_a, "returns true if the given point is on the cylinder surface (given tolerance)");
+
+    cls.def("__repr__", [&] (const CylinderSurface& cs) { return "Frackit::CylinderSurface"; });
 }
 
 } // end namespace Frackit::Python

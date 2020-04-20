@@ -70,6 +70,8 @@ void registerCylinder(py::module& module)
             "point"_a, "returns true if the given point is within the cylinder (default tolerance)");
     cls.def("contains", py::overload_cast<const Point&, ctype>(&Cylinder::contains, py::const_),
             "point"_a, "eps"_a, "returns true if the given point is within the cylinder (given tolerance)");
+
+    cls.def("__repr__", [&] (const Cylinder& c) { return "Frackit::Cylinder"; });
 }
 
 } // end namespace Frackit::Python

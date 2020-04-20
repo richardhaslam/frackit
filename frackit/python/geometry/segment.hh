@@ -67,6 +67,8 @@ namespace Detail {
         cls.def("contains", py::overload_cast<const Point&, ctype, bool>(&Segment::contains, py::const_),
                 "point"_a, "eps"_a, "checkIfOnLine"_a = true,
                 "returns true if the given point is on the segment (given tolerance)");
+
+        cls.def("__repr__", [&] (const Segment& s) { return "Frackit::Segment<" + std::to_string(worldDim) + ">"; });
     }
 
 } // end namespace detail

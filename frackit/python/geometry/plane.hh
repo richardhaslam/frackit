@@ -70,6 +70,8 @@ namespace Detail {
         // contains query
         cls.def("contains", &Plane::contains, "point"_a, "eps"_a = Precision<ctype>::confusion(),
                 "returns true if the given point is on the plane");
+
+        cls.def("__repr__", [&] (const Plane& p) { return "Frackit::Plane<" + std::to_string(worldDim) + ">"; });
     }
 
 } // end namespace detail

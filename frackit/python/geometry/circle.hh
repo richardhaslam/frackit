@@ -68,6 +68,8 @@ namespace Detail {
                 "return the point on the circle for the given local coordinate (0.0 <= localCoordinate <= 1)");
         cls.def("getPointFromAngle", &Circle::getPointFromAngle, "angle"_a,
                 "return the point on the circle for the given angle w.r.t. the circle-local coordinate system (angle >= 0.0)");
+
+        cls.def("__repr__", [&] (const Circle& c) { return "Frackit::Circle<" + std::to_string(worldDim) + ">"; });
     }
 
 } // end namespace detail

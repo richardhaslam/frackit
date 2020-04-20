@@ -69,6 +69,8 @@ void registerBox(py::module& module)
             "point"_a, "returns true if the given point is within the box (default tolerance)");
     cls.def("contains", py::overload_cast<const Point&, ctype>(&Box::contains, py::const_),
             "point"_a, "eps"_a, "returns true if the given point is within the box (given tolerance)");
+
+    cls.def("__repr__", [&] (const Box& b) { return "Frackit::Box"; });
 }
 
 } // end namespace Frackit::Python

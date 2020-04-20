@@ -72,6 +72,8 @@ namespace Detail {
                 "returns the local coordinate of the given point on the ellipse");
         cls.def("getAngle", &Ellipse::getAngle, "point"_a, "checkIfOnEllipse"_a = true,
                 "returns the angle w.r.t. the ellipse-local coordinate system of the given point");
+
+        cls.def("__repr__", [&] (const Ellipse& e) { return "Frackit::Ellipse<" + std::to_string(worldDim) + ">"; });
     }
 
 } // end namespace detail

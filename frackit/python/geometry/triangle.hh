@@ -68,6 +68,8 @@ namespace Detail {
         cls.def("contains", py::overload_cast<const Point&, ctype, bool>(&Triangle::contains, py::const_),
                 "point"_a, "eps"_a, "checkIfOnPlane"_a = true,
                 "returns true if the given point is on the triangle (given tolerance)");
+
+        cls.def("__repr__", [&] (const Triangle& t) { return "Frackit::Triangle<" + std::to_string(worldDim) + ">"; });
     }
 
 } // end namespace detail

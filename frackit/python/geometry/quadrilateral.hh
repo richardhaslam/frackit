@@ -68,6 +68,8 @@ namespace Detail {
         cls.def("contains", py::overload_cast<const Point&, ctype, bool>(&Quad::contains, py::const_),
                 "point"_a, "eps"_a, "checkIfOnPlane"_a = true,
                 "returns true if the given point is on the quadrilateral (given tolerance)");
+
+        cls.def("__repr__", [&] (const Quad& q) { return "Frackit::Quadrilateral<" + std::to_string(worldDim) + ">"; });
     }
 
 } // end namespace detail

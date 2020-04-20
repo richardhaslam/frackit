@@ -61,6 +61,20 @@ namespace Detail {
             cls.def("y", &Direction::y, "y-coordinate of the direction");
         if constexpr (worldDim > 2)
             cls.def("z", &Direction::z, "z-coordinate of the direction");
+
+        using std::to_string;
+        if constexpr (worldDim == 1)
+            cls.def("__repr__", [&] (const Direction& d)
+                                    { return "Frackit::Direction<1> (" + to_string(d.x()) + ")"; });
+        else if constexpr (worldDim == 2)
+            cls.def("__repr__", [&] (const Direction& d)
+                                    { return "Frackit::Direction<2> (" + to_string(d.x()) + ", "
+                                                                       + to_string(d.y()) + ")"; });
+        else
+            cls.def("__repr__", [&] (const Direction& d)
+                                    { return "Frackit::Direction<3> (" + to_string(d.x()) + ", "
+                                                                       + to_string(d.y()) + ", "
+                                                                       + to_string(d.z()) + ")"; });
     }
 
 } // end namespace detail

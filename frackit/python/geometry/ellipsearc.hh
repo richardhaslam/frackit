@@ -72,6 +72,8 @@ namespace Detail {
         // get a point from local coordinate or angle
         cls.def("getPoint", &EllipseArc::getPoint, "localCoordinate"_a,
                 "return the point on the ellipse arc for the given local coordinate (0.0 <= localCoordinate <= 1)");
+
+        cls.def("__repr__", [&] (const EllipseArc& ea) { return "Frackit::EllipseArc<" + std::to_string(worldDim) + ">"; });
     }
 
 } // end namespace detail

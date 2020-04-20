@@ -62,6 +62,8 @@ void registerDisk(py::module& module)
     // get a point from local coordinate or angle
     cls.def("getPoint", &Disk::getPoint, "angularFraction"_a, "radialFraction"_a,
             "return the point on the ellipse arc for the given angular and radial fractions (0.0 <= angular/radial fraction <= 1)");
+
+    cls.def("__repr__", [&] (const Disk& d) { return "Frackit::Disk"; });
 }
 
 } // end namespace Frackit::Python
