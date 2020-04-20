@@ -106,10 +106,22 @@ namespace Detail {
 
         // define retrieval functions for the coordinates
         cls.def("x", &Point::x, "x-coordinate of the point");
-        if constexpr (worldDim > 1)
-            cls.def("y", &Point::y, "y-coordinate of the point");
-        if constexpr (worldDim > 2)
-            cls.def("z", &Point::z, "z-coordinate of the point");
+        if constexpr (worldDim > 1) cls.def("y", &Point::y, "y-coordinate of the point");
+        if constexpr (worldDim > 2) cls.def("z", &Point::z, "z-coordinate of the point");
+
+        using std::to_string;
+        if constexpr (worldDim == 1)
+            cls.def("__repr__", [&] (const Point& p)
+                                    { return "Frackit::Point<1> (" + to_string(p.x()) + ")"; });
+        else if constexpr (worldDim == 2)
+            cls.def("__repr__", [&] (const Point& p)
+                                    { return "Frackit::Point<2> (" + to_string(p.x()) + ", "
+                                                                   + to_string(p.y()) + ")"; });
+        else
+            cls.def("__repr__", [&] (const Point& p)
+                                    { return "Frackit::Point<3> (" + to_string(p.x()) + ", "
+                                                                   + to_string(p.y()) + ", "
+                                                                   + to_string(p.z()) + ")"; });
     }
 
 } // end namespace detail
