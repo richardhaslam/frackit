@@ -1,7 +1,16 @@
 from ._geometry import *
 
+def raiseGeometryConstructorException(type, issue=""):
+    if issue == "notImplemented":
+        raise Exception("Requested specialization of " + type + " class is not yet implemented")
+    if issue == "numArgs":
+        raise Exception("Wrong number of arguments provided for construction of '" + type + "'")
+    else:
+        raise Exception("Could not construct '" + type + "' from provided argument(s)")
+
+
 ############################################
-# Argument-dependent n-d point construction
+# Argument-dependent n-d point construction"
 def Point(*args, **kwargs):
 
     numArgs = len(args) + len(kwargs)
@@ -32,7 +41,7 @@ def Vector(*args, **kwargs):
     numArgs = len(args) + len(kwargs)
     if numArgs == 0:
         raise Exception("Arguments needed for vector construction. For default-" + \
-                        "constructible vector use the dimension-specific " + \
+                        "constructible vectors use the dimension-specific " + \
                         "implementations Vector_1, Vector_2 or Vector_3");
 
     def makeVector(dim):
@@ -46,7 +55,7 @@ def Vector(*args, **kwargs):
             dim = len(args[0])
         else:
             try: dim = args[0].worldDimension
-            except: raise Exception("Invalid argument provided for Vector construction")
+            except: raiseGeometryConstructorException("vector")
         return makeVector(dim)
 
     # (maybe) construct from two points
@@ -57,3 +66,15 @@ def Vector(*args, **kwargs):
 
     # last option: construction from the raw coordinates
     return makeVector(numArgs)
+
+############################################
+# Argument-dependent n-d circle construction
+def Circle(*args, **kwargs):
+    numArgs = len(args) + len(kwargs)
+    if numArgs != 3: raiseGeometryConstructorException("circle", "numArgs")
+    try: dim = args[0].worldDimension
+    except: raiseGeometryConstructorException("circle")
+
+    if dim == 1: raiseGeometryConstructorException("circle", "notImplemented") # todo
+    elif dim == 2: raiseGeometryConstructorException("circle", "notImplemented") # todo
+    else: return Circle_3(*args, **kwargs)
