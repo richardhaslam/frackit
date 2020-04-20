@@ -23,6 +23,7 @@
 
 #include <pybind11/pybind11.h>
 #include <frackit/geometry/ellipsearc.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -43,6 +44,9 @@ namespace Detail {
         py::class_<EllipseArc, Ellipse> cls(module, className.c_str());
         cls.def(py::init<const Ellipse&, const Point&, const Point&>(),
                 "supportingEllipse"_a, "source"_a, "target"_a);
+
+        // dimensionality properties
+        registerDimensionProperties(cls);
 
         // member functions
         cls.def("name", &EllipseArc::name, "name of the geometry");

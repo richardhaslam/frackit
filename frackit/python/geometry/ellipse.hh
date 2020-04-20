@@ -22,9 +22,11 @@
 #include <string>
 
 #include <pybind11/pybind11.h>
+
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/ellipticalgeometry.hh>
 #include <frackit/geometry/ellipse.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -46,6 +48,9 @@ namespace Detail {
         py::class_<Ellipse, Geometry, EllipticalGeometry> cls(module, className.c_str());
         cls.def(py::init<const Point&, const Direction&, const Direction&, ctype, ctype>(),
                 "center"_a, "majorAxis"_a, "minorAxis"_a, "majorAxisLength"_a, "minorAxisLength"_a);
+
+        // dimensionality properties
+        registerDimensionProperties(cls);
 
         // member functions
         cls.def("name", &Ellipse::name, "name of the geometry");

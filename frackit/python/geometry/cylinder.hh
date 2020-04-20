@@ -24,6 +24,7 @@
 #include <pybind11/pybind11.h>
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/cylinder.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -44,8 +45,12 @@ void registerCylinder(py::module& module)
     cls.def(py::init<const Circle&, ctype>(), "bottomCircle"_a, "height"_a);
     cls.def(py::init<const Disk&, ctype>(), "bottom"_a, "height"_a);
 
+    // dimensionality properties
+    registerDimensionProperties(cls);
+
     // getter functions
     cls.def("name", &Cylinder::name, "name of the geometry class");
+
     cls.def("base1", &Cylinder::base1, "first basis vector orthogonal to center line");
     cls.def("base2", &Cylinder::base2, "second basis vector orthogonal to center line");
     cls.def("base3", &Cylinder::base3, "basis vector parallel to center line");

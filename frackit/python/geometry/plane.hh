@@ -25,6 +25,7 @@
 
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/plane.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -50,6 +51,9 @@ namespace Detail {
         cls.def(py::init<const Point&, const Point&,  const Point&>(), "p1"_a, "p2"_a, "p3"_a);
         cls.def(py::init<const Point&, const Direction&,  const Direction&, const Direction&>(),
                 "supportPoint"_a, "base1"_a, "base2"_a, "normal"_a);
+
+        // dimensionality properties
+        registerDimensionProperties(cls);
 
         // getter functions
         cls.def("name", &Plane::name, "name of the geometry");

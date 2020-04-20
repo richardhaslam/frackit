@@ -25,6 +25,7 @@
 
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/triangle.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -43,6 +44,9 @@ namespace Detail {
         std::string className("Triangle_" + std::to_string(worldDim));
         py::class_<Triangle, Geometry> cls(module, className.c_str());
         cls.def(py::init<const Point&, const Point&, const Point&>(), "p1"_a, "p2"_a, "p3"_a);
+
+        // dimensionality properties
+        registerDimensionProperties(cls);
 
         // member functions
         cls.def("name", &Triangle::name, "name of the geometry");

@@ -20,8 +20,10 @@
 #define FRACKIT_PYTHON_GEOMETRY_BOX_HH
 
 #include <pybind11/pybind11.h>
+
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/box.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -39,6 +41,9 @@ void registerBox(py::module& module)
     cls.def(py::init<ctype, ctype, ctype, ctype, ctype, ctype>(),
             "xmin"_a, "ymin"_a, "zmin"_a, "xmax"_a, "ymax"_a, "zmax"_a);
     cls.def(py::init<const Point&, Point>(), "firstCorner"_a, "secondCorner"_a);
+
+    // dimensionality properties
+    registerDimensionProperties(cls);
 
     // getter functions
     cls.def("name", &Box::name, "name of the geometry class");

@@ -20,8 +20,10 @@
 #define FRACKIT_PYTHON_GEOMETRY_CYLINDER_SURFACE_HH
 
 #include <pybind11/pybind11.h>
+
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -40,8 +42,12 @@ void registerCylinderSurface(py::module& module)
     cls.def(py::init<ctype, ctype>(), "radius"_a, "height"_a);
     cls.def(py::init<const Circle&, ctype>(), "bottomCircle"_a, "height"_a);
 
+    // dimensionality properties
+    registerDimensionProperties(cls);
+
     // getter functions
     cls.def("name", &CylinderSurface::name, "name of the geometry class");
+
     cls.def("base1", &CylinderSurface::base1, "first basis vector orthogonal to center line");
     cls.def("base2", &CylinderSurface::base2, "second basis vector orthogonal to center line");
     cls.def("base3", &CylinderSurface::base3, "basis vector parallel to center line");

@@ -25,6 +25,7 @@
 
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/segment.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -43,6 +44,9 @@ namespace Detail {
         std::string className("Segment_" + std::to_string(worldDim));
         py::class_<Segment, Geometry> cls(module, className.c_str());
         cls.def(py::init<const Point&, const Point&>(), "source"_a, "target"_a);
+
+        // dimensionality properties
+        registerDimensionProperties(cls);
 
         // member functions
         cls.def("name", &Segment::name, "name of the geometry");

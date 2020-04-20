@@ -29,6 +29,7 @@
 #include <frackit/precision/precision.hh>
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/vector.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -43,6 +44,9 @@ namespace Detail {
 
         std::string className("VectorBase_" + std::to_string(Base::worldDimension()));
         py::class_<Base, Geometry> cls(module, className.c_str());
+
+        // dimensionality properties
+        registerDimensionProperties(cls);
 
         cls.def("name", &Base::name, "name of the geometry class");
         cls.def("squaredLength", &Base::squaredLength, "squared length of the vector");
@@ -104,10 +108,8 @@ namespace Detail {
 
         // define retrieval functions for the coordinates
         cls.def("x", &Vector::x, "x-coordinate of the vector");
-        if constexpr (worldDim > 1)
-            cls.def("y", &Vector::y, "y-coordinate of the vector");
-        if constexpr (worldDim > 2)
-            cls.def("z", &Vector::z, "z-coordinate of the vector");
+        if constexpr (worldDim > 1) cls.def("y", &Vector::y, "y-coordinate of the vector");
+        if constexpr (worldDim > 2) cls.def("z", &Vector::z, "z-coordinate of the vector");
     }
 
 } // end namespace detail

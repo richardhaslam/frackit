@@ -25,6 +25,7 @@
 
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/line.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -44,6 +45,9 @@ namespace Detail {
         std::string className("Line_" + std::to_string(worldDim));
         py::class_<Line, Geometry> cls(module, className.c_str());
         cls.def(py::init<const Point&, const Direction&>(), "supportPoint"_a, "direction"_a);
+
+        // dimensionality properties
+        registerDimensionProperties(cls);
 
         // member functions
         cls.def("name", &Line::name, "name of the geometry");

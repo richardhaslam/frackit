@@ -24,6 +24,7 @@
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/ellipticalgeometry.hh>
 #include <frackit/geometry/disk.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -41,6 +42,9 @@ void registerDisk(py::module& module)
     // register class and define constructor
     py::class_<Disk, Geometry, EllipticalGeometry> cls(module, "Disk");
     cls.def(py::init<const Ellipse&>(), "ellipse"_a);
+
+    // dimensionality properties
+    registerDimensionProperties(cls);
 
     // member functions
     cls.def("name", &Disk::name, "name of the geometry");

@@ -22,9 +22,11 @@
 #include <string>
 
 #include <pybind11/pybind11.h>
+
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/ellipticalgeometry.hh>
 #include <frackit/geometry/circle.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -39,6 +41,9 @@ namespace Detail {
         using EllipticalGeometry = EllipticalGeometry<ctype, worldDim>;
         std::string className("Circle_" + std::to_string(worldDim));
         py::class_<Circle, Geometry, EllipticalGeometry> cls(module, className.c_str());
+
+        // dimensionality properties
+        registerDimensionProperties(cls);
 
         // define constructors
         using namespace py::literals;

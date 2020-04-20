@@ -28,6 +28,7 @@
 
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/point.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -48,6 +49,9 @@ namespace Detail {
         std::string className("PointBase_" + std::to_string(worldDim));
         py::class_<Base, Geometry> cls(module, className.c_str());
 
+        // dimensionality properties
+        registerDimensionProperties(cls);
+
         // member function
         cls.def("name", &Base::name, "name of the geometry class");
 
@@ -59,11 +63,9 @@ namespace Detail {
 
         // equality checks
         using namespace py::literals;
-        cls.def("isEqual",
-                py::overload_cast<const Impl&>(&Base::isEqual, py::const_),
+        cls.def("isEqual", py::overload_cast<const Impl&>(&Base::isEqual, py::const_),
                 "p"_a, "equality check with default tolerance");
-        cls.def("isEqual",
-                py::overload_cast<const Impl&, ctype>(&Base::isEqual, py::const_),
+        cls.def("isEqual", py::overload_cast<const Impl&, ctype>(&Base::isEqual, py::const_),
                 "p"_a, "b"_a, "equality check with default tolerance");
     }
 

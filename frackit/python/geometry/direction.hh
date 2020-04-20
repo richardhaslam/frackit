@@ -24,6 +24,7 @@
 #include <pybind11/pybind11.h>
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/direction.hh>
+#include "registerdimensionproperties.hh"
 
 namespace Frackit::Python {
 
@@ -43,6 +44,9 @@ namespace Detail {
         py::class_<Direction, Geometry> cls(module, className.c_str());
         cls.def(py::init<>());
         cls.def(py::init<const Vector&>(), "vector"_a);
+
+        // dimensionality properties
+        registerDimensionProperties(cls);
 
         // member functions
         cls.def("name", &Direction::name, "name of the geometry class");
