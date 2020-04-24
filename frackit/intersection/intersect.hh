@@ -49,7 +49,6 @@
 #include "algorithms/algo_disk_disk.hh"
 #include "algorithms/algo_cylsurface_disk.hh"
 #include "algorithms/algo_cylsurface_quadrilateral.hh"
-#include "algorithms/algo_shell_disk.hh"
 #include "algorithms/algo_face_planargeom.hh"
 
 namespace Frackit {
@@ -282,30 +281,6 @@ template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, CylinderSurface<ctype> >
 intersect(const Quadrilateral<ctype, 3>& quad, const CylinderSurface<ctype>& cylSurface, ctype eps)
 { return intersect(cylSurface, quad, eps); }
-
-/*!
- * \ingroup Intersection
- * \brief Intersect a disk and the boundary (TopoDS_Shell) of a solid.
- * \param disk The disk
- * \param shell The shell of a solid
- * \param eps Tolerance to be used for floating point comparisons
- */
-template<class ctype>
-Intersection< Disk<ctype>, TopoDS_Shell >
-intersect(const Disk<ctype>& disk, const TopoDS_Shell& shell, ctype eps)
-{ return IntersectionAlgorithms::intersect_shell_disk(shell, disk, eps); }
-
-/*!
- * \ingroup Intersection
- * \brief Intersect the boundary (TopoDS_Shell) of a solid and a disk.
- * \param shell The shell of a solid
- * \param disk The disk
- * \param eps Tolerance to be used for floating point comparisons
- */
-template<class ctype>
-Intersection< TopoDS_Shell, Disk<ctype> >
-intersect(const TopoDS_Shell& shell, const Disk<ctype>& disk, ctype eps)
-{ return intersect(disk, shell, eps); }
 
 /*!
  * \ingroup Intersection

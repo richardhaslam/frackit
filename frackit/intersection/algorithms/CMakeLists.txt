@@ -14,5 +14,4 @@ algo_quadrilateral_disk.hh
 algo_quadrilateral_line.hh
 algo_quadrilateral_quadrilateral.hh
 algo_segment_segment.hh
-algo_shell_disk.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/intersection/algorithms)

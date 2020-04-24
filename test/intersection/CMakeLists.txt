@@ -57,9 +57,4 @@ frackit_add_test(NAME test_quad_face_intersection
                  SOURCES test_quad_face_intersection.cc
                  LABELS intersection)
 
-# shell - disk
-frackit_add_test(NAME test_disk_shell_intersection
-                 SOURCES test_disk_shell_intersection.cc
-                 LABELS intersection)
-
 set(CMAKE_BUILD_TYPE Release)

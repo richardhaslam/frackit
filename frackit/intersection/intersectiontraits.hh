@@ -31,7 +31,6 @@
 
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Shell.hxx>
 
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/segment.hh>
@@ -210,23 +209,6 @@ struct IntersectionTraits< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
 template<class ctype>
 struct IntersectionTraits< Quadrilateral<ctype, 3>, CylinderSurface<ctype> >
 : public IntersectionTraits< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
-{};
-
-//! Result type of the intersection of a shell and a disk
-template<class ctype>
-struct IntersectionTraits< TopoDS_Shell, Disk<ctype> >
-{
-    using BaseType = std::variant< Point<ctype, 3>,
-                                   TopoDS_Edge,
-                                   TopoDS_Face,
-                                   EmptyIntersection<3> >;
-    using type = std::vector<BaseType>;
-};
-
-//! Result type of the intersection of a disk and a shell
-template<class ctype>
-struct IntersectionTraits< Disk<ctype>, TopoDS_Shell >
-: public IntersectionTraits< TopoDS_Shell, Disk<ctype> >
 {};
 
 namespace IntersectionDetail {
