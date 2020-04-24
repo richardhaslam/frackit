@@ -50,8 +50,7 @@
 #include "algorithms/algo_cylsurface_disk.hh"
 #include "algorithms/algo_cylsurface_quadrilateral.hh"
 #include "algorithms/algo_shell_disk.hh"
-#include "algorithms/algo_face_disk.hh"
-#include "algorithms/algo_face_quadrilateral.hh"
+#include "algorithms/algo_face_planargeom.hh"
 
 namespace Frackit {
 
@@ -318,7 +317,7 @@ intersect(const TopoDS_Shell& shell, const Disk<ctype>& disk, ctype eps)
 template<class ctype>
 Intersection< Disk<ctype>, TopoDS_Face >
 intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
-{ return IntersectionAlgorithms::intersect_face_disk(face, disk, eps); }
+{ return IntersectionAlgorithms::intersect_face_planarGeometry(face, disk, eps); }
 
 /*!
  * \ingroup Intersection
@@ -342,7 +341,7 @@ intersect(const TopoDS_Face& face, const Disk<ctype>& disk, ctype eps)
 template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, TopoDS_Face >
 intersect(const Quadrilateral<ctype, 3>& quad, const TopoDS_Face& face, ctype eps)
-{ return IntersectionAlgorithms::intersect_face_quadrilateral(face, quad, eps); }
+{ return IntersectionAlgorithms::intersect_face_planarGeometry(face, quad, eps); }
 
 /*!
  * \ingroup Intersection
