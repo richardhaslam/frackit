@@ -36,6 +36,8 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
+
+#include <frackit/occ/breputilities.hh>
 #include <frackit/precision/defaultepsilon.hh>
 
 #include "intersectiontraits.hh"
@@ -49,7 +51,7 @@
 #include "algorithms/algo_disk_disk.hh"
 #include "algorithms/algo_cylsurface_disk.hh"
 #include "algorithms/algo_cylsurface_quadrilateral.hh"
-#include "algorithms/algo_face_planargeom.hh"
+#include "algorithms/algo_face_face_3d.hh"
 
 namespace Frackit {
 
@@ -292,7 +294,8 @@ intersect(const Quadrilateral<ctype, 3>& quad, const CylinderSurface<ctype>& cyl
 template<class ctype>
 Intersection< Disk<ctype>, TopoDS_Face >
 intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
-{ return IntersectionAlgorithms::intersect_face_planarGeometry(face, disk, eps); }
+{ return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(disk), face, eps); }
+
 
 /*!
  * \ingroup Intersection
@@ -316,7 +319,7 @@ intersect(const TopoDS_Face& face, const Disk<ctype>& disk, ctype eps)
 template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, TopoDS_Face >
 intersect(const Quadrilateral<ctype, 3>& quad, const TopoDS_Face& face, ctype eps)
-{ return IntersectionAlgorithms::intersect_face_planarGeometry(face, quad, eps); }
+{ return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(quad), face, eps); }
 
 /*!
  * \ingroup Intersection

@@ -32,6 +32,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
+#include <frackit/common/extractctype.hh>
+
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/plane.hh>
@@ -213,16 +215,21 @@ struct IntersectionTraits< Quadrilateral<ctype, 3>, CylinderSurface<ctype> >
 
 namespace IntersectionDetail {
     template<class ctype>
-    using FaceIntersectionWith2d = std::vector< std::variant< Point<ctype, 3>,
-                                                              TopoDS_Edge,
-                                                              TopoDS_Face,
-                                                              EmptyIntersection<3> > >;
+    using FaceFaceIntersection = std::vector< std::variant< Point<ctype, 3>,
+                                                            TopoDS_Edge,
+                                                            TopoDS_Face,
+                                                            EmptyIntersection<3> > >;
 } // end namespace IntersectionDetail
+
+//! Result type of the intersection of two TopoDS_Face
+template<>
+struct IntersectionTraits< TopoDS_Face, TopoDS_Face >
+{ using type = IntersectionDetail::FaceFaceIntersection<typename CoordinateTypeTraits<TopoDS_Face>::type>; };
 
 //! Result type of the intersection of a face and a disk
 template<class ctype>
 struct IntersectionTraits< TopoDS_Face, Disk<ctype> >
-{ using type = IntersectionDetail::FaceIntersectionWith2d<ctype>; };
+{ using type = IntersectionDetail::FaceFaceIntersection<ctype>; };
 
 //! Result type of the intersection of a disk and a face
 template<class ctype>
@@ -233,7 +240,7 @@ struct IntersectionTraits< Disk<ctype>, TopoDS_Face >
 //! Result type of the intersection of a quadrilateral and a face
 template<class ctype>
 struct IntersectionTraits< Quadrilateral<ctype, 3>, TopoDS_Face >
-{ using type = IntersectionDetail::FaceIntersectionWith2d<ctype>; };
+{ using type = IntersectionDetail::FaceFaceIntersection<ctype>; };
 
 //! Result type of the intersection of a face and a quadrilateral
 template<class ctype>
