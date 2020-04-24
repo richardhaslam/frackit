@@ -1,3 +1,5 @@
+#include <string>
+#include <exception>
 #include <TopExp.hxx>
 
 #include <frackit/geometry/disk.hh>
@@ -80,7 +82,7 @@ int main()
         Disk disk(Point(0.5*f, 0.5*f, 0.0), e1, e3, 0.25*f, 0.25*f);
         auto result = intersect(disk, quadFace);
         if (result.size() != 1)
-            throw std::runtime_error("Unexpected intersection size");
+            throw std::runtime_error("Unexpected intersection size (= " + std::to_string(result.size()));
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::edge); }, result[0]);
 
         using std::abs;
@@ -136,6 +138,17 @@ int main()
         if ( abs(Frackit::computeArea(std::get<TopoDS_Face>(result[0])) - f*f) > eps*eps )
             throw std::runtime_error("Unexpected intersection face area");
         std::cout << "Test 5 passed" << std::endl;
+
+        // quad corner touches disk center
+        Direction e11(Vector(1.0, -1.0, 0.0));
+        Disk disk7(Point(0.0, 0.0, 0.0), e11, e3, 1.0*f, 1.0*f);
+        result = intersect(disk7, quadFace);
+        if (result.size() != 1)
+            throw std::runtime_error("Unexpected intersection size");
+        std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::point); }, result[0]);
+        if ( !Point(0.0, 0.0, 0.0).isEqual( std::get<Point>(result[0]), eps ) )
+            throw std::runtime_error("Unexpected intersection point coordinatess");
+        std::cout << "Test 6 passed" << std::endl;
 
         std::cout << "All tests passed"  << std::endl;
     }
