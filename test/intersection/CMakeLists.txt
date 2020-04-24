@@ -57,4 +57,9 @@ frackit_add_test(NAME test_quad_face_intersection
                  SOURCES test_quad_face_intersection.cc
                  LABELS intersection)
 
+# face - face
+frackit_add_test(NAME test_face_face_intersection
+                 SOURCES test_face_face_intersection.cc
+                 LABELS intersection)
+
 set(CMAKE_BUILD_TYPE Release)
