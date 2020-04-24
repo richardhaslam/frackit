@@ -36,8 +36,10 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometryutilities/name.hh>
 
 #include <frackit/occ/breputilities.hh>
+#include <frackit/common/extractctype.hh>
 #include <frackit/precision/defaultepsilon.hh>
 
 #include "intersectiontraits.hh"
@@ -63,14 +65,15 @@ namespace Frackit {
  * \param eps Tolerance to be used for floating point comparison
  */
 template<class Geom1, class Geom2>
-EmptyIntersection<0> intersect(const Geom1& geo1,
-                               const Geom2& geo2,
-                               typename Geom1::ctype eps)
+Intersection< Geom1, Geom2 >
+intersect(const Geom1& geo1,
+          const Geom2& geo2,
+          typename CoordinateTypeTraits<Geom1>::type eps)
 {
     std::string msg = "Intersection algorithm between \"";
-    msg += geo1.name();
+    msg += geometryName(geo1);
     msg += "\" and \"";
-    msg += geo2.name();
+    msg += geometryName(geo2);
     msg += "\" not implemented";
     throw std::runtime_error(msg);
 }
