@@ -296,7 +296,18 @@ Intersection< Disk<ctype>, TopoDS_Face >
 intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
 { return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(disk), face, eps); }
 
-
+/*!
+ * \ingroup Intersection
+ * \brief Intersect two face shapes.
+ * \param face1 The first face shape
+ * \param face2 The second face shape
+ * \param eps Tolerance to be used for floating point comparisons
+ * \todo TODO: How to distinguish here if 2d setups are considered?
+ */
+template<class ctype>
+Intersection< TopoDS_Face, TopoDS_Face >
+intersect(const TopoDS_Face& face1, const TopoDS_Face& face2, ctype eps)
+{ return IntersectionAlgorithms::intersect_face_face_3d(face1, face2, eps); }
 /*!
  * \ingroup Intersection
  * \brief Intersect a face shape and a disk.
