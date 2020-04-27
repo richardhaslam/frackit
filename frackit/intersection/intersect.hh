@@ -57,6 +57,10 @@
 
 namespace Frackit {
 
+// Forward declaration of the interface without given tolerance
+template<class Geom1, class Geom2>
+auto intersect(const Geom1& geo1, const Geom2& geo2);
+
 /*!
  * \ingroup Intersection
  * \brief Interface for intersecting two geometries.
@@ -65,10 +69,9 @@ namespace Frackit {
  * \param eps Tolerance to be used for floating point comparison
  */
 template<class Geom1, class Geom2>
-Intersection< Geom1, Geom2 >
-intersect(const Geom1& geo1,
-          const Geom2& geo2,
-          typename CoordinateTypeTraits<Geom1>::type eps)
+EmptyIntersection<0> intersect(const Geom1& geo1,
+                               const Geom2& geo2,
+                               typename CoordinateTypeTraits<Geom1>::type eps)
 {
     std::string msg = "Intersection algorithm between \"";
     msg += geometryName(geo1);
@@ -76,22 +79,6 @@ intersect(const Geom1& geo1,
     msg += geometryName(geo2);
     msg += "\" not implemented";
     throw std::runtime_error(msg);
-}
-
-/*!
- * \ingroup Intersection
- * \brief Interface for intersecting two geometries.
- * \param geo1 The first geometry
- * \param geo2 The second geometry
- * \note This overload selects a default tolerance
- */
-template<class Geom1, class Geom2>
-auto intersect(const Geom1& geo1, const Geom2& geo2)
-{
-    using std::min;
-    const auto eps1 = defaultEpsilon(geo1);
-    const auto eps2 = defaultEpsilon(geo2);
-    return intersect(geo1, geo2, min(eps1, eps2));
 }
 
 /*!
@@ -346,6 +333,22 @@ template<class ctype>
 Intersection< TopoDS_Face, Quadrilateral<ctype, 3> >
 intersect(const TopoDS_Face& face, const Quadrilateral<ctype, 3>& quad, ctype eps)
 { return intersect(quad, face, eps); }
+
+/*!
+ * \ingroup Intersection
+ * \brief Interface for intersecting two geometries.
+ * \param geo1 The first geometry
+ * \param geo2 The second geometry
+ * \note This overload selects a default tolerance
+ */
+template<class Geom1, class Geom2>
+auto intersect(const Geom1& geo1, const Geom2& geo2)
+{
+    using std::min;
+    const auto eps1 = defaultEpsilon(geo1);
+    const auto eps2 = defaultEpsilon(geo2);
+    return intersect(geo1, geo2, min(eps1, eps2));
+}
 
 } // end namespace Frackit
 
