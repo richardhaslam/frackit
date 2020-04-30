@@ -36,6 +36,8 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
+
+#include <frackit/occ/breputilities.hh>
 #include <frackit/precision/defaultepsilon.hh>
 
 #include "intersectiontraits.hh"
@@ -49,9 +51,7 @@
 #include "algorithms/algo_disk_disk.hh"
 #include "algorithms/algo_cylsurface_disk.hh"
 #include "algorithms/algo_cylsurface_quadrilateral.hh"
-#include "algorithms/algo_shell_disk.hh"
-#include "algorithms/algo_face_disk.hh"
-#include "algorithms/algo_face_quadrilateral.hh"
+#include "algorithms/algo_face_face_3d.hh"
 
 namespace Frackit {
 
@@ -286,30 +286,6 @@ intersect(const Quadrilateral<ctype, 3>& quad, const CylinderSurface<ctype>& cyl
 
 /*!
  * \ingroup Intersection
- * \brief Intersect a disk and the boundary (TopoDS_Shell) of a solid.
- * \param disk The disk
- * \param shell The shell of a solid
- * \param eps Tolerance to be used for floating point comparisons
- */
-template<class ctype>
-Intersection< Disk<ctype>, TopoDS_Shell >
-intersect(const Disk<ctype>& disk, const TopoDS_Shell& shell, ctype eps)
-{ return IntersectionAlgorithms::intersect_shell_disk(shell, disk, eps); }
-
-/*!
- * \ingroup Intersection
- * \brief Intersect the boundary (TopoDS_Shell) of a solid and a disk.
- * \param shell The shell of a solid
- * \param disk The disk
- * \param eps Tolerance to be used for floating point comparisons
- */
-template<class ctype>
-Intersection< TopoDS_Shell, Disk<ctype> >
-intersect(const TopoDS_Shell& shell, const Disk<ctype>& disk, ctype eps)
-{ return intersect(disk, shell, eps); }
-
-/*!
- * \ingroup Intersection
  * \brief Intersect a disk and a face shape.
  * \param disk The disk
  * \param face The face shape
@@ -318,8 +294,20 @@ intersect(const TopoDS_Shell& shell, const Disk<ctype>& disk, ctype eps)
 template<class ctype>
 Intersection< Disk<ctype>, TopoDS_Face >
 intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
-{ return IntersectionAlgorithms::intersect_face_disk(face, disk, eps); }
+{ return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(disk), face, eps); }
 
+/*!
+ * \ingroup Intersection
+ * \brief Intersect two face shapes.
+ * \param face1 The first face shape
+ * \param face2 The second face shape
+ * \param eps Tolerance to be used for floating point comparisons
+ * \todo TODO: How to distinguish here if 2d setups are considered?
+ */
+template<class ctype>
+Intersection< TopoDS_Face, TopoDS_Face >
+intersect(const TopoDS_Face& face1, const TopoDS_Face& face2, ctype eps)
+{ return IntersectionAlgorithms::intersect_face_face_3d(face1, face2, eps); }
 /*!
  * \ingroup Intersection
  * \brief Intersect a face shape and a disk.
@@ -342,7 +330,7 @@ intersect(const TopoDS_Face& face, const Disk<ctype>& disk, ctype eps)
 template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, TopoDS_Face >
 intersect(const Quadrilateral<ctype, 3>& quad, const TopoDS_Face& face, ctype eps)
-{ return IntersectionAlgorithms::intersect_face_quadrilateral(face, quad, eps); }
+{ return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(quad), face, eps); }
 
 /*!
  * \ingroup Intersection

@@ -4,10 +4,7 @@ algo_cylsurface_planargeom.hh
 algo_cylsurface_quadrilateral.hh
 algo_disk_disk.hh
 algo_disk_line.hh
-algo_face_disk.hh
-algo_face_planargeom.hh
-algo_face_quadrilateral.hh
-algo_find_touching_points.hh
+algo_face_face_3d.hh
 algo_planargeom_line.hh
 algo_planargeom_planargeom.hh
 algo_plane_line.hh
@@ -16,5 +13,4 @@ algo_quadrilateral_disk.hh
 algo_quadrilateral_line.hh
 algo_quadrilateral_quadrilateral.hh
 algo_segment_segment.hh
-algo_shell_disk.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/intersection/algorithms)
