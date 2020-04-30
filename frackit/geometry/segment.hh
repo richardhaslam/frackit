@@ -135,10 +135,7 @@ public:
      * \note This overload uses a default epsilon
      */
     bool contains(const Point& p, bool checkIfOnLine = true) const
-    {
-        const auto length = Vector(source(), target()).length();
-        return contains(p, Precision<ctype>::confusion()*length, checkIfOnLine);
-    }
+    { return contains(p, Precision<ctype>::confusion()*length(), checkIfOnLine); }
 
     //! Returns the point on the segment for the given parameter
     //! \note It has to be 0.0 <= param <= 1.0, where 0.0

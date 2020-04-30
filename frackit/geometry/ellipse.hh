@@ -81,7 +81,7 @@ public:
      * \param checkIfOnPlane Flag that can be set to false in case
      *                       it is known that the point is in-plane.
      * \note It is recommended to use epsilon values independent of
-     *       the size of the disk here, as the coordinates are normalized
+     *       the size of the ellipse here, as the coordinates are normalized
      *       by the minor & major axis lengths.
      */
     bool contains(const Point& p, ctype eps, bool checkIfOnPlane = true) const

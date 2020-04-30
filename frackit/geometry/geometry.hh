@@ -36,6 +36,8 @@ class Geometry
 {
 
 public:
+    //! Abstract base classes need virtual destructors
+    virtual ~Geometry() {}
 
     //! Return the name of this geometry
     virtual std::string name() const = 0;

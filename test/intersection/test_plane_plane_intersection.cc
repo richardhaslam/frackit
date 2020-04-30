@@ -1,4 +1,5 @@
 #include <frackit/geometry/plane.hh>
+#include <frackit/precision/precision.hh>
 #include <frackit/intersection/intersect.hh>
 
 enum IntersectionType { line, plane, empty };
@@ -66,18 +67,19 @@ int main()
     for (auto f : scales)
     {
         std::cout << "Checking scale factor " << f << std::endl;
+        const auto eps = Frackit::Precision<ctype>::confusion()*f;
 
         Direction e1(Vector(1.0, 0.0, 0.0));
         Direction e3(Vector(0.0, 0.0, 1.0));
         Plane plane1(Point(1.0*f, 1.0*f, 1.0*f), e3);
 
         // plane that intersects in the y-axis
-        auto result = intersect(plane1, Plane(Point(1.0*f, 1.0*f, 1.0*f), e1));
+        auto result = intersect(plane1, Plane(Point(1.0*f, 1.0*f, 1.0*f), e1), eps);
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::line); }, result);
         std::visit([&] (auto&& is) { checkLineOrientation(is); }, result);
 
         // plane that does not intersect
-        result = intersect(plane1, Plane(Point(2.0*f, 2.0*f, 2.0*f), e3));
+        result = intersect(plane1, Plane(Point(2.0*f, 2.0*f, 2.0*f), e3), eps);
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::empty); }, result);
 
         // "identical" plane
@@ -87,7 +89,7 @@ int main()
         b1 *= f; b2 *= f;
         sp += b1; sp += b2;
 
-        result = intersect(plane1, Plane(sp, e3));
+        result = intersect(plane1, Plane(sp, e3), eps);
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::plane); }, result);
 
         std::cout << "All tests passed"  << std::endl;

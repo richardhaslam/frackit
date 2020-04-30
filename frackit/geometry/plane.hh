@@ -152,9 +152,12 @@ public:
     //! Returns the projection of a line l onto the plane
     Line projection(const Line& l) const
     {
-        const auto newSupport = projection(l.supportPoint());
+        const auto newSupport = projection(l.supportingPoint());
+
         auto p2 = l.supportingPoint();
-        p2 += l.direction();
+        p2 += Vector(l.direction());
+        if (p2.isEqual(newSupport))
+            p2 += Vector(l.direction());
 
         return Line(newSupport, Vector(newSupport, projection(p2)));
     }
@@ -173,13 +176,8 @@ public:
      */
     bool contains(const Point& p, ctype eps = Precision<ctype>::confusion()) const
     {
-        auto d = Vector(supportPoint_, p);
-        const auto length = d.length();
-        if (length != 0.0)
-            d /= length;
-
         using std::abs;
-        return abs(d*Vector(normal_)) < Precision<ctype>::confusion();
+        return abs( Vector(supportPoint_, p)*Vector(normal_) ) < eps;
     }
 
 private:
