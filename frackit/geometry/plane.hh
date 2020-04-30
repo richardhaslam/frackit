@@ -152,8 +152,10 @@ public:
     //! Returns the projection of a line l onto the plane
     Line projection(const Line& l) const
     {
-        const auto newSupport = projection(l.supportingPoint());
+        // a degenerate line results if the line is orthogonal to this plane
+        assert( !Vector(l.direction()).isParallel(Vector(normal())) );
 
+        const auto newSupport = projection(l.supportingPoint());
         auto p2 = l.supportingPoint();
         p2 += Vector(l.direction());
         if (p2.isEqual(newSupport))
