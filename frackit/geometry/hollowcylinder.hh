@@ -27,6 +27,7 @@
 #include <cmath>
 #include <string>
 #include <memory>
+#include <stdexcept>
 
 #include <frackit/precision/precision.hh>
 
@@ -102,7 +103,10 @@ public:
     , outerLateralFace_(nullptr)
     , outerRadius_(outerRadius)
     , height_(height)
-    {}
+    {
+        if (outerRadius < innerRadius)
+            throw std::runtime_error("Outer radius must be greater than inner radius");
+    }
 
     //! Return the name of the geometry
     std::string name() const override { return "HollowCylinder"; }
