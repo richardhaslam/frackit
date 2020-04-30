@@ -10,6 +10,7 @@ ellipsearc.hh
 ellipse.hh
 ellipticalgeometry.hh
 geometry.hh
+hollowcylinder.hh
 line.hh
 plane.hh
 point.hh
