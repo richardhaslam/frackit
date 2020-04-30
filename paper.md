@@ -40,7 +40,7 @@ Moreover, it is often required that the computational meshes used for the differ
 domains are conforming in the sense that the faces of the discretization used for
 the bulk medium coincide with the discretization of the fractures (see image below).
 
-![Exemplary grids used with numerical schemes that require conformity of the discretizations.](doc/img/examplegrids.png)
+![Exemplary grids used with numerical schemes that require conformity of the bulk discretization with the fracture planes. The network shown on the left is taken from @Flemisch2018Benchmarks.](doc/img/examplegrids.png)
 
 Information on the in-situ locations of fractures is typically sparse and
 difficult to determine. In response to this, a common approach is to study
@@ -155,7 +155,7 @@ using Distro = std::normal_distribution<ctype>;
 Distro strikeAngleDistro(toRadians(45.0), // mean value
                          toRadians(5.0)); // standard deviation
 Distro dipAngleDistro(toRadians(45.0), // mean value
-                     toRadians(5.0));  // standard deviation
+                      toRadians(5.0));  // standard deviation
 Distro edgeLengthDistro(0.5,  // mean value
                         0.1); // standard deviation
 
@@ -300,7 +300,7 @@ of the `ContainedEntityNetwork` class. This can be used to define arbitrarily ma
 The `ContainedEntityNetwork` computes and stores the fragments of all entities
 and sub-domains resulting from mutual intersection. Output routines for instances
 of this class are implemented, which generate geometry files that are ready to be
-meshed using designated tools, for example, [Gmsh][2].
+meshed using designated tools, as for example, [Gmsh][2].
 
 The image below illustrates the workflow chosen in this example, using ``Frackit``
 to generate a random fracture network, [Gmsh][2] to mesh the resulting geometry,
@@ -320,9 +320,9 @@ We are planning to add fracture network characterization capabilities, such as
 the detection of isolated clusters of fractures or the determination of connectivity
 measures. In order to do this efficiently, we want to integrate data
 structures and algorithms for graphs, together with functionalities to translate
-the generated fracture networks into graph representations. Besides this, we want
-to develop python bindings for ``Frackit`` to provide an easy-to-use and high-level
-interface.
+the generated fracture networks into graph representations. Besides this, we are
+currently developing python bindings for ``Frackit`` to provide an easy-to-use and
+high-level interface.
 
 
 # Acknowledgements
