@@ -2,6 +2,11 @@
 # tests for intersections of different geometries #
 ###################################################
 
+# intersection angles
+frackit_add_test(NAME test_intersectionangle
+                 SOURCES test_intersectionangle.cc
+                 LABELS intersection)
+
 # segment - segment
 frackit_add_test(NAME test_segment_segment_intersection
                  SOURCES test_segment_segment_intersection.cc

@@ -33,6 +33,7 @@
 #include <vector>
 #include <stdexcept>
 #include <limits>
+#include <type_traits>
 
 #include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
@@ -352,13 +353,57 @@ public:
     }
 
     /*!
+     * \brief Returns the angle in which two face shapes touch in a point.
+     * \param face1 The first face shape
+     * \param face2 The second face shape
+     * \param isPoint The touching point
+     */
+    ctype operator() (const TopoDS_Face& face1,
+                      const TopoDS_Face& face2,
+                      const Point<ctype, 3>& isPoint) const
+    {
+        // get the parameters of this point on the face via orthogonal projection
+        const auto geomSurface1 = OCCUtilities::getGeomHandle(face1);
+        const auto geomSurface2 = OCCUtilities::getGeomHandle(face2);
+        GeomAPI_ProjectPointOnSurf projection1(OCCUtilities::point(isPoint), geomSurface1);
+        GeomAPI_ProjectPointOnSurf projection2(OCCUtilities::point(isPoint), geomSurface2);
+
+        // since the intersection point should have been on the face, distance < eps!
+        assert(projection1.LowerDistance() < defaultEpsilon(face1));
+        assert(projection2.LowerDistance() < defaultEpsilon(face2));
+
+        ctype paramU1, paramV1, paramU2, paramV2;
+        projection1.LowerDistanceParameters(paramU1, paramV1);
+        projection2.LowerDistanceParameters(paramU2, paramV2);
+
+
+        // construct the tangent planes of the faces in the point
+        gp_Pnt p1, p2;
+        gp_Vec baseVec11, baseVec12, baseVec21, baseVec22;
+        geomSurface1->D1(projection1, paramV1, p1, baseVec11, baseVec12);
+        geomSurface2->D1(projection2, paramV2, p2, baseVec21, baseVec22);
+
+        using Direction = Direction<ctype, 3>;
+        const auto base11 = OCCUtilities::vector(baseVec11);
+        const auto base12 = OCCUtilities::vector(baseVec12);
+        const Plane<ctype, 3> tangentPlane1(isPoint, Direction(crossProduct(base11, base12)));
+
+        const auto base21 = OCCUtilities::vector(baseVec21);
+        const auto base22 = OCCUtilities::vector(baseVec22);
+        const Plane<ctype, 3> tangentPlane2(isPoint, Direction(crossProduct(base21, base22)));
+
+        return (*this)(tangentPlane1, tangentPlane2);
+    }
+
+    /*!
      * \brief Returns the angle in which a face shape
      *        and a planar 2d geometry intersect in a point.
      * \param face The face shape
      * \param geo The planar geometry
      * \param isPoint The touching point
      */
-    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    template<class Geo,
+             std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const TopoDS_Face& face,
                       const Geo& geo,
                       const Point<ctype, 3>& isPoint) const
@@ -401,7 +446,9 @@ public:
      * \param geo The planar geometry
      * \param isEdge The intersection edge
      */
-    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    template<class Geo,
+             std::enable_if_t<IsPlanarGeometry<Geo>::value
+                              && !(std::is_same_v<Geo, TopoDS_Face>), int> = 0>
     ctype operator() (const TopoDS_Face& face,
                       const Geo& geo,
                       const TopoDS_Edge& isEdge) const
@@ -427,7 +474,9 @@ public:
      * \param geo The planar geometry
      * \param isFace The intersection face
      */
-    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    template<class Geo,
+             std::enable_if_t<IsPlanarGeometry<Geo>::value
+                              && !(std::is_same_v<Geo, TopoDS_Face>), int> = 0>
     ctype operator() (const TopoDS_Face& face,
                       const Geo& geo,
                       const TopoDS_Face& isFace) const
