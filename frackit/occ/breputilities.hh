@@ -170,7 +170,7 @@ namespace OCCUtilities {
     template<class ctype>
     TopoDS_Solid getShape(const Cylinder<ctype>& cylinder)
     {
-        const auto& lateral = cylinder.lateralFace();
+        const auto& lateral = cylinder.mantle();
         const auto& bottom = lateral.lowerBoundingCircle();
         auto axis = direction(bottom.normal());
         auto base1 = direction(bottom.base1());

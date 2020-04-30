@@ -123,7 +123,7 @@ int main()
         // enforce constraints w.r.t. the domain boundaries
         if (!constraintsOnDomain.evaluate(domain.topFace(), disk)) continue;
         // enforce constraints w.r.t. the domain boundaries
-        if (!constraintsOnDomain.evaluate(domain.lateralFace(), disk)) continue;
+        if (!constraintsOnDomain.evaluate(domain.mantle(), disk)) continue;
 
         // reject if intersection with domain is too small (here: 0.2m²)
         const auto containedArea = computeContainedMagnitude(disk, domain);

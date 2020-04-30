@@ -131,7 +131,7 @@ public:
     //! Return the bottom bounding face
     const Disk& bottomFace() const { return bottom_; }
     //! Return the lateral surface
-    CylinderMantle lateralFace() const
+    CylinderMantle mantle() const
     {
         return CylinderMantle(Circle(bottom_.center(),
                                      bottom_.normal(),

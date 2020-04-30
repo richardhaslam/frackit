@@ -113,19 +113,19 @@ int main()
     // Test constraints w.r.t. cylinder
     Frackit::Cylinder<ctype> cylinder(0.5, 1.0);
     Disk disk10(Point(0.0, 0.0, 0.5), e1, e2, 2.0, 2.0);
-    if (!constraints.evaluate(cylinder.lateralFace(), disk10))
+    if (!constraints.evaluate(cylinder.mantle(), disk10))
         throw std::runtime_error("False positive intersection distance violation");
     std::cout << "Test 10 passed" << std::endl;
 
     // violates intersection distance constraint
     Disk disk11(Point(0.0, 0.0, 0.951), e1, e2, 2.0, 2.0);
-    if (constraints.evaluate(cylinder.lateralFace(), disk11))
+    if (constraints.evaluate(cylinder.mantle(), disk11))
         throw std::runtime_error("Did not detect intersection distance violation");
     std::cout << "Test 11 passed" << std::endl;
 
     // just doesn't violate intersection distance constraint
     Disk disk12(Point(0.0, 0.0, 0.849), e1, e2, 2.0, 2.0);
-    if (!constraints.evaluate(cylinder.lateralFace(), disk12))
+    if (!constraints.evaluate(cylinder.mantle(), disk12))
         throw std::runtime_error("False positive intersection distance violation");
     std::cout << "Test 12 passed" << std::endl;
 
