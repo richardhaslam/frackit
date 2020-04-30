@@ -248,9 +248,9 @@ Please have a look at this before you start coding your contributions.
 Ongoing Developments
 ====================
 
+* Python bindings (is currently being developed in !63)
 * Kernel for fracture network characterization (e.g. connectivity)
 * Capabilities for translation of fracture networks into graphs, allowing for efficient characterization of the network based on its graph representation.
-* Python bindings
 
 References
 ====================
