@@ -35,18 +35,18 @@ namespace Frackit {
 
 /*!
  * \ingroup Sampling
- * \brief Overload of the free function to create point
- *        samplers, for the provided geometry, with uniform
+ * \brief Free function to create point samplers,
+ *        for the provided geometry, with uniform
  *        distributions for all coordinate directions.
  */
-template< class Geometry >
-auto makeUniformPointSampler(const Geometry& geometry)
+template< class Geometry, class... Args >
+auto makeUniformPointSampler(const Geometry& geometry, Args&&... args)
 {
     using ctype = typename CoordinateTypeTraits<Geometry>::type;
     static constexpr auto dim = DimensionalityTraits<Geometry>::geometryDimension();
 
     using Traits = UniformPointSamplerTraits<ctype, dim>;
-    return makePointSampler<Traits>(geometry);
+    return makePointSampler<Traits>(geometry, std::forward<Args...>(args)...);
 }
 
 } // end namespace Frackit

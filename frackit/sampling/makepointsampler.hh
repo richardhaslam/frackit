@@ -24,6 +24,10 @@
 #ifndef FRACKIT_MAKE_POINT_SAMPLER_HH
 #define FRACKIT_MAKE_POINT_SAMPLER_HH
 
+#include <frackit/geometry/box.hh>
+#include <frackit/geometry/cylinder.hh>
+#include <frackit/geometry/hollowcylinder.hh>
+
 #include "cylinderpointsampler.hh"
 #include "boxpointsampler.hh"
 
@@ -46,6 +50,30 @@ makePointSampler(const Cylinder<ctype>& cylinder)
                     typename Traits::DistributionBase1(0.0, cylinder.radius()*cylinder.radius()),
                     typename Traits::DistributionBase2(0.0, 2*M_PI),
                     typename Traits::DistributionBase3(0.0, cylinder.height()) );
+}
+
+/*!
+ * \ingroup Sampling
+ * \brief Overload of the free function to create point
+ *        samplers for hollow cylinders.
+ * \note Sampling along the radius coordinate occurs in the interval [r_1^2, r_2^2]
+ *       and the square root is taken after sampling. Thus, the provided distribution
+ *       must be for the squared radius rather than the radius itself. Here, r_1 and
+ *       r_2 refer to the inner and outer radii of the hollow cylinder.
+ */
+template< class Traits, class ctype >
+CylinderPointSampler< ctype, Traits >
+makePointSampler(const HollowCylinder<ctype>& hollowCylinder)
+{
+    const auto r1 = hollowCylinder.innerRadius();
+    const auto r2 = hollowCylinder.outerRadius();
+    const auto& fullCylinder = hollowCylinder.fullCylinder();
+
+    using Sampler = CylinderPointSampler<ctype, Traits>;
+    return Sampler( fullCylinder,
+                    typename Traits::DistributionBase1(r1*r1, r2*r2),
+                    typename Traits::DistributionBase2(0.0, 2*M_PI),
+                    typename Traits::DistributionBase3(0.0, fullCylinder.height()) );
 }
 
 /*!

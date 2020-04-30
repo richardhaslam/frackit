@@ -9,7 +9,7 @@ multigeometrysampler.hh
 pointsampler.hh
 quadrilateralsampler.hh
 samplingstrategy.hh
-sequentialsamlingstrategy.hh
+sequentialsamplingstrategy.hh
 status.hh
 uniformpointsamplertraits.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/sampling)
