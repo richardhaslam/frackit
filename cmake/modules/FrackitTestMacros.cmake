@@ -1,3 +1,8 @@
+# The code in this file has been inspired or copied from the dune-common
+# module of the dune project (https://gitlab.dune-project.org/core/dune-common),
+# in particular from the following file:
+# https://gitlab.dune-project.org/core/dune-common/-/blob/master/cmake/modules/DuneTestMacros.cmake
+
 # enable the testing suite on the CMake side.
 enable_testing()
 
