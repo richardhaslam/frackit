@@ -50,7 +50,7 @@
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/line.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 
 #include <frackit/geometryutilities/name.hh>
 #include <frackit/common/extractdimension.hh>
@@ -173,34 +173,34 @@ public:
      *        2-dimensional geometry in 2d space
      *        and a cylinder surface touch in a point.
      * \param geo The planar geometry
-     * \param cylSurface The cylinder surface
+     * \param cylMantle The cylinder surface (mantle)
      * \param isPoint The touching point
      */
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
-                      const CylinderSurface<ctype>& cylSurface,
+                      const CylinderMantle<ctype>& cylMantle,
                       const Point<ctype, 3>& isPoint) const
-    { return (*this)(geo.supportingPlane(), cylSurface.getTangentPlane(isPoint)); }
+    { return (*this)(geo.supportingPlane(), cylMantle.getTangentPlane(isPoint)); }
 
     /*!
      * \brief Returns the angle in which a cylinder
      *        surface and planar 2-dimensional geometry
      *        in 2d space touch in a point.
-     * \param cylSurface The cylinder surface
+     * \param cylMantle The lateral cylinder surface (mantle)
      * \param geo The planar geometry
      * \param isPoint The touching point
      */
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
-    ctype operator() (const CylinderSurface<ctype>& cylSurface,
+    ctype operator() (const CylinderMantle<ctype>& cylMantle,
                       const Geo& geo,
                       const Point<ctype, 3>& isPoint) const
-    { return(*this)(geo, cylSurface, isPoint); }
+    { return(*this)(geo, cylMantle, isPoint); }
 
     /*!
      * \brief Returns the angle in which a planar 2-dimensional geometry
      *        and a cylinder surface intersect in a segment.
      * \param geo The planar geometry
-     * \param cylSurface The cylinder surface
+     * \param cylMantle The lateral cylinder surface (mantle)
      * \param isSeg The intersection segment
      * \note An intersection segment on the cylinder surface can only
      *       occur if the intersection is parallel to the cylinder axis.
@@ -210,14 +210,14 @@ public:
      */
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
-                      const CylinderSurface<ctype>& cylSurface,
+                      const CylinderMantle<ctype>& cylMantle,
                       const Segment<ctype, 3>& isSeg) const
-    { return (*this)(geo.supportingPlane(), cylSurface.getTangentPlane(isSeg.source())); }
+    { return (*this)(geo.supportingPlane(), cylMantle.getTangentPlane(isSeg.source())); }
 
     /*!
      * \brief Returns the angle in which a cylinder surface and
      *        a planar 2-dimensional geometry intersect in a segment.
-     * \param cylSurface The cylinder surface
+     * \param cylMantle The lateral cylinder surface (mantle)
      * \param geo The planar geometry
      * \param isSeg The intersection segment
      * \note An intersection segment on the cylinder surface can only
@@ -227,21 +227,21 @@ public:
      *       arbitrary point on the segment; here: the first corner.
      */
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
-    ctype operator() (const CylinderSurface<ctype>& cylSurface,
+    ctype operator() (const CylinderMantle<ctype>& cylMantle,
                       const Geo& geo,
                       const Segment<ctype, 3>& isSeg) const
-    { return (*this)(geo, cylSurface, isSeg); }
+    { return (*this)(geo, cylMantle, isSeg); }
 
     /*!
      * \brief Returns the angle in which a planar 2-dimensional
      *        geometry and a cylinder surface intersect in an ellipse arc.
      * \param geo The planar geometry
-     * \param cylSurface The cylinder surface
+     * \param cylMantle The lateral cylinder surface (mantle)
      * \param isArc The intersection arc
      */
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
-                      const CylinderSurface<ctype>& cylSurface,
+                      const CylinderMantle<ctype>& cylMantle,
                       const EllipseArc<ctype, 3>& isArc) const
     {
         // use the minimum angle between the geometry plane and the
@@ -254,7 +254,7 @@ public:
         for (auto param : params)
         {
             const auto p = isArc.getPoint(param);
-            const auto tangentPlane = cylSurface.getTangentPlane(p);
+            const auto tangentPlane = cylMantle.getTangentPlane(p);
             resultAngle = min(resultAngle, (*this)(geoPlane, tangentPlane));
         }
 
@@ -264,26 +264,26 @@ public:
     /*!
      * \brief Returns the angle in which a cyliner surface and
      *        a planar 2-dimensional geometry intersect in an ellipse arc.
-     * \param cylSurface The cylinder surface
+     * \param cylMantle The lateral cylinder surface (mantle)
      * \param geo The planar geometry
      * \param isArc The intersection arc
      */
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
-    ctype operator() (const CylinderSurface<ctype>& cylSurface,
+    ctype operator() (const CylinderMantle<ctype>& cylMantle,
                       const Geo& geo,
                       const EllipseArc<ctype, 3>& isArc) const
-    { return (*this)(geo, cylSurface, isArc); }
+    { return (*this)(geo, cylMantle, isArc); }
 
     /*!
      * \brief Returns the angle in which a planar 2-dimensional geometry
      *        and a cylinder surface intersect in an ellipse.
-     * \param cylSurface The cylinder surface
+     * \param cylMantle The lateral cylinder surface (mantle)
      * \param geo The planar geometry
      * \param isEllipse The intersection ellipse
      */
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
     ctype operator() (const Geo& geo,
-                      const CylinderSurface<ctype>& cylSurface,
+                      const CylinderMantle<ctype>& cylMantle,
                       const Ellipse<ctype, 3>& isEllipse) const
     {
         // use the minimum angle between the geometry plane and the
@@ -298,7 +298,7 @@ public:
         for (auto param : params)
         {
             const auto p = isEllipse.getPoint(param);
-            const auto tangentPlane = cylSurface.getTangentPlane(p);
+            const auto tangentPlane = cylMantle.getTangentPlane(p);
             resultAngle = min(resultAngle, (*this)(geoPlane, tangentPlane));
         }
 
@@ -309,14 +309,14 @@ public:
      * \brief Returns the angle in which a cylinder surface
      *        and a planar 2-dimensional geometry intersect in an ellipse.
      * \param geo The planar geometry
-     * \param cylSurface The cylinder surface
+     * \param cylMantle The lateral cylinder surface (mantle)
      * \param isEllipse The intersection ellipse
      */
     template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
-    ctype operator() (const CylinderSurface<ctype>& cylSurface,
+    ctype operator() (const CylinderMantle<ctype>& cylMantle,
                       const Geo& geo,
                       const Ellipse<ctype, 3>& isEllipse) const
-    { return (*this)(geo, cylSurface, isEllipse); }
+    { return (*this)(geo, cylMantle, isEllipse); }
 
     /*!
      * \brief Returns the angle in which a planar 2d geometry

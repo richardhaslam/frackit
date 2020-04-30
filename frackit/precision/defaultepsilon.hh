@@ -38,7 +38,7 @@
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 #include <frackit/geometry/box.hh>
 
 #include "precision.hh"
@@ -106,10 +106,10 @@ ctype defaultEpsilon(const Quadrilateral<ctype, 3>& quad)
  * \brief Default epsilon for operations on cylinder surfaces.
  */
 template<class ctype>
-ctype defaultEpsilon(const CylinderSurface<ctype>& cylSurface)
+ctype defaultEpsilon(const CylinderMantle<ctype>& cylMantle)
 {
     return Precision<ctype>::confusion()
-           *0.5*(cylSurface.radius() + cylSurface.height());
+           *0.5*(cylMantle.radius() + cylMantle.height());
 }
 
 /*!

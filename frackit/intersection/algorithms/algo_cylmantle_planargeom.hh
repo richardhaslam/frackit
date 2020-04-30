@@ -18,12 +18,11 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Contains the intersection algorithm
- *        between a lateral cylinder surface
- *        and a planar (2d) geometry in 3d space.
+ * \brief Contains the intersection algorithm between the mantle of
+ *        cylinder and a planar (2d) geometry in 3d space.
  */
-#ifndef FRACKIT_CYLINDERSURFACE_PLANAR_GEOMETRY_INTERSECTION_HH
-#define FRACKIT_CYLINDERSURFACE_PLANAR_GEOMETRY_INTERSECTION_HH
+#ifndef FRACKIT_CYLINDERMANTLE_PLANAR_GEOMETRY_INTERSECTION_HH
+#define FRACKIT_CYLINDERMANTLE_PLANAR_GEOMETRY_INTERSECTION_HH
 
 #include <vector>
 #include <algorithm>
@@ -37,7 +36,7 @@
 #include <frackit/occ/geomutilities.hh>
 #include <frackit/occ/gputilities.hh>
 
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 #include <frackit/common/extractdimension.hh>
 
 #include <frackit/intersection/intersectiontraits.hh>
@@ -54,24 +53,24 @@ namespace IntersectionAlgorithms {
  *        - ellipse arc(s)
  *        - segment(s)
  *        - touching points
- * \param cylSurface The lateral surface of a cylinder
+ * \param cylMantle The lateral surface (mantle) of a cylinder
  * \param faceGeom The planar geometry
  * \param charLength A characteristic length scale of faceGeom
  * \param eps Tolerance to be used for boolean operations
  */
 template<class ctype, class PlanarGeometry>
-Intersection< CylinderSurface<ctype>, PlanarGeometry >
-intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurface,
-                                         const PlanarGeometry& faceGeom,
-                                         ctype charLength,
-                                         ctype eps)
+Intersection< CylinderMantle<ctype>, PlanarGeometry >
+intersect_cylinderMantle_planarGeometry(const CylinderMantle<ctype>& cylMantle,
+                                        const PlanarGeometry& faceGeom,
+                                        ctype charLength,
+                                        ctype eps)
 {
     static_assert( (DimensionalityTraits<PlanarGeometry>::geometryDimension() == 2 &&
                     DimensionalityTraits<PlanarGeometry>::worldDimension() == 3),
                   "This algorithm expects planar, two-dimensional geometries in 3d space");
 
     // possible result geometries
-    using ResultType = Intersection< CylinderSurface<ctype>, PlanarGeometry >;
+    using ResultType = Intersection< CylinderMantle<ctype>, PlanarGeometry >;
     using Point = Frackit::Point<ctype, 3>;
     using Segment = Frackit::Segment<ctype, 3>;
     using EllipseArc = Frackit::EllipseArc<ctype, 3>;
@@ -81,8 +80,8 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
 
     // Intersect the planar geometry with the cylinder
     const auto faceShape = OCCUtilities::getShape(faceGeom);
-    const auto cylinder = OCCUtilities::getShape(cylSurface.cylinder());
-    const auto cylLateralFace = OCCUtilities::getShape(cylSurface);
+    const auto cylinder = OCCUtilities::getShape(cylMantle.cylinder());
+    const auto cylLateralFace = OCCUtilities::getShape(cylMantle);
 
     const auto containedFaceShape = OCCUtilities::intersect(faceShape, cylinder, 0.1*eps);
     auto containedFaces = OCCUtilities::getFaces(containedFaceShape);
@@ -100,7 +99,7 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
     for (const auto& v : faceGeomWireCutVertices)
     {
         const auto p = OCCUtilities::point(v);
-        if (cylSurface.contains(p, eps))
+        if (cylMantle.contains(p, eps))
             if (std::none_of(touchCandidates.begin(),
                              touchCandidates.end(),
                              [&p, eps] (const auto& tp) { return tp.isEqual(p, eps); }))
@@ -122,19 +121,19 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
     // there are intersection edges, get orientation of the geometries
     const auto& faceGeomPlane = faceGeom.supportingPlane();
     gp_Vec dn(OCCUtilities::direction(faceGeomPlane.normal()));
-    gp_Vec ca(OCCUtilities::direction(cylSurface.direction()));
+    gp_Vec ca(OCCUtilities::direction(cylMantle.direction()));
     const bool faceGeomIsParallel = dn.IsNormal(ca, Precision<ctype>::angular());
     const bool faceGeomIsOrthogonal = dn.IsParallel(ca, Precision<ctype>::angular());
 
     // ... and (maybe) the ellipse on which the results live
     Ellipse infEllipse;
     if (faceGeomIsOrthogonal)
-        infEllipse = Ellipse(faceGeomPlane.projection(cylSurface.centerSegment().source()),
-                             cylSurface.base1(), cylSurface.base2(),
-                             cylSurface.radius(), cylSurface.radius());
+        infEllipse = Ellipse(faceGeomPlane.projection(cylMantle.centerSegment().source()),
+                             cylMantle.base1(), cylMantle.base2(),
+                             cylMantle.radius(), cylMantle.radius());
     else if (!faceGeomIsParallel)
     {
-        Vector cylDir(cylSurface.direction());
+        Vector cylDir(cylMantle.direction());
         cylDir *= charLength;
 
         Direction majAxis(Vector(faceGeom.center(), faceGeomPlane.projection(faceGeom.center() + cylDir)));
@@ -144,10 +143,10 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
 
         using std::cos;
         using std::abs;
-        const ctype majAxisLength = abs(cylSurface.radius()/cos(dn.Angle(ca)));
-        const auto& cylAxisLine = cylSurface.centerSegment().supportingLine();
+        const ctype majAxisLength = abs(cylMantle.radius()/cos(dn.Angle(ca)));
+        const auto& cylAxisLine = cylMantle.centerSegment().supportingLine();
         const auto center = std::get<Point>(intersect(faceGeomPlane, cylAxisLine, eps));
-        infEllipse = Ellipse(center, majAxis, minAxis, majAxisLength, cylSurface.radius());
+        infEllipse = Ellipse(center, majAxis, minAxis, majAxisLength, cylMantle.radius());
     }
 
     // intersect the wire of the contained face shape with cylinder surface
@@ -228,4 +227,4 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_CYLINDERSURFACE_PLANAR_GEOMETRY_INTERSECTION_HH
+#endif // FRACKIT_CYLINDERMANTLE_PLANAR_GEOMETRY_INTERSECTION_HH

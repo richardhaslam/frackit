@@ -36,12 +36,12 @@
 #include "vector.hh"
 #include "circle.hh"
 #include "disk.hh"
-#include "cylindersurface.hh"
+#include "cylindermantle.hh"
 
 namespace Frackit {
 
 // forward declaration
-template<class CT> class CylinderSurface;
+template<class CT> class CylinderMantle;
 
 /*!
  * \ingroup Geometry
@@ -67,7 +67,7 @@ public:
     using Direction = Frackit::Direction<ctype, 3>;
     using Circle = Frackit::Circle<ctype, 3>;
     using Disk = Frackit::Disk<ctype>;
-    using CylinderSurface = Frackit::CylinderSurface<ctype>;
+    using CylinderMantle = Frackit::CylinderMantle<ctype>;
 
     /*!
      * \brief Constructor.
@@ -131,11 +131,11 @@ public:
     //! Return the bottom bounding face
     const Disk& bottomFace() const { return bottom_; }
     //! Return the lateral surface
-    CylinderSurface lateralFace() const
+    CylinderMantle lateralFace() const
     {
-        return CylinderSurface(Circle(bottom_.center(),
-                                      bottom_.normal(),
-                                      bottom_.majorAxisLength()), height());
+        return CylinderMantle(Circle(bottom_.center(),
+                                     bottom_.normal(),
+                                     bottom_.majorAxisLength()), height());
     }
 
     //! Return the segment describing the center of the cylinder

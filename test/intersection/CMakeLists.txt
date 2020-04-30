@@ -43,13 +43,13 @@ frackit_add_test(NAME test_quad_disk_intersection
                  LABELS intersection)
 
 # cylinder surface - disk
-frackit_add_test(NAME test_cylindersurface_disk_intersection
-                 SOURCES test_cylindersurface_disk_intersection.cc
+frackit_add_test(NAME test_cylindermantle_disk_intersection
+                 SOURCES test_cylindermantle_disk_intersection.cc
                  LABELS intersection)
 
 # cylinder surface - quadrilateral
-frackit_add_test(NAME test_cylindersurface_quad_intersection
-                 SOURCES test_cylindersurface_quad_intersection.cc
+frackit_add_test(NAME test_cylindermantle_quad_intersection
+                 SOURCES test_cylindermantle_quad_intersection.cc
                  LABELS intersection)
 
 # face - disk

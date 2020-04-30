@@ -83,7 +83,7 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylinder.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 #include <frackit/geometry/box.hh>
 
 #include <frackit/geometryutilities/name.hh>
@@ -187,18 +187,18 @@ namespace OCCUtilities {
 
     /*!
      * \ingroup OpenCascade
-     * \brief Get the BRep of a cylinder surface.
+     * \brief Get the BRep of the mantle of a cylinder.
      */
     template<class ctype>
-    TopoDS_Face getShape(const CylinderSurface<ctype>& cylSurface)
+    TopoDS_Face getShape(const CylinderMantle<ctype>& cylMantle)
     {
-        const auto& bottom = cylSurface.lowerBoundingCircle();
+        const auto& bottom = cylMantle.lowerBoundingCircle();
         auto axis = direction(bottom.normal());
         auto base1 = direction(bottom.base1());
         auto center = point(bottom.center());
         BRepPrimAPI_MakeCylinder makeCylinder(gp_Ax2(center, axis, base1),
                                               bottom.radius(),
-                                              cylSurface.height(),
+                                              cylMantle.height(),
                                               2.0*M_PI);
         makeCylinder.Build();
         if (!makeCylinder.IsDone())

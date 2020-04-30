@@ -36,7 +36,7 @@
 #include <frackit/precision/precision.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 
 #include <frackit/geometryutilities/name.hh>
 
@@ -123,28 +123,28 @@ computeDistanceToBoundary(const Point<ctype1, 3>& p,
  * \brief Compute the distance of a geometry
  *        to the bounding circles of a cylinder surface.
  * \param geo The geometry
- * \param cylSurface The cylinder surface
+ * \param cylMantle The lateral cylinder surface (mantle)
  * \param deflection The epsilon used in the BrepExtrema command
  * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
  * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
  */
 template<class Geo, class ctype>
-Impl::PCT<Geo, CylinderSurface<ctype>>
+Impl::PCT<Geo, CylinderMantle<ctype>>
 computeDistanceToBoundary(const Geo& geo,
-                          const CylinderSurface<ctype>& cylSurface,
-                          Impl::PCT<Geo, CylinderSurface<ctype>> deflection
-                            = Precision<Impl::PCT<Geo, CylinderSurface<ctype>>>::confusion(),
+                          const CylinderMantle<ctype>& cylMantle,
+                          Impl::PCT<Geo, CylinderMantle<ctype>> deflection
+                            = Precision<Impl::PCT<Geo, CylinderMantle<ctype>>>::confusion(),
                           Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                           Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
 {
     using std::min;
     return min(computeDistance(OCCUtilities::getShape(geo),
-                               OCCUtilities::getShape(cylSurface.lowerBoundingCircle()),
+                               OCCUtilities::getShape(cylMantle.lowerBoundingCircle()),
                                deflection,
                                extFlag,
                                extAlgo),
                computeDistance(OCCUtilities::getShape(geo),
-                               OCCUtilities::getShape(cylSurface.upperBoundingCircle()),
+                               OCCUtilities::getShape(cylMantle.upperBoundingCircle()),
                                deflection,
                                extFlag,
                                extAlgo));

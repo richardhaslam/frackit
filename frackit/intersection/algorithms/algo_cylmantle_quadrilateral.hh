@@ -18,20 +18,19 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Contains the intersection algorithm
- *        between a lateral cylinder surface and
- *        a quadrilateral in 3d space.
+ * \brief Contains the intersection algorithm between the mantle
+ *        of a cylinder and a quadrilateral in 3d space.
  */
-#ifndef FRACKIT_CYLINDERSURFACE_QUADRILATERAL_INTERSECTION_HH
-#define FRACKIT_CYLINDERSURFACE_QUADRILATERAL_INTERSECTION_HH
+#ifndef FRACKIT_CYLINDERMANTLE_QUADRILATERAL_INTERSECTION_HH
+#define FRACKIT_CYLINDERMANTLE_QUADRILATERAL_INTERSECTION_HH
 
 #include <cmath>
 
 #include <frackit/geometry/quadrilateral.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 
 #include <frackit/intersection/intersectiontraits.hh>
-#include "algo_cylsurface_planargeom.hh"
+#include "algo_cylmantle_planargeom.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
@@ -43,19 +42,19 @@ namespace IntersectionAlgorithms {
 //! - segment(s)
 //! - touching points
 template<class ctype>
-Intersection< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
-intersect_cylinderSurface_quadrilateral(const CylinderSurface<ctype>& cylSurface,
-                                        const Quadrilateral<ctype, 3>& quad,
-                                        ctype eps)
+Intersection< CylinderMantle<ctype>, Quadrilateral<ctype, 3> >
+intersect_cylinderMantle_quadrilateral(const CylinderMantle<ctype>& cylMantle,
+                                       const Quadrilateral<ctype, 3>& quad,
+                                       ctype eps)
 {
     using std::max;
     ctype charLength = 0.0;
     for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
         charLength = max(charLength, quad.edge(edgeIdx).length());
-    return intersect_cylinderSurface_planarGeometry(cylSurface, quad, charLength, eps);
+    return intersect_cylinderMantle_planarGeometry(cylMantle, quad, charLength, eps);
 }
 
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_CYLINDERSURFACE_QUADRILATERAL_INTERSECTION_HH
+#endif // FRACKIT_CYLINDERMANTLE_QUADRILATERAL_INTERSECTION_HH

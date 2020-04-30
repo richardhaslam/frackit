@@ -19,11 +19,11 @@
 /*!
  * \file
  * \ingroup Geometry
- * \brief Class that describes the lateral
- *        surface of a cylinder in 3d space.
+ * \brief Class that describes the lateral surface (mantle)
+ *        of a cylinder in 3d space.
  */
-#ifndef FRACKIT_CYLINDER_SURFACE_HH
-#define FRACKIT_CYLINDER_SURFACE_HH
+#ifndef FRACKIT_CYLINDER_MANTLE_HH
+#define FRACKIT_CYLINDER_MANTLE_HH
 
 #include <cmath>
 #include <cassert>
@@ -48,11 +48,11 @@ template<class CT> class Cylinder;
 /*!
  * \ingroup Geometry
  * \brief Class that describes the lateral
- *        surface of a cylinder in 3d space.
+ *        surface of a cylinder (mantle) in 3d space.
  * \tparam CT The type used for coordinates
  */
 template<class CT>
-class CylinderSurface : public Geometry
+class CylinderMantle : public Geometry
 {
     using Vector = typename Frackit::Direction<CT, 3>::Vector;
 
@@ -77,7 +77,7 @@ public:
      * \param radius The cylinder radius
      * \param height The cylinder height.
      */
-    CylinderSurface(ctype radius, ctype height)
+    CylinderMantle(ctype radius, ctype height)
     : height_(height)
     , top_(Point({0.0, 0.0, height}), Direction(Vector(0.0, 0.0, 1.0)), radius)
     , bottom_(Point({0.0, 0.0, 0.0}), Direction(Vector(0.0, 0.0, 1.0)), radius)
@@ -89,14 +89,14 @@ public:
      *               rim of the bottom boundary
      * \param height The cylinder height.
      */
-    CylinderSurface(const Circle& bottom, ctype height)
+    CylinderMantle(const Circle& bottom, ctype height)
     : height_(height)
     , top_(makeTopCircle_(bottom, height))
     , bottom_(bottom)
     {}
 
     //! Return the name of this geometry.
-    std::string name() const override { return "CylinderSurface"; }
+    std::string name() const override { return "CylinderMantle"; }
 
     //! Return the first basis vector (horizontal axis of the cylinder)
     const Direction& base1() const { return bottom_.base1(); }
@@ -192,4 +192,4 @@ private:
 
 } // end namespace Frackit
 
-#endif // FRACKIT_CYLINDER_SURFACE_HH
+#endif // FRACKIT_CYLINDER_MANTLE_HH

@@ -18,17 +18,17 @@
  *****************************************************************************/
 /*!
  * \file
- * \brief Contains the intersection algorithm
- *        between a lateral cylinder surface and a disk.
+ * \brief Contains the intersection algorithm between the mantle of
+ *        a cylinder surface and a disk.
  */
-#ifndef FRACKIT_CYLINDERSURFACE_DISK_INTERSECTION_HH
-#define FRACKIT_CYLINDERSURFACE_DISK_INTERSECTION_HH
+#ifndef FRACKIT_CYLINDERMANTLE_DISK_INTERSECTION_HH
+#define FRACKIT_CYLINDERMANTLE_DISK_INTERSECTION_HH
 
 #include <frackit/geometry/disk.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 
 #include <frackit/intersection/intersectiontraits.hh>
-#include "algo_cylsurface_planargeom.hh"
+#include "algo_cylmantle_planargeom.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
@@ -40,13 +40,13 @@ namespace IntersectionAlgorithms {
 //! - segment(s)
 //! - touching points
 template<class ctype>
-Intersection< CylinderSurface<ctype>, Disk<ctype> >
-intersect_cylinderSurface_disk(const CylinderSurface<ctype>& cylSurface,
+Intersection< CylinderMantle<ctype>, Disk<ctype> >
+intersect_cylinderMantle_disk(const CylinderMantle<ctype>& cylMantle,
                                const Disk<ctype>& disk,
                                ctype eps)
-{ return intersect_cylinderSurface_planarGeometry(cylSurface, disk, disk.majorAxisLength(), eps); }
+{ return intersect_cylinderMantle_planarGeometry(cylMantle, disk, disk.majorAxisLength(), eps); }
 
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_CYLINDERSURFACE_DISK_INTERSECTION_HH
+#endif // FRACKIT_CYLINDERMANTLE_DISK_INTERSECTION_HH

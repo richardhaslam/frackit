@@ -94,9 +94,9 @@ int main()
     if (geometry->name() != "EllipseArc_3d") throw std::runtime_error("EllipseArc name wrong");
 
     // test cylinder surface
-    auto cylSurf = cylinder.lateralFace();
-    geometry = &cylSurf;
-    if (geometry->name() != "CylinderSurface") throw std::runtime_error("CylinderSurface name wrong");
+    auto cylMantle = cylinder.lateralFace();
+    geometry = &cylMantle;
+    if (geometry->name() != "CylinderMantle") throw std::runtime_error("CylinderMantle name wrong");
 
     // test circle
     Circle<ctype, 3> circle(p1, plane.normal(), 1.0);

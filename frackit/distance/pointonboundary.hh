@@ -36,7 +36,7 @@
 
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/disk.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 
 #include <frackit/geometryutilities/name.hh>
 
@@ -96,19 +96,19 @@ bool pointOnGeometryBoundary(const Point<ctype1, 3>& p,
 
 /*!
  * \ingroup Distance
- * \brief Evaluate if a point lies on the boundary of a cylinder surface.
+ * \brief Evaluate if a point lies on the boundary of a cylinder mantle.
  * \param p The point
- * \param cylSurface The cylinder surface
+ * \param cylMantle The lateral surface (mantle) of a cylinder
  * \param eps Epsilon value to be used for the check
  */
 template<class ctype1, int wd, class ctype2>
 bool pointOnGeometryBoundary(const Point<ctype1, wd>& p,
-                             const CylinderSurface<ctype2>& cylSurface,
+                             const CylinderMantle<ctype2>& cylMantle,
                              ctype2 eps)
 {
-    if (pointOnGeometry(p, cylSurface.upperBoundingCircle(), eps))
+    if (pointOnGeometry(p, cylMantle.upperBoundingCircle(), eps))
         return true;
-    return pointOnGeometry(p, cylSurface.lowerBoundingCircle(), eps);
+    return pointOnGeometry(p, cylMantle.lowerBoundingCircle(), eps);
 }
 
 /*!

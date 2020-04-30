@@ -3,7 +3,7 @@ box.hh
 circle.hh
 CMakeLists.txt
 cylinder.hh
-cylindersurface.hh
+cylindermantle.hh
 direction.hh
 disk.hh
 ellipsearc.hh

@@ -37,12 +37,12 @@
 #include "circle.hh"
 #include "vector.hh"
 #include "cylinder.hh"
-#include "cylindersurface.hh"
+#include "cylindermantle.hh"
 
 namespace Frackit {
 
 // forward declaration
-template<class CT> class CylinderSurface;
+template<class CT> class CylinderMantle;
 
 /*!
  * \ingroup Geometry
@@ -68,7 +68,7 @@ public:
     using Direction = Frackit::Direction<ctype, 3>;
     using Circle = Frackit::Circle<ctype, 3>;
     using Cylinder = Frackit::Cylinder<ctype>;
-    using CylinderSurface = Frackit::CylinderSurface<ctype>;
+    using CylinderMantle = Frackit::CylinderMantle<ctype>;
 
     /*!
      * \brief Constructor.
@@ -138,18 +138,18 @@ public:
     }
 
     //! Return inner mantle surface
-    const CylinderSurface& innerMantle() const
+    const CylinderMantle& innerMantle() const
     {
         if (!innerMantle_)
-            innerMantle_ = std::make_unique<CylinderSurface>(bottomInnerCircle(), height());
+            innerMantle_ = std::make_unique<CylinderMantle>(bottomInnerCircle(), height());
         return *innerMantle_;
     }
 
     //! Return outer mantle surface
-    const CylinderSurface& outerMantle() const
+    const CylinderMantle& outerMantle() const
     {
         if (!outerMantle_)
-            outerMantle_ = std::make_unique<CylinderSurface>(bottomOuterCircle(), height());
+            outerMantle_ = std::make_unique<CylinderMantle>(bottomOuterCircle(), height());
         return *outerMantle_;
     }
 
@@ -215,8 +215,8 @@ private:
     mutable std::unique_ptr<Circle> topOuterCircle_;
 
     // the mantle surfaces are constructed on demand
-    mutable std::unique_ptr<CylinderSurface> innerMantle_;
-    mutable std::unique_ptr<CylinderSurface> outerMantle_;
+    mutable std::unique_ptr<CylinderMantle> innerMantle_;
+    mutable std::unique_ptr<CylinderMantle> outerMantle_;
 
     ctype outerRadius_;
     ctype height_;

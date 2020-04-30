@@ -35,7 +35,7 @@
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 #include <frackit/geometryutilities/name.hh>
 
 #include <frackit/occ/breputilities.hh>
@@ -51,8 +51,8 @@
 #include "algorithms/algo_quadrilateral_quadrilateral.hh"
 #include "algorithms/algo_quadrilateral_disk.hh"
 #include "algorithms/algo_disk_disk.hh"
-#include "algorithms/algo_cylsurface_disk.hh"
-#include "algorithms/algo_cylsurface_quadrilateral.hh"
+#include "algorithms/algo_cylmantle_disk.hh"
+#include "algorithms/algo_cylmantle_quadrilateral.hh"
 #include "algorithms/algo_face_face_3d.hh"
 
 namespace Frackit {
@@ -229,50 +229,50 @@ intersect(const Disk<ctype>& disk, const Quadrilateral<ctype, 3>& quad, ctype ep
 /*!
  * \ingroup Intersection
  * \brief Intersect a lateral cylinder surface and a disk.
- * \param cylSurface The lateral cylinder surface
+ * \param cylMantle The lateral cylinder surface (mantle)
  * \param disk The disk
  * \param eps Tolerance to be used for floating point comparisons
  */
 template<class ctype>
-Intersection< CylinderSurface<ctype>, Disk<ctype> >
-intersect(const CylinderSurface<ctype>& cylSurface, const Disk<ctype>& disk, ctype eps)
-{ return IntersectionAlgorithms::intersect_cylinderSurface_disk(cylSurface, disk, eps); }
+Intersection< CylinderMantle<ctype>, Disk<ctype> >
+intersect(const CylinderMantle<ctype>& cylMantle, const Disk<ctype>& disk, ctype eps)
+{ return IntersectionAlgorithms::intersect_cylinderMantle_disk(cylMantle, disk, eps); }
 
 /*!
  * \ingroup Intersection
  * \brief Intersect a disk and a lateral cylinder surface.
  * \param disk The disk
- * \param cylSurface The lateral cylinder surface
+ * \param cylMantle The lateral cylinder surface (mantle)
  * \param eps Tolerance to be used for floating point comparisons
  */
 template<class ctype>
-Intersection< Disk<ctype>, CylinderSurface<ctype> >
-intersect(const Disk<ctype>& disk, const CylinderSurface<ctype>& cylSurface, ctype eps)
-{ return intersect(cylSurface, disk, eps); }
+Intersection< Disk<ctype>, CylinderMantle<ctype> >
+intersect(const Disk<ctype>& disk, const CylinderMantle<ctype>& cylMantle, ctype eps)
+{ return intersect(cylMantle, disk, eps); }
 
 /*!
  * \ingroup Intersection
  * \brief Intersect a lateral cylinder surface and a quadrilateral.
- * \param cylSurface The lateral cylinder surface
+ * \param cylMantle The lateral cylinder surface (mantle)
  * \param quad The quadrilateral
  * \param eps Tolerance to be used for floating point comparisons
  */
 template<class ctype>
-Intersection< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
-intersect(const CylinderSurface<ctype>& cylSurface, const Quadrilateral<ctype, 3>& quad, ctype eps)
-{ return IntersectionAlgorithms::intersect_cylinderSurface_quadrilateral(cylSurface, quad, eps); }
+Intersection< CylinderMantle<ctype>, Quadrilateral<ctype, 3> >
+intersect(const CylinderMantle<ctype>& cylMantle, const Quadrilateral<ctype, 3>& quad, ctype eps)
+{ return IntersectionAlgorithms::intersect_cylinderMantle_quadrilateral(cylMantle, quad, eps); }
 
 /*!
  * \ingroup Intersection
  * \brief Intersect a quadrilateral and a lateral cylinder surface.
  * \param quad The quadrilateral
- * \param cylSurface The lateral cylinder surface
+ * \param cylMantle The lateral cylinder surface (mantle)
  * \param eps Tolerance to be used for floating point comparisons
  */
 template<class ctype>
-Intersection< Quadrilateral<ctype, 3>, CylinderSurface<ctype> >
-intersect(const Quadrilateral<ctype, 3>& quad, const CylinderSurface<ctype>& cylSurface, ctype eps)
-{ return intersect(cylSurface, quad, eps); }
+Intersection< Quadrilateral<ctype, 3>, CylinderMantle<ctype> >
+intersect(const Quadrilateral<ctype, 3>& quad, const CylinderMantle<ctype>& cylMantle, ctype eps)
+{ return intersect(cylMantle, quad, eps); }
 
 /*!
  * \ingroup Intersection

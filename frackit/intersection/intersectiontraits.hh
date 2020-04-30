@@ -41,7 +41,7 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
-#include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/cylindermantle.hh>
 
 #include "emptyintersection.hh"
 
@@ -169,12 +169,12 @@ struct IntersectionTraits< Disk<ctype>, Quadrilateral<ctype, 3> >
 : public IntersectionTraits< Quadrilateral<ctype, 3>, Disk<ctype> >
 {};
 
-//! Result type of the intersection of a cylinder surface and a disk
+//! Result type of the intersection of a lateral cylinder surface and a disk
 template<class ctype>
-struct IntersectionTraits< CylinderSurface<ctype>, Disk<ctype> >
+struct IntersectionTraits< CylinderMantle<ctype>, Disk<ctype> >
 {
     static constexpr int wd = Disk<ctype>::worldDimension();
-    static constexpr int wd2 = CylinderSurface<ctype>::worldDimension();
+    static constexpr int wd2 = CylinderMantle<ctype>::worldDimension();
     static_assert(wd == 3, "World dimension of 3 expected");
     static_assert(wd == wd2, "World dimension of the geometries must match");
 
@@ -186,17 +186,17 @@ struct IntersectionTraits< CylinderSurface<ctype>, Disk<ctype> >
     using type = std::vector<BaseType>;
 };
 
-//! Result type of the intersection of a disk and a cylinder surface
+//! Result type of the intersection of a disk and a lateral cylinder surface
 template<class ctype>
-struct IntersectionTraits< Disk<ctype>, CylinderSurface<ctype> >
-: public IntersectionTraits< CylinderSurface<ctype>, Disk<ctype> >
+struct IntersectionTraits< Disk<ctype>, CylinderMantle<ctype> >
+: public IntersectionTraits< CylinderMantle<ctype>, Disk<ctype> >
 {};
 
-//! Result type of the intersection of a cylinder surface and a quadrilateral
+//! Result type of the intersection of a lateral cylinder surface and a quadrilateral
 template<class ctype>
-struct IntersectionTraits< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
+struct IntersectionTraits< CylinderMantle<ctype>, Quadrilateral<ctype, 3> >
 {
-    static constexpr int wd = CylinderSurface<ctype>::worldDimension();
+    static constexpr int wd = CylinderMantle<ctype>::worldDimension();
     static_assert(wd == 3, "World dimension of 3 expected");
 
     using BaseType = std::variant< Point<ctype, 3>,
@@ -207,10 +207,10 @@ struct IntersectionTraits< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
     using type = std::vector<BaseType>;
 };
 
-//! Result type of the intersection of a quadrilateral and a cylinder surface
+//! Result type of the intersection of a quadrilateral and a lateral cylinder surface
 template<class ctype>
-struct IntersectionTraits< Quadrilateral<ctype, 3>, CylinderSurface<ctype> >
-: public IntersectionTraits< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
+struct IntersectionTraits< Quadrilateral<ctype, 3>, CylinderMantle<ctype> >
+: public IntersectionTraits< CylinderMantle<ctype>, Quadrilateral<ctype, 3> >
 {};
 
 namespace IntersectionDetail {

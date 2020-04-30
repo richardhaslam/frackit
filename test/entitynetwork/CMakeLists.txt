@@ -13,8 +13,8 @@ frackit_add_test(NAME test_constraints_quads
                  LABELS entitynetwork constraints)
 
 # test network constaints (cylinder surface)
-frackit_add_test(NAME test_constraints_cylindersurface
-                 SOURCES test_constraints_cylindersurface.cc
+frackit_add_test(NAME test_constraints_cylindermantle
+                 SOURCES test_constraints_cylindermantle.cc
                  LABELS entitynetwork constraints)
 
 # test disk network creation (in cylinder)
