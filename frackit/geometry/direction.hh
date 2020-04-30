@@ -55,6 +55,10 @@ public:
     //! export underlying vector type
     using Vector = typename Frackit::Vector<CT, 1>;
 
+    //! export dimensionality
+    static constexpr int myDimension() { return 1; };
+    static constexpr int worldDimension() { return 1; };
+
     //! default constructor
     Direction() = default;
 
@@ -106,6 +110,10 @@ class Direction<CT, 2> : public Geometry
 public:
     //! export underlying vector type
     using Vector = typename Frackit::Vector<CT, 2>;
+
+    //! export dimensionality
+    static constexpr int myDimension() { return 1; };
+    static constexpr int worldDimension() { return 2; };
 
     //! default constructor
     Direction() = default;
@@ -162,6 +170,10 @@ class Direction<CT, 3> : public Geometry
 public:
     //! export underlying vector type
     using Vector = typename Frackit::Vector<CT, 3>;
+
+    //! export dimensionality
+    static constexpr int myDimension() { return 1; };
+    static constexpr int worldDimension() { return 3; };
 
     //! default constructor
     Direction() = default;
