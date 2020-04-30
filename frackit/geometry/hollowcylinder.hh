@@ -98,8 +98,8 @@ public:
     , topInnerCircle_(bottomCenter + axis*height, axis, innerRadius)
     , bottomOuterCircle_(nullptr)
     , topOuterCircle_(nullptr)
-    , innerMantle_(nullptr)
-    , outerMantle_(nullptr)
+    , innerLateralFace_(nullptr)
+    , outerLateralFace_(nullptr)
     , outerRadius_(outerRadius)
     , height_(height)
     {}
@@ -138,19 +138,19 @@ public:
     }
 
     //! Return inner mantle surface
-    const CylinderSurface& innerMantle() const
+    const CylinderSurface& innerLateralFace() const
     {
-        if (!innerMantle_)
-            innerMantle_ = std::make_unique<CylinderSurface>(bottomInnerCircle(), height());
-        return *innerMantle_;
+        if (!innerLateralFace_)
+            innerLateralFace_ = std::make_unique<CylinderSurface>(bottomInnerCircle(), height());
+        return *innerLateralFace_;
     }
 
     //! Return outer mantle surface
-    const CylinderSurface& outerMantle() const
+    const CylinderSurface& outerLateralFace() const
     {
-        if (!outerMantle_)
-            outerMantle_ = std::make_unique<CylinderSurface>(bottomOuterCircle(), height());
-        return *outerMantle_;
+        if (!outerLateralFace_)
+            outerLateralFace_ = std::make_unique<CylinderSurface>(bottomOuterCircle(), height());
+        return *outerLateralFace_;
     }
 
     //! Return the segment describing the center of the hollow cylinder
@@ -214,9 +214,9 @@ private:
     mutable std::unique_ptr<Circle> bottomOuterCircle_;
     mutable std::unique_ptr<Circle> topOuterCircle_;
 
-    // the mantle surfaces are constructed on demand
-    mutable std::unique_ptr<CylinderSurface> innerMantle_;
-    mutable std::unique_ptr<CylinderSurface> outerMantle_;
+    // the lateral surfaces are constructed on demand
+    mutable std::unique_ptr<CylinderSurface> innerLateralFace_;
+    mutable std::unique_ptr<CylinderSurface> outerLateralFace_;
 
     ctype outerRadius_;
     ctype height_;
