@@ -32,7 +32,8 @@ geometries.
 
 This type of mesh format is supported by the [DuMuX][0] module for discrete
 fracture-matrix simulations of single- and two-phase flow
-(see e.g. <cite>Koch et al. (2019)</cite>, <cite>Gläser et al. (2019)</cite>, <cite>Gläser et al (2017)</cite>). Thus, you can use Frackit in a toolchain with [Gmsh][1] and
+(see e.g. <cite>Koch et al. (2019)</cite>, <cite>Gläser et al. (2019)</cite>, <cite>Gläser et al (2017)</cite>).
+Thus, you can use Frackit in a toolchain with [Gmsh][1] and
 [DuMuX][0] to perform simulations on the generated fracture networks.
 
 The following picture shows an exemplary result for a single-phase simulation
@@ -88,7 +89,7 @@ Documentation
 
 A class documentation can be generated from the source code using
 [Doxygen][8] (see Installation notes).
-Moreover, the [Examples][7] contained in this repository provide a good overview over
+Moreover, the [examples][7] contained in this repository provide a good overview over
 the capabilities of Frackit and can serve as a starting point to develop your own
 application.
 
