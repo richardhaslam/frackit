@@ -32,6 +32,7 @@
 #include "point.hh"
 #include "segment.hh"
 #include "quadrilateral.hh"
+#include "vector.hh"
 
 namespace Frackit {
 
@@ -43,6 +44,7 @@ namespace Frackit {
 template<class CT>
 class Box : public Geometry
 {
+    using Vector = Frackit::Vector<CT, 3>;
 
 public:
     //! export dimensionality
