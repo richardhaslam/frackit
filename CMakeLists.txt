@@ -1,13 +1,18 @@
 # minimum required cmake version
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 # project name
-project(frackit)
+project(frackit VERSION 1.0.0)
+
+# project version
+set(FRACKIT_VERSION ${frackit_VERSION} CACHE STRING "project version")
+set(FRACKIT_VERSION_MAJOR ${frackit_VERSION_MAJOR} CACHE STRING "major project version")
+set(FRACKIT_VERSION_MINOR ${frackit_VERSION_MINOR} CACHE STRING "minor project version")
 
 # make sure our own modules are found
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules")
 
-#include the macros
+# include the macros
 include(FrackitMacros)
 
 # compiler definitions
@@ -18,8 +23,7 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "$GXX_RELEASE_OPTS $GXX_RELEASE_WARNING_OPTS 
 set(CMAKE_BUILD_TYPE Release)
 
 # Find OpenCascade
-find_path(OCC_INC "Standard_Version.hxx"
-          PATH_SUFFIXES opencascade include/opencascade occt/)
+find_path(OCC_INC "Standard_Version.hxx" PATH_SUFFIXES opencascade include/opencascade occt/)
 
 if (OCC_INC)
     include_directories( ${OCC_INC} )
@@ -31,13 +35,13 @@ if (OCC_INC)
          OCC_MINOR REGEX "#define OCC_VERSION_MINOR.*")
     file(STRINGS ${OCC_INC}/Standard_Version.hxx
          OCC_MAINT REGEX "#define OCC_VERSION_MAINTENANCE.*")
-    if(OCC_MAJOR AND OCC_MINOR AND OCC_MAINT)
+    if (OCC_MAJOR AND OCC_MINOR AND OCC_MAINT)
       string(REGEX MATCH "[0-9]+" OCC_MAJOR "${OCC_MAJOR}")
       string(REGEX MATCH "[0-9]+" OCC_MINOR "${OCC_MINOR}")
       string(REGEX MATCH "[0-9]+" OCC_MAINT "${OCC_MAINT}")
       set(OCC_VERSION "${OCC_MAJOR}.${OCC_MINOR}.${OCC_MAINT}")
       message(STATUS "Found OpenCASCADE version ${OCC_VERSION} in ${OCC_INC}")
-    endif()
+    endif  ()
 
     # link required libraries
     set(OCC_LIBS_REQUIRED
@@ -49,44 +53,45 @@ if (OCC_INC)
         TKMath TKernel)
     list(LENGTH OCC_LIBS_REQUIRED NUM_OCC_LIBS_REQUIRED)
 
-    if(OCC_LIBS)
+    if (OCC_LIBS)
       message(STATUS "OCC libraries specified explicitly: " ${OCC_LIBS})
       list(LENGTH OCC_LIBS_REQUIRED NUM_OCC_LIBS)
-    else()
+    else ()
       set(OCC_LIBS)
-      foreach(OCC ${OCC_LIBS_REQUIRED})
+      foreach (OCC ${OCC_LIBS_REQUIRED})
         find_library(OCC_LIB ${OCC}
                      PATH_SUFFIXES lib ${OCC_SYS_NAME}/lib ${OCC_SYS_NAME}/vc8/lib)
-        if(OCC_LIB)
+        if (OCC_LIB)
 	        list(APPEND OCC_LIBS ${OCC_LIB})
-        else()
+        else ()
 	        message(STATUS "OCC lib " ${OCC} " not Found")
-        endif()
+        endif ()
         unset(OCC_LIB CACHE)
-      endforeach()
+      endforeach ()
       list(LENGTH OCC_LIBS NUM_OCC_LIBS)
-    endif()
+    endif ()
 
-    if(NUM_OCC_LIBS EQUAL NUM_OCC_LIBS_REQUIRED)
+    if (NUM_OCC_LIBS EQUAL NUM_OCC_LIBS_REQUIRED)
       set(HAVE_OCC TRUE)
       list(APPEND CONFIG_OPTIONS "OpenCASCADE")
       message(STATUS "Found " "OpenCASCADE")
       list(APPEND EXTERNAL_LIBRARIES ${OCC_LIBS})
       list(APPEND EXTERNAL_INCLUDES ${OCC_INC})
-      if(HAVE_64BIT_SIZE_T)
+      if (HAVE_64BIT_SIZE_T)
         add_definitions(-D_OCC64)
-      endif()
-    endif()
-else()
+      endif ()
+    endif ()
+else ()
     message(FATAL_ERROR "OpenCascade sources not found")
-endif()
+endif ()
 
 # indicate the documentation build as an option and set it to ON by default
-option(BUILD_DOC "Build documentation" ON)
+option(FRACKIT_BUILD_DOC "Build documentation" ON)
 
 # check if Doxygen is installed
 find_package(Doxygen)
-if (DOXYGEN_FOUND)
+
+if (FRACKIT_BUILD_DOC AND DOXYGEN_FOUND)
     # set input and output files
     set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen/Doxyfile.in)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen/Doxyfile)
@@ -95,15 +100,15 @@ if (DOXYGEN_FOUND)
     configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
     message("Doxygen build started")
 
-    # note the option ALL which allows to build the docs together with the application
+    # target for docu
     add_custom_target( doc_doxygen
                        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                        COMMENT "Generating API documentation with Doxygen"
                        VERBATIM )
-else (DOXYGEN_FOUND)
-  message("Doxygen need to be installed to generate the doxygen documentation")
-endif (DOXYGEN_FOUND)
+elseif (NOT DOXYGEN_FOUND AND FRACKIT_BUILD_DOC)
+  message("Doxygen needs to be installed to generate the doxygen documentation")
+endif ()
 
 # include the sources
 include_directories( ${CMAKE_SOURCE_DIR} )
