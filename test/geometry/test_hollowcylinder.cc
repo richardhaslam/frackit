@@ -53,35 +53,35 @@ int main()
         throw std::runtime_error("False negative contains() result");
     std::cout << "Test 9 passed" << std::endl;
 
-    if (!hollowCylinder.innerMantle().contains(Point(0.8, 0.0, 1.0)))
+    if (!hollowCylinder.innerLateralFace().contains(Point(0.8, 0.0, 1.0)))
         throw std::runtime_error("False negative contains() result on inner mantle");
     std::cout << "Test 10 passed" << std::endl;
 
-    if (hollowCylinder.innerMantle().contains(Point(0.8 + 1e-6, 0.0, 1.0)))
+    if (hollowCylinder.innerLateralFace().contains(Point(0.8 + 1e-6, 0.0, 1.0)))
         throw std::runtime_error("False positive contains() result on inner mantle");
     std::cout << "Test 11 passed" << std::endl;
 
-    if (!hollowCylinder.innerMantle().contains(Point(0.8, 0.0, 2.0)))
+    if (!hollowCylinder.innerLateralFace().contains(Point(0.8, 0.0, 2.0)))
         throw std::runtime_error("False negative contains() result on inner mantle");
     std::cout << "Test 12 passed" << std::endl;
 
-    if (hollowCylinder.innerMantle().contains(Point(0.8, 0.0, 2.0 + 1e-6)))
+    if (hollowCylinder.innerLateralFace().contains(Point(0.8, 0.0, 2.0 + 1e-6)))
         throw std::runtime_error("False positive contains() result on inner mantle");
     std::cout << "Test 13 passed" << std::endl;
 
-    if (!hollowCylinder.outerMantle().contains(Point(1.0, 0.0, 1.0)))
+    if (!hollowCylinder.outerLateralFace().contains(Point(1.0, 0.0, 1.0)))
         throw std::runtime_error("False negative contains() result on outer mantle");
     std::cout << "Test 14 passed" << std::endl;
 
-    if (hollowCylinder.outerMantle().contains(Point(1.0 + 1e-6, 0.0, 1.0)))
+    if (hollowCylinder.outerLateralFace().contains(Point(1.0 + 1e-6, 0.0, 1.0)))
         throw std::runtime_error("False positive contains() result on outer mantle");
     std::cout << "Test 15 passed" << std::endl;
 
-    if (!hollowCylinder.outerMantle().contains(Point(1.0, 0.0, 2.0)))
+    if (!hollowCylinder.outerLateralFace().contains(Point(1.0, 0.0, 2.0)))
         throw std::runtime_error("False negative contains() result on outer mantle");
     std::cout << "Test 16 passed" << std::endl;
 
-    if (hollowCylinder.outerMantle().contains(Point(1.0, 0.0, 2.0 + 1e-6)))
+    if (hollowCylinder.outerLateralFace().contains(Point(1.0, 0.0, 2.0 + 1e-6)))
         throw std::runtime_error("False positive contains() result on outer mantle");
     std::cout << "Test 17 passed" << std::endl;
 
