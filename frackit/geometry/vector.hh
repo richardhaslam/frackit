@@ -33,6 +33,9 @@
 #include <initializer_list>
 #include <type_traits>
 
+#include <frackit/common/math.hh>
+#include <frackit/precision/precision.hh>
+
 #include "geometry.hh"
 #include "point.hh"
 #include "direction.hh"
@@ -114,6 +117,21 @@ public:
     {
         using std::sqrt;
         return sqrt(squaredLength());
+    }
+
+    // returns true if the the vector is parallel to this one
+    bool isParallel(const Impl& other, ctype angularEps = Precision<ctype>::angular()) const
+    {
+        if constexpr (wd == 1)
+            return true;
+
+        // we assume non-degenerate vectors!
+        const auto thisNorm = length();
+        const auto otherNorm = other.length();
+
+        using std::acos; using std::abs;
+        const auto angle = abs(acos( (*this)*other/thisNorm/otherNorm ));
+        return angle < angularEps || abs(angularEps - M_PI) < angularEps;
     }
 
     //! Scalar product with another vector
