@@ -35,7 +35,7 @@ namespace Frackit {
  * \brief Class to randomly generate points within boxes
  *        following the provided distributions. The type of
  *        distribution to be used can be specified via traits,
- *        which are required to exporrt the distributions to be
+ *        which are required to export the distributions to be
  *        used for the x, y and z-coordinate, using the naming
  *        convention for three-dimensional geometries,
  *        i.e. they must export:
