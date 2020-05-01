@@ -48,6 +48,7 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 // explorer for shape objects
@@ -305,9 +306,11 @@ namespace OCCUtilities {
     //! Get the BRep of shapes (for compatibilty reasons)
     const TopoDS_Vertex& getShape(const TopoDS_Vertex& v) { return v; }
     const TopoDS_Edge& getShape(const TopoDS_Edge& e) { return e; }
-    const TopoDS_Face& getShape(const TopoDS_Face& f) { return f; }
     const TopoDS_Wire& getShape(const TopoDS_Wire& w) { return w; }
+    const TopoDS_Face& getShape(const TopoDS_Face& f) { return f; }
+    const TopoDS_Shell& getShape(const TopoDS_Shell& s) { return s; }
     const TopoDS_Solid& getShape(const TopoDS_Solid& s) { return s; }
+    const TopoDS_Compound& getShape(const TopoDS_Compound& c) { return c; }
 
     /*!
      * \ingroup OpenCascade
