@@ -48,9 +48,9 @@ namespace OCCUtilities {
     gp_Pnt point(const Point<ctype, dim>& p)
     {
         static_assert(dim <= 3 && dim != 0, "Only 0 < dim <= 3 supported");
-        if (dim == 1) return gp_Pnt(p.x(), 0.0, 0.0);
-        else if (dim == 2) return gp_Pnt(p.x(), p.y(), 0.0);
-        else if (dim == 3) return gp_Pnt(p.x(), p.y(), p.z());
+        if constexpr (dim == 1) return gp_Pnt(p.x(), 0.0, 0.0);
+        else if constexpr (dim == 2) return gp_Pnt(p.x(), p.y(), 0.0);
+        else if constexpr (dim == 3) return gp_Pnt(p.x(), p.y(), p.z());
     }
 
     /*!
@@ -70,9 +70,9 @@ namespace OCCUtilities {
     gp_Dir direction(const Direction<ctype, dim>& dir)
     {
         static_assert(dim <= 3 && dim != 0, "Only 0 < dim <= 3 supported");
-        if (dim == 1) return gp_Dir(dir.x(), 0.0, 0.0);
-        else if (dim == 2) return gp_Dir(dir.x(), dir.y(), 0.0);
-        else if (dim == 3) return gp_Dir(dir.x(), dir.y(), dir.z());
+        if constexpr (dim == 1) return gp_Dir(dir.x(), 0.0, 0.0);
+        else if constexpr (dim == 2) return gp_Dir(dir.x(), dir.y(), 0.0);
+        else if constexpr (dim == 3) return gp_Dir(dir.x(), dir.y(), dir.z());
     }
 
     /*!
