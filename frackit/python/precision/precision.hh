@@ -28,8 +28,8 @@ template<class ctype>
 void registerPrecision(pybind11::module& module)
 {
     pybind11::class_<Precision<ctype>> cls(module, "Precision");
-    cls.def_static("confusion", &Precision<ctype>::confusion, "tolerance value for distance comparisons");
-    cls.def_static("angular", &Precision<ctype>::angular, "tolerance value for angle comparisons");
+    cls.def_property_readonly_static("confusion", [] (pybind11::object /*self*/) { return Precision<ctype>::confusion(); }, "tolerance value for distance comparisons");
+    cls.def_property_readonly_static("angular", [] (pybind11::object /*self*/) { return Precision<ctype>::angular(); }, "tolerance value for angle comparisons");
 }
 
 } // end namespace Frackit::Python
