@@ -26,14 +26,15 @@
 #define FRACKIT_ENTITYNETWORK_CONSTRAINTS_HH
 
 #include <stdexcept>
-#include <variant>
 #include <vector>
 #include <type_traits>
 
 #include <frackit/distance/distance.hh>
 #include <frackit/magnitude/magnitude.hh>
 
+#include <frackit/geometry/geometry.hh>
 #include <frackit/geometryutilities/applyongeometry.hh>
+
 #include <frackit/intersection/intersect.hh>
 #include <frackit/intersection/emptyintersection.hh>
 
@@ -86,14 +87,6 @@ EntityNetworkConstraints<ST> makeDefaultConstraints()
 template<class ST, class AE>
 class EntityNetworkConstraints
 {
-    // Helper struct to determine if something is a shared_ptr
-    template<class T>
-    struct IsSharedPtr : public std::false_type {};
-
-    // Specialization for shared_ptr
-    template<class T>
-    struct IsSharedPtr<std::shared_ptr<T>> : public std::true_type {};
-
 public:
     //! Export type used for constraints
     using Scalar = ST;
@@ -191,12 +184,95 @@ public:
      * \param geo1 The first geometry
      * \param geo2 The second geometry
      * \returns True if all constraints are fulfilled, false otherwise
-     * \note The enable_if here is it avoid overload ambiguity with the
-     *       overloads receiving a shared pointer as on of the arguments.
      */
-    template<class Geo1, class Geo2,
-             std::enable_if_t< (!IsSharedPtr<Geo1>::value && !IsSharedPtr<Geo2>::value), int> = 0>
+    template<class Geo1, class Geo2>
     bool evaluate(const Geo1& geo1, const Geo2& geo2) const
+    {
+        // if the provided geometries are pointers (we support shared_ptr here)
+        // to the abstract base class, we have to first cast them into the derived types
+        static constexpr bool isBasePtr1 = std::is_same_v<Geo1, std::shared_ptr<Geometry>>;
+        static constexpr bool isBasePtr2 = std::is_same_v<Geo2, std::shared_ptr<Geometry>>;
+
+        if constexpr (isBasePtr1 && !isBasePtr2)
+        {
+            auto evalCast1 = [&] (const auto& actualGeo1) { return evaluate_(actualGeo1, geo2); };
+            return applyOnGeometry(evalCast1, geo1);
+        }
+        else if constexpr (!isBasePtr1 && isBasePtr2)
+        {
+            auto evalCast2 = [&] (const auto& actualGeo2) { return evaluate_(geo1, actualGeo2); };
+            return applyOnGeometry(evalCast2, geo2);
+        }
+        else if constexpr (isBasePtr1 && isBasePtr2)
+        {
+            auto evalCast1 = [&] (const auto& actualGeo1)
+            {
+                auto evalCast2 = [&] (const auto& actualGeo2) { return evaluate_(actualGeo1, actualGeo2); };
+                return applyOnGeometry(evalCast2, geo2);
+            };
+            return applyOnGeometry(evalCast1, geo1);
+        }
+        // both geometries are actual geometry types
+        else
+            return evaluate_(geo1, geo2);
+    }
+
+    /*!
+     * \brief Check if an entity fulfills the constraints for
+     *        all entities of the provided entity set.
+     * \tparam Geo1 The geometry type of the entities in the set
+     * \tparam Geo2 The geometry type of the entity to be checked
+     * \param entitySet An entity set
+     * \param entity The geometry of the entity to be checked
+     * \returns True if all constraints are fulfilled, false otherwise
+     */
+    template<class Geo1, class Geo2>
+    bool evaluate(const std::vector<Geo1>& entitySet, const Geo2& entity) const
+    {
+        return std::all_of(entitySet.begin(),
+                           entitySet.end(),
+                           [&] (const auto& e) { return evaluate(e, entity); });
+    }
+
+    /*!
+     * \brief Check if an entity fulfills the constraints for
+     *        all entities of the provided entity set.
+     * \tparam Geo1 The geometry type of the entity to be checked
+     * \tparam Geo2 The geometry type of the entities in the set
+     * \param entity The geometry of the entity to be checked
+     * \param entitySet An entity set
+     * \returns True if all constraints are fulfilled, false otherwise
+     */
+    template<class Geo1, class Geo2>
+    bool evaluate(const Geo1& entity, const std::vector<Geo2>& entitySet) const
+    { return evaluate(entitySet, entity); }
+
+    /*!
+     * \brief Check if all entities of a given set fulfill the
+     *        constraints against all entities of another given set.
+     * \tparam Geo1 The geometry type of the entities in the second set
+     * \tparam Geo2 The geometry type of the entities in the second set
+     * \param entitySet1 The first entity set
+     * \param entitySet2 The second entity set
+     * \returns True if all constraints are fulfilled, false otherwise
+     */
+    template<class Geo1, class Geo2>
+    bool evaluate(const std::vector<Geo1>& entitySet1, const std::vector<Geo2>& entitySet2) const
+    {
+        return std::all_of(entitySet1.begin(),
+                           entitySet1.end(),
+                           [&] (const auto& entity1) { return evaluate(entity1, entitySet2); });
+    }
+
+private:
+    /*!
+     * \brief Check if a pair of geometries fulfills the constraints
+     * \param geo1 The first geometry
+     * \param geo2 The second geometry
+     * \returns True if all constraints are fulfilled, false otherwise
+     */
+    template<class Geo1, class Geo2>
+    bool evaluate_(const Geo1& geo1, const Geo2& geo2) const
     {
         static constexpr int dim = DimensionalityTraits<Geo1>::geometryDimension();
         static_assert(dim == DimensionalityTraits<Geo2>::geometryDimension(),
@@ -240,56 +316,6 @@ public:
         return true;
     }
 
-    /*!
-     * \brief Check if an entity fulfills the constraints for
-     *        all entities of the provided entity set.
-     * \tparam Geo1 The geometry type of the entities in the set
-     * \tparam Geo2 The geometry type of the entity to be checked
-     * \param entitySet An entity network
-     * \param entity The geometry of the entity to be checked
-     * \returns True if all constraints are fulfilled, false otherwise
-     * \note The enable_if here is it avoid overload ambiguity with the
-     *       overload receiving a shared pointer as second argument.
-     */
-    template<class Geo1, class Geo2, std::enable_if_t<!IsSharedPtr<Geo2>::value, int> = 0>
-    bool evaluate(const std::vector<Geo1>& entitySet, const Geo2& entity) const
-    {
-        return std::all_of(entitySet.begin(),
-                           entitySet.end(),
-                           [&] (const auto& e) { return evaluate(e, entity); });
-    }
-
-    /*!
-     * \brief Overload for one of the arguments being a shared_ptr
-     *        to a generic geometry. This requires parsing the
-     *        pointer to its original geometry type.
-     * \tparam T either a entity type or an entity set
-     * \param entityOrSet An entity or an entity set
-     * \param geo2Ptr Pointer to a generic geometry type
-     * \returns True if all constraints are fulfilled, false otherwise
-     */
-    template<class T>
-    bool evaluate(const T& entityOrSet, std::shared_ptr<Geometry> geo2Ptr) const
-    {
-        // encapsulate the constraint evaluation in a lambda
-        auto eval = [&] (const auto& actualGeo2) { return evaluate(entityOrSet, actualGeo2); };
-        return applyOnGeometry(eval, geo2Ptr);
-    }
-
-    /*!
-     * \brief Overload for one of the arguments being a shared_ptr
-     *        to a generic geometry. Unfortunately, this requires
-     *        parsing the pointer to its original geometry type.
-     * \tparam T either a entity type or an entity set
-     * \param geo1Ptr Pointer to a generic geometry type
-     * \param entityOrSet An entity or an entity set
-     * \returns True if all constraints are fulfilled, false otherwise
-     */
-    template<class T>
-    bool evaluate(std::shared_ptr<Geometry> geo1Ptr, const T& entityOrSet) const
-    { return evaluate(entityOrSet, geo1Ptr); }
-
-private:
     AngleComputationEngine angleEngine_; //! Algorithms to compute angles between intersecting geometries
 
     Scalar minDistance_;    //!< Minimum distance allowed between two entities
