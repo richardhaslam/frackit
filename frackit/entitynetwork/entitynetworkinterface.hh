@@ -37,6 +37,9 @@ namespace Frackit {
 class EntityNetworkInterface
 {
 public:
+    //! Abstract base classes need virtual destructors
+    virtual ~EntityNetworkInterface() {}
+
     /*!
      * \brief Constructor.
      * \param entityDim Dimension of the network entities
