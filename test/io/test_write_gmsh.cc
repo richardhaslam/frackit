@@ -24,7 +24,6 @@
 #include <frackit/sampling/makeuniformpointsampler.hh>
 #include <frackit/sampling/disksampler.hh>
 
-#include <frackit/entitynetwork/containedentitynetwork.hh>
 #include <frackit/entitynetwork/networkbuilder.hh>
 #include <frackit/io/gmshwriter.hh>
 
@@ -47,19 +46,31 @@ int main(int argc, char** argv)
     Domain domain(0.5, 1.0);
     Domain domain2(Disk(Point(0.0, 0.0, 1.0), e1, e2, 1.0, 1.0), 1.0);
 
-    ContainedEntityNetworkBuilder builder;
-    builder.addConfiningSubDomain(domain, Id(1));
-    builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 0.1), e1, e2, 1.0, 1.0),  Id(1));
-    builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 0.5), e1, e3, 2.0, 2.0),  Id(1));
-    builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 0.75), e1, e2, 1.0, 1.0), Id(1));
-
-    builder.addConfiningSubDomain(domain2, Id(2));
-    builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 1.1), e1, e2, 1.0, 1.0),  Id(2));
-    builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 1.5), e1, e3, 2.0, 2.0),  Id(2));
-    builder.addSubDomainEntity(Disk(Point(0.0, 0.0, 1.75), e1, e2, 1.0, 1.0), Id(2));
+    // make and write non-contained network
+    EntityNetworkBuilder<ctype> builder;
+    builder.addEntity(Disk(Point(0.0, 0.0, 0.1), e1, e2, 1.0, 1.0));
+    builder.addEntity(Disk(Point(0.0, 0.0, 0.5), e1, e3, 2.0, 2.0));
+    builder.addEntity(Disk(Point(0.0, 0.0, 0.75), e1, e2, 1.0, 1.0));
+    builder.addEntity(Disk(Point(0.0, 0.0, 1.1), e1, e2, 1.0, 1.0));
+    builder.addEntity(Disk(Point(0.0, 0.0, 1.5), e1, e3, 2.0, 2.0));
+    builder.addEntity(Disk(Point(0.0, 0.0, 1.75), e1, e2, 1.0, 1.0));
 
     GmshWriter writer(builder.build());
-    writer.write("final", 1.0, 1.0);
+    writer.write("noncontained", 1.0, 1.0);
+
+    ContainedEntityNetworkBuilder<ctype> containedBuilder;
+    containedBuilder.addConfiningSubDomain(domain, Id(1));
+    containedBuilder.addSubDomainEntity(Disk(Point(0.0, 0.0, 0.1), e1, e2, 1.0, 1.0),  Id(1));
+    containedBuilder.addSubDomainEntity(Disk(Point(0.0, 0.0, 0.5), e1, e3, 2.0, 2.0),  Id(1));
+    containedBuilder.addSubDomainEntity(Disk(Point(0.0, 0.0, 0.75), e1, e2, 1.0, 1.0), Id(1));
+
+    containedBuilder.addConfiningSubDomain(domain2, Id(2));
+    containedBuilder.addSubDomainEntity(Disk(Point(0.0, 0.0, 1.1), e1, e2, 1.0, 1.0),  Id(2));
+    containedBuilder.addSubDomainEntity(Disk(Point(0.0, 0.0, 1.5), e1, e3, 2.0, 2.0),  Id(2));
+    containedBuilder.addSubDomainEntity(Disk(Point(0.0, 0.0, 1.75), e1, e2, 1.0, 1.0), Id(2));
+
+    writer = GmshWriter(containedBuilder.build());
+    writer.write("contained", 1.0, 1.0);
 
     std::cout << "All tests passed" << std::endl;
 
