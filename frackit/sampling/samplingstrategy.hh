@@ -44,6 +44,8 @@ class SamplingStrategy
 {
 
 public:
+    //! Abstract base classes need virtual destructors
+    virtual ~SamplingStrategy() {}
 
     /*!
      * \brief Returns the next id following the srategy.
