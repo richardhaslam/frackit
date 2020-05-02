@@ -187,7 +187,7 @@ file format. In a first step, we create an instance of the network builder
 class for contained networks and define the sub-domains:
 
 ```cpp
-ContainedEntityNetworkBuilder builder;
+ContainedEntityNetworkBuilder<ctype> builder;
 
 // add sub-domains
 builder.addConfiningSubDomain(solids[0],     Id(1));
@@ -200,7 +200,6 @@ the entity network. Using the convenience function available in the `MultiGeomet
 class, we can add all entities to the builder by writing
 
 ```cpp
-ContainedEntityNetworkBuilder builder;
 entitySets.exportEntitySets(builder, Id(2));
 ```
 
@@ -210,7 +209,6 @@ associated with multiple (sub-)domains, or, if only some of the entity sets shou
 be added to the builder, one can use:
 
 ```cpp
-ContainedEntityNetworkBuilder builder;
 entitySets.exportEntitySets({diskSetId, quadSetId}, builder, Id(2));
 ```
 

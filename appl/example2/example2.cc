@@ -52,7 +52,7 @@ int main()
                              Distro(0.5, 0.1),
                              0.05);
 
-    EntityNetworkConstraints constraintsOnSelf;
+    EntityNetworkConstraints<ctype> constraintsOnSelf;
     constraintsOnSelf.setMinDistance(0.05);
     constraintsOnSelf.setMinIntersectingAngle(toRadians(30.0));
     constraintsOnSelf.setMinIntersectionMagnitude(0.05);
@@ -116,7 +116,7 @@ int main()
 
     // We can now create a contained entity network from the two sets,
     // which has information on both the entities and the domain.
-    ContainedEntityNetworkBuilder builder;
+    ContainedEntityNetworkBuilder<ctype> builder;
 
     // define the domain (single sub-domain) and give it a unique id
     builder.addConfiningSubDomain(domain, Id(1));
