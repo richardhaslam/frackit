@@ -247,6 +247,23 @@ public:
     bool evaluate(const Geo1& entity, const std::vector<Geo2>& entitySet) const
     { return evaluate(entitySet, entity); }
 
+    /*!
+     * \brief Check if all entities of a given set fulfill the
+     *        constraints against all entities of another given set.
+     * \tparam Geo1 The geometry type of the entities in the second set
+     * \tparam Geo2 The geometry type of the entities in the second set
+     * \param entitySet1 The first entity set
+     * \param entitySet2 The second entity set
+     * \returns True if all constraints are fulfilled, false otherwise
+     */
+    template<class Geo1, class Geo2>
+    bool evaluate(const std::vector<Geo1>& entitySet1, const std::vector<Geo2>& entitySet2) const
+    {
+        return std::all_of(entitySet1.begin(),
+                           entitySet1.end(),
+                           [&] (const auto& entity1) { return evaluate(entity1, entitySet2); });
+    }
+
 private:
     /*!
      * \brief Check if a pair of geometries fulfills the constraints
