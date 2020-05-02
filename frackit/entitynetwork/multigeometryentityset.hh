@@ -156,7 +156,7 @@ public:
 
             for (const auto& vectorIdPair : geomVectorIdPairVector)
                 if (vectorIdPair.second == id)
-                { applyFunc(vectorIdPair.first); wasApplied = true; }
+                { applyFunc(vectorIdPair.first); wasApplied = true; break; }
         };
 
         // find the id and apply function

@@ -149,7 +149,7 @@ public:
             // otherwise search this sampler vector for the id
             for (auto& pair : samplerPtrIdPairVec)
                 if (pair.second == id)
-                { assert(!result); result = sample(pair.first); }
+                { assert(!result); result = sample(pair.first); break; }
         };
 
         // find the id and sample geometry
