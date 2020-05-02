@@ -168,47 +168,16 @@ const auto containedShape = cut(getShape(quad), getShape(domain), /*epsilon*/1e-
 const auto containedFaces = getFaces(containedShape);
 
 // check constraints for all faces making up the contained part
-if (std::any_of(containedFaces.begin(),
-                containedFaces.end(),
-                [&] (const auto& face)
-                { return !constraintsOnSelf.evaluate(entitySet, face); }))
+if (!constraintsOnSelf.evaluate(entitySet, containedFaces))
 { status.increaseRejectedCounter(); continue; }
 
-if (std::any_of(containedFaces.begin(),
-                containedFaces.end(),
-                [&] (const auto& face)
-                { return !constraintsOnSelf.evaluate(otherEntitySet, face); }))
+if (!constraintsOnOther.evaluate(otherEntitySet, containedFaces))
 { status.increaseRejectedCounter(); continue; }
-```
-
-If one is certain that the geometry of the confined entity leads to (at most) a
-single face, this can be simplified to:
-
-```cpp
-auto quad = sampleIntoSet1 ? quadSampler1() : quadSampler2();
-auto& entitySet = sampleIntoSet1 ? entitySet1 : entitySet2;
-const auto& otherEntitySet = sampleIntoSet1 ? entitySet2 : entitySet1;
-
-// get the face(s) that describe(s) the part of the entity that is contained in the domain
-using namespace OCCUtilities;
-const auto containedShape = cut(getShape(quad), getShape(domain), /*epsilon*/1e-6);
-const auto containedFaces = getFaces(containedShape);
-
-if (containedFaces.size() == 1)
-{
-    if (!constraintsOnSelf.evaluate(entitySet, containedFaces[0]))
-    { status.increaseRejectedCounter(); continue; }
-
-    if (!constraintsOnSelf.evaluate(otherEntitySet, containedFaces[0]))
-    { status.increaseRejectedCounter(); continue; }
-}
-else
-    continue;
 ```
 
 Note that the variable `containedFaces` is of type `std::vector<TopoDS_Face>`,
 where `TopoDS_Face` is the _OpenCascade_ type used to represent general two-dimensional
-faces. In both of the above code snippets we have assumed `entitySet` and `otherEntitySet`
+faces. In the above code snippets we have assumed `entitySet` and `otherEntitySet`
 to also be of type `std::vector<TopoDS_Face>`, and to be composed of the previously
 accepted faces.
 
