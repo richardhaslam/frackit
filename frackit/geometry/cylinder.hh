@@ -69,6 +69,9 @@ public:
     using Disk = Frackit::Disk<ctype>;
     using CylinderSurface = Frackit::CylinderSurface<ctype>;
 
+    //! default constructor
+    Cylinder() = default;
+
     /*!
      * \brief Constructor.
      * \param radius The cylinder radius

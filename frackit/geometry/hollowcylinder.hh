@@ -71,6 +71,9 @@ public:
     using Cylinder = Frackit::Cylinder<ctype>;
     using CylinderSurface = Frackit::CylinderSurface<ctype>;
 
+    //! default constructor
+    HollowCylinder() = default;
+
     /*!
      * \brief Constructor.
      * \param innerRadius The inner radius

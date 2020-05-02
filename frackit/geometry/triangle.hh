@@ -73,6 +73,9 @@ public:
     using Segment = Frackit::Segment<ctype, 3>;
     using Plane = Frackit::Plane<ctype, 3>;
 
+    //! default constructor
+    Triangle() = default;
+
     /*!
      * \brief Constructor from the corners.
      * \param p1 The first corner point
