@@ -193,6 +193,54 @@ int main()
         throw std::runtime_error("False negative constraints violation");
     std::cout << "Test 17.4 passed" << std::endl;
 
+    ///////////////////////////////////////////
+    // test overloads for two sets of entities
+
+    std::vector<Disk> mainDisks({mainDisk, mainDisk});
+    std::vector<std::shared_ptr<Frackit::Geometry>> mainDiskBasePtrs({basePtrMainDisk, basePtrMainDisk});
+
+    // 1. only admissible disks
+    if (!constraints.evaluate(admissibles, mainDisks))
+        throw std::runtime_error("False negative constraints violation");
+    std::cout << "Test 18.1 passed" << std::endl;
+    if (!constraints.evaluate(mainDisks, admissibles))
+        throw std::runtime_error("False negative constraints violation");
+    std::cout << "Test 18.2 passed" << std::endl;
+    if (!constraints.evaluate(admissibles, mainDiskBasePtrs))
+        throw std::runtime_error("False negative constraints violation");
+    std::cout << "Test 18.3 passed" << std::endl;
+    if (!constraints.evaluate(mainDiskBasePtrs, admissibles))
+        throw std::runtime_error("False negative constraints violation");
+    std::cout << "Test 18.4 passed" << std::endl;
+
+    // 2. only non-admissible disks
+    if (constraints.evaluate(nonadmissibles, mainDisks))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 19.1 passed" << std::endl;
+    if (constraints.evaluate(mainDisks, nonadmissibles))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 19.2 passed" << std::endl;
+    if (constraints.evaluate(nonadmissibles, mainDiskBasePtrs))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 19.3 passed" << std::endl;
+    if (constraints.evaluate(mainDiskBasePtrs, nonadmissibles))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 19.4 passed" << std::endl;
+
+    // 3. mixed
+    if (constraints.evaluate(mixed, mainDisks))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 20.1 passed" << std::endl;
+    if (constraints.evaluate(mainDisks, mixed))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 20.2 passed" << std::endl;
+    if (constraints.evaluate(mixed, mainDiskBasePtrs))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 20.3 passed" << std::endl;
+    if (constraints.evaluate(mainDiskBasePtrs, mixed))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 20.4 passed" << std::endl;
+
     std::cout << "All tests passed" << std::endl;
     return 0;
 }
