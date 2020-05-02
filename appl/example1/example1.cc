@@ -64,7 +64,7 @@ int main()
     // less than 30°. Moreover, if they intersect, we don't want intersection
     // edges whose length is smaller than 5cm, and, the intersection should not
     // be too close to the boundary of one of two intersecting quadrilaterals. Here: 5cm.
-    EntityNetworkConstraints constraintsOnSelf;
+    EntityNetworkConstraints<ctype> constraintsOnSelf;
     constraintsOnSelf.setMinDistance(0.05);
     constraintsOnSelf.setMinIntersectingAngle(toRadians(30.0));
     constraintsOnSelf.setMinIntersectionMagnitude(0.05);
@@ -122,7 +122,7 @@ int main()
     std::cout << "\n --- Finished entity sampling ---\n" << std::endl;
 
     // We can now create an entity network from the two sets
-    EntityNetworkBuilder builder;
+    EntityNetworkBuilder<ctype> builder;
     builder.addEntities(entitySet1);
     builder.addEntities(entitySet2);
 

@@ -211,7 +211,7 @@ int main(int argc, char** argv)
 
     // construct and write a contained network, i.e. write out both network and domain.
     std::cout << "Building and writing contained, confined network" << std::endl;
-    ContainedEntityNetworkBuilder builder;
+    ContainedEntityNetworkBuilder<ctype> builder;
 
     // add sub-domains
     builder.addConfiningSubDomain(solids[0],     Id(1));
@@ -248,7 +248,7 @@ int main(int argc, char** argv)
     // We could also only write out the network, without the domain
     // For example, confining the network to the sub-domain...
     std::cout << "Building and writing uncontained, confined network" << std::endl;
-    EntityNetworkBuilder uncontainedBuilder;
+    EntityNetworkBuilder<ctype> uncontainedBuilder;
     uncontainedBuilder.addConfiningSubDomain(networkDomain, Id(2));
     entitySets.exportEntitySets(uncontainedBuilder, Id(2));
     gmshWriter = GmshWriter(uncontainedBuilder.build());

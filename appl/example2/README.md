@@ -101,7 +101,7 @@ Finally, after the desired number of entities has been created, we cast the enti
 into an instance of the class `ContainedEntityNetwork`, using the corresponding builder class:
 
 ```cpp
-ContainedEntityNetworkBuilder builder;
+ContainedEntityNetworkBuilder<ctype> builder;
 
 // define the domain (single sub-domain) and give it a unique id
 builder.addConfiningSubDomain(domain, Id(1));
