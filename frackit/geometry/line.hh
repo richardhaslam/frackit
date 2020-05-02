@@ -63,6 +63,9 @@ public:
     using Point = typename Frackit::Point<ctype, wd>;
     using Direction = typename Frackit::Direction<ctype, wd>;
 
+    //! default constructor
+    Line() = default;
+
     /*!
      * \brief Constructor.
      * \param p A point on the line

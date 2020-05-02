@@ -72,6 +72,9 @@ public:
     using Cylinder = Frackit::Cylinder<ctype>;
     using Plane = Frackit::Plane<ctype, 3>;
 
+    //! default constructor
+    CylinderSurface() = default;
+
     /*!
      * \brief Constructor.
      * \param radius The cylinder radius
