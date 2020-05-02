@@ -1,7 +1,9 @@
 #include <cmath>
 #include <string>
 #include <stdexcept>
+#include <memory>
 
+#include <frackit/geometry/geometry.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylinder.hh>
@@ -149,6 +151,39 @@ int main()
     if (constraints.evaluate(nonadmissibles, mainDisk))
         throw std::runtime_error("Did not detect constraints violation");
     std::cout << "Test 15 passed" << std::endl;
+
+
+    ///////////////////////////////////////////
+    // test overloads for pointers to abstract base class
+    std::shared_ptr<Frackit::Geometry> basePtrDisk1 = std::make_shared<Disk>(disk1);
+    std::shared_ptr<Frackit::Geometry> basePtrDisk2 = std::make_shared<Disk>(disk2);
+    std::shared_ptr<Frackit::Geometry> basePtrMainDisk = std::make_shared<Disk>(mainDisk);
+
+    if (constraints.evaluate(basePtrDisk1, mainDisk))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 16.1 passed" << std::endl;
+    if (constraints.evaluate(mainDisk, basePtrDisk1))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 16.2 passed" << std::endl;
+    if (constraints.evaluate(basePtrDisk1, basePtrMainDisk))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 16.3 passed" << std::endl;
+    if (constraints.evaluate(basePtrMainDisk, basePtrDisk1))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 16.4 passed" << std::endl;
+
+    if (!constraints.evaluate(basePtrDisk2, mainDisk))
+        throw std::runtime_error("False negative constraints violation");
+    std::cout << "Test 17.1 passed" << std::endl;
+    if (!constraints.evaluate(mainDisk, basePtrDisk2))
+        throw std::runtime_error("False negative constraints violation");
+    std::cout << "Test 17.2 passed" << std::endl;
+    if (!constraints.evaluate(basePtrDisk2, basePtrMainDisk))
+        throw std::runtime_error("False negative constraints violation");
+    std::cout << "Test 17.3 passed" << std::endl;
+    if (!constraints.evaluate(basePtrMainDisk, basePtrDisk2))
+        throw std::runtime_error("False negative constraints violation");
+    std::cout << "Test 17.4 passed" << std::endl;
 
     std::cout << "All tests passed" << std::endl;
     return 0;
