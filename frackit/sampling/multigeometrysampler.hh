@@ -141,12 +141,12 @@ public:
         std::shared_ptr<Geometry> result(nullptr);
 
         // lambda to be executed on each tuple entry
-        auto doSampling = [&] (const auto& samplerPtrIdPairVec) -> void
+        auto doSampling = [&] (auto& samplerPtrIdPairVec)
         {
             // skip this if the sampler was found already
             if (result) return;
 
-            // otherwise search this sampler vector
+            // otherwise search this sampler vector for the id
             for (auto& pair : samplerPtrIdPairVec)
                 if (pair.second == id)
                 { assert(!result); result = sample(pair.first); }

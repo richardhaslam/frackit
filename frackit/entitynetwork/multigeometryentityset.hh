@@ -81,7 +81,7 @@ public:
             if (it->second != geometryName(entity))
             {
                 std::string msg = "MultiGeometryEntitySet::addEntity(): ";
-                msg += "The type of the provided entity dows not match the ";
+                msg += "The type of the provided entity does not match the ";
                 msg += "geometry type of the entity set with the given id!";
                 throw std::runtime_error(msg);
             }
@@ -109,7 +109,7 @@ public:
     {
         // lambda to parse pointer into an entity and add to corresponding set
         bool wasAdded = false;
-        auto parse = [&] (auto& geomVectorIdPairVector) -> void
+        auto parse = [&] (auto& geomVectorIdPairVector)
         {
             if (wasAdded) return;
 
@@ -150,7 +150,7 @@ public:
 
         // lambda to be executed on each vector of entity sets
         bool wasApplied = false;
-        auto findAndApply = [&] (const auto& geomVectorIdPairVector) -> void
+        auto findAndApply = [&] (const auto& geomVectorIdPairVector)
         {
             if (wasApplied) return;
 
@@ -173,11 +173,12 @@ public:
     std::size_t numEntities(const Id& id) const
     {
         std::size_t size = 0;
-        auto getSize = [&] (const auto& entitySet) -> void
+        auto getSize = [&] (const auto& entitySet)
         { size = entitySet.size(); };
 
         if (applyOnSet(id, getSize))
             return size;
+
         return 0;
     }
 
@@ -203,7 +204,7 @@ public:
     void exportEntitySets(NetworkBuilder& builder, const Id& subDomainId) const
     {
         // lambda to add sets of a specific geometry type
-        auto addSets = [&] (const auto& geomVectorIdPairVector) -> void
+        auto addSets = [&] (const auto& geomVectorIdPairVector)
         {
             for (const auto& vectorIdPair : geomVectorIdPairVector)
                 builder.addSubDomainEntities(vectorIdPair.first, subDomainId);
@@ -225,7 +226,7 @@ public:
     void exportEntitySets(NetworkBuilder& builder) const
     {
         // lambda to add sets of a specific geometry type
-        auto addSets = [&] (const auto& geomVectorIdPairVector) -> void
+        auto addSets = [&] (const auto& geomVectorIdPairVector)
         {
             for (const auto& vectorIdPair : geomVectorIdPairVector)
                 builder.addEntities(vectorIdPair.first);
@@ -251,7 +252,7 @@ public:
         std::vector<Id> ids(idList);
 
         // lambda to add sets of a specific geometry type
-        auto addSets = [&] (const auto& geomVectorIdPairVector) -> void
+        auto addSets = [&] (const auto& geomVectorIdPairVector)
         {
             for (const auto& vectorIdPair : geomVectorIdPairVector)
                 if (std::count(ids.begin(), ids.end(), vectorIdPair.second))
