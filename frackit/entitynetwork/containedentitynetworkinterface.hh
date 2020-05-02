@@ -44,6 +44,8 @@ class ContainedEntityNetworkInterface
 {
 
 public:
+    //! Abstract base classes need virtual destructors
+    virtual ~ContainedEntityNetworkInterface() {}
 
     /*!
      * \brief Constructor.
