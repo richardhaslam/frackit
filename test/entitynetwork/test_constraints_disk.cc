@@ -129,6 +129,27 @@ int main()
         throw std::runtime_error("False positive intersection distance violation");
     std::cout << "Test 12 passed" << std::endl;
 
+    ///////////////////////////////////////////
+    // test overloads for vectors of entities
+
+    // 1. only admissible disks
+    std::vector<Disk> admissibles({disk2, disk4, disk6, disk8});
+    if (!constraints.evaluate(admissibles, mainDisk))
+        throw std::runtime_error("False negative constraints violation");
+    std::cout << "Test 13 passed" << std::endl;
+
+    // 2. only non-admissible disks
+    std::vector<Disk> nonadmissibles({disk1, disk3, disk5, disk7, disk9});
+    if (constraints.evaluate(nonadmissibles, mainDisk))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 14 passed" << std::endl;
+
+    // 3. mixed
+    std::vector<Disk> mixed({disk1, disk2, disk3, disk4, disk5});
+    if (constraints.evaluate(nonadmissibles, mainDisk))
+        throw std::runtime_error("Did not detect constraints violation");
+    std::cout << "Test 15 passed" << std::endl;
+
     std::cout << "All tests passed" << std::endl;
     return 0;
 }
