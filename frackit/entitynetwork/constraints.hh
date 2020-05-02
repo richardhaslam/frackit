@@ -222,7 +222,7 @@ public:
      *        all entities of the provided entity set.
      * \tparam Geo1 The geometry type of the entities in the set
      * \tparam Geo2 The geometry type of the entity to be checked
-     * \param entitySet An entity network
+     * \param entitySet An entity set
      * \param entity The geometry of the entity to be checked
      * \returns True if all constraints are fulfilled, false otherwise
      */
@@ -233,6 +233,19 @@ public:
                            entitySet.end(),
                            [&] (const auto& e) { return evaluate(e, entity); });
     }
+
+    /*!
+     * \brief Check if an entity fulfills the constraints for
+     *        all entities of the provided entity set.
+     * \tparam Geo1 The geometry type of the entity to be checked
+     * \tparam Geo2 The geometry type of the entities in the set
+     * \param entity The geometry of the entity to be checked
+     * \param entitySet An entity set
+     * \returns True if all constraints are fulfilled, false otherwise
+     */
+    template<class Geo1, class Geo2>
+    bool evaluate(const Geo1& entity, const std::vector<Geo2>& entitySet) const
+    { return evaluate(entitySet, entity); }
 
 private:
     /*!
