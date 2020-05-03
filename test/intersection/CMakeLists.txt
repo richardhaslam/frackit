@@ -2,6 +2,11 @@
 # tests for intersections of different geometries #
 ###################################################
 
+# bounding box intersection
+frackit_add_test(NAME test_bbox_intersection
+                 SOURCES test_bbox_intersection.cc
+                 LABELS intersection)
+
 # intersection angles
 frackit_add_test(NAME test_intersectionangle
                  SOURCES test_intersectionangle.cc

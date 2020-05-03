@@ -25,6 +25,8 @@
 #define FRACKIT_MATH_HH
 
 #include <cmath>
+#include <cassert>
+#include <array>
 #include <vector>
 
 #include <frackit/precision/precision.hh>
@@ -36,6 +38,33 @@ namespace Frackit {
 // forward declaration
 template<class ctype, int wd> class Vector;
 template<class ctype, int wd> class Direction;
+
+/*!
+ * \ingroup Common
+ * \brief Returns true if the two given intervals overlap.
+ * \tparam Scalar The type used for scalar values (floating point type)
+ * \param interval1 The first interval
+ * \param interval2 The second interval
+ * \param eps tolerance used (for floating point types)
+ * \note This query includes the boundary, i.e. if the upper limit
+ *       of interval1 is equal to the lower limit of interval2,
+ *       true is returned.
+ * \todo TODO: Overload for integer types without eps (if needed)
+ */
+template<class Scalar>
+bool intervalsOverlap(const std::array<Scalar, 2>& interval1,
+                      const std::array<Scalar, 2>& interval2,
+                      Scalar eps)
+{
+    assert(interval1[1] >= interval1[0]);
+    assert(interval2[1] >= interval2[0]);
+
+    if (interval1[1] > interval2[1] + eps)
+        return interval1[0] < interval2[1] + eps;
+    else if (interval1[0] < interval2[0] - eps)
+        return interval1[1] > interval2[0] - eps;
+    return true;
+}
 
 /*!
  * \ingroup Common

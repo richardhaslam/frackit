@@ -1,4 +1,5 @@
 install(FILES
+boundingbox.hh
 box.hh
 circle.hh
 CMakeLists.txt

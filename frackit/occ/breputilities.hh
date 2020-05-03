@@ -86,6 +86,7 @@
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
+#include <frackit/geometry/boundingbox.hh>
 
 #include <frackit/geometryutilities/name.hh>
 
@@ -398,7 +399,7 @@ namespace OCCUtilities {
      * \brief Get the bounding box of a shape.
      */
     template<class Shape, class ctype = double>
-    Box<ctype> getBoundingBox(const Shape& shape)
+    BoundingBox<ctype> getBoundingBox(const Shape& shape)
     {
         Bnd_Box bndBox;
         BRepBndLib::Add(shape, bndBox);
