@@ -67,4 +67,9 @@ frackit_add_test(NAME test_face_face_intersection
                  SOURCES test_face_face_intersection.cc
                  LABELS intersection)
 
+# cpu time measurement
+frackit_add_test(NAME test_intersectiontimemeasure
+                 SOURCES test_intersectiontimemeasure.cc
+                 LABELS intersection)
+
 set(CMAKE_BUILD_TYPE Release)
