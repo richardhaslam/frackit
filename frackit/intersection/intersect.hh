@@ -305,22 +305,6 @@ intersect(const Quadrilateral<ctype, 3>& quad, const CylinderSurface<ctype>& cyl
 
 /*!
  * \ingroup Intersection
- * \brief Intersect a disk and a face shape.
- * \param disk The disk
- * \param face The face shape
- * \param eps Tolerance to be used for floating point comparisons
- */
-template<class ctype>
-Intersection< Disk<ctype>, TopoDS_Face >
-intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
-{
-    if (!doIntersect(getBoundingBox(disk), getBoundingBox(face), eps))
-        return {EmptyIntersection<3, ctype>()};
-    return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(disk), face, eps);
-}
-
-/*!
- * \ingroup Intersection
  * \brief Intersect two face shapes.
  * \param face1 The first face shape
  * \param face2 The second face shape
@@ -335,6 +319,18 @@ intersect(const TopoDS_Face& face1, const TopoDS_Face& face2, ctype eps)
         return {EmptyIntersection<3, ctype>()};
     return IntersectionAlgorithms::intersect_face_face_3d(face1, face2, eps);
 }
+
+/*!
+ * \ingroup Intersection
+ * \brief Intersect a disk and a face shape.
+ * \param disk The disk
+ * \param face The face shape
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Disk<ctype>, TopoDS_Face >
+intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
+{ return intersect(OCCUtilities::getShape(disk), face, eps); }
 
 /*!
  * \ingroup Intersection
@@ -358,11 +354,7 @@ intersect(const TopoDS_Face& face, const Disk<ctype>& disk, ctype eps)
 template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, TopoDS_Face >
 intersect(const Quadrilateral<ctype, 3>& quad, const TopoDS_Face& face, ctype eps)
-{
-    if (!doIntersect(getBoundingBox(quad), getBoundingBox(face), eps))
-        return {EmptyIntersection<3, ctype>()};
-    return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(quad), face, eps);
-}
+{ return intersect(OCCUtilities::getShape(quad), face, eps); }
 
 /*!
  * \ingroup Intersection
