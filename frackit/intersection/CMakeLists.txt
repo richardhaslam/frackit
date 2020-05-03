@@ -1,4 +1,5 @@
 install(FILES
+bboxintersection.hh
 emptyintersection.hh
 intersect.hh
 intersectionangle.hh
