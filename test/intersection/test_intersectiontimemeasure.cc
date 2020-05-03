@@ -36,7 +36,7 @@ int main()
         using std::abs;
 
         // create 1000 disks at different angles
-        static constexpr std::size_t numTests = 1000;
+        static constexpr std::size_t numTests = 500;
         std::vector<Disk> testDisks; testDisks.reserve(numTests);
         std::vector<TopoDS_Face> testDiskShapes; testDiskShapes.reserve(numTests);
 
