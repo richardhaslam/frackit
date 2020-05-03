@@ -36,13 +36,18 @@
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
+
 #include <frackit/geometryutilities/name.hh>
+#include <frackit/geometryutilities/getboundingbox.hh>
 
 #include <frackit/occ/breputilities.hh>
 #include <frackit/common/extractctype.hh>
 #include <frackit/precision/defaultepsilon.hh>
 
 #include "intersectiontraits.hh"
+#include "bboxintersection.hh"
+#include "emptyintersection.hh"
+
 #include "algorithms/algo_segment_segment.hh"
 #include "algorithms/algo_plane_plane.hh"
 #include "algorithms/algo_plane_line.hh"
@@ -91,7 +96,11 @@ EmptyIntersection<0> intersect(const Geom1& geo1,
 template<class ctype, int wd>
 Intersection< Segment<ctype, wd>, Segment<ctype, wd> >
 intersect(const Segment<ctype, wd>& segment1, const Segment<ctype, wd>& segment2, ctype eps)
-{ return IntersectionAlgorithms::intersect_segment_segment(segment1, segment2, eps); }
+{
+    if (!doIntersect(getBoundingBox(segment1), getBoundingBox(segment2), eps))
+        return {EmptyIntersection<wd, ctype>()};
+    return IntersectionAlgorithms::intersect_segment_segment(segment1, segment2, eps);
+}
 
 /*!
  * \ingroup Intersection
@@ -188,7 +197,11 @@ intersect(const Line<ctype, 3>& line, const Quadrilateral<ctype, 3>& quad, ctype
 template<class ctype>
 Intersection< Disk<ctype>, Disk<ctype> >
 intersect(const Disk<ctype>& disk1, const Disk<ctype>& disk2, ctype eps)
-{ return IntersectionAlgorithms::intersect_disk_disk(disk1, disk2, eps); }
+{
+    if (!doIntersect(getBoundingBox(disk1), getBoundingBox(disk2), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_disk_disk(disk1, disk2, eps);
+}
 
 /*!
  * \ingroup Intersection
@@ -200,7 +213,11 @@ intersect(const Disk<ctype>& disk1, const Disk<ctype>& disk2, ctype eps)
 template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, Quadrilateral<ctype, 3> >
 intersect(const Quadrilateral<ctype, 3>& quad1, const Quadrilateral<ctype, 3>& quad2, ctype eps)
-{ return IntersectionAlgorithms::intersect_quadrilateral_quadrilateral(quad1, quad2, eps); }
+{
+    if (!doIntersect(getBoundingBox(quad1), getBoundingBox(quad2), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_quadrilateral_quadrilateral(quad1, quad2, eps);
+}
 
 /*!
  * \ingroup Intersection
@@ -212,7 +229,11 @@ intersect(const Quadrilateral<ctype, 3>& quad1, const Quadrilateral<ctype, 3>& q
 template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, Disk<ctype> >
 intersect(const Quadrilateral<ctype, 3>& quad, const Disk<ctype>& disk, ctype eps)
-{ return IntersectionAlgorithms::intersect_quadrilateral_disk(quad, disk, eps); }
+{
+    if (!doIntersect(getBoundingBox(quad), getBoundingBox(disk), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_quadrilateral_disk(quad, disk, eps);
+}
 
 /*!
  * \ingroup Intersection
@@ -236,7 +257,11 @@ intersect(const Disk<ctype>& disk, const Quadrilateral<ctype, 3>& quad, ctype ep
 template<class ctype>
 Intersection< CylinderSurface<ctype>, Disk<ctype> >
 intersect(const CylinderSurface<ctype>& cylSurface, const Disk<ctype>& disk, ctype eps)
-{ return IntersectionAlgorithms::intersect_cylinderSurface_disk(cylSurface, disk, eps); }
+{
+    if (!doIntersect(getBoundingBox(cylSurface), getBoundingBox(disk), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_cylinderSurface_disk(cylSurface, disk, eps);
+}
 
 /*!
  * \ingroup Intersection
@@ -260,7 +285,11 @@ intersect(const Disk<ctype>& disk, const CylinderSurface<ctype>& cylSurface, cty
 template<class ctype>
 Intersection< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
 intersect(const CylinderSurface<ctype>& cylSurface, const Quadrilateral<ctype, 3>& quad, ctype eps)
-{ return IntersectionAlgorithms::intersect_cylinderSurface_quadrilateral(cylSurface, quad, eps); }
+{
+    if (!doIntersect(getBoundingBox(cylSurface), getBoundingBox(quad), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_cylinderSurface_quadrilateral(cylSurface, quad, eps);
+}
 
 /*!
  * \ingroup Intersection
@@ -284,7 +313,11 @@ intersect(const Quadrilateral<ctype, 3>& quad, const CylinderSurface<ctype>& cyl
 template<class ctype>
 Intersection< Disk<ctype>, TopoDS_Face >
 intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
-{ return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(disk), face, eps); }
+{
+    if (!doIntersect(getBoundingBox(disk), getBoundingBox(face), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(disk), face, eps);
+}
 
 /*!
  * \ingroup Intersection
@@ -297,7 +330,12 @@ intersect(const Disk<ctype>& disk, const TopoDS_Face& face, ctype eps)
 template<class ctype>
 Intersection< TopoDS_Face, TopoDS_Face >
 intersect(const TopoDS_Face& face1, const TopoDS_Face& face2, ctype eps)
-{ return IntersectionAlgorithms::intersect_face_face_3d(face1, face2, eps); }
+{
+    if (!doIntersect(getBoundingBox(face1), getBoundingBox(face2), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_face_face_3d(face1, face2, eps);
+}
+
 /*!
  * \ingroup Intersection
  * \brief Intersect a face shape and a disk.
@@ -320,7 +358,11 @@ intersect(const TopoDS_Face& face, const Disk<ctype>& disk, ctype eps)
 template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, TopoDS_Face >
 intersect(const Quadrilateral<ctype, 3>& quad, const TopoDS_Face& face, ctype eps)
-{ return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(quad), face, eps); }
+{
+    if (!doIntersect(getBoundingBox(quad), getBoundingBox(face), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_face_face_3d(OCCUtilities::getShape(quad), face, eps);
+}
 
 /*!
  * \ingroup Intersection
