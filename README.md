@@ -44,8 +44,9 @@ on the fractures as well as the fluid velocities in the domain:
     <img src="doc/img/pressuresolution.png" alt="dumux frackit example" width="800"/>
 </p>
 
-The source code to this example, including installation instructions, can be found
-[here][13].
+The source code to the flow simulation shown in the above figure, including installation
+instructions, can be found [here][13]. Furthermore, [Example 3][4] of the Frackit examples
+contains the code to generating a fracture network on the above domain geometry.
 
 General Concept
 ===============
@@ -107,8 +108,8 @@ Please note that the following requirements need to be installed:
 ### Installation of OpenCASCADE
 Frackit requires parts of the [OpenCASCADE][2] library to be installed on your system.
 Thanks to the ["FreeCAD maintainers" team][15], there are Debian packages of
-[OpenCASCADE][2] available (see [this link][14]). To install the required packages,
-you have to add the repository by typing
+[OpenCASCADE][2] available (see [this link][14]). To install the required packages
+on Ubuntu, you have to add the repository by typing
 
 ```sh
 sudo add-apt-repository ppa:freecad-maintainers/occt-releases
