@@ -81,7 +81,9 @@ OpenCascade representation is used. As a result, when evaluating the constraints
 the OpenCascade representation of the cylindrical surface, the constraint on the minimum
 allowed length of intersection edges is checked for each sub-edge. Thus, this approach should
 be preferred when using cylindrical domains in order to detect small length scales originating
-from intersections with the auxiliary edge used by OpenCascade.
+from intersections with the auxiliary edge used by OpenCascade. This is important because
+ultimately, when the network and the domain are fragmented and written into a CAD file, the
+OpenCascade representation is used.
 
 Moreover, we want to reject all those quadrilaterals of which only
 a very small portion is inside the cylinder. This is done in the lines
@@ -141,7 +143,7 @@ entities and in the rest of the domain.
 
 # Enforcing constraints on confined entities
 
-As mentioned above, enforcing the constraints between the raw entities, small length
+As mentioned before, enforcing the constraints between the raw entities, small length
 scales appearing after confining the entities to the domain are not detected. An
 illustration of such a situation is depicted in the following figure:
 
@@ -176,7 +178,7 @@ if (!constraintsOnOther.evaluate(otherEntitySet, containedFaces))
 ```
 
 Note that the variable `containedFaces` is of type `std::vector<TopoDS_Face>`,
-where `TopoDS_Face` is the _OpenCascade_ type used to represent general two-dimensional
+where `TopoDS_Face` is the OpenCascade type used to represent general two-dimensional
 faces. In the above code snippets we have assumed `entitySet` and `otherEntitySet`
 to also be of type `std::vector<TopoDS_Face>`, and to be composed of the previously
 accepted faces.
