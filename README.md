@@ -6,7 +6,7 @@
 What is Frackit?
 ================
 
-Frackit is an open-source framework for the stochastic generation of fracture networks.
+Frackit is an open-source framework for the stochastic generation of fracture networks,
 The implementation is written in C++ language and extensively uses
 [OpenCASCADE][2], an open-source Computer Aided Design (CAD) library.
 
@@ -250,8 +250,8 @@ Ongoing Developments
 ====================
 
 * Python bindings (is currently being developed in !63)
-* Kernel for fracture network characterization (e.g. connectivity)
-* Capabilities for translation of fracture networks into graphs, allowing for efficient characterization of the network based on its graph representation.
+* Kernel for detailed characterizations of the generated fracture networks (e.g. connectivity, density, etc.)
+* Capabilities for translation of fracture networks into graphs, allowing for efficient characterization of a network based on its graph representation.
 
 References
 ====================
