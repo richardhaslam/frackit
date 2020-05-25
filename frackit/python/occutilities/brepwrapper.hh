@@ -19,6 +19,8 @@
 #ifndef FRACKIT_PYTHON_OCC_BREP_WRAPPER_HH
 #define FRACKIT_PYTHON_OCC_BREP_WRAPPER_HH
 
+#include <type_traits>
+
 #include <BRep_Builder.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Solid.hxx>
@@ -100,6 +102,12 @@ using FaceWrapper = BRepWrapper<TopoDS_Face>;
 using ShellWrapper = BRepWrapper<TopoDS_Shell>;
 using SolidWrapper = BRepWrapper<TopoDS_Solid>;
 using CompoundWrapper = BRepWrapper<TopoDS_Compound>;
+
+// helper struct to check if something is a BRep wrapper
+template<class T>
+struct IsBRepWrapper : public std::false_type {};
+template<class S>
+struct IsBRepWrapper<BRepWrapper<S>> : public std::true_type {};
 
 } // end namespace Frackit::Python::OCCUtilities
 
