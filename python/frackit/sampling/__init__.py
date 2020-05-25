@@ -136,3 +136,66 @@ def makePointSampler(geometry,
         return CylinderPointSampler(geometry.fullCylinder(), samplerR2, samplerPhi, samplerZ)
 
     raise NotImplementedError("No point sample creation formula implemented for provided geometry: " + geometry.name())
+
+
+
+class DiskSampler:
+    """Class to randomly sample disk geometries."""
+
+    def __init__(self, pointSampler, majAxisSampler, minAxisSampler, xAngleSampler, yAngleSampler, zAngleSampler):
+        """
+        Create the sampler from random variable samplers for the geometric properties.
+
+        Parameters:
+        pointSampler: sampler for points to be used as the disk centers
+        majAxisSampler: samples from a distribution for the major axis length
+        minAxisSampler: samples from distribution the minor axis length
+        xAngleSampler: samples from a distribution for the angle or rotation around x-axis
+        yAngleSampler: samples from a distribution for the angle or rotation around y-axis
+        zAngleSampler: samples from a distribution for the angle or rotation around z-axis
+        """
+        self.pointSampler = pointSampler
+        self.majAxisSampler = majAxisSampler
+        self.minAxisSampler = minAxisSampler
+        self.xAngleSampler = xAngleSampler
+        self.yAngleSampler = yAngleSampler
+        self.zAngleSampler = zAngleSampler
+
+    def sample(self):
+
+        a = self.majAxisSampler()
+        while (a <= 0.0): a = self.majAxisSampler()
+
+        b = self.minAxisSampler()
+        while (b <= 0.0): b = self.minAxisSampler()
+
+        if (b > a): b = a
+
+        alpha = self.xAngleSampler()
+        beta = self.yAngleSampler()
+        gamma = self.zAngleSampler()
+
+        # find major/minor axis by rotations
+        from frackit.geometry import Vector_3
+        axes = [Vector_3(1.0, 0.0, 0.0), Vector_3(0.0, 1.0, 0.0)]
+
+        from frackit.geometry import Direction_3
+        e1 = Direction_3(axes[0]);
+        e2 = Direction_3(axes[1]);
+        e3 = Direction_3(Vector_3(0.0, 0.0, 1.0));
+
+        from frackit.common import rotate
+        rotate(axes[1], e1, alpha); # rotate minor axis around x
+        rotate(axes[0], e2, beta);  # rotate both axes around y
+        rotate(axes[1], e2, beta);  # rotate both axes around y
+        rotate(axes[0], e3, beta);  # rotate both axes around z
+        rotate(axes[1], e3, beta);  # rotate both axes around z
+
+        # sample center point and make disk
+        from frackit.geometry import Ellipse_3
+        ellipse = Ellipse_3(self.pointSampler.sample(),
+                            Direction_3(axes[0]),
+                            Direction_3(axes[1]),
+                            a, b)
+        from frackit.geometry import Disk
+        return Disk(ellipse)
