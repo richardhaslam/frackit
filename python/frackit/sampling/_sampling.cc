@@ -23,6 +23,7 @@
 #include <frackit/geometry/hollowcylinder.hh>
 #include <frackit/sampling/makeuniformpointsampler.hh>
 
+#include <frackit/python/sampling/status.hh>
 #include <frackit/python/sampling/pointsampler.hh>
 #include <frackit/python/sampling/boxpointsampler.hh>
 #include <frackit/python/sampling/cylinderpointsampler.hh>
@@ -60,6 +61,9 @@ void registerPointSamplerCreatorFunctions(pybind11::module& module)
 
 PYBIND11_MODULE(_sampling, module)
 {
+    // register status class
+    Frackit::Python::registerSamplingStatus(module);
+
     // register base class for all dimensions
     Frackit::Python::registerPointSamplerInterface<double, 1>(module);
     Frackit::Python::registerPointSamplerInterface<double, 2>(module);
