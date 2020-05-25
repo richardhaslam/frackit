@@ -152,16 +152,17 @@ void rotate(Vector<ctype, 3>& v,
 
     const auto cosPhi = cos(angle);
     const auto sinPhi = sin(angle);
+    const auto oneMinusCosPhi = 1.0 - cosPhi;
 
-    Vector<ctype, 3> Rx(cosPhi + axis.x()*axis.x()*(1.0 - cosPhi),
-                        axis.x()*axis.y()*(1.0 - cosPhi) - axis.z()*sinPhi,
-                        axis.x()*axis.z()*(1.0 - cosPhi) - axis.y()*sinPhi);
-    Vector<ctype, 3> Ry(axis.y()*axis.x()*(1.0 - cosPhi) + axis.z()*sinPhi,
-                        cosPhi + axis.y()*axis.y()*(1.0 - cosPhi),
-                        axis.y()*axis.z()*(1.0 - cosPhi) - axis.x()*sinPhi);
-    Vector<ctype, 3> Rz(axis.z()*axis.x()*(1.0 - cosPhi) - axis.y()*sinPhi,
-                        axis.z()*axis.y()*(1.0 - cosPhi) + axis.x()*sinPhi,
-                        cosPhi + axis.z()*axis.z()*(1.0 - cosPhi));
+    Vector<ctype, 3> Rx(cosPhi + axis.x()*axis.x()*oneMinusCosPhi,
+                        axis.x()*axis.y()*oneMinusCosPhi - axis.z()*sinPhi,
+                        axis.x()*axis.z()*oneMinusCosPhi + axis.y()*sinPhi);
+    Vector<ctype, 3> Ry(axis.y()*axis.x()*oneMinusCosPhi + axis.z()*sinPhi,
+                        cosPhi + axis.y()*axis.y()*oneMinusCosPhi,
+                        axis.y()*axis.z()*oneMinusCosPhi - axis.x()*sinPhi);
+    Vector<ctype, 3> Rz(axis.z()*axis.x()*oneMinusCosPhi - axis.y()*sinPhi,
+                        axis.z()*axis.y()*oneMinusCosPhi + axis.x()*sinPhi,
+                        cosPhi + axis.z()*axis.z()*oneMinusCosPhi);
     v = Vector<ctype, 3>(Rx*v, Ry*v, Rz*v);
 }
 
@@ -171,9 +172,8 @@ void rotate(Vector<ctype, 3>& v,
  * \param vectors The vectors to be rotated
  * \param axis The rotation axis
  * \param angle The rotation angle
- * \note This overload is more efficient than calling the overload
- *       for a single vector several times, as the rotation matrix
- *       is only constructed once!
+ * \note This overload is more efficient than calling the overload for a
+ *       vector several times, as the rotation matrix is only constructed once!
  * \note The rotation matrix is taken from:
  *       https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
  */
@@ -187,16 +187,17 @@ void rotate(std::vector<Vector<ctype, 3>>& vectors,
 
     const auto cosPhi = cos(angle);
     const auto sinPhi = sin(angle);
+    const auto oneMinusCosPhi = 1.0 - cosPhi;
 
-    Vector<ctype, 3> Rx(cosPhi + axis.x()*axis.x()*(1.0 - cosPhi),
-                        axis.x()*axis.y()*(1.0 - cosPhi) - axis.z()*sinPhi,
-                        axis.x()*axis.z()*(1.0 - cosPhi) - axis.y()*sinPhi);
-    Vector<ctype, 3> Ry(axis.y()*axis.x()*(1.0 - cosPhi) + axis.z()*sinPhi,
-                        cosPhi + axis.y()*axis.y()*(1.0 - cosPhi),
-                        axis.y()*axis.z()*(1.0 - cosPhi) - axis.x()*sinPhi);
-    Vector<ctype, 3> Rz(axis.z()*axis.x()*(1.0 - cosPhi) - axis.y()*sinPhi,
-                        axis.z()*axis.y()*(1.0 - cosPhi) + axis.x()*sinPhi,
-                        cosPhi + axis.z()*axis.z()*(1.0 - cosPhi));
+    Vector<ctype, 3> Rx(cosPhi + axis.x()*axis.x()*oneMinusCosPhi,
+                        axis.x()*axis.y()*oneMinusCosPhi - axis.z()*sinPhi,
+                        axis.x()*axis.z()*oneMinusCosPhi + axis.y()*sinPhi);
+    Vector<ctype, 3> Ry(axis.y()*axis.x()*oneMinusCosPhi + axis.z()*sinPhi,
+                        cosPhi + axis.y()*axis.y()*oneMinusCosPhi,
+                        axis.y()*axis.z()*oneMinusCosPhi - axis.x()*sinPhi);
+    Vector<ctype, 3> Rz(axis.z()*axis.x()*oneMinusCosPhi - axis.y()*sinPhi,
+                        axis.z()*axis.y()*oneMinusCosPhi + axis.x()*sinPhi,
+                        cosPhi + axis.z()*axis.z()*oneMinusCosPhi);
 
     for (auto& v : vectors)
         v = Vector<ctype, 3>(Rx*v, Ry*v, Rz*v);

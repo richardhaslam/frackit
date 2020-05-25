@@ -166,13 +166,7 @@ public:
 
         rotate(axes[1], e1, alpha); // rotate minor axis around x
         rotate(axes, e2, beta);     // rotate both axes around y
-
-        // minor axis is rotated around y in clockwise direction,
-        // therefore fix sign. TODO: Check why this is the case.
-        axes[1] = Vector(-1.0*axes[1].x(), axes[1].y(), axes[1].z());
-
-        // rotate both axes around z
-        rotate(axes, e3, gamma);
+        rotate(axes, e3, gamma);    // rotate both axes around z
 
         // sample center point and make disk
         return Disk((*pointSampler_)(), Direction(axes[0]), Direction(axes[1]), a, b);
