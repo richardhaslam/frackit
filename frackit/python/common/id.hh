@@ -16,12 +16,26 @@
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  *****************************************************************************/
-#include <pybind11/pybind11.h>
-#include <frackit/python/common/id.hh>
-#include <frackit/python/common/math.hh>
+#ifndef FRACKIT_PYTHON_COMMON_ID_HH
+#define FRACKIT_PYTHON_COMMON_ID_HH
 
-PYBIND11_MODULE(_common, module)
+#include <pybind11/pybind11.h>
+#include <pybind11/operators.h>
+
+#include <frackit/common/id.hh>
+
+namespace Frackit::Python {
+
+namespace py = pybind11;
+
+void registerId(py::module& module)
 {
-    Frackit::Python::registerId(module);
-    Frackit::Python::registerMath<double>(module);
+    py::class_<Id> cls(module, "Id");
+    cls.def(py::init<std::size_t>());
+    cls.def("get", &Id::get, "return the id");
+    cls.def(py::self == Id());
 }
+
+} // end namespace Frackit::Python
+
+#endif
