@@ -37,7 +37,7 @@ namespace py = pybind11;
 
 namespace Detail {
 
-    // Wrapper class to resolve overload issues for evaluate()
+    // Wrapper class to provide compatibility with shape wrapper classes
     template<class ST>
     class EntityNetworkConstraintsWrapper
     : public EntityNetworkConstraints<ST>

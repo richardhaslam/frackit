@@ -3,7 +3,14 @@ from ._entitynetwork import *
 class EntityNetworkConstraints(_entitynetwork._EntityNetworkConstraints):
 
     def evaluate(self, a, b):
+        """
+        Evaluates the constraints between the arguments a and b, both being
+        either an instance of a geometry class or a list of geometry classes.
 
+        Parameters:
+        a: a geometry or list of geometries
+        b: a geometry or list of geometries
+        """
         isListA = isinstance(a, list)
         isListB = isinstance(b, list)
 
