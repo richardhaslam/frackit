@@ -20,15 +20,30 @@
 #define FRACKIT_PYTHON_COMMON_MATH_HH
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+#include <frackit/geometry/vector.hh>
+#include <frackit/geometry/direction.hh>
 #include <frackit/common/math.hh>
 
 namespace Frackit::Python {
 
+namespace py = pybind11;
+
 template<class ctype>
-void registerMath(pybind11::module& module)
+void registerMath(py::module& module)
 {
-    module.def("toDegrees", &Frackit::toDegrees<double>, "Converts radians into degrees");
-    module.def("toRadians", &Frackit::toRadians<double>, "Converts degrees into radians");
+    module.def("toDegrees", &Frackit::toDegrees<ctype>, "Converts radians into degrees");
+    module.def("toRadians", &Frackit::toRadians<ctype>, "Converts degrees into radians");
+
+    // Register rotation overload for single vector
+    using namespace py::literals;
+    using Vector_3 = Vector<ctype, 3>;
+    using Direction_3 = Direction<ctype, 3>;
+    module.def("rotate",
+               py::overload_cast<Vector_3&, const Direction_3&, ctype>(&rotate<ctype>),
+               "Rotates a vector around the given axis & angle",
+               "vector"_a, "axis"_a, "angle"_a);
 }
 
 } // end namespace Frackit::Python
