@@ -33,6 +33,7 @@ namespace Detail {
     {
         using Wrapper = OCCUtilities::BRepWrapper<Shape>;
         pybind11::class_<Wrapper> cls(module, className.c_str());
+        cls.def("name", &Wrapper::name, "return the name of the wrapper");
     }
 
     void registerCompoundWrapper(pybind11::module& module)
@@ -43,6 +44,7 @@ namespace Detail {
 
         // functions to add shapes to the compound
         using namespace Frackit::Python::OCCUtilities;
+        cls.def("name", &Wrapper::name, "return the name of the wrapper");
         cls.def("add", &Wrapper::add<ShapeWrapper>, "Add a shape to the compound");
         cls.def("add", &Wrapper::add<VertexWrapper>, "Add a vertex to the compound");
         cls.def("add", &Wrapper::add<EdgeWrapper>, "Add an edge to the compound");

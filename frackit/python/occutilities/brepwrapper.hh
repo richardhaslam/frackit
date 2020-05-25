@@ -29,6 +29,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <frackit/geometryutilities/name.hh>
+
 namespace Frackit::Python::OCCUtilities {
 
 // Wrapper class to be used around occ brep classes
@@ -41,6 +43,7 @@ public:
 
     BRepWrapper(const Shape& shape) : shape_(shape) {}
     const Shape& get() const { return shape_; }
+    std::string name() const { return geometryName(get()) + "_Wrapper"; }
 private:
     Shape shape_;
 };
@@ -71,6 +74,10 @@ public:
     //! return the compound
     const Compound& get() const
     { return compound_; }
+
+    //! return the name of the wrapper class
+    std::string name() const
+    { return "TopoDS_Compound_Wrapper"; }
 
     //! add a wrapped shape to the compound
     template<class ShapeWrapper>
