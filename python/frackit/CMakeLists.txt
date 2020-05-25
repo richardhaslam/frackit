@@ -1,4 +1,5 @@
 add_subdirectory(common)
+add_subdirectory(entitynetwork)
 add_subdirectory(geometry)
 add_subdirectory(occutilities)
 add_subdirectory(precision)
