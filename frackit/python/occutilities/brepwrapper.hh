@@ -44,6 +44,7 @@ public:
     using Shape = S;
 
     BRepWrapper(const Shape& shape) : shape_(shape) {}
+    BRepWrapper(Shape&& shape) : shape_(std::move(shape)) {}
     const Shape& get() const { return shape_; }
     std::string name() const { return geometryName(get()) + "_Wrapper"; }
 private:
@@ -70,6 +71,12 @@ public:
     //! Constructor from a compound
     BRepWrapper(const Compound& c)
     : compound_(c)
+    , builder_()
+    {}
+
+    //! Constructor from a compound
+    BRepWrapper(Compound&& c)
+    : compound_(std::move(c))
     , builder_()
     {}
 
