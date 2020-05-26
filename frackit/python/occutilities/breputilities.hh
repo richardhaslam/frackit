@@ -135,6 +135,10 @@ namespace OCCUtilities {
         return result;
     }
 
+    template<class ShapeWrapper, class ctype>
+    Box<ctype> getBoundingBox(const ShapeWrapper& wrappedShape)
+    { return Frackit::OCCUtilities::getBoundingBox(wrappedShape.get()); }
+
     ShapeWrapper readShape(const std::string& fileName)
     { return ShapeWrapper(Frackit::OCCUtilities::readShape(fileName)); }
 
@@ -228,8 +232,18 @@ void registerBRepUtilities(pybind11::module& module)
     // register read-in of shapes from a file
     module.def("readShape", &OCCUtilities::readShape, "Reads in the shapes from a file");
 
-    // register write function for wrapped shapes
+    // register bounding box computations for wrapped shapes
     using namespace OCCUtilities;
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<ShapeWrapper, ctype>,    "returns the bounding box of a wrapped shape");
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<VertexWrapper, ctype>,   "returns the bounding box of a wrapped vertex shape");
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<EdgeWrapper, ctype>,     "returns the bounding box of a wrapped edge shape");
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<WireWrapper, ctype>,     "returns the bounding box of a wrapped wire shape");
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<FaceWrapper, ctype>,     "returns the bounding box of a wrapped face shape");
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<ShellWrapper, ctype>,    "returns the bounding box of a wrapped shell shape");
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<SolidWrapper, ctype>,    "returns the bounding box of a wrapped solid shape");
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<CompoundWrapper, ctype>, "returns the bounding box of a wrapped compound shape");
+
+    // register write function for wrapped shapes
     module.def("write", &OCCUtilities::write<ShapeWrapper>, "writes a wrapped shape to a BRep file");
     module.def("write", &OCCUtilities::write<VertexWrapper>, "writes a wrapped vertex shape to a BRep file");
     module.def("write", &OCCUtilities::write<EdgeWrapper>, "writes a wrapped edge shape to a BRep file");
