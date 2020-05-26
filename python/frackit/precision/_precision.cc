@@ -18,9 +18,13 @@
  *****************************************************************************/
 #include <pybind11/pybind11.h>
 #include <frackit/python/precision/precision.hh>
+#include <frackit/python/precision/defaultepsilon.hh>
 
 PYBIND11_MODULE(_precision, module)
 {
     // register the precision class
     Frackit::Python::registerPrecision<double>(module);
+
+    // register free function for default epsilon
+    Frackit::Python::registerDefaultEpsilon<double>(module);
 }
