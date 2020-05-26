@@ -105,6 +105,8 @@ Please note that the following requirements need to be installed:
 * CMake (>3.0)
 * C, C++ compiler (C++17 required)
 * Optional: Doxygen (>= 1.8)
+* Optional: python3 (for python bindings)
+* Optional: pybind11 (for python bindings)
 
 ### Installation of OpenCASCADE
 Frackit requires parts of the [OpenCASCADE][2] library to be installed on your system.
@@ -141,6 +143,15 @@ from the command line via:
 ```sh
 sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libfreeimage-dev libtbb-dev libgl2ps-dev
 ``` -->
+
+If you want to use the python bindings you need to install pybind11. You can get it from
+the GitHub repository at [https://github.com/pybind/pybind11/][https://github.com/pybind/pybind11/]
+and manually install it. Alternatively, you can install it via the command line (here shown for Ubuntu users)
+
+```bash
+sudo apt install pybind11-dev
+```
+
 
 ### Building Frackit under Linux
 After [OpenCASCADE][2] and the other requirements listed above have been installed,
@@ -215,6 +226,21 @@ run it by typing:
 ```sh
 cd appl/example1
 ./example1
+```
+
+To install the Frackit python package on your system, go back to the `build` folder and type
+
+```sh
+make
+make install_python
+```
+
+If this finished successfully, you can, for instance, run the python implementation of
+example1 by heading to the examples folder (in the source tree):
+
+```sh
+cd ../appl/example1
+python3 example1.py
 ```
 
 
