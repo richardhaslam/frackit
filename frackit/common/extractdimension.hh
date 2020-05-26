@@ -25,6 +25,7 @@
 #define FRACKIT_COMMON_EXTRACT_DIMENSION_HH
 
 #include <utility>
+#include <memory>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -34,6 +35,8 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <Standard.hxx>
+
+#include <frackit/geometry/geometry.hh>
 
 namespace Frackit {
 
@@ -108,6 +111,13 @@ template<>
 struct DimensionalityTraits<TopoDS_Solid>
 : public DimensionalityTraits<TopoDS_Shape>
 { static constexpr int geometryDimension() { return 3; } };
+
+/*!
+ * \brief The dimension of the abstract base class is not known.
+ *        Thus, we provoke compiler errors when this is uses.
+ */
+template<> struct DimensionalityTraits<Geometry> {};
+template<> struct DimensionalityTraits<std::shared_ptr<Geometry>> {};
 
 /*!
  * \brief Free function to return the dimension of a geometry.
