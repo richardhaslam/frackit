@@ -6,6 +6,10 @@
 Example 3
 =========
 
+__As in the previous examples, this description focuses on the c++ implementation
+given in the main file `example3.cc`, but in `example3.py` you can find how to
+realize this example using the Frackit python bindings.__
+
 In contrast to the [previous example][0], we now want to create a network within
 a complex domain that cannot be represented by the internal geometry classes.
 The domain has been created with [Gmsh][1] and has been saved in .brep file format.
