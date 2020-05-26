@@ -91,6 +91,11 @@ option(FRACKIT_ENABLE_PYTHONBINDINGS "Enable python bindings for Frackit" ON)
 # python and pybind11 for python bindings
 find_package(PythonInterp 3)
 find_package(pybind11)
+
+if (pybind11_FOUND)
+    message(STATUS "Found pybind11 in ${pybind11_INCLUDE_DIR}")
+endif()
+
 if (FRACKIT_ENABLE_PYTHONBINDINGS AND NOT PYTHONINTERP_FOUND)
     set(FRACKIT_ENABLE_PYTHONBINDINGS OFF)
     message("Python interpreter not found. This is required to build the python library.")
