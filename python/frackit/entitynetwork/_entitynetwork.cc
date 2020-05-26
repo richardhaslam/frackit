@@ -20,6 +20,7 @@
 
 #include <frackit/python/entitynetwork/constraints.hh>
 #include <frackit/python/entitynetwork/entitynetwork.hh>
+#include <frackit/python/entitynetwork/networkbuilder.hh>
 
 PYBIND11_MODULE(_entitynetwork, module)
 {
@@ -28,4 +29,7 @@ PYBIND11_MODULE(_entitynetwork, module)
 
     // register entity network classes
     Frackit::Python::registerEntityNetworks(module);
+
+    // register entity network builder classes
+    Frackit::Python::registerEntityNetworkBuilders<double>(module);
 }

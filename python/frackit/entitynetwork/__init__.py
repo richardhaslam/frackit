@@ -1,5 +1,6 @@
 from ._entitynetwork import *
 
+# python implementation of the constraints class that accepts evaluation on lists
 class EntityNetworkConstraints(_entitynetwork._EntityNetworkConstraints):
 
     def evaluate(self, a, b):
@@ -26,3 +27,28 @@ class EntityNetworkConstraints(_entitynetwork._EntityNetworkConstraints):
         # here we assume the two arguments to be geometries
         else:
             return super().evaluate(a, b)
+
+
+# python implementation of the entity network builder class
+class EntityNetworkBuilder(_entitynetwork._EntityNetworkBuilderWrapper):
+
+    def addEntities(self, entities):
+        """
+        adds all the entities in the provided list to the network.
+        """
+        for entity in entities: super().addEntity(entity)
+
+    def addSubDomainEntities(self, entities, subDomainId):
+        """
+        adds all the given entities to be embedded in the subdomain with the given id.
+        """
+        for entity in entities: super().addSubDomainEntity(entity, subDomainId)
+
+# python implementation of the contained entity network builder class
+class ContainedEntityNetworkBuilder(_entitynetwork._ContainedEntityNetworkBuilderWrapper):
+
+    def addSubDomainEntities(self, entities, subDomainId):
+        """
+        adds all the given entities to be embedded in the subdomain with the given id.
+        """
+        for entity in entities: super().addSubDomainEntity(entity, subDomainId)
