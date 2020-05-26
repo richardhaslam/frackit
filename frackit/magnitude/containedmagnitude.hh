@@ -30,6 +30,7 @@
 
 #include <frackit/occ/breputilities.hh>
 #include <frackit/common/extractctype.hh>
+#include <frackit/common/extractdimension.hh>
 #include <frackit/precision/defaultepsilon.hh>
 
 #include <frackit/geometry/geometry.hh>
@@ -45,7 +46,8 @@ namespace Frackit {
  * \note The magnitude of points is always zero independent on if they
  *       are contained in the geometry or not.
  */
-template<class Geometry, class Domain, std::enable_if_t<Geometry::myDimension() == 0, int> = 0>
+template<class Geometry, class Domain,
+         std::enable_if_t<DimensionalityTraits<Geometry>::geometryDimension() == 0, int> = 0>
 typename CoordinateTypeTraits<Geometry>::type
 computeContainedMagnitude(const Geometry& geometry,
                           const Domain& domain)
@@ -56,7 +58,8 @@ computeContainedMagnitude(const Geometry& geometry,
  * \brief Returns the length of the part of a one-dimensional
  *        geometry that is contained in a domain geometry.
  */
-template<class Geometry, class Domain, std::enable_if_t<Geometry::myDimension() == 1, int> = 0>
+template<class Geometry, class Domain,
+         std::enable_if_t<DimensionalityTraits<Geometry>::geometryDimension() == 1, int> = 0>
 typename CoordinateTypeTraits<Geometry>::type
 computeContainedMagnitude(const Geometry& geometry,
                           const Domain& domain)
@@ -69,7 +72,7 @@ computeContainedMagnitude(const Geometry& geometry,
     if (isEdges.empty())
         return 0.0;
 
-    typename Geometry::ctype size = 0.0;
+    typename CoordinateTypeTraits<Geometry>::type size = 0.0;
     for (const auto& edge : isEdges)
         size += computeMagnitude(edge);
     return size;
@@ -80,7 +83,8 @@ computeContainedMagnitude(const Geometry& geometry,
  * \brief Returns the surface area of the part of a two-dimensional
  *        geometry that is contained in a domain geometry.
  */
-template<class Geometry, class Domain, std::enable_if_t<Geometry::myDimension() == 2, int> = 0>
+template<class Geometry, class Domain,
+         std::enable_if_t<DimensionalityTraits<Geometry>::geometryDimension() == 2, int> = 0>
 typename CoordinateTypeTraits<Geometry>::type
 computeContainedMagnitude(const Geometry& geometry,
                           const Domain& domain)
@@ -93,11 +97,18 @@ computeContainedMagnitude(const Geometry& geometry,
     if (isFaces.empty())
         return 0.0;
 
-    typename Geometry::ctype size = 0.0;
+    typename CoordinateTypeTraits<Geometry>::type size = 0.0;
     for (const auto& face : isFaces)
-        size += computeMagnitude(face,
-                                 defaultEpsilon(domain),
-                                 OCCUtilities::point(geometry.center()));
+    {
+        // TODO: Compute center point for TopoDS_Face?
+        if constexpr (std::is_same_v<Geometry, TopoDS_Face>)
+            size += computeMagnitude(face);
+        else
+            size += computeMagnitude(face,
+                                     defaultEpsilon(domain),
+                                     OCCUtilities::point(geometry.center()));
+    }
+
     return size;
 }
 

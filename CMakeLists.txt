@@ -85,6 +85,22 @@ else ()
     message(FATAL_ERROR "OpenCascade sources not found")
 endif ()
 
+# option to enable/disable python bindings (default: on)
+option(FRACKIT_ENABLE_PYTHONBINDINGS "Enable python bindings for Frackit" ON)
+
+# python and pybind11 for python bindings
+find_package(PythonInterp 3)
+find_package(pybind11)
+if (FRACKIT_ENABLE_PYTHONBINDINGS AND NOT PYTHONINTERP_FOUND)
+    set(FRACKIT_ENABLE_PYTHONBINDINGS OFF)
+    message("Python interpreter not found. This is required to build the python library.")
+elseif (FRACKIT_ENABLE_PYTHONBINDINGS AND NOT pybind11_FOUND)
+    set(FRACKIT_ENABLE_PYTHONBINDINGS OFF)
+    message("Pybind11 is required to build the python library.")
+endif ()
+
+# TODO: make sure pip is installed
+
 # indicate the documentation build as an option and set it to ON by default
 option(FRACKIT_BUILD_DOC "Build documentation" ON)
 
@@ -118,4 +134,7 @@ add_subdirectory(appl)
 add_subdirectory(cmake)
 add_subdirectory(doc)
 add_subdirectory(frackit)
+if (FRACKIT_ENABLE_PYTHONBINDINGS)
+    add_subdirectory(python)
+endif ()
 add_subdirectory(test)

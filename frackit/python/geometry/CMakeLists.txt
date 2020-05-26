@@ -1,0 +1,21 @@
+install(FILES
+box.hh
+circle.hh
+cylinder.hh
+cylindersurface.hh
+direction.hh
+disk.hh
+ellipsearc.hh
+ellipse.hh
+ellipticalgeometry.hh
+geometry.hh
+hollowcylinder.hh
+line.hh
+plane.hh
+point.hh
+quadrilateral.hh
+registerdimensionproperties.hh
+segment.hh
+triangle.hh
+vector.hh
+DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/python/geometry)
