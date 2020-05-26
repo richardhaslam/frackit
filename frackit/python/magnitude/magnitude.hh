@@ -21,7 +21,6 @@
 
 #include <pybind11/pybind11.h>
 
-#include <frackit/common/extractctype.hh>
 
 // supported (registered) geometry types (so far)
 #include <frackit/geometry/disk.hh>
@@ -30,6 +29,7 @@
 #include <frackit/geometry/box.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/python/occutilities/brepwrapper.hh>
+#include <frackit/python/common/extractctype.hh>
 
 #include <frackit/magnitude/magnitude.hh>
 #include <frackit/magnitude/containedmagnitude.hh>
@@ -40,16 +40,9 @@ namespace py = pybind11;
 
 namespace Detail {
 
-    // helper struct for ctype traits to achieve support for brepwrappers
-    template<class Geo>
-    struct CTypeTraits : public Frackit::CoordinateTypeTraits<Geo> {};
-
-    template<class S>
-    struct CTypeTraits<OCCUtilities::BRepWrapper<S>> : public Frackit::CoordinateTypeTraits<S> {};
-
     //! overload for computation of the magnitude of the contained part of a shape wrapper
     template<class Geo, class Domain>
-    typename CTypeTraits<Geo>::type
+    typename CoordinateTypeTraits<Geo>::type
     computeContainedMagnitude(const Geo& geo, const Domain& domain)
     {
         static constexpr bool isWrapperGeo = OCCUtilities::IsBRepWrapper<Geo>::value;
@@ -67,7 +60,7 @@ namespace Detail {
 
     //! overload for computation of the magnitude of the contained part of a shape wrapper
     template<class Geo>
-    typename CTypeTraits<Geo>::type
+    typename CoordinateTypeTraits<Geo>::type
     computeMagnitude(const Geo& geo)
     {
         if constexpr (OCCUtilities::IsBRepWrapper<Geo>::value)
