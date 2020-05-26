@@ -51,6 +51,24 @@ private:
     Shape shape_;
 };
 
+// Wrapper class around TopoDS_Shape is constructible from other wrappers
+template<>
+class BRepWrapper<TopoDS_Shape>
+{
+public:
+    //! export underlying shape type
+    using Shape = TopoDS_Shape;
+
+    template<class S>
+    BRepWrapper(const BRepWrapper<S>& wrapper) : shape_(wrapper.get()) {}
+    BRepWrapper(const Shape& shape) : shape_(shape) {}
+    BRepWrapper(Shape&& shape) : shape_(std::move(shape)) {}
+    const Shape& get() const { return shape_; }
+    std::string name() const { return geometryName(get()) + "_Wrapper"; }
+private:
+    Shape shape_;
+};
+
 // Wrapper around TopoDS_Compound
 template<>
 class BRepWrapper<TopoDS_Compound>

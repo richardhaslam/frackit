@@ -19,6 +19,7 @@
 #ifndef FRACKIT_PYTHON_OCC_BREP_WRAPPERS_HH
 #define FRACKIT_PYTHON_OCC_BREP_WRAPPERS_HH
 
+#include <type_traits>
 #include <pybind11/pybind11.h>
 
 #include "brepwrapper.hh"
@@ -34,6 +35,20 @@ namespace Detail {
         using Wrapper = OCCUtilities::BRepWrapper<Shape>;
         pybind11::class_<Wrapper> cls(module, className.c_str());
         cls.def("name", &Wrapper::name, "return the name of the wrapper");
+
+        // add constructor from other shape wrappers
+        if constexpr(std::is_same_v<Shape, TopoDS_Shape>)
+        {
+            namespace py = pybind11;
+            cls.def(py::init<OCCUtilities::ShapeWrapper>(), "construction from another brep wrapper");
+            cls.def(py::init<OCCUtilities::VertexWrapper>(), "construction from another brep wrapper");
+            cls.def(py::init<OCCUtilities::EdgeWrapper>(), "construction from another brep wrapper");
+            cls.def(py::init<OCCUtilities::WireWrapper>(), "construction from another brep wrapper");
+            cls.def(py::init<OCCUtilities::FaceWrapper>(), "construction from another brep wrapper");
+            cls.def(py::init<OCCUtilities::ShellWrapper>(), "construction from another brep wrapper");
+            cls.def(py::init<OCCUtilities::SolidWrapper>(), "construction from another brep wrapper");
+            cls.def(py::init<OCCUtilities::CompoundWrapper>(), "construction from another brep wrapper");
+        }
     }
 
     void registerCompoundWrapper(pybind11::module& module)
