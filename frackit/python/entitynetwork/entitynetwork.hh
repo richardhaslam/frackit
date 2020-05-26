@@ -16,16 +16,38 @@
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  *****************************************************************************/
+#ifndef FRACKIT_PYTHON_ENTITY_NETWORK_HH
+#define FRACKIT_PYTHON_ENTITY_NETWORK_HH
+
 #include <pybind11/pybind11.h>
 
-#include <frackit/python/entitynetwork/constraints.hh>
-#include <frackit/python/entitynetwork/entitynetwork.hh>
+#include <frackit/entitynetwork/entitynetwork.hh>
+#include <frackit/entitynetwork/containedentitynetwork.hh>
 
-PYBIND11_MODULE(_entitynetwork, module)
+namespace Frackit::Python {
+
+namespace py = pybind11;
+
+namespace Detail {
+
+    void registerEntityNetwork(py::module& module)
+    {
+        py::class_<EntityNetwork>(module, "EntityNetwork");
+    }
+
+    void registerContainedEntityNetwork(py::module& module)
+    {
+        py::class_<ContainedEntityNetwork>(module, "ContainedEntityNetwork");
+    }
+
+} // end namespace Detail
+
+void registerEntityNetworks(py::module& module)
 {
-    // register constraints class
-    Frackit::Python::registerConstraints<double>(module);
-
-    // register entity network classes
-    Frackit::Python::registerEntityNetworks(module);
+    Detail::registerEntityNetwork(module);
+    Detail::registerContainedEntityNetwork(module);
 }
+
+} // end namespace Frackit::Python
+
+#endif
