@@ -139,6 +139,40 @@ namespace OCCUtilities {
     Box<ctype> getBoundingBox(const ShapeWrapper& wrappedShape)
     { return Frackit::OCCUtilities::getBoundingBox(wrappedShape.get()); }
 
+    template<class ShapeWrapper1, class ShapeWrapper2, class ctype>
+    ShapeWrapper cut(const ShapeWrapper1& wrappedShape1,
+                     const ShapeWrapper2& wrappedShape2,
+                     ctype eps)
+    { return Frackit::OCCUtilities::cut(wrappedShape1.get(), wrappedShape2.get(), eps); }
+
+    template<class ShapeWrapper1, class ShapeWrapper2, class ctype>
+    ShapeWrapper intersect(const ShapeWrapper1& wrappedShape1,
+                           const ShapeWrapper2& wrappedShape2,
+                           ctype eps)
+    { return Frackit::OCCUtilities::intersect(wrappedShape1.get(), wrappedShape2.get(), eps); }
+
+    template<class Wrapper, class ctype>
+    ShapeWrapper fragment(const std::vector<Wrapper>& wrappedShapes, ctype eps)
+    {
+        std::vector<typename Wrapper::Shape> shapes;
+        shapes.reserve(wrappedShapes.size());
+        for (const auto& s : wrappedShapes)
+            shapes.push_back(s.get());
+
+        return Frackit::OCCUtilities::fragment(shapes, eps);
+    }
+
+    template<class Wrapper, class ctype>
+    ShapeWrapper fuse(const std::vector<Wrapper>& wrappedShapes, ctype eps)
+    {
+        std::vector<typename Wrapper::Shape> shapes;
+        shapes.reserve(wrappedShapes.size());
+        for (const auto& s : wrappedShapes)
+            shapes.push_back(s.get());
+
+        return Frackit::OCCUtilities::fuse(shapes, eps);
+    }
+
     ShapeWrapper readShape(const std::string& fileName)
     { return ShapeWrapper(Frackit::OCCUtilities::readShape(fileName)); }
 
@@ -242,6 +276,31 @@ void registerBRepUtilities(pybind11::module& module)
     module.def("getBoundingBox", &OCCUtilities::getBoundingBox<ShellWrapper, ctype>,    "returns the bounding box of a wrapped shell shape");
     module.def("getBoundingBox", &OCCUtilities::getBoundingBox<SolidWrapper, ctype>,    "returns the bounding box of a wrapped solid shape");
     module.def("getBoundingBox", &OCCUtilities::getBoundingBox<CompoundWrapper, ctype>, "returns the bounding box of a wrapped compound shape");
+
+    // register boolean operations (TODO: register for all combinations of wrappers?)
+    using namespace py::literals;
+    module.def("cut",
+               &OCCUtilities::cut<ShapeWrapper, ShapeWrapper, ctype>,
+               "object"_a, "tool"_a, "tolerance"_a,
+               "cuts the tool from the object");
+
+    using namespace py::literals;
+    module.def("intersect",
+               &OCCUtilities::intersect<ShapeWrapper, ShapeWrapper, ctype>,
+               "object1"_a, "object2"_a, "tolerance"_a,
+               "returns the common part (intersection) between the two given shapes");
+
+    using namespace py::literals;
+    module.def("fragment",
+               &OCCUtilities::fragment<ShapeWrapper, ctype>,
+               "objects"_a, "tolerance"_a,
+               "returns the fragments after intersection of the all given shapes");
+
+    using namespace py::literals;
+    module.def("fuse",
+               &OCCUtilities::fuse<ShapeWrapper, ctype>,
+               "objects"_a, "tolerance"_a,
+               "fuse all given shapes into a single one");
 
     // register write function for wrapped shapes
     module.def("write", &OCCUtilities::write<ShapeWrapper>, "writes a wrapped shape to a BRep file");
