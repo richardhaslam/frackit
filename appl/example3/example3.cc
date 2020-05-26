@@ -188,7 +188,7 @@ int main(int argc, char** argv)
         if (!constraintsOnDomain.evaluate(domainBoundaryFaces, geom))
         { status.increaseRejectedCounter(); continue; }
 
-        // the disk is admissible
+        // the geometry is admissible
         entitySets.addEntity(geom, id);
         status.increaseCounter(id);
         status.print();
