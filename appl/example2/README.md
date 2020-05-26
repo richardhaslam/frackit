@@ -6,6 +6,10 @@
 Example 2
 =========
 
+__Note that this description focuses on the c++ implementation given in the main
+file `example2.cc`, but in `example2.py` it is illustrated how to realize this
+example using the Frackit python bindings.__
+
 In this exemplary application, a network of quadrilaterals, following the same
 distributions as the network of [example 1][0], is created. However, in this
 example we want to confine the network to a cylindrical domain (see image above).

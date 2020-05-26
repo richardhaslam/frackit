@@ -8,7 +8,9 @@ Example 1
 
 In this exemplary application, a network of quadrilateral fractures is generated
 within the unit cube (see image above). The main file containing the source code
-to this example is the file `example1.cc` which is located in this folder.
+to this example is the file `example1.cc` which is located in this folder. Note
+that this description focuses on the c++ implementation, but in `example1.py`
+it is illustrated how to realize this example using the Frackit python bindings.
 
 Two main orientations are considered for the quadrilaterals, for both of which
 a corresponding instance of the `QuadrilateralSampler` class is created.
