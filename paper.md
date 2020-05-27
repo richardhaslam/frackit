@@ -69,8 +69,7 @@ which is an open-source mesh generator that is widely used in academic
 research (see e.g. @keilegavlen2017; @berge2019). Moreover, Python bindings are
 available that allow for using almost all of the functionality of ``Frackit`` from Python.
 While the code snippets shown in this work focus on the implementation in C++,
-examples using Python can be found in the ``Frackit`` repository at
-[git.iws.uni-stuttgart.de/tools/frackit/appl][https://git.iws.uni-stuttgart.de/tools/frackit/appl].
+[examples][6] using Python can be found in the ``Frackit`` repository.
 
 The geometric data produced by ``Frackit`` contains the complete fragmentation
 of all geometric entities involved, i.e. the intersection geometries between
@@ -341,3 +340,4 @@ for supporting this work by funding SFB 1313, Project Number 327154368.
 [3]: https://dumux.org/
 [4]: https://www.opencascade.com/content/download-center
 [5]: https://www.opencascade.com
+[6]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl
