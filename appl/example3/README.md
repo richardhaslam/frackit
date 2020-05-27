@@ -6,7 +6,7 @@
 Example 3
 =========
 
-__As in the previous examples, this description focuses on the c++ implementation
+__As in the previous examples, this description focuses on the C++ implementation
 given in the main file `example3.cc`, but in `example3.py` you can find how to
 realize this example using the Frackit python bindings.__
 

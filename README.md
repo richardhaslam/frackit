@@ -93,7 +93,7 @@ A class documentation can be generated from the source code using
 [Doxygen][8] (see Installation notes).
 Moreover, the [examples][7] contained in this repository provide a good overview over
 the capabilities of Frackit and can serve as a starting point to develop your own
-application. While the example descriptions focus on the implementation in c++, python
+application. While the example descriptions focus on the implementation in C++, Python
 implementations for all examples are also available in the respective example folders.
 
 
