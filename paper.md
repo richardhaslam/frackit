@@ -55,7 +55,7 @@ in hexahedral domains.
 
 ``Frackit`` is a C++-framework for the stochastic generation of fracture networks
 composed of polygonal and/or elliptical geometries, embedded in arbitrary domain
-shapes. It makes extensive use of the open-source Computed-Aided-Design (CAD)
+shapes. It makes extensive use of the open-source Computer-Aided-Design (CAD)
 library [OpenCascade][4] ([opencascade.com][5]), which offers great flexibility with respect to the
 geometries that can be used. Moreover, a large number of standard CAD file formats
 is supported for input/output of geometrical shapes. This allows users of ``Frackit``
@@ -66,7 +66,11 @@ file formats enable users to then construct computational meshes of the generate
 geometries using a variety of tools. In particular, ``Frackit`` offers
 output routines to the (.geo) file format used by [Gmsh][2] [@gmsh2009],
 which is an open-source mesh generator that is widely used in academic
-research (see e.g. @keilegavlen2017; @berge2019).
+research (see e.g. @keilegavlen2017; @berge2019). Moreover, Python bindings are
+available that allow for using almost all of the functionality of ``Frackit`` from Python.
+While the code snippets shown in this work focus on the implementation in C++,
+examples using Python can be found in the ``Frackit`` repository at
+[git.iws.uni-stuttgart.de/tools/frackit/appl][https://git.iws.uni-stuttgart.de/tools/frackit/appl].
 
 The geometric data produced by ``Frackit`` contains the complete fragmentation
 of all geometric entities involved, i.e. the intersection geometries between
@@ -76,7 +80,7 @@ described above. For instance, the open-source simulator [DuMuX][3] [@Dumux; @ko
 contains a module for conforming dfm simulations of single- and multi-phase
 flow through fractured porous media, which has been used in several works
 [@glaeser2017; @glaeser2019; @andrianov2019].
-It  supports the [Gmsh][2] file format (.msh), and thus, ``Frackit`` can be used in
+It supports the [Gmsh][2] file format (.msh), and thus, ``Frackit`` can be used in
 a fully open-source toolchain with [Gmsh][2] and [DuMuX][3] to generate random
 fracture networks, construct computational meshes, and perform analyses on them
 by means of numerical simulations.
@@ -320,9 +324,7 @@ We are planning to add fracture network characterization capabilities, such as
 the detection of isolated clusters of fractures or the determination of connectivity
 measures. In order to do this efficiently, we want to integrate data
 structures and algorithms for graphs, together with functionalities to translate
-the generated fracture networks into graph representations. Besides this, we are
-currently developing python bindings for ``Frackit`` to provide an easy-to-use and
-high-level interface.
+the generated fracture networks into graph representations.
 
 
 # Acknowledgements
