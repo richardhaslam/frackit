@@ -137,7 +137,7 @@ sampleIntoSet1 = True
 containedNetworkArea = 0.0;
 while not status.finished():
     id = diskSetId if sampleIntoSet1 else quadSetId
-    geom = diskSampler.sample() if sampleIntoSet1 else quadSampler.sample()
+    geom = diskSampler() if sampleIntoSet1 else quadSampler()
 
     # If the set this geometry belongs to is finished, skip the rest
     if status.finished(id):

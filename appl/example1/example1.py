@@ -71,7 +71,7 @@ entities2 = []
 print("\n --- Start entity sampling ---\n")
 while not status.finished():
     # sample a quadrilateral, alternating between sampler 1 and sampler 2
-    quad = quadSampler1.sample() if sampleIntoSet1 else quadSampler2.sample()
+    quad = quadSampler1() if sampleIntoSet1 else quadSampler2()
     entitySet = entities1 if sampleIntoSet1 else entities2
     otherEntitySet = entities2 if sampleIntoSet1 else entities1
 
