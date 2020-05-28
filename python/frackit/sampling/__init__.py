@@ -17,7 +17,7 @@ class BoxPointSampler:
         self.samplerY = samplerY
         self.samplerZ = samplerZ
 
-    def sample(self):
+    def __call__(self):
         x = self.samplerX()
         y = self.samplerY()
         z = self.samplerZ()
@@ -48,7 +48,7 @@ class CylinderPointSampler:
         self.samplerPhi = samplerPhi
         self.samplerZ = samplerZ
 
-    def sample(self):
+    def __call__(self):
 
         from frackit.geometry import Vector_3
         a = Vector_3(self.cylinder.bottomFace().majorAxis());
@@ -161,7 +161,7 @@ class DiskSampler:
         self.yAngleSampler = yAngleSampler
         self.zAngleSampler = zAngleSampler
 
-    def sample(self):
+    def __call__(self):
 
         a = self.majAxisSampler()
         while (a <= 0.0): a = self.majAxisSampler()
@@ -193,7 +193,7 @@ class DiskSampler:
 
         # sample center point and make disk
         from frackit.geometry import Ellipse_3
-        ellipse = Ellipse_3(self.pointSampler.sample(),
+        ellipse = Ellipse_3(self.pointSampler(),
                             Direction_3(axes[0]),
                             Direction_3(axes[1]),
                             a, b)
@@ -221,7 +221,7 @@ class QuadrilateralSampler:
         self.edgeLengthSampler = edgeLengthSampler
         self.minEdgeLength = minEdgeLength
 
-    def sample(self):
+    def __call__(self):
 
         strike = self.strikeAngleSampler()
         dip = self.dipAngleSampler()
@@ -255,7 +255,7 @@ class QuadrilateralSampler:
         dyVec2 = Vector_3(deepcopy(axes[1].x()), deepcopy(axes[1].y()), deepcopy(axes[1].z())); dyVec2 *= dy2/2.0
 
         # compute corner points
-        c = self.pointSampler.sample()
+        c = self.pointSampler()
         from frackit.geometry import Point_3
         c1 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c1 -= dxVec1; c1 -= dyVec1
         c2 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c2 += dxVec1; c2 -= dyVec2

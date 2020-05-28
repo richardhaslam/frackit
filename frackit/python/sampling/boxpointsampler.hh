@@ -54,7 +54,7 @@ void registerBoxPointSampler(py::module& module)
             "distributionX"_a, "distributionY"_a, "distributionZ"_a);
 
     // register point sample function
-    cls.def("sample", &UniformSampler::operator(), "returns a randomly sampled point");
+    cls.def("__call__", &UniformSampler::operator(), "returns a randomly sampled point");
 }
 
 } // end namespace Frackit::Python
