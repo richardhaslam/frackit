@@ -72,7 +72,11 @@ public:
         std::ofstream geoFile(fileName + ".geo");
         geoFile << "Merge \"";
         geoFile << fileName + ".brep";
-        geoFile << "\";\n";
+        geoFile << "\";\n\n";
+
+        geoFile << "// mesh size definitions\n";
+        geoFile << "sizeAtEntities = " << meshSizeAtEntities << ";\n";
+        geoFile << "sizeAtBoundary = " << meshSizeAtBoundary << ";\n";
 
         if (!this->domainToFragmentsMap().empty())
         {
@@ -97,8 +101,7 @@ public:
                 geoFile << it->second[0];
                 for (unsigned int j = 1; j < it->second.size(); ++j)
                     geoFile << ", " << it->second[j];
-                geoFile << "};} } = ";
-                geoFile << meshSizeAtBoundary << ";\n";
+                geoFile << "};} } = sizeAtBoundary;\n";
             }
         }
 
@@ -125,8 +128,7 @@ public:
                 geoFile << it->second[0];
                 for (unsigned int j = 1; j < it->second.size(); ++j)
                     geoFile << ", " << it->second[j];
-                geoFile << "};} } = ";
-                geoFile << meshSizeAtEntities << ";\n";
+                geoFile << "};} } = sizeAtEntities;\n";
             }
         }
 
