@@ -139,6 +139,10 @@ namespace OCCUtilities {
     Box<ctype> getBoundingBox(const ShapeWrapper& wrappedShape)
     { return Frackit::OCCUtilities::getBoundingBox(wrappedShape.get()); }
 
+    template<class ShapeWrapper, class ctype, int worldDim>
+    ShapeWrapper translate(const ShapeWrapper& wrappedShape, const Vector<ctype, worldDim>& v)
+    { return Frackit::OCCUtilities::translate(wrappedShape.get(), v); }
+
     template<class ShapeWrapper1, class ShapeWrapper2, class ctype>
     ShapeWrapper cut(const ShapeWrapper1& wrappedShape1,
                      const ShapeWrapper2& wrappedShape2,
@@ -276,6 +280,9 @@ void registerBRepUtilities(pybind11::module& module)
     module.def("getBoundingBox", &OCCUtilities::getBoundingBox<ShellWrapper, ctype>,    "returns the bounding box of a wrapped shell shape");
     module.def("getBoundingBox", &OCCUtilities::getBoundingBox<SolidWrapper, ctype>,    "returns the bounding box of a wrapped solid shape");
     module.def("getBoundingBox", &OCCUtilities::getBoundingBox<CompoundWrapper, ctype>, "returns the bounding box of a wrapped compound shape");
+
+    // register transformations
+    module.def("translate", &OCCUtilities::translate<ShapeWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
 
     // register boolean operations (TODO: register for all combinations of wrappers?)
     using namespace py::literals;
