@@ -72,12 +72,14 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 
 // BRep primitives and operations
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 
 // internal geometry classes
+#include <frackit/geometry/vector.hh>
 #include <frackit/geometry/circle.hh>
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
@@ -407,6 +409,25 @@ namespace OCCUtilities {
         ctype xMin, yMin, zMin, xMax, yMax, zMax;
         bndBox.Get(xMin, yMin, zMin, xMax, yMax, zMax);
         return Box<ctype>(xMin, yMin, zMin, xMax, yMax, zMax);
+    }
+
+    /*!
+     * \ingroup OpenCascade
+     * \brief Translate a shape by the given vector.
+     */
+    template<class ctype, int worldDim>
+    TopoDS_Shape translate(const TopoDS_Shape& object, const Vector<ctype, worldDim>& v)
+    {
+        const auto gp_v = vector(v);
+
+        gp_Trsf gpTrafo;
+        gpTrafo.SetTranslation(gp_v);
+        BRepBuilderAPI_Transform shapeTrafo(gpTrafo);
+
+        shapeTrafo.Perform(object, /*copy?*/Standard_False);
+        if (!shapeTrafo.IsDone())
+            throw std::runtime_error("Could not perform shape transformation");
+        return shapeTrafo.Shape();
     }
 
     /*!

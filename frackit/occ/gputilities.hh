@@ -100,6 +100,17 @@ namespace OCCUtilities {
         return Vector<ctype, dim>(v.X(), v.Y(), v.Z());
     }
 
+    /*!
+     * \ingroup OpenCascade
+     * \brief Converts an internal vector into a gp vector.
+     */
+    template<class ctype = double, int dim = 3>
+    gp_Vec vector(const Vector<ctype, dim>& v)
+    {
+        static_assert(dim == 3, "Currently only dim == 3 supported");
+        return gp_Vec(v.x(), v.y(), v.z());
+    }
+
 } // end namespace OCCUtilities
 } // end namespace Frackit
 
