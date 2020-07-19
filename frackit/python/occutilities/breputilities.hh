@@ -48,7 +48,7 @@
 namespace Frackit::Python {
 namespace OCCUtilities {
 
-    template<class Geometry>
+    template<class Geometry, std::enable_if_t<!IsBRepWrapper<Geometry>::value, int> = 0>
     auto getShape(const Geometry& geometry)
     -> BRepWrapper< std::decay_t<decltype(Frackit::OCCUtilities::getShape(geometry))> >
     {
@@ -56,6 +56,10 @@ namespace OCCUtilities {
         using WrapperType = BRepWrapper<ShapeType>;
         return WrapperType(Frackit::OCCUtilities::getShape(geometry));
     }
+
+    template<class Geometry, std::enable_if_t<IsBRepWrapper<Geometry>::value, int> = 0>
+    Geometry getShape(const Geometry& geometry)
+    { return geometry; }
 
     template<class ShapeWrapper>
     std::vector<VertexWrapper> getVertices(const ShapeWrapper& wrappedShape)
@@ -190,6 +194,22 @@ namespace OCCUtilities {
 
 namespace Detail {
 
+    template<class WrapperType>
+    void registerWrappedShapeConversions(pybind11::module& module)
+    {
+        module.def("getShape",
+                   &OCCUtilities::getShape<WrapperType>,
+                   "Returns the OCC BRep of a wrapped shape (for compatibility reasons, returns itself)");
+    }
+
+    template<class FirstType, class... WrapperTypes,
+             std::enable_if_t<(sizeof...(WrapperTypes) > 0), int> = 0>
+    void registerWrappedShapeConversions(pybind11::module& module)
+    {
+        registerWrappedShapeConversions<WrapperTypes...>(module);
+        registerWrappedShapeConversions<FirstType>(module);
+    }
+
     void registerSubShapeGetterFunctions(pybind11::module& module)
     {
         using namespace Frackit::Python::OCCUtilities;
@@ -264,7 +284,13 @@ void registerBRepUtilities(pybind11::module& module)
     module.def("getShape", &OCCUtilities::getShape<Cylinder<ctype>>, "Returns the OCC BRep of a cylinder");
     module.def("getShape", &OCCUtilities::getShape<CylinderSurface<ctype>>, "Returns the OCC BRep of the lateral surface of a cylinder");
 
-    // register getter functions for (sub-)shapes of a wrapped  shape
+    // register "shape conversions" also for wrapped shapes
+    Detail::registerWrappedShapeConversions<OCCUtilities::ShapeWrapper, OCCUtilities::VertexWrapper,
+                                            OCCUtilities::EdgeWrapper,  OCCUtilities::WireWrapper,
+                                            OCCUtilities::FaceWrapper,  OCCUtilities::ShellWrapper,
+                                            OCCUtilities::SolidWrapper, OCCUtilities::CompoundWrapper>(module);
+
+    // register getter functions for (sub-)shapes of a wrapped shape
     Detail::registerSubShapeGetterFunctions(module);
 
     // register read-in of shapes from a file
