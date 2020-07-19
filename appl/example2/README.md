@@ -187,6 +187,12 @@ faces. In the above code snippets we have assumed `entitySet` and `otherEntitySe
 to also be of type `std::vector<TopoDS_Face>`, and to be composed of the previously
 accepted faces.
 
+An effective way to remove very small fragments or edges that were not "detected"
+by the constraints, is to adjust the epsilon used for the fragmentation.
+You can set a custom epsilon in the builder class by calling its `setEpsilon`
+function. Vertices, for instance, that are closer than the defined epsilon are
+snapped into a single vertex.
+
 [go to example 3][2]
 
 [0]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example1
