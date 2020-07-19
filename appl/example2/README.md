@@ -170,7 +170,7 @@ const auto& otherEntitySet = sampleIntoSet1 ? entitySet2 : entitySet1;
 
 // get the face(s) that describe(s) the part of the entity that is contained in the domain
 using namespace OCCUtilities;
-const auto containedShape = cut(getShape(quad), getShape(domain), /*epsilon*/1e-6);
+const auto containedShape = intersect(getShape(quad), getShape(domain), /*epsilon*/1e-6);
 const auto containedFaces = getFaces(containedShape);
 
 // check constraints for all faces making up the contained part
