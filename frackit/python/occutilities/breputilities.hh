@@ -385,13 +385,6 @@ void registerBRepUtilities(pybind11::module& module)
 
     // register write function for wrapped shapes
     module.def("write", &OCCUtilities::write<OCCUtilities::ShapeWrapper>, "writes a wrapped shape to a BRep file");
-    module.def("write", &OCCUtilities::write<OCCUtilities::VertexWrapper>, "writes a wrapped vertex shape to a BRep file");
-    module.def("write", &OCCUtilities::write<OCCUtilities::EdgeWrapper>, "writes a wrapped edge shape to a BRep file");
-    module.def("write", &OCCUtilities::write<OCCUtilities::WireWrapper>, "writes a wrapped wire shape to a BRep file");
-    module.def("write", &OCCUtilities::write<OCCUtilities::FaceWrapper>, "writes a wrapped face shape to a BRep file");
-    module.def("write", &OCCUtilities::write<OCCUtilities::ShellWrapper>, "writes a wrapped shell shape to a BRep file");
-    module.def("write", &OCCUtilities::write<OCCUtilities::SolidWrapper>, "writes a wrapped solid shape to a BRep file");
-    module.def("write", &OCCUtilities::write<OCCUtilities::CompoundWrapper>, "writes a wrapped compound shape to a BRep file");
 }
 
 } // end namespace Frackit::Python
