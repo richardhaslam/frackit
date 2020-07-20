@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <string>
+#include <stdexcept>
 #include <type_traits>
 
 #include <pybind11/pybind11.h>
@@ -46,6 +47,52 @@
 #include "brepwrapper.hh"
 
 namespace Frackit::Python {
+
+namespace Detail {
+
+    // We return TopoDS_Shape for translation of a TopoDS_Compound for now
+    // TODO: assemble a new compound at the new location?
+    template<class ShapeType>
+    using TranslatedShape = std::conditional_t< std::is_same_v<ShapeType, TopoDS_Compound>,
+                                                TopoDS_Shape,
+                                                ShapeType >;
+
+    template<class ResultShape>
+    ResultShape getSingleEntity(const std::vector<ResultShape>& resultShapes)
+    {
+        if (resultShapes.size() > 1)
+            throw std::runtime_error("Expected a single entity of desired type");
+        return resultShapes[0];
+    }
+
+    template<class ResultShape>
+    ResultShape parseShape(const TopoDS_Shape& shape)
+    {
+        static_assert(!std::is_same_v<ResultShape, TopoDS_Compound>, "Compound parse not yet supported");
+
+        using namespace Frackit::OCCUtilities;
+        if constexpr (std::is_same_v<ResultShape, TopoDS_Shape>)
+            return shape;
+        else if constexpr (std::is_same_v<ResultShape, TopoDS_Vertex>)
+            return getSingleEntity<TopoDS_Vertex>(getVertices(shape));
+        else if constexpr (std::is_same_v<ResultShape, TopoDS_Edge>)
+            return getSingleEntity<TopoDS_Edge>(getEdges(shape));
+        else if constexpr (std::is_same_v<ResultShape, TopoDS_Wire>)
+            return getSingleEntity<TopoDS_Wire>(getWires(shape));
+        else if constexpr (std::is_same_v<ResultShape, TopoDS_Face>)
+            return getSingleEntity<TopoDS_Face>(getFaces(shape));
+        else if constexpr (std::is_same_v<ResultShape, TopoDS_Shell>)
+            return getSingleEntity<TopoDS_Shell>(getShells(shape));
+        else if constexpr (std::is_same_v<ResultShape, TopoDS_Solid>)
+            return getSingleEntity<TopoDS_Solid>(getSolids(shape));
+
+        // fall back to try parsing
+        else
+            return shape;
+    }
+
+} // end namespace Detail
+
 namespace OCCUtilities {
 
     template<class Geometry, std::enable_if_t<!IsBRepWrapper<Geometry>::value, int> = 0>
@@ -143,9 +190,15 @@ namespace OCCUtilities {
     Box<ctype> getBoundingBox(const ShapeWrapper& wrappedShape)
     { return Frackit::OCCUtilities::getBoundingBox(wrappedShape.get()); }
 
-    template<class ShapeWrapper, class ctype, int worldDim>
-    ShapeWrapper translate(const ShapeWrapper& wrappedShape, const Vector<ctype, worldDim>& v)
-    { return Frackit::OCCUtilities::translate(wrappedShape.get(), v); }
+    template<class Shape, class ctype, int worldDim>
+    BRepWrapper< Detail::TranslatedShape<Shape> >
+    translate(const BRepWrapper<Shape>& wrappedShape, const Vector<ctype, worldDim>& v)
+    {
+        auto translatedShape = Frackit::OCCUtilities::translate(wrappedShape.get(), v);
+
+        using ResultShape = Detail::TranslatedShape<Shape>;
+        return {Detail::parseShape<ResultShape>(translatedShape)};
+    }
 
     template<class ShapeWrapper1, class ShapeWrapper2, class ctype>
     ShapeWrapper cut(const ShapeWrapper1& wrappedShape1,
@@ -295,8 +348,15 @@ void registerBRepUtilities(pybind11::module& module)
     // register bounding box computations for wrapped shape
     module.def("getBoundingBox", &OCCUtilities::getBoundingBox<OCCUtilities::ShapeWrapper, ctype>, "returns the bounding box of a wrapped shape");
 
-    // register transformations
-    module.def("translate", &OCCUtilities::translate<OCCUtilities::ShapeWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    // register transformations (we could use recurring templates as for registerWrappedShapeConversions)
+    module.def("translate", &OCCUtilities::translate<TopoDS_Shape, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<TopoDS_Vertex, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<TopoDS_Edge, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<TopoDS_Wire, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<TopoDS_Face, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<TopoDS_Shell, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<TopoDS_Solid, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<TopoDS_Compound, ctype, 3>, "translation of a shape with a vector defined in 3d space");
 
     // register boolean operations for shape wrapper
     using namespace py::literals;
