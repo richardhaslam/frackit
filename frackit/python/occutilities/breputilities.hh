@@ -295,8 +295,15 @@ void registerBRepUtilities(pybind11::module& module)
     // register bounding box computations for wrapped shape
     module.def("getBoundingBox", &OCCUtilities::getBoundingBox<OCCUtilities::ShapeWrapper, ctype>, "returns the bounding box of a wrapped shape");
 
-    // register transformations
+    // register transformations (we could use recurring templates as for registerWrappedShapeConversions)
     module.def("translate", &OCCUtilities::translate<OCCUtilities::ShapeWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<OCCUtilities::VertexWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<OCCUtilities::EdgeWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<OCCUtilities::WireWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<OCCUtilities::FaceWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<OCCUtilities::ShellWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<OCCUtilities::SolidWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<OCCUtilities::CompoundWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
 
     // register boolean operations for shape wrapper
     using namespace py::literals;
