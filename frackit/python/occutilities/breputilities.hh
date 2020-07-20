@@ -270,15 +270,11 @@ void registerBRepUtilities(pybind11::module& module)
     using S2 = Segment<ctype, 2>; module.def("getShape", &OCCUtilities::getShape<S2>, "Returns the OCC BRep of a 2d segment");
     using S3 = Segment<ctype, 3>; module.def("getShape", &OCCUtilities::getShape<S3>, "Returns the OCC BRep of a 3d segment");
 
-    // register circle/ellipse to shape conversions
+    // register geometry to shape conversions
     module.def("getShape", &OCCUtilities::getShape<Circle<ctype, 3>>, "Returns the OCC BRep of a 3d circle");
     module.def("getShape", &OCCUtilities::getShape<Ellipse<ctype, 3>>, "Returns the OCC BRep of a 3d ellipse");
     module.def("getShape", &OCCUtilities::getShape<EllipseArc<ctype, 3>>, "Returns the OCC BRep of a 3d ellipse arc");
-
-    // register quadrilateral to shape conversions
     module.def("getShape", &OCCUtilities::getShape<Quadrilateral<ctype, 3>>, "Returns the OCC BRep of a 3d quadrilateral");
-
-    // register further geometry to shape conversions
     module.def("getShape", &OCCUtilities::getShape<Disk<ctype>>, "Returns the OCC BRep of a disk");
     module.def("getShape", &OCCUtilities::getShape<Box<ctype>>, "Returns the OCC BRep of a box");
     module.def("getShape", &OCCUtilities::getShape<Cylinder<ctype>>, "Returns the OCC BRep of a cylinder");
