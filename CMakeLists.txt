@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 # project name
-project(frackit VERSION 1.0.0)
+project(frackit VERSION 1.1.0)
 
 # project version
 set(FRACKIT_VERSION ${frackit_VERSION} CACHE STRING "project version")
