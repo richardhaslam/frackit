@@ -60,3 +60,10 @@ def fuse(shapeList, eps):
 ############################
 def getBoundingBox(object):
     return _occutilities.getBoundingBox(getShapeWrapper(object))
+
+#################################
+# Write function for geometries #
+#################################
+# function supports the file types supported by OpenCascade
+def write(object, fileName):
+    return _occutilities.write(getShapeWrapper(object), fileName)
