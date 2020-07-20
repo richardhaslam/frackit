@@ -54,3 +54,9 @@ def fuse(shapeList, eps):
     eps: Tolerance value to be used.
     """
     return _occutilities.fuse([getShapeWrapper(shape) for shape in shapeList], eps)
+
+############################
+# Bounding box computation #
+############################
+def getBoundingBox(object):
+    return _occutilities.getBoundingBox(getShapeWrapper(object))
