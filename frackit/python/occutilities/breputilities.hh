@@ -270,15 +270,11 @@ void registerBRepUtilities(pybind11::module& module)
     using S2 = Segment<ctype, 2>; module.def("getShape", &OCCUtilities::getShape<S2>, "Returns the OCC BRep of a 2d segment");
     using S3 = Segment<ctype, 3>; module.def("getShape", &OCCUtilities::getShape<S3>, "Returns the OCC BRep of a 3d segment");
 
-    // register circle/ellipse to shape conversions
+    // register geometry to shape conversions
     module.def("getShape", &OCCUtilities::getShape<Circle<ctype, 3>>, "Returns the OCC BRep of a 3d circle");
     module.def("getShape", &OCCUtilities::getShape<Ellipse<ctype, 3>>, "Returns the OCC BRep of a 3d ellipse");
     module.def("getShape", &OCCUtilities::getShape<EllipseArc<ctype, 3>>, "Returns the OCC BRep of a 3d ellipse arc");
-
-    // register quadrilateral to shape conversions
     module.def("getShape", &OCCUtilities::getShape<Quadrilateral<ctype, 3>>, "Returns the OCC BRep of a 3d quadrilateral");
-
-    // register further geometry to shape conversions
     module.def("getShape", &OCCUtilities::getShape<Disk<ctype>>, "Returns the OCC BRep of a disk");
     module.def("getShape", &OCCUtilities::getShape<Box<ctype>>, "Returns the OCC BRep of a box");
     module.def("getShape", &OCCUtilities::getShape<Cylinder<ctype>>, "Returns the OCC BRep of a cylinder");
@@ -296,54 +292,46 @@ void registerBRepUtilities(pybind11::module& module)
     // register read-in of shapes from a file
     module.def("readShape", &OCCUtilities::readShape, "Reads in the shapes from a file");
 
-    // register bounding box computations for wrapped shapes
-    using namespace OCCUtilities;
-    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<ShapeWrapper, ctype>,    "returns the bounding box of a wrapped shape");
-    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<VertexWrapper, ctype>,   "returns the bounding box of a wrapped vertex shape");
-    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<EdgeWrapper, ctype>,     "returns the bounding box of a wrapped edge shape");
-    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<WireWrapper, ctype>,     "returns the bounding box of a wrapped wire shape");
-    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<FaceWrapper, ctype>,     "returns the bounding box of a wrapped face shape");
-    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<ShellWrapper, ctype>,    "returns the bounding box of a wrapped shell shape");
-    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<SolidWrapper, ctype>,    "returns the bounding box of a wrapped solid shape");
-    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<CompoundWrapper, ctype>, "returns the bounding box of a wrapped compound shape");
+    // register bounding box computations for wrapped shape
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<OCCUtilities::ShapeWrapper, ctype>, "returns the bounding box of a wrapped shape");
 
     // register transformations
-    module.def("translate", &OCCUtilities::translate<ShapeWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
+    module.def("translate", &OCCUtilities::translate<OCCUtilities::ShapeWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
 
     // register boolean operations for shape wrapper
     using namespace py::literals;
     module.def("cut",
-               &OCCUtilities::cut<ShapeWrapper, ShapeWrapper, ctype>,
+               &OCCUtilities::cut<OCCUtilities::ShapeWrapper, OCCUtilities::ShapeWrapper, ctype>,
                "object"_a, "tool"_a, "tolerance"_a,
                "cuts the tool from the object");
 
     using namespace py::literals;
     module.def("intersect",
-               &OCCUtilities::intersect<ShapeWrapper, ShapeWrapper, ctype>,
+               &OCCUtilities::intersect<OCCUtilities::ShapeWrapper, OCCUtilities::ShapeWrapper, ctype>,
                "object1"_a, "object2"_a, "tolerance"_a,
                "returns the common part (intersection) between the two given shapes");
 
     using namespace py::literals;
     module.def("fragment",
-               &OCCUtilities::fragment<ShapeWrapper, ctype>,
+               &OCCUtilities::fragment<OCCUtilities::ShapeWrapper, ctype>,
                "objects"_a, "tolerance"_a,
                "returns the fragments after intersection of the all given shapes");
 
     using namespace py::literals;
     module.def("fuse",
-               &OCCUtilities::fuse<ShapeWrapper, ctype>,
+               &OCCUtilities::fuse<OCCUtilities::ShapeWrapper, ctype>,
                "objects"_a, "tolerance"_a,
                "fuse all given shapes into a single one");
 
     // register write function for wrapped shapes
-    module.def("write", &OCCUtilities::write<ShapeWrapper>, "writes a wrapped shape to a BRep file");
-    module.def("write", &OCCUtilities::write<VertexWrapper>, "writes a wrapped vertex shape to a BRep file");
-    module.def("write", &OCCUtilities::write<EdgeWrapper>, "writes a wrapped edge shape to a BRep file");
-    module.def("write", &OCCUtilities::write<WireWrapper>, "writes a wrapped wire shape to a BRep file");
-    module.def("write", &OCCUtilities::write<FaceWrapper>, "writes a wrapped face shape to a BRep file");
-    module.def("write", &OCCUtilities::write<ShellWrapper>, "writes a wrapped shell shape to a BRep file");
-    module.def("write", &OCCUtilities::write<SolidWrapper>, "writes a wrapped solid shape to a BRep file");
-    module.def("write", &OCCUtilities::write<CompoundWrapper>, "writes a wrapped compound shape to a BRep file");
+    module.def("write", &OCCUtilities::write<OCCUtilities::ShapeWrapper>, "writes a wrapped shape to a BRep file");
+    module.def("write", &OCCUtilities::write<OCCUtilities::VertexWrapper>, "writes a wrapped vertex shape to a BRep file");
+    module.def("write", &OCCUtilities::write<OCCUtilities::EdgeWrapper>, "writes a wrapped edge shape to a BRep file");
+    module.def("write", &OCCUtilities::write<OCCUtilities::WireWrapper>, "writes a wrapped wire shape to a BRep file");
+    module.def("write", &OCCUtilities::write<OCCUtilities::FaceWrapper>, "writes a wrapped face shape to a BRep file");
+    module.def("write", &OCCUtilities::write<OCCUtilities::ShellWrapper>, "writes a wrapped shell shape to a BRep file");
+    module.def("write", &OCCUtilities::write<OCCUtilities::SolidWrapper>, "writes a wrapped solid shape to a BRep file");
+    module.def("write", &OCCUtilities::write<OCCUtilities::CompoundWrapper>, "writes a wrapped compound shape to a BRep file");
 }
 
 } // end namespace Frackit::Python
