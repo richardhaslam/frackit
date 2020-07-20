@@ -310,7 +310,7 @@ void registerBRepUtilities(pybind11::module& module)
     // register transformations
     module.def("translate", &OCCUtilities::translate<ShapeWrapper, ctype, 3>, "translation of a shape with a vector defined in 3d space");
 
-    // register boolean operations (TODO: register for all combinations of wrappers?)
+    // register boolean operations for shape wrapper
     using namespace py::literals;
     module.def("cut",
                &OCCUtilities::cut<ShapeWrapper, ShapeWrapper, ctype>,
