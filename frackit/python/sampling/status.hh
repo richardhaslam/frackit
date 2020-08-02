@@ -48,6 +48,13 @@ void registerSamplingStatus(py::module& module)
             &SamplingStatus::increaseRejectedCounter,
             "Register that a sample has been rejected");
 
+    cls.def("getCount",
+            py::overload_cast<>(&SamplingStatus::getCount),
+            "Returns the overall number of entities");
+    cls.def("getCount",
+            py::overload_cast<const Id&>(&SamplingStatus::getCount),
+            "Returns the number of entities for the given id");
+
     using namespace py::literals;
     cls.def("print",
             &SamplingStatus::print,
