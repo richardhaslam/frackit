@@ -56,7 +56,7 @@ void registerCylinderPointSampler(py::module& module)
             "cylinder"_a, "distributionR"_a, "distributionPhi"_a, "distributionH"_a);
 
     // register point sample function
-    cls.def("__ca,,__", &UniformSampler::operator(), "returns a randomly sampled point");
+    cls.def("__call__", &UniformSampler::operator(), "returns a randomly sampled point");
 }
 
 } // end namespace Frackit::Python
