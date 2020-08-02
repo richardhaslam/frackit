@@ -25,6 +25,7 @@
 #ifndef FRACKIT_SAMPLING_STATUS_HH
 #define FRACKIT_SAMPLING_STATUS_HH
 
+#include <algorithm>
 #include <unordered_map>
 #include <initializer_list>
 
@@ -92,6 +93,24 @@ public:
     void increaseRejectedCounter()
     {
         rejectedCount_++;
+    }
+
+    /*!
+     * \brief Returns the entity count for the given id.
+     */
+    std::size_t getCount(const Id& id)
+    { return count_[id.get()]; }
+
+    /*!
+     * \brief Returns the overall entity count.
+     */
+    std::size_t getCount()
+    {
+        return std::accumulate(count_.begin(),
+                               count_.end(),
+                               0,
+                               [] (const auto& curCount, const auto& idCountPair)
+                               { return curCount + idCountPair.second; });
     }
 
     /*!
