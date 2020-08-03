@@ -36,6 +36,7 @@
 #include <frackit/python/geometry/hollowcylinder.hh>
 #include <frackit/python/geometry/cylindersurface.hh>
 #include <frackit/python/geometry/box.hh>
+#include <frackit/python/geometry/sphere.hh>
 
 PYBIND11_MODULE(_geometry, module)
 {
@@ -62,4 +63,5 @@ PYBIND11_MODULE(_geometry, module)
     Frackit::Python::registerCylinder<double>(module);
     Frackit::Python::registerHollowCylinder<double>(module);
     Frackit::Python::registerBox<double>(module);
+    Frackit::Python::registerSphere<double>(module);
 }
