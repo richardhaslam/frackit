@@ -40,6 +40,7 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
+#include <frackit/geometry/sphere.hh>
 
 #include "precision.hh"
 
@@ -122,6 +123,14 @@ ctype defaultEpsilon(const Box<ctype>& box)
     const Segment<ctype, 3> diagSegment(box.corner(0), box.corner(7));
     return Precision<ctype>::confusion()*diagSegment.length();
 }
+
+/*!
+ * \ingroup Precision
+ * \brief Default epsilon for operations on spheres.
+ */
+template<class ctype>
+ctype defaultEpsilon(const Sphere<ctype>& sphere)
+{ return Precision<ctype>::confusion()*sphere.radius(); }
 
 /*!
  * \ingroup Precision

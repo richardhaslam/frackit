@@ -17,6 +17,7 @@ plane.hh
 point.hh
 quadrilateral.hh
 segment.hh
+sphere.hh
 triangle.hh
 vector.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/geometry)
