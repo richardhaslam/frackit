@@ -76,6 +76,7 @@
 
 // BRep primitives and operations
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 
 // internal geometry classes
@@ -89,6 +90,7 @@
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
 #include <frackit/geometry/boundingbox.hh>
+#include <frackit/geometry/sphere.hh>
 
 #include <frackit/geometryutilities/name.hh>
 
@@ -304,6 +306,20 @@ namespace OCCUtilities {
         if (!makeBox.IsDone())
             throw std::runtime_error("Could not build box");
         return TopoDS::Solid(makeBox.Shape());
+    }
+
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a sphere.
+     */
+    template<class ctype>
+    TopoDS_Solid getShape(const Sphere<ctype>& sphere)
+    {
+        BRepPrimAPI_MakeSphere makeSphere(point(sphere.center()), sphere.radius());
+        makeSphere.Build();
+        if (!makeSphere.IsDone())
+            throw std::runtime_error("Could not build sphere shape");
+        return TopoDS::Solid(makeSphere.Shape());
     }
 
     //! Get the BRep of shapes (for compatibilty reasons)
