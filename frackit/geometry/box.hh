@@ -28,6 +28,7 @@
 #include <stdexcept>
 #include <string>
 
+#include <frackit/precision/precision.hh>
 #include "geometry.hh"
 #include "point.hh"
 #include "segment.hh"
