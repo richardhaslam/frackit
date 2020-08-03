@@ -180,16 +180,16 @@ class DiskSampler:
         axes = [Vector_3(1.0, 0.0, 0.0), Vector_3(0.0, 1.0, 0.0)]
 
         from frackit.geometry import Direction_3
-        e1 = Direction_3(axes[0]);
-        e2 = Direction_3(axes[1]);
-        e3 = Direction_3(Vector_3(0.0, 0.0, 1.0));
+        e1 = Direction_3(axes[0])
+        e2 = Direction_3(axes[1])
+        e3 = Direction_3(Vector_3(0.0, 0.0, 1.0))
 
         from frackit.common import rotate
-        rotate(axes[1], e1, alpha); # rotate minor axis around x
-        rotate(axes[0], e2, beta);  # rotate both axes around y
-        rotate(axes[1], e2, beta);  # rotate both axes around y
-        rotate(axes[0], e3, beta);  # rotate both axes around z
-        rotate(axes[1], e3, beta);  # rotate both axes around z
+        rotate(axes[1], e1, alpha)  # rotate minor axis around x
+        rotate(axes[0], e2, beta)   # rotate both axes around y
+        rotate(axes[1], e2, beta)   # rotate both axes around y
+        rotate(axes[0], e3, gamma)  # rotate both axes around z
+        rotate(axes[1], e3, gamma)  # rotate both axes around z
 
         # sample center point and make disk
         from frackit.geometry import Ellipse_3
