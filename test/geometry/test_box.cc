@@ -49,11 +49,11 @@ int main()
         if (box.contains(Point(0.5*f, -1e-6*f, 0.0), eps))
             throw std::runtime_error("contains() query 3 failed");
         if (!box.contains(Point(0.5*f, 0.5*f, f), eps))
-            throw std::runtime_error("contains() query 1 failed");
+            throw std::runtime_error("contains() query 4 failed");
         if (!box.contains(Point(0.5*f, 0.5*f, f-1e-6*f), eps))
-            throw std::runtime_error("contains() query 2 failed");
+            throw std::runtime_error("contains() query 5 failed");
         if (box.contains(Point(0.5*f, 0.5*f, f+1e-6*f), eps))
-            throw std::runtime_error("contains() query 3 failed");
+            throw std::runtime_error("contains() query 6 failed");
     }
 
     std::cout << "All tests passed" << std::endl;
