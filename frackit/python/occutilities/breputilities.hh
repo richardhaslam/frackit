@@ -39,6 +39,7 @@
 #include <frackit/geometry/box.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/sphere.hh>
 
 #include <frackit/occ/breputilities.hh>
 #include <frackit/occ/gputilities.hh>
@@ -332,6 +333,7 @@ void registerBRepUtilities(pybind11::module& module)
     module.def("getShape", &OCCUtilities::getShape<Box<ctype>>, "Returns the OCC BRep of a box");
     module.def("getShape", &OCCUtilities::getShape<Cylinder<ctype>>, "Returns the OCC BRep of a cylinder");
     module.def("getShape", &OCCUtilities::getShape<CylinderSurface<ctype>>, "Returns the OCC BRep of the lateral surface of a cylinder");
+    module.def("getShape", &OCCUtilities::getShape<Sphere<ctype>>, "Returns the OCC BRep of a sphere");
 
     // register "shape conversions" also for wrapped shapes
     Detail::registerWrappedShapeConversions<OCCUtilities::ShapeWrapper, OCCUtilities::VertexWrapper,
