@@ -95,6 +95,10 @@ void registerEntityNetworkBuilders(py::module& module)
     // register common base class
     using Base = EntityNetworkBuilderBase<ctype>;
     py::class_<Base> base(module, "_EntityNetworkBuilderBase");
+    base.def("setConfineToSubDomainUnion",
+             &Base::setConfineToSubDomainUnion,
+             "set if entities are to be confined by the union of all subdomains (for non-confining subdomains)");
+
     base.def("setEpsilon", &Base::setEpsilon, "define tolerance value for intersections");
     base.def("setDefaultEpsilon", &Base::setDefaultEpsilon, "restore default tolerance value for intersections");
     base.def("clear", &Base::clear, "clears all inserted data");
