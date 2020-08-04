@@ -83,7 +83,7 @@ public:
     bool finished()
     {
         for (const auto& pair : count_)
-            if (pair.second != targetCount_.at(pair.first))
+            if (pair.second < targetCount_.at(pair.first))
                 return false;
         return true;
     }
@@ -97,7 +97,7 @@ public:
         auto it = count_.find(id.get());
         if (it == count_.end())
             throw std::runtime_error("Target count not set for given id");
-        return it->second == targetCount_.at(it->first);
+        return it->second >= targetCount_.at(it->first);
     }
 
     /*!
@@ -106,6 +106,8 @@ public:
     void increaseCounter(const Id& id)
     {
         count_[id.get()]++;
+        if (count_[id.get()] > targetCount_[id.get()])
+            std::cout << "Warning: target count for id " << id.get() << " was surpassed" << std::endl;
     }
 
     /*!
