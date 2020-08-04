@@ -55,6 +55,7 @@ namespace Detail {
         cls.def("direction", &Segment::direction, "direction of the segment");
         cls.def("length", &Segment::length, "length of the segment");
         cls.def("supportingLine", &Segment::supportingLine, "returns the supporting line");
+        cls.def("center", &Segment::center, "returns the center of the segment");
 
         // obtain a point on the segment between 0 <= localCoordinate <= 1
         cls.def("getPoint", &Segment::getPoint, "localCoordinate"_a,
