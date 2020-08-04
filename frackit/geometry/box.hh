@@ -109,6 +109,14 @@ public:
     static constexpr std::size_t numCorners()
     { return 8; }
 
+    //! Return the center point
+    Point center() const
+    {
+        return Point({xMin_ + 0.5*(xMax_ - xMin_),
+                      yMin_ + 0.5*(yMax_ - yMin_),
+                      zMin_ + 0.5*(zMax_ - zMin_)});
+    }
+
     //! Return the corner for the given index
     Point corner(unsigned int cornerIdx) const
     {

@@ -12,6 +12,7 @@ int main()
     using ctype = double;
     using Box = Frackit::Box<ctype>;
     using Point = typename Box::Point;
+    using Segment = typename Box::Segment;
 
     std::vector<ctype> scales({1e-5, 1, 1e5});
     for (auto f : scales)
@@ -54,6 +55,13 @@ int main()
             throw std::runtime_error("contains() query 5 failed");
         if (box.contains(Point(0.5*f, 0.5*f, f+1e-6*f), eps))
             throw std::runtime_error("contains() query 6 failed");
+
+        // check correctness of center point
+        const auto lowerCorner = box.corner(0);
+        const auto upperCorner = box.corner(box.numCorners()-1);
+        const auto diagonal = Segment(lowerCorner, upperCorner);
+        if (!diagonal.center().isEqual(box.center(), eps))
+            throw std::runtime_error("center point test failed");
     }
 
     std::cout << "All tests passed" << std::endl;
