@@ -85,6 +85,8 @@ public:
     const Point& source() const { return source_; }
     //! Return the second corner of the segment
     const Point& target() const { return target_; }
+    //! Return the center of the segment
+    Point center() const { return getPoint(0.5); }
 
     //! Constructs the direction vector
     Direction direction() const { return Vector(source(), target()); }
