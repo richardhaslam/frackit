@@ -57,6 +57,7 @@ void registerBox(py::module& module)
 
     cls.def_static("numCorners", &Box::numCorners, "returns the number of corners of the box");
     cls.def("corner", &Box::corner, "cornerIdx"_a, "returns the corner with the provided index");
+    cls.def("center", &Box::center, "returns the center of the box");
 
     cls.def_static("numEdges", &Box::numEdges, "returns the number of edges of the box");
     cls.def("edge", &Box::edge, "edgeIdx"_a, "returns the edge with the provided index");
