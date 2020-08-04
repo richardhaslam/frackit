@@ -53,7 +53,7 @@ namespace Detail {
         cls.def("length", &Base::length, "length of the vector");
 
         using namespace py::literals;
-        cls.def("isParallel", &Base::isParallel, "p"_a, "eps"_a = Precision<ctype>::angular(),
+        cls.def("isParallel", &Base::isParallel, "v"_a, "eps"_a = Precision<ctype>::angular(),
                 "returns true if the given vector is parallel to this one");
 
         cls.def(py::self * Impl());   // scalar product
