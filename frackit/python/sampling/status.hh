@@ -44,6 +44,12 @@ void registerSamplingStatus(py::module& module)
     cls.def("increaseCounter",
             &SamplingStatus::increaseCounter,
             "Register that a new sample for the given id was taken");
+    cls.def("resetCounters",
+            &SamplingStatus::resetCounters,
+            "Reset all counters");
+    cls.def("resetCounter",
+            &SamplingStatus::resetCounter,
+            "Reset the counter for the given id");
     cls.def("increaseRejectedCounter",
             &SamplingStatus::increaseRejectedCounter,
             "Register that a sample has been rejected");

@@ -25,7 +25,10 @@
 #ifndef FRACKIT_SAMPLING_STATUS_HH
 #define FRACKIT_SAMPLING_STATUS_HH
 
+#include <iomanip>
+#include <iostream>
 #include <algorithm>
+#include <numeric>
 #include <unordered_map>
 #include <initializer_list>
 
@@ -53,6 +56,24 @@ public:
         auto it = count_.find(id.get());
         if (it == count_.end())
             count_[id.get()] = 0;
+        else if (it->second > targetCount)
+            std::cout << "Warning: given target count is below current count" << std::endl;
+    }
+
+    /*!
+     * \brief Reset all counters.
+     */
+    void resetCounters()
+    {
+        for (auto& count : count_) count.second = 0;
+    }
+
+    /*!
+     * \brief Reset counter for the given id.
+     */
+    void resetCounter(const Id& id)
+    {
+        count_[id.get()] = 0;
     }
 
     /*!
@@ -62,7 +83,7 @@ public:
     bool finished()
     {
         for (const auto& pair : count_)
-            if (pair.second != targetCount_.at(pair.first))
+            if (pair.second < targetCount_.at(pair.first))
                 return false;
         return true;
     }
@@ -76,7 +97,7 @@ public:
         auto it = count_.find(id.get());
         if (it == count_.end())
             throw std::runtime_error("Target count not set for given id");
-        return it->second == targetCount_.at(it->first);
+        return it->second >= targetCount_.at(it->first);
     }
 
     /*!
@@ -85,6 +106,8 @@ public:
     void increaseCounter(const Id& id)
     {
         count_[id.get()]++;
+        if (count_[id.get()] > targetCount_[id.get()])
+            std::cout << "Warning: target count for id " << id.get() << " was surpassed" << std::endl;
     }
 
     /*!
