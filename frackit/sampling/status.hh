@@ -25,7 +25,10 @@
 #ifndef FRACKIT_SAMPLING_STATUS_HH
 #define FRACKIT_SAMPLING_STATUS_HH
 
+#include <iomanip>
+#include <iostream>
 #include <algorithm>
+#include <numeric>
 #include <unordered_map>
 #include <initializer_list>
 
@@ -53,6 +56,24 @@ public:
         auto it = count_.find(id.get());
         if (it == count_.end())
             count_[id.get()] = 0;
+        else if (it->second > targetCount)
+            std::cout << "Warning: given target count is below current count" << std::endl;
+    }
+
+    /*!
+     * \brief Reset all counters.
+     */
+    void resetCounters()
+    {
+        for (auto& count : count_) count.second = 0;
+    }
+
+    /*!
+     * \brief Reset counter for the given id.
+     */
+    void resetCounter(const Id& id)
+    {
+        count_[id.get()] = 0;
     }
 
     /*!
