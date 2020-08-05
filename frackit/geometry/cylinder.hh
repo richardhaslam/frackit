@@ -73,17 +73,22 @@ public:
     Cylinder() = default;
 
     /*!
-     * \brief Constructor.
+     * \brief Constructor for axis aligned cylinders
+     *        and a circular bottom face. The axis of
+     *        the cylinder is aligned with the z-axis.
      * \param radius The cylinder radius
      * \param height The cylinder height.
+     * \param zOffset z-coordinate of the bottom face (defaults to 0.0)
      */
-    Cylinder(ctype radius, ctype height)
+    Cylinder(ctype radius,
+             ctype height,
+             ctype zOffset = 0.0)
     : height_(height)
-    , top_(Point({0.0, 0.0, height}),
+    , top_(Point({0.0, 0.0, zOffset + height}),
            Direction(Vector(1.0, 0.0, 0.0)),
            Direction(Vector(0.0, 1.0, 0.0)),
            radius, radius)
-    , bottom_(Point({0.0, 0.0, 0.0}),
+    , bottom_(Point({0.0, 0.0, zOffset}),
               Direction(Vector(1.0, 0.0, 0.0)),
               Direction(Vector(0.0, 1.0, 0.0)),
               radius, radius)

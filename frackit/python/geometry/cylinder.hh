@@ -41,7 +41,7 @@ void registerCylinder(py::module& module)
 
     // register class and define constructorss
     py::class_<Cylinder, Geometry> cls(module, "Cylinder");
-    cls.def(py::init<ctype, ctype>(), "radius"_a, "height"_a);
+    cls.def(py::init<ctype, ctype, ctype>(), "radius"_a, "height"_a, "zOffset"_a = 0.0);
     cls.def(py::init<const Circle&, ctype>(), "bottomCircle"_a, "height"_a);
     cls.def(py::init<const Disk&, ctype>(), "bottom"_a, "height"_a);
 
