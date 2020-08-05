@@ -29,6 +29,7 @@
 #include <iostream>
 #include <algorithm>
 #include <numeric>
+#include <utility>
 #include <unordered_map>
 #include <initializer_list>
 
@@ -143,9 +144,9 @@ public:
     {
         if (!headerPrinted_ || forceHeaderPrint)
         {
-            std::cout << "#################################################################################\n"
-                      << "# Accepted count   |   Rejected count   |   Acceptance Ratio   |   Progress [%] #\n"
-                      << "#-------------------------------------------------------------------------------#\n";
+            std::cout << "#####################################################################################\n"
+                      << "# Accepted count   |   Rejected count   |   Acceptance Ratio [%]   |   Progress [%] #\n"
+                      << "#-----------------------------------------------------------------------------------#\n";
             headerPrinted_ = true;
         }
 
@@ -154,16 +155,27 @@ public:
         for (const auto& pair : count_) curCount += pair.second;
         for (const auto& pair : targetCount_) curTargetCount += pair.second;
 
-        const auto ratio = double(double(curCount)/double(curCount+rejectedCount_));
+        const auto ratio = 100.0*double(double(curCount)/double(curCount+rejectedCount_));
         const auto progress = 100.0*double(curCount)/double(curTargetCount);
 
-        std::cout << "  "   << std::setw(17) << std::setfill(' ')
-                            << std::to_string(curCount) + std::string(9, ' ')
-                  << "|   " << std::setprecision(6) << std::setw(17) << std::setfill(' ')
-                            << std::to_string(rejectedCount_) + std::string(9, ' ')
-                  << "|   " << std::setprecision(6) << std::setw(19) << std::setfill(' ')
-                            << std::to_string( ratio ) + std::string(7, ' ');
-        std::cout << "|   " << std::setprecision(2) << std::string(2, ' ') + std::to_string( progress ) << std::endl;
+        std::cout << std::setprecision(2) << std::fixed;
+        const auto ratioNumChars = std::to_string(int(ratio)).size() + 3;
+        const auto progressNumChars = std::to_string(int(progress)).size() + 3;
+
+        const auto countString = std::to_string(curCount);
+        const auto rejectedCountString = std::to_string(rejectedCount_);
+
+        using std::max;
+        const std::size_t zero = 0;
+        const std::size_t paddingCount    = max(zero, 13 - countString.size());
+        const std::size_t paddingRejected = max(zero, 13 - rejectedCountString.size());
+        const std::size_t paddingRatio    = max(zero, 16 - ratioNumChars);
+        const std::size_t paddingProgess  = max(zero, 8  - progressNumChars);
+
+        std::cout << "  "      << std::string( paddingCount, ' ')    << countString + ' '
+                  << "   |   " << std::string( paddingRejected, ' ') << rejectedCountString + ' '
+                  << "   |   " << std::string( paddingRatio, ' ')    << ratio << std::string(4, ' ')
+                  << "   |   " << std::string( paddingProgess, ' ')  << progress << std::endl;
     }
 
 private:
