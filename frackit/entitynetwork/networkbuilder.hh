@@ -65,6 +65,18 @@ class EntityNetworkBuilderBase
 public:
 
     /*!
+     * \brief If entities are defined for non-confining subdomains,
+     *        they are still confined to the overall domain per default.
+     *        This function allows changing this behaviour, such that
+     *        the entities possibly stand out of the overall domain.
+     * \param value true or false
+     */
+    void setConfineToSubDomainUnion(bool value)
+    {
+        confineToSubDomainUnion_ = value;
+    }
+
+    /*!
      * \brief Define a tolerance value to be used
      *        for boolean operations on the entity shapes.
      * \param eps Tolerance value to be used
@@ -207,15 +219,8 @@ protected:
             const auto subDomainIndex = indexNetworkPair.first;
             const auto& network = indexNetworkPair.second;
 
-            // initialize index map with network entities
-            std::size_t idx = 1;
             auto& fragmentList = networkFragmentLists_[subDomainIndex];
             auto& fragmentMap = networkFragmentMaps_[subDomainIndex];
-            for (const auto& entityShape : network)
-            {
-                fragmentList.Append(entityShape);
-                fragmentMap.Bind(entityShape, idx++);
-            }
 
             // confine network only if sub-domain was set
             if (subDomains_.find(subDomainIndex) == subDomains_.end())
@@ -225,8 +230,10 @@ protected:
             TopTools_ListOfShape domainShapeList;
             if (subDomainBoundsNetwork_.at(subDomainIndex))
                 domainShapeList.Append(subDomains_.at(subDomainIndex));
-            else
+            else if (confineToSubDomainUnion_)
                 domainShapeList.Append(getSubDomainUnion_());
+            else // do not confine the entities of this subdomain at all
+                continue;
 
             BRepAlgoAPI_Common intersection;
             intersection.SetArguments(network);
@@ -441,6 +448,23 @@ protected:
             networkFragmentLists_[sdDataPair.first] = TopTools_ListOfShape();
             networkFragmentMaps_[sdDataPair.first] = TopTools_DataMapOfShapeInteger();
         }
+
+        // then, add the fragments to the lists
+        for (const auto& indexNetworkPair : networks_)
+        {
+            const auto subDomainIndex = indexNetworkPair.first;
+            const auto& network = indexNetworkPair.second;
+
+            // initialize index map with network entities
+            std::size_t idx = 1;
+            auto& fragmentList = networkFragmentLists_[subDomainIndex];
+            auto& fragmentMap = networkFragmentMaps_[subDomainIndex];
+            for (const auto& entityShape : network)
+            {
+                fragmentList.Append(entityShape);
+                fragmentMap.Bind(entityShape, idx++);
+            }
+        }
     }
 
     /*!
@@ -482,6 +506,7 @@ protected:
     // state variables
     bool epsilonIsSet_ = false;
     bool built_ = false;
+    bool confineToSubDomainUnion_ = true;
 
     // store the fragments of each subdomain after fragmentation
     std::unordered_map<std::size_t, TopTools_ListOfShape> subDomainFragmentLists_;
