@@ -101,7 +101,7 @@ while not status.finished():
         continue
 
     from frackit.occutilities import getShape
-    if not constraintsOnBoundary.evaluate(getShape(domain.bottomFace()), quad):
+    if not constraintsOnBoundary.evaluate(getShape(domain.lateralFace()), quad):
         status.increaseRejectedCounter()
         continue
 
