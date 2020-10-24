@@ -185,7 +185,7 @@ public:
     {
         auto eps = Precision<ctype>::confusion();
         eps *= Vector(corner(0), corner(3)).length();
-        return contains(p, eps);
+        return contains(p, eps, checkIfOnPlane);
     }
 
 private:
