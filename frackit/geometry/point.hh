@@ -85,11 +85,7 @@ public:
 
     //! Returns true if the given point is equal to this one (default eps)
     bool isEqual(const Impl& other) const
-    {
-        const auto scale = Vector<ctype, wd>(Impl(), asImp_()).length();
-        const auto eps = Precision<ctype>::confusion()*scale;
-        return isEqual(other, eps);
-    }
+    { return isEqual(other, Precision<ctype>::confusion()); }
 
     //! Move this point with the vector v
     template<class C>
