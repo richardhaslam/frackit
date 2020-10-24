@@ -19,5 +19,6 @@ quadrilateral.hh
 segment.hh
 sphere.hh
 triangle.hh
+triangulation.hh
 vector.hh
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/frackit/geometry)
