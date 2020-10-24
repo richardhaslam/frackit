@@ -20,5 +20,12 @@ int main()
     if (!p3.isEqual(p32))
         throw std::runtime_error("p32 != p3");
 
+    auto p33 = p3;
+    p33 *= 0.5;
+    p3 /= 2.0;
+
+    if (!p3.isEqual(p33))
+        throw std::runtime_error("p3 != p33");
+
     return 0;
 }
