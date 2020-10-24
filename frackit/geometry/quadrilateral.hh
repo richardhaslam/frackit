@@ -101,16 +101,17 @@ public:
         assert( supportPlane_.contains(p3, Precision<ctype>::confusion()
                                            *Vector(p0, p3).length()) );
 
-        // compute center
-        center_ = Point(0.0, 0.0, 0.0);
-        center_ += Vector(center_, p0);
-        center_ += Vector(center_, p1);
-        center_ += Vector(center_, p2);
-        center_ += Vector(center_, p3);
-        center_ *= 0.25;
+        const auto t1 = Triangle(p0, p1, p3);
+        const auto t2 = Triangle(p0, p3, p2);
 
         // compute area
-        area_ = Triangle(p0, p1, p3).area() + Triangle(p0, p3, p2).area();
+        area_ = t1.area() + t2.area();
+
+        // compute center
+        center_ = Point(0.0, 0.0, 0.0);
+        auto d1 = Vector(center_, t1.center()); d1 *= t1.area();
+        auto d2 = Vector(center_, t2.center()); d2 *= t2.area();
+        center_ += d1; center_ += d2; center_ /= area_;
     }
 
     //! Return the name of this geometry

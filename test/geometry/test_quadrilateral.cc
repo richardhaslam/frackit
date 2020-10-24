@@ -35,6 +35,10 @@ int main()
         if ( abs(quad.area() - f*f) > eps*eps )
             throw std::runtime_error("Unexpected quad area");
 
+        // check center point
+        if (!quad.center().isEqual(Point(0.5*f, 0.5*f, 0.0), eps))
+            throw std::runtime_error("Center point wrong!");
+
         // check if points are on supporting plane
         const auto plane = quad.supportingPlane();
         if (!plane.contains(quad.corner(0), eps))
