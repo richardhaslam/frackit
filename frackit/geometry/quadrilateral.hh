@@ -24,12 +24,12 @@
 #ifndef FRACKIT_GEOMETRY_QUADRILATERAL_HH
 #define FRACKIT_GEOMETRY_QUADRILATERAL_HH
 
+#include <cmath>
 #include <cassert>
 #include <string>
 #include <array>
 #include <stdexcept>
 
-#include <frackit/common/math.hh>
 #include <frackit/precision/precision.hh>
 
 #include "geometry.hh"
@@ -169,6 +169,7 @@ public:
         otherArea += Triangle(corners_[2], corners_[0], p).area();
 
         // if area is equal to the quadrilateral area, point is on it
+        using std::abs;
         return abs(area() - otherArea) < eps*eps;
     }
 
