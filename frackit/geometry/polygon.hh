@@ -103,14 +103,18 @@ public:
         // compute area & center
         const auto triangulation = triangulate(corners_);
         supportPlane_ = Plane(corners_[0], corners_[1], corners_[2]);
+        center_ = Point(0.0, 0.0, 0.0);
         area_ = 0.0;
 
         for (const auto& t : triangulation)
         {
-            center_ += Vector(Point(), t.center());
+            auto d = Vector(Point(0.0, 0.0, 0.0), t.center());
+            d *= t.area();
+
+            center_ += d;
             area_ += t.area();
         }
-        center_ /= triangulation.size();
+        center_ /= area_;
 
         // check if polygon is degenerated (e.g. because points are unsorted)
         assert( !isDegenerated_(triangulation) );
