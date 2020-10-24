@@ -15,6 +15,7 @@ hollowcylinder.hh
 line.hh
 plane.hh
 point.hh
+polygon.hh
 quadrilateral.hh
 segment.hh
 sphere.hh
