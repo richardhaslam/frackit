@@ -6,7 +6,7 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/precision/precision.hh>
 
-//! test some functionality of triangles
+//! test some functionality of quadrilaterals
 int main()
 {
     using ctype = double;
