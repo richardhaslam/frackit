@@ -103,15 +103,11 @@ public:
 
         // compute center
         center_ = Point(0.0, 0.0, 0.0);
-        Vector d1(center_, p0); d1 *= 0.25;
-        Vector d2(center_, p1); d2 *= 0.25;
-        Vector d3(center_, p2); d3 *= 0.25;
-        Vector d4(center_, p3); d4 *= 0.25;
-
-        center_ += d1;
-        center_ += d2;
-        center_ += d3;
-        center_ += d4;
+        center_ += Vector(center_, p0);
+        center_ += Vector(center_, p1);
+        center_ += Vector(center_, p2);
+        center_ += Vector(center_, p3);
+        center_ *= 0.25;
 
         // compute area
         area_ = Triangle(p0, p1, p3).area() + Triangle(p0, p3, p2).area();
