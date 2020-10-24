@@ -133,6 +133,24 @@ public:
         return result;
     }
 
+    //! Scale all coordinates with the given value by multiplication
+    template<class Scalar>
+    Impl& operator*=(Scalar value)
+    {
+        for (auto& coord : coordinates_)
+            coord *= value;
+        return asImp_();
+    }
+
+    //! Scale all coordinates with the given value by division
+    template<class Scalar>
+    Impl& operator/=(Scalar value)
+    {
+        for (auto& coord : coordinates_)
+            coord /= value;
+        return asImp_();
+    }
+
 protected:
     //! Provide access to the underlying coordinates
     ctype operator[] (unsigned int i) const
