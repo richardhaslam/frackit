@@ -30,6 +30,7 @@
 #include <tuple>
 #include <vector>
 #include <string>
+#include <memory>
 #include <type_traits>
 #include <unordered_map>
 
@@ -118,11 +119,11 @@ public:
             using GeomVectorType = typename PairType::first_type;
             using GeomType = typename GeomVectorType::value_type;
 
-            GeomType geometry;
-            if (geometryName(geometry) == entity->name())
+            auto geometry = std::make_shared<GeomType>();
+            if (geometryName(*geometry) == entity->name())
             {
-                assign(entity, geometry);
-                addEntity(geometry, id);
+                assign(entity, *geometry);
+                addEntity(*geometry, id);
                 wasAdded = true;
             }
         };
