@@ -86,6 +86,7 @@
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
@@ -264,12 +265,39 @@ namespace OCCUtilities {
         const auto v3 = getShape(quad.corner(2));
         const auto v4 = getShape(quad.corner(3));
 
-        TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(v1, v2);
-        TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(v2, v4);
-        TopoDS_Edge e3 = BRepBuilderAPI_MakeEdge(v4, v3);
-        TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(v3, v1);
+        const TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(v1, v2);
+        const TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(v2, v4);
+        const TopoDS_Edge e3 = BRepBuilderAPI_MakeEdge(v4, v3);
+        const TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(v3, v1);
 
-        TopoDS_Wire wire = BRepBuilderAPI_MakeWire(e1, e2, e3, e4);
+        const TopoDS_Wire wire = BRepBuilderAPI_MakeWire(e1, e2, e3, e4);
+        return BRepBuilderAPI_MakeFace(wire);
+    }
+
+    /*!
+     * \ingroup OpenCascade
+     * \brief Get the BRep of a polygon in 3d space.
+     */
+    template<class ctype>
+    TopoDS_Face getShape(const Polygon<ctype, 3>& polygon)
+    {
+        const auto numCorners = polygon.numCorners();
+        assert(polygon.numCorners() >= 3);
+
+        std::vector<TopoDS_Vertex> vertices;
+        vertices.reserve(numCorners);
+        for (unsigned int i = 0; i < numCorners; ++i)
+            vertices.emplace_back(getShape(polygon.corner(i)));
+
+        const TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(vertices[0], vertices[1]);
+        TopoDS_Wire wire = BRepBuilderAPI_MakeWire(e1);
+        for (unsigned int i = 1; i < numCorners; ++i)
+        {
+            const TopoDS_Edge e = BRepBuilderAPI_MakeEdge(vertices[i],
+                                                          vertices[(i+1)%numCorners]);
+            wire = BRepBuilderAPI_MakeWire(wire, e);
+        }
+
         return BRepBuilderAPI_MakeFace(wire);
     }
 
