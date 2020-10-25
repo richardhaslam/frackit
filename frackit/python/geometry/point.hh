@@ -61,6 +61,10 @@ namespace Detail {
         cls.def(py::self -= Vector());
         cls.def(py::self - Vector());
 
+        // add scale overloas
+        cls.def(py::self *= ctype());
+        cls.def(py::self /= ctype());
+
         // equality checks
         using namespace py::literals;
         cls.def("isEqual", py::overload_cast<const Impl&>(&Base::isEqual, py::const_),
