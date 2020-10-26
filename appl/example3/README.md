@@ -208,7 +208,7 @@ entitySets.exportEntitySets(builder, Id(2));
 ```
 
 where the second argument states the (sub-)domain for which the entities should
-be added to the builder (see [example 2][4]). If `entitySets` holds entity sets
+be added to the builder (see [example 2][0]). If `entitySets` holds entity sets
 associated with multiple (sub-)domains, or, if only some of the entity sets should
 be added to the builder, one can use:
 
@@ -223,8 +223,7 @@ main file `example3.cc`, it is shown how different types of networks
 (contained-confined, contained-unconfined, etc.) can be created from the raw entities.
 
 
-[0]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example2
+[0]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example2/README.md
 [1]: http://gmsh.info/
 [2]: https://www.opencascade.com/content/download-center
-[3]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/sampling/disksampler.hh
-[4]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example2
+[3]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/frackit/sampling/disksampler.hh
