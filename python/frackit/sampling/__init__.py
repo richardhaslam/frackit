@@ -426,8 +426,8 @@ class QuadrilateralSampler:
         c = self.pointSampler()
         from frackit.geometry import Point_3
         c1 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c1 -= dxVec1; c1 -= dyVec1
-        c2 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c2 += dxVec1; c2 -= dyVec2
-        c3 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c3 -= dxVec2; c3 += dyVec1
+        c2 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c2 += dxVec2; c2 -= dyVec2
+        c3 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c3 -= dxVec1; c3 += dyVec1
         c4 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c4 += dxVec2; c4 += dyVec2
 
         from frackit.geometry import Quadrilateral_3
