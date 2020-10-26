@@ -123,9 +123,9 @@ used in contexts where one is only interested in the fractures. In the following
 examples we will see how to construct fracture networks embedded in one or more
 (sub-)domains.
 
-[go to example 2][3]
+| [:arrow_right: Go to example 2](https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example2) |
+|---:|
 
 [0]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example3
 [1]: http://gmsh.info/
 [2]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/blob/master/frackit/sampling/quadrilateralsampler.hh
-[3]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example2
