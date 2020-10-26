@@ -23,7 +23,7 @@ Cylinder<ctype> domain(/*radius*/0.5, /*height*/1.0);
 This creates an axis-aligned cylinder where the x- and y- axis form the basis of
 the bottom face of the cylinder, while the cylinder axis is aligned with the
 z-axis. Note that there are other ways to construct arbitrarily-oriented cylinders,
-and for details on this we refer to the [class documentation][2].
+and for details on this we refer to the [class documentation][1].
 
 In addition to constraints among entities of the different orientations, we also
 want to enforce constraints with respect to the boundary of the cylindrical domain.
@@ -193,8 +193,10 @@ You can set a custom epsilon in the builder class by calling its `setEpsilon`
 function. Vertices, for instance, that are closer than the defined epsilon are
 snapped into a single vertex.
 
-[go to example 3][2]
+| [:arrow_right: Go to example 3](https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example3) |
+|---:|
 
-[0]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example1
-[1]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/geometry/cylinder.hh
-[2]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example3
+
+[0]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example1/README.md
+[1]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/frackit/geometry/cylinder.hh
+[2]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example3/README.md
