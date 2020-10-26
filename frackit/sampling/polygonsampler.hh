@@ -153,6 +153,13 @@ public:
      * \brief Generate a random polygon.
      */
     Polygon operator() () override
+    { return Polygon(sampleCorners()); }
+
+    /*!
+     * \brief Randomly generate a point cloud that represents
+     *        the corner points of a convex polygon.
+     */
+    std::vector<Point> sampleCorners()
     {
         int count = 0;
         int numCorners = 0;
@@ -237,9 +244,21 @@ public:
             deltaY.erase(it);
         }
 
-        // scale vectors with actual dimensions
-        const auto strikeLength = p_strike_length_(generator_);
-        const auto dipLength = p_dip_length_(generator_);
+        // scale vectors with actual dimensions (make sure they are > 0.0)
+        auto strikeLength = p_strike_length_(generator_);
+        auto dipLength = p_dip_length_(generator_);
+
+        int countStrike = 0.0;
+        while (strikeLength < 0.0 && countStrike < 100)
+        { strikeLength = p_strike_length_(generator_); countStrike++; }
+        if (countStrike == 100)
+            throw std::runtime_error("Could not sample positive strike length in 100 tries");
+
+        int countDip = 0.0;
+        while (dipLength < 0.0 && countDip < 100)
+        { dipLength = p_dip_length_(generator_); countDip++; }
+        if (countStrike == 100)
+            throw std::runtime_error("Could not sample positive dip length in 100 tries");
 
         std::vector<Vector> edgeVectors;
         edgeVectors.reserve(numCorners);
@@ -302,7 +321,7 @@ public:
         for (auto& v : vertices)
             v += dispVec;
 
-        return Polygon(vertices);
+        return vertices;
     }
 
  private:
