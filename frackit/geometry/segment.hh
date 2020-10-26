@@ -51,6 +51,7 @@ template<class CT, int wd> class Line;
 template<class CT, int wd>
 class Segment : public Geometry
 {
+    using ThisType = Segment<CT, wd>;
     using Vector = Frackit::Vector<CT, wd>;
 
 public:
@@ -151,6 +152,9 @@ public:
 
         return source() + d;
     }
+
+    //! return the reversed segment
+    Segment getReversed() const { return ThisType(target(), source()); }
 
 private:
     Point source_;
