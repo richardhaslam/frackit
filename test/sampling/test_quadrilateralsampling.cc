@@ -31,8 +31,8 @@ int main()
     QuadrilateralSampler<3> quadSampler(makeUniformPointSampler(box),
                                         std::normal_distribution<ctype>(toRadians(45.0), toRadians(5.0)),
                                         std::normal_distribution<ctype>(toRadians(20.0), toRadians(5.0)),
-                                        std::normal_distribution<ctype>(0.5, 0.1),
-                                        /*minEdgeLength*/0.05);
+                                        std::uniform_real_distribution<ctype>(0.4, 0.6),
+                                        std::uniform_real_distribution<ctype>(0.4, 0.6));
 
     // sample 10 quadrilaterals
     std::vector<Quad> quads;
