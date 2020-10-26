@@ -126,6 +126,6 @@ examples we will see how to construct fracture networks embedded in one or more
 | [:arrow_right: Go to example 2](https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example2) |
 |---:|
 
-[0]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example3
+[0]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/tree/master/appl/example3/README.md
 [1]: http://gmsh.info/
 [2]: https://git.iws.uni-stuttgart.de/DennisGlaeser/frackit/blob/master/frackit/sampling/quadrilateralsampler.hh
