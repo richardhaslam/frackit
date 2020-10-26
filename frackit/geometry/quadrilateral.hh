@@ -112,6 +112,8 @@ public:
         auto d1 = Vector(center_, t1.center()); d1 *= t1.area();
         auto d2 = Vector(center_, t2.center()); d2 *= t2.area();
         center_ += d1; center_ += d2; center_ /= area_;
+
+        determineConvexity_();
     }
 
     //! Return the name of this geometry
@@ -189,11 +191,40 @@ public:
         return contains(p, eps, checkIfOnPlane);
     }
 
+    /*!
+     * \brief Returns true if the quadrilateral is convex.
+     */
+    bool isConvex() { return isConvex_; }
+
 private:
+    //! determines if the polygon is convex or not
+    void determineConvexity_()
+    {
+        isConvex_ = true;
+
+        const auto v1 = Vector(corner(0), corner(1));
+        const auto v2 = Vector(corner(1), corner(3));
+        const auto v4 = Vector(corner(2), corner(0));
+
+        // use normal over first corner as test vector
+        const auto n1 = crossProduct(v4, v1);
+
+        if (std::signbit(n1*crossProduct(v1, v2)))
+        { isConvex_ = false; return; }
+
+        const auto v3 = Vector(corner(3), corner(2));
+        if (std::signbit(n1*crossProduct(v2, v3)))
+        { isConvex_ = false; return; }
+
+        if (std::signbit(n1*crossProduct(v3, v4)))
+        { isConvex_ = false; return; }
+    }
+
     std::array<Point, 4> corners_;
     Plane supportPlane_;
     Point center_;
     ctype area_;
+    bool isConvex_;
 };
 
 } // end namespace Frackit

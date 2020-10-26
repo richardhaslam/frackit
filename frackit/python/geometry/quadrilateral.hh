@@ -54,6 +54,7 @@ namespace Detail {
         cls.def("area", &Quad::area, "area of the quadrilateral");
         cls.def("center", &Quad::center, "center point of the quadrilateral");
         cls.def("supportingPlane", &Quad::supportingPlane, "returns the supporting plane");
+        cls.def("isConvex", &Quad::isConvex, "returns true if the quadrilateral is convex");
 
         cls.def_static("numCorners", &Quad::numCorners, "returns the number of corners of the quadrilateral");
         cls.def("corner", &Quad::corner, "cornerIdx"_a, "returns the corner with the provided index");
