@@ -61,6 +61,9 @@ namespace Detail {
         cls.def("getPoint", &Segment::getPoint, "localCoordinate"_a,
                 "returns the point on the line for the given local coordinate (0 <= localCoordinate <= 1)");
 
+        // obtain the reversed segment
+        cls.def("getReversed", &Segment::getReversed, "returns the reversed segment");
+
         // contains queries
         cls.def("contains", py::overload_cast<const Point&, bool>(&Segment::contains, py::const_),
                 "point"_a, "checkIfOnLine"_a = true,
