@@ -7,6 +7,7 @@ makepointsampler.hh
 makeuniformpointsampler.hh
 multigeometrysampler.hh
 pointsampler.hh
+polygonsampler.hh
 quadrilateralsampler.hh
 samplingstrategy.hh
 sequentialsamplingstrategy.hh
