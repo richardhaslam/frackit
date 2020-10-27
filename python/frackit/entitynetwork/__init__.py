@@ -43,9 +43,9 @@ class EntityNetworkConstraintsMatrix:
             id1 = pair[0]
             id2 = pair[1]
             if self.constraintsMatrix.get(id1) == None:
-                self.constraintsMatrix[id1] = {id2 : [constraints]}
+                self.constraintsMatrix[id1] = {id2 : constraints}
             elif self.constraintsMatrix.get(id1).get(id2) == None:
-                self.constraintsMatrix[id1][id2] = [constraints]
+                self.constraintsMatrix[id1][id2] = constraints
             else:
                 raise RuntimeError("Id pair already taken!")
 
@@ -67,20 +67,26 @@ class EntityNetworkConstraintsMatrix:
         entity: the entity candidate for which the constraints are to be checked
         id: the id of the set to which the entity candidate belongs.
         """
-        for setId in self.constraintsMatrix:
 
-            entitySet = entitySets.get(setId)
+        # no constraints registered for this id
+        if self.constraintsMatrix.get(id) == None:
+            return True
+
+        for otherSetId in self.constraintsMatrix:
+            entitySet = entitySets.get(otherSetId)
 
             # set is empty, skip rest
             if entitySet == None:
                 continue
 
-            elif self.constraintsMatrix.get(setId).get(id) != None:
-                # a constraint is defined between this set and the given id
-                # evaluate all constraints defined for this pair
-                constraints = self.constraintsMatrix.get(setId).get(id)
-                if any(not c.evaluate(entitySet, entity) for c in constraints):
+            elif self.constraintsMatrix.get(id).get(otherSetId) != None:
+                # a constraint is defined between the set with the given id
+                # and the set with otherSetId. Evaluate constraints for this pair.
+                constraints = self.constraintsMatrix.get(id).get(otherSetId)
+                if not constraints.evaluate(entitySet, entity):
                     return False
+
+        # no constraints violation detected
         return True
 
 
