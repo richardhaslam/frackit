@@ -74,7 +74,7 @@ namespace Detail {
         cls.def("__repr__", [&] (const Plane& p) { return "Frackit::Plane<" + std::to_string(worldDim) + ">"; });
     }
 
-} // end namespace detail
+} // end namespace Detail
 
 template<class ctype>
 void registerPlane(py::module& module)

@@ -372,63 +372,90 @@ class QuadrilateralSampler:
     """Class to randomly sample quadrilaterals in 3d space."""
 
     from frackit.precision import Precision
-    def __init__(self, pointSampler, strikeAngleSampler, dipAngleSampler, edgeLengthSampler, minEdgeLength = Precision.confusion):
+    def __init__(self, pointSampler, strikeAngleSampler, dipAngleSampler, strikeLengthSampler, dipLengthSampler = Precision.confusion):
         """
         Create the sampler from random variable samplers for the geometric properties.
+        Internally, an instance of PolygonSampler is used, to which the arguments are forwarded.
+        Note: This constructor is still compatible with the deprecated quadrilateral sampler
+              algorithm and its constructor arguments. A warning will be printed if it is used as such.
 
         Parameters:
         pointSampler: sampler for points to be used as the qudrilateral centers
         strikeAngleSampler: samples from a distribution for the strike angle
         dipAngleSampler: samples from a distribution for the dip angle
-        edgeLengthSampler: samples from distribution the edge length
-        minEdgeLength: defines a minimum edge length that should not be undershot
+        strikeLengthSampler: samples from distribution the dimensions in strike direction
+        dipLengthSampler: samples from distribution the dimensions in strike direction
         """
-        self.pointSampler = pointSampler
-        self.strikeAngleSampler = strikeAngleSampler
-        self.dipAngleSampler = dipAngleSampler
-        self.edgeLengthSampler = edgeLengthSampler
-        self.minEdgeLength = minEdgeLength
+
+        # if the last argument is not callable, we assume one is using the deprecated
+        # way of construction and algorithm, where the last argument is the minumum edge length
+        try: tmp = dipLengthSampler()
+        except:
+            import warnings
+            warnings.warn("Please use new quadrilateral sampler implementation", DeprecationWarning, stacklevel=2)
+            self.pointSampler = pointSampler
+            self.strikeAngleSampler = strikeAngleSampler
+            self.dipAngleSampler = dipAngleSampler
+            self.edgeLengthSampler = strikeLengthSampler
+            self.minEdgeLength = dipLengthSampler
+            self.useDeprecated = True
+        else:
+            import random
+            def cornerSampler(): return 4
+            self.polygonSampler = PolygonSampler(pointSampler,
+                                                 strikeAngleSampler, dipAngleSampler,
+                                                 strikeLengthSampler, dipLengthSampler,
+                                                 cornerSampler)
+            self.useDeprecated = False
 
     def __call__(self):
 
-        strike = self.strikeAngleSampler()
-        dip = self.dipAngleSampler()
+        if not self.useDeprecated:
+            c = self.polygonSampler.sampleCorners()
+            if len(c) != 4:
+                raise RuntimeError("Size mismatch of corner list!")
 
-        # get the basis of the plane within the x-y-plane by
-        # rotation around the z-axis with the strike angle and
-        # rotation of the resulting first axis around the second by dip angle
-        from frackit.geometry import Vector_3
-        axes = [Vector_3(1.0, 0.0, 0.0), Vector_3(0.0, 1.0, 0.0)]
+            from frackit.geometry import Quadrilateral_3
+            return Quadrilateral_3(c[0], c[1], c[3], c[2])
+        else:
+            strike = self.strikeAngleSampler()
+            dip = self.dipAngleSampler()
 
-        from frackit.geometry import Direction_3
-        from frackit.common import rotate
-        rotate(axes[0], Direction_3(Vector_3(0.0, 0.0, 1.0)), strike);
-        rotate(axes[1], Direction_3(Vector_3(0.0, 0.0, 1.0)), strike);
-        rotate(axes[0], Direction_3(axes[1]), dip);
+            # get the basis of the plane within the x-y-plane by
+            # rotation around the z-axis with the strike angle and
+            # rotation of the resulting first axis around the second by dip angle
+            from frackit.geometry import Vector_3
+            axes = [Vector_3(1.0, 0.0, 0.0), Vector_3(0.0, 1.0, 0.0)]
 
-        # sample edge lengths until all are admissible
-        dx1 = self.edgeLengthSampler()
-        dx2 = self.edgeLengthSampler()
-        dy1 = self.edgeLengthSampler()
-        dy2 = self.edgeLengthSampler()
-        while (dx1 < self.minEdgeLength): dx1 = self.edgeLengthSampler()
-        while (dx2 < self.minEdgeLength): dx2 = self.edgeLengthSampler()
-        while (dy1 < self.minEdgeLength): dy1 = self.edgeLengthSampler()
-        while (dy2 < self.minEdgeLength): dy2 = self.edgeLengthSampler()
+            from frackit.geometry import Direction_3
+            from frackit.common import rotate
+            rotate(axes[0], Direction_3(Vector_3(0.0, 0.0, 1.0)), strike);
+            rotate(axes[1], Direction_3(Vector_3(0.0, 0.0, 1.0)), strike);
+            rotate(axes[0], Direction_3(axes[1]), dip);
 
-        from copy import deepcopy
-        dxVec1 = Vector_3(deepcopy(axes[0].x()), deepcopy(axes[0].y()), deepcopy(axes[0].z())); dxVec1 *= dx1/2.0
-        dxVec2 = Vector_3(deepcopy(axes[0].x()), deepcopy(axes[0].y()), deepcopy(axes[0].z())); dxVec2 *= dx2/2.0
-        dyVec1 = Vector_3(deepcopy(axes[1].x()), deepcopy(axes[1].y()), deepcopy(axes[1].z())); dyVec1 *= dy1/2.0
-        dyVec2 = Vector_3(deepcopy(axes[1].x()), deepcopy(axes[1].y()), deepcopy(axes[1].z())); dyVec2 *= dy2/2.0
+            # sample edge lengths until all are admissible
+            dx1 = self.edgeLengthSampler()
+            dx2 = self.edgeLengthSampler()
+            dy1 = self.edgeLengthSampler()
+            dy2 = self.edgeLengthSampler()
+            while (dx1 < self.minEdgeLength): dx1 = self.edgeLengthSampler()
+            while (dx2 < self.minEdgeLength): dx2 = self.edgeLengthSampler()
+            while (dy1 < self.minEdgeLength): dy1 = self.edgeLengthSampler()
+            while (dy2 < self.minEdgeLength): dy2 = self.edgeLengthSampler()
 
-        # compute corner points
-        c = self.pointSampler()
-        from frackit.geometry import Point_3
-        c1 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c1 -= dxVec1; c1 -= dyVec1
-        c2 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c2 += dxVec1; c2 -= dyVec2
-        c3 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c3 -= dxVec2; c3 += dyVec1
-        c4 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c4 += dxVec2; c4 += dyVec2
+            from copy import deepcopy
+            dxVec1 = Vector_3(deepcopy(axes[0].x()), deepcopy(axes[0].y()), deepcopy(axes[0].z())); dxVec1 *= dx1/2.0
+            dxVec2 = Vector_3(deepcopy(axes[0].x()), deepcopy(axes[0].y()), deepcopy(axes[0].z())); dxVec2 *= dx2/2.0
+            dyVec1 = Vector_3(deepcopy(axes[1].x()), deepcopy(axes[1].y()), deepcopy(axes[1].z())); dyVec1 *= dy1/2.0
+            dyVec2 = Vector_3(deepcopy(axes[1].x()), deepcopy(axes[1].y()), deepcopy(axes[1].z())); dyVec2 *= dy2/2.0
 
-        from frackit.geometry import Quadrilateral_3
-        return Quadrilateral_3(c1, c2, c3, c4);
+            # compute corner points
+            c = self.pointSampler()
+            from frackit.geometry import Point_3
+            c1 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c1 -= dxVec1; c1 -= dyVec1
+            c2 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c2 += dxVec2; c2 -= dyVec2
+            c3 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c3 -= dxVec1; c3 += dyVec1
+            c4 = Point_3(deepcopy(c.x()), deepcopy(c.y()), deepcopy(c.z())); c4 += dxVec2; c4 += dyVec2
+
+            from frackit.geometry import Quadrilateral_3
+            return Quadrilateral_3(c1, c2, c3, c4);

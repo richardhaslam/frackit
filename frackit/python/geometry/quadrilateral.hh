@@ -65,7 +65,7 @@ namespace Detail {
         // contains queries
         cls.def("contains", py::overload_cast<const Point&, bool>(&Quad::contains, py::const_),
                 "point"_a, "checkIfOnPlane"_a = true,
-                "returns true if the given point is on the quadrilateral (given tolerance)");
+                "returns true if the given point is on the quadrilateral (default tolerance)");
         cls.def("contains", py::overload_cast<const Point&, ctype, bool>(&Quad::contains, py::const_),
                 "point"_a, "eps"_a, "checkIfOnPlane"_a = true,
                 "returns true if the given point is on the quadrilateral (given tolerance)");

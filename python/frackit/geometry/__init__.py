@@ -2,11 +2,11 @@ from ._geometry import *
 
 def raiseGeometryConstructorException(type, issue=""):
     if issue == "notImplemented":
-        raise Exception("Requested specialization of " + type + " class is not yet implemented")
+        raise NotImplementedError("Requested specialization of " + type + " class is not yet implemented")
     if issue == "numArgs":
-        raise Exception("Wrong number of arguments provided for construction of '" + type + "'")
+        raise RuntimeError("Wrong number of arguments provided for construction of '" + type + "'")
     else:
-        raise Exception("Could not construct '" + type + "' from provided argument(s)")
+        raise RuntimeError("Could not construct '" + type + "' from provided argument(s)")
 
 
 ############################################
