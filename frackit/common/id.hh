@@ -36,6 +36,9 @@ namespace Frackit {
 class Id
 {
 public:
+    //! export underlying index type
+    using IndexType = std::size_t;
+
     //! Default constructor
     Id() = default;
 
@@ -63,5 +66,31 @@ private:
 };
 
 } // end namespace Frackit
+
+// define hash function for Id
+namespace std {
+
+template<>
+struct hash<Frackit::Id>
+{
+    using argument_type = Frackit::Id;
+    using result_type = std::size_t;
+
+    std::size_t operator()(const Frackit::Id& id) const noexcept
+    { return hash<std::size_t>()(id.get()); }
+};
+
+template<>
+struct hash<const Frackit::Id>
+{
+    using argument_type = Frackit::Id;
+    using result_type = std::size_t;
+
+    std::size_t operator()(const Frackit::Id& id) const noexcept
+    { return hash<std::size_t>()(id.get()); }
+};
+
+} // end namespace std
+
 
 #endif // FRACKIT_ID_HH
