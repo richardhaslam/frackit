@@ -1,6 +1,5 @@
 from ._sampling import *
 
-
 class BoxPointSampler:
     """Class to sample random points within a box."""
 
@@ -199,6 +198,173 @@ class DiskSampler:
                             a, b)
         from frackit.geometry import Disk
         return Disk(ellipse)
+
+class PolygonSampler:
+    """Class to randomly sample polygons in 3d space."""
+
+    def __init__(self, pointSampler, strikeAngleSampler, dipAngleSampler, strikeLengthSampler, dipLengthSampler, numCornersSampler):
+        """
+        Create the sampler from random variable samplers for the geometric properties.
+
+        Parameters:
+        pointSampler: sampler for points to be used as the qudrilateral centers
+        strikeAngleSampler: samples from a distribution for the strike angle
+        dipAngleSampler: samples from a distribution for the dip angle
+        strikeLengthSampler: samples from distribution the dimensions in strike direction
+        dipLengthSampler: samples from distribution the dimensions in strike direction
+        numCornersSampler: samples from distribution the number of polygon corners
+        """
+        self.pointSampler = pointSampler
+        self.strikeAngleSampler = strikeAngleSampler
+        self.dipAngleSampler = dipAngleSampler
+        self.strikeLengthSampler = strikeLengthSampler
+        self.dipLengthSampler = dipLengthSampler
+        self.numCornersSampler = numCornersSampler
+        self.intervalSampler = uniformIntervalSamplerCreator()(0.0, 1.0)
+
+    def __call__(self):
+
+        count = 0
+        numCorners = 0
+        while numCorners < 3 and count < 100:
+            numCorners = self.numCornersSampler()
+
+        if count == 100:
+            raise RuntimeError("Did not obtain more than 3 corners after sampling " \
+                               "100 times from the provided distribution.")
+
+        # randomly sample within interval [0, 1]
+        xValues = [self.intervalSampler() for i in range(0, numCorners)]
+        yValues = [self.intervalSampler() for i in range(0, numCorners)]
+
+        xMin = min(xValues); xValues.remove(xMin)
+        yMin = min(yValues); yValues.remove(yMin)
+        xMax = max(xValues); xValues.remove(xMax)
+        yMax = max(yValues); yValues.remove(yMax)
+
+        # make sure interval is exploited
+        for v in [xMin, yMin]: v = 0.0 if v > 0.1 else v
+        for v in [xMax, yMax]: v = 1.0 if v < 0.9 else v
+
+        # split values into two lists
+        xVals = [[xMin], [xMin]]
+        yVals = [[yMin], [yMin]]
+        for i in range(0, numCorners-2):
+            xVals[i%2].append(xValues[i])
+            yVals[i%2].append(yValues[i])
+
+        # sort the arrays and add max values
+        for vals in xVals: vals.sort(); vals.append(xMax)
+        for vals in yVals: vals.sort(); vals.append(yMax)
+
+        # transform values into deltas
+        for vals in [xVals[0], xVals[1], yVals[0], yVals[1]]:
+            for i in range(0, len(vals)-1):
+                vals[i] = vals[i+1] - vals[i]
+            vals.pop()
+
+        # flip sign of second arrays
+        xVals[1] = [ -1.0*val for val in xVals[1] ]
+        yVals[1] = [ -1.0*val for val in yVals[1] ]
+
+        # make two arrays of delta values
+        deltaX = [dx for dx in xVals[0]]; deltaX.extend(xVals[1])
+        deltaY = [dy for dy in yVals[0]]; deltaY.extend(yVals[1])
+
+        # compute the maximum deltaX/deltaY values
+        deltaX.sort()
+        maxDeltaX = max(deltaX)
+        maxDeltaY = max(deltaY)
+        maxDx2 = maxDeltaX*maxDeltaX + maxDeltaY*maxDeltaY
+
+        deltas = []
+        for dx in deltaX:
+            tmp = maxDx2 - dx*dx
+
+            # look for dy such that dx^2+dy^2 closest to maxDx2
+            closest = maxDx2*100
+            for dy in deltaY:
+                diff = abs(tmp - dy*dy)
+                if diff < closest:
+                    closest = diff
+                    closestDy = dy
+
+            deltas.append([dx, closestDy])
+            deltaY.remove(closestDy)
+
+        if len(deltas) != numCorners:
+            raise RuntimeError("Error during edge vectors construction")
+
+        # scale vectors with actual dimensions (verify that they are > 0.0)
+        strikeLength  = self.strikeLengthSampler()
+        dipLength = self.dipLengthSampler()
+
+        countStrike = 0;
+        while strikeLength < 0.0 and countStrike < 100:
+            strikeLength = self.strikeLengthSampler()
+            countStrike += 1
+        if countStrike == 100: raise RuntimeError("Could not sample strike dimension > 0.0 in 100 tries")
+
+        countDip = 0;
+        while strikeLength < 0.0 and countDip < 100:
+            dipLength = self.dipLengthSampler()
+            countDip += 1
+        if countDip == 100: raise RuntimeError("Could not sample dip dimension > 0.0 in 100 tries")
+
+        # construct edge vectors
+        from frackit.geometry import Vector
+        edgeVectors = [ Vector(dx*dipLength, dy*strikeLength, 0.0) for dx, dy in deltas ]
+
+        # returns the angle w.r.t the standard x-y basis of an edge vector
+        import math
+        def getAngle(v):
+            if abs(v.y()) < 1e-6: return 0.0 if v.x() > 0.0 else math.pi
+            if abs(v.x()) < 1e-6: return math.pi/2.0 if v.y() > 0.0 else 3.0*math.pi/2.0
+
+            angle = math.atan2(v.y(), v.x())
+            return 2.0*math.pi + angle if v.y() < 0.0 else angle
+
+        # sort edges by angle
+        edgeVectors.sort(key=lambda v: getAngle(v))
+
+        # rotate by strike and dip angle
+        from frackit.common import rotate
+        from frackit.geometry import Direction
+        dipAngle = self.dipAngleSampler()
+        strikeAngle = self.strikeAngleSampler()
+        strikeDir = Direction(Vector(-math.sin(strikeAngle), math.cos(strikeAngle), 0.0))
+        for v in edgeVectors: rotate(v, Direction(Vector(0.0, 0.0, 1.0)), strikeAngle)
+        for v in edgeVectors: rotate(v, strikeDir, dipAngle)
+
+        # combine vectors to form a polygon
+        from frackit.geometry import Point
+        vertices = [Point(0.0, 0.0, 0.0)]
+
+        # first vertex inserted above is origin
+        xMin = 0.0; xMax = 0.0; yMin = 0.0; yMax = 0.0; zMin = 0.0; zMax = 0.0;
+        for i in range(0, len(edgeVectors)-1):
+            vertices.append(vertices[-1] + edgeVectors[i])
+            xMin = min(xMin, vertices[-1].x()); xMax = max(xMax, vertices[-1].x());
+            yMin = min(yMin, vertices[-1].y()); yMax = max(yMax, vertices[-1].y());
+            zMin = min(zMin, vertices[-1].z()); zMax = max(zMax, vertices[-1].z());
+
+        # make sure next and last vertices are identical
+        if not (vertices[-1] + edgeVectors[-1]).isEqual(vertices[0]):
+            print("First vertex: ", vertices[0])
+            print("Last vertex: ", vertices[-1])
+            print("Past last vertex: ", vertices[-1] + edgeVectors[-1])
+            raise RuntimeError("Past last and first vertex of polygon are not equal!")
+
+        # move the polygon to sampled center
+        c = self.pointSampler()
+        bboxCenter = Point(xMin + 0.5*(xMax - xMin),
+                           yMin + 0.5*(yMax - yMin),
+                           zMin + 0.5*(zMax - zMin))
+        dispVector = Vector(bboxCenter, c)
+        for v in vertices: v += dispVector
+
+        from frackit.geometry import Polygon_3
+        return Polygon_3(vertices)
 
 class QuadrilateralSampler:
     """Class to randomly sample quadrilaterals in 3d space."""
