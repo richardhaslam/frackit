@@ -16,21 +16,28 @@ def gaussianSampler(mean, stdDev):
         return random.gauss(mean, stdDev)
     return sample
 
+#returns a sampler from a uniform distribution between min and max
+def uniformSampler(min, max):
+    import random
+    def sample():
+        return random.uniform(min, max)
+    return sample
+
 # we sample quadrialeterals within the box with gaussian distributions for the parameters
 from frackit.common import toRadians
 from frackit.sampling import QuadrilateralSampler as QuadSampler
 quadSampler1 = QuadSampler(pointSampler,
                            gaussianSampler(toRadians(45.0), toRadians(5.0)), # strike angle
                            gaussianSampler(toRadians(90.0), toRadians(5.0)), # dip angle
-                           gaussianSampler(0.5, 0.1),                        # edge length
-                           0.05)                                             # threshold for minimum edge length
+                           uniformSampler(0.4, 0.6),                         # strike length
+                           uniformSampler(0.4, 0.6))                         # dip length
 
 # sampler for quadrilaterals of the secondary orientation
 quadSampler2 = QuadSampler(pointSampler,
                            gaussianSampler(toRadians(0.0), toRadians(5.0)), # strike angle
                            gaussianSampler(toRadians(0.0), toRadians(5.0)), # dip angle
-                           gaussianSampler(0.5, 0.1),                       # edge length
-                           0.05)                                            # threshold for minimum edge length
+                           uniformSampler(0.4, 0.6),                        # strike length
+                           uniformSampler(0.4, 0.6))                        # dip length
 
 # constructs a constraints object with default settings for this example
 from frackit.entitynetwork import EntityNetworkConstraints
