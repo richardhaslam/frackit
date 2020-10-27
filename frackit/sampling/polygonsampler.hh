@@ -248,13 +248,13 @@ public:
         auto strikeLength = p_strike_length_(generator_);
         auto dipLength = p_dip_length_(generator_);
 
-        int countStrike = 0.0;
+        int countStrike = 0;
         while (strikeLength < 0.0 && countStrike < 100)
         { strikeLength = p_strike_length_(generator_); countStrike++; }
         if (countStrike == 100)
             throw std::runtime_error("Could not sample positive strike length in 100 tries");
 
-        int countDip = 0.0;
+        int countDip = 0;
         while (dipLength < 0.0 && countDip < 100)
         { dipLength = p_dip_length_(generator_); countDip++; }
         if (countStrike == 100)
@@ -263,11 +263,7 @@ public:
         std::vector<Vector> edgeVectors;
         edgeVectors.reserve(numCorners);
         for (auto [dx, dy] : deltas)
-        {
-            ctype scaledDx = dx*dipLength;
-            ctype scaledDy = dy*strikeLength;
-            edgeVectors.emplace_back(Vector{scaledDx, scaledDy, 0.0});
-        }
+            edgeVectors.emplace_back(Vector{dx*dipLength, dy*strikeLength, 0.0});
 
         auto getAngle = [] (const auto& v)
         {
@@ -287,12 +283,11 @@ public:
         // rotate them by strike and dip angle
         using std::sin; using std::cos;
         const auto strikeAngle = p_strike_angle_(generator_);
-        const auto strikeDir = Direction(Vector(sin(strikeAngle), cos(strikeAngle), 0.0));
+        const auto strikeDir = Direction(Vector(-sin(strikeAngle), cos(strikeAngle), 0.0));
         rotate(edgeVectors, Direction(Vector(0.0, 0.0, 1.0)), strikeAngle);
         rotate(edgeVectors, strikeDir, p_dip_angle_(generator_));
 
         // combine them to a polygon (leave out last vertex - is same as first)
-
         using std::min; using std::max;
         std::vector<Point> vertices;
         vertices.reserve(numCorners);
