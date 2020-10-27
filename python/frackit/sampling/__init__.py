@@ -223,7 +223,10 @@ class PolygonSampler:
         self.intervalSampler = uniformIntervalSamplerCreator()(0.0, 1.0)
 
     def __call__(self):
+        from frackit.geometry import Polygon_3
+        return Polygon_3(self.sampleCorners())
 
+    def sampleCorners(self):
         count = 0
         numCorners = 0
         while numCorners < 3 and count < 100:
@@ -363,8 +366,7 @@ class PolygonSampler:
         dispVector = Vector(bboxCenter, c)
         for v in vertices: v += dispVector
 
-        from frackit.geometry import Polygon_3
-        return Polygon_3(vertices)
+        return vertices
 
 class QuadrilateralSampler:
     """Class to randomly sample quadrilaterals in 3d space."""
