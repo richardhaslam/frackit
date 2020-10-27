@@ -42,21 +42,22 @@ int main()
     // edge length (see class description for more details). Moreover, we define
     // a minimum edge length.
     using QuadSampler = QuadrilateralSampler<worldDimension>;
-    using Distro = std::normal_distribution<ctype>;
+    using NormalDistro = std::normal_distribution<ctype>;
+    using UniformDistro = std::uniform_real_distribution<ctype>;
     QuadSampler quadSampler1(pointSampler,
-                             Distro(toRadians(45.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
-                             Distro(toRadians(90.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
-                             Distro(0.5, 0.1),                         // edge length: mean value & standard deviation
-                             0.05);                                    // threshold for minimum edge length
+                             NormalDistro(toRadians(45.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
+                             NormalDistro(toRadians(90.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
+                             UniformDistro(0.4, 0.8),                        // strike length
+                             UniformDistro(0.4, 0.8));                       // dip length
 
     // We use this sampler to create quadrilaterals based on the distributions.
     // However, we want to create another set of quadrilaterals, whose entities
     // are approximately orthogonal to those defined with the above sampler.
-    QuadSampler quadSampler2(makeUniformPointSampler(domain),         // use a new point sampler instance!
-                             Distro(toRadians(0.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
-                             Distro(toRadians(0.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
-                             Distro(0.5, 0.1),                        // edge length: mean value & standard deviation
-                             0.05);                                   // threshold for minimum edge length
+    QuadSampler quadSampler2(makeUniformPointSampler(domain),               // use a new point sampler instance!
+                             NormalDistro(toRadians(0.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
+                             NormalDistro(toRadians(0.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
+                             UniformDistro(0.4, 0.8),                       // strike length
+                             UniformDistro(0.4, 0.8));                      // dip length
 
     // We want to enforce some constraints on the set of quadrilaterals.
     // In particular, for entities of the same set we want a minimum spacing

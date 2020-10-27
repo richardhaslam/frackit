@@ -5,7 +5,6 @@ box = geometry.Box(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
 
 # we sample points uniformly within the domain
 from frackit.sampling import makeUniformPointSampler
-pointSampler = makeUniformPointSampler(box)
 
 # returns a sampler from a gaussian distribution with mean and std deviation
 def gaussianSampler(mean, stdDev):
@@ -14,21 +13,28 @@ def gaussianSampler(mean, stdDev):
         return random.gauss(mean, stdDev)
     return sample
 
+# returns a sampler from a uniform distribution between min and max
+def uniformSampler(min, max):
+    import random
+    def sample():
+        return random.uniform(min, max)
+    return sample
+
 # we sample quadrialeterals within the box with gaussian distributions for the parameters
 from frackit.common import toRadians
 from frackit.sampling import QuadrilateralSampler as QuadSampler
-quadSampler1 = QuadSampler(pointSampler,
+quadSampler1 = QuadSampler(makeUniformPointSampler(box),
                            gaussianSampler(toRadians(45.0), toRadians(5.0)), # strike angle
                            gaussianSampler(toRadians(90.0), toRadians(5.0)), # dip angle
-                           gaussianSampler(0.5, 0.1),                        # edge length
-                           0.05)                                             # threshold for minimum edge length
+                           uniformSampler(0.4, 0.8),                         # strike length
+                           uniformSampler(0.4, 0.8))                         # dip length
 
 # sampler for quadrilaterals of the secondary orientation
-quadSampler2 = QuadSampler(pointSampler,
+quadSampler2 = QuadSampler(makeUniformPointSampler(box),
                            gaussianSampler(toRadians(0.0), toRadians(5.0)), # strike angle
                            gaussianSampler(toRadians(0.0), toRadians(5.0)), # dip angle
-                           gaussianSampler(0.5, 0.1),                       # edge length
-                           0.05)                                            # threshold for minimum edge length
+                           uniformSampler(0.4, 0.8),                        # strike length
+                           uniformSampler(0.4, 0.8))                        # dip length
 
 # We want to enforce some constraints on the set of quadrilaterals.
 # In particular, for entities of the same set we want a minimum spacing
