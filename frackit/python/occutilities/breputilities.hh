@@ -34,6 +34,7 @@
 #include <frackit/geometry/circle.hh>
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/box.hh>
@@ -329,6 +330,7 @@ void registerBRepUtilities(pybind11::module& module)
     module.def("getShape", &OCCUtilities::getShape<Ellipse<ctype, 3>>, "Returns the OCC BRep of a 3d ellipse");
     module.def("getShape", &OCCUtilities::getShape<EllipseArc<ctype, 3>>, "Returns the OCC BRep of a 3d ellipse arc");
     module.def("getShape", &OCCUtilities::getShape<Quadrilateral<ctype, 3>>, "Returns the OCC BRep of a 3d quadrilateral");
+    module.def("getShape", &OCCUtilities::getShape<Polygon<ctype, 3>>, "Returns the OCC BRep of a 3d polygon");
     module.def("getShape", &OCCUtilities::getShape<Disk<ctype>>, "Returns the OCC BRep of a disk");
     module.def("getShape", &OCCUtilities::getShape<Box<ctype>>, "Returns the OCC BRep of a box");
     module.def("getShape", &OCCUtilities::getShape<Cylinder<ctype>>, "Returns the OCC BRep of a cylinder");
