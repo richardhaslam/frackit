@@ -2,6 +2,7 @@ Differences between Frackit 1.2 and Frackit 1.1
 ===============================================
 
 ### Improvements and Enhancements
+- An implementation of `Sphere` has been added to the classes of available geometries
 - Three-dimensional `Polygon` class has been implemented
 - A sampler class for 3d polygons, `PolygonSampler`, has been added
 - The `QuadrilateralSampler` class now internally uses `PolygonSampler`, leading to more variance in the output geometries
