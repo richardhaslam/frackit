@@ -39,18 +39,19 @@ int main()
     Box<ctype> unitCube(-0.5, -0.5, 0.0, 0.5, 0.5, 1.0);
 
     using QuadSampler = QuadrilateralSampler<worldDimension>;
-    using Distro = std::normal_distribution<ctype>;
+    using NormalDistro = std::normal_distribution<ctype>;
+    using UniformDistro = std::uniform_real_distribution<ctype>;
     QuadSampler quadSampler1(makeUniformPointSampler(unitCube),
-                             Distro(toRadians(45.0), toRadians(5.0)),
-                             Distro(toRadians(90.0), toRadians(5.0)),
-                             Distro(0.5, 0.1),
-                             0.05);
+                             NormalDistro(toRadians(45.0), toRadians(5.0)),
+                             NormalDistro(toRadians(90.0), toRadians(5.0)),
+                             UniformDistro(0.4, 0.6),
+                             UniformDistro(0.4, 0.6));
 
     QuadSampler quadSampler2(makeUniformPointSampler(unitCube),
-                             Distro(toRadians(0.0), toRadians(5.0)),
-                             Distro(toRadians(0.0), toRadians(5.0)),
-                             Distro(0.5, 0.1),
-                             0.05);
+                             NormalDistro(toRadians(0.0), toRadians(5.0)),
+                             NormalDistro(toRadians(0.0), toRadians(5.0)),
+                             UniformDistro(0.5, 0.1),
+                             UniformDistro(0.4, 0.6));
 
     EntityNetworkConstraints<ctype> constraintsOnSelf;
     constraintsOnSelf.setMinDistance(0.05);

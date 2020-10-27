@@ -53,23 +53,27 @@ const auto domainBBox = OCCUtilities::getBoundingBox(networkDomain);
 With this, we create a quadrilateral sampler in a similar way as in the previous examples
 
 ```cpp
-QuadrilateralSampler<3> quadSampler(makeUniformPointSampler(domainBBox),      // sampler for quadrilateral center points
-                                    Distro(toRadians(45.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
-                                    Distro(toRadians(90.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
-                                    Distro(45.0, 5.0),                        // edge length: mean value & standard deviation
-                                    5.0);                                     // threshold for minimum edge length
+// we use the default sampler types, thus, default distributions (see traits classes)
+using NormalDistro = std::normal_distribution<ctype>;
+using UniformDistro = std::uniform_real_distribution<ctype>;
+
+QuadrilateralSampler<3> quadSampler(makeUniformPointSampler(domainBBox),           // sampler for quadrilateral center points
+                                    NormalDistro(toRadians(45.0), toRadians(5.0)), // strike angle: mean value & standard deviation
+                                    NormalDistro(toRadians(90.0), toRadians(5.0)), // dip angle: mean value & standard deviation
+                                    UniformDistro(30.0, 60.0),                     // strike length
+                                    UniformDistro(30.0, 60.0));                    // dip length
 ```
 
 For the entities of the other orientation, we want to use `Disk` objects in this case.
 The instantiation of the corrensponding sampler class looks like this:
 
 ```cpp
-DiskSampler diskSampler(makeUniformPointSampler(domainBBox),      // sampler for disk center points
-                        Distro(30.0, 6.5),                        // major axis length: mean value & standard deviation
-                        Distro(24.0, 4.5),                        // minor axis length: mean value & standard deviation
-                        Distro(toRadians(0.0), toRadians(7.5)),   // rotation around x-axis: mean value & standard deviation
-                        Distro(toRadians(0.0), toRadians(7.5)),   // rotation around y-axis: mean value & standard deviation
-                        Distro(toRadians(0.0), toRadians(7.5)));  // rotation around z-axis: mean value & standard deviation
+DiskSampler diskSampler(makeUniformPointSampler(domainBBox),           // sampler for disk center points
+                        NormalDistro(30.0, 6.5),                       // major axis length: mean value & standard deviation
+                        NormalDistro(24.0, 4.5),                       // minor axis length: mean value & standard deviation
+                        NormalDistro(toRadians(0.0), toRadians(7.5)),  // rotation around x-axis: mean value & standard deviation
+                        NormalDistro(toRadians(0.0), toRadians(7.5)),  // rotation around y-axis: mean value & standard deviation
+                        NormalDistro(toRadians(0.0), toRadians(7.5))); // rotation around z-axis: mean value & standard deviation
 
 ```
 

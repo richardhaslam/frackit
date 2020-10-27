@@ -240,14 +240,11 @@ class PolygonSampler:
         xValues = [self.intervalSampler() for i in range(0, numCorners)]
         yValues = [self.intervalSampler() for i in range(0, numCorners)]
 
-        xMin = min(xValues); xValues.remove(xMin)
-        yMin = min(yValues); yValues.remove(yMin)
-        xMax = max(xValues); xValues.remove(xMax)
-        yMax = max(yValues); yValues.remove(yMax)
-
         # make sure interval is exploited
-        for v in [xMin, yMin]: v = 0.0 if v > 0.1 else v
-        for v in [xMax, yMax]: v = 1.0 if v < 0.9 else v
+        xMin = min(xValues); xValues.remove(xMin); xMin = 0.0 if xMin > 0.1 else xMin
+        yMin = min(yValues); yValues.remove(yMin); yMin = 0.0 if yMin > 0.1 else yMin
+        xMax = max(xValues); xValues.remove(xMax); xMax = 1.0 if xMax < 0.9 else xMax
+        yMax = max(yValues); yValues.remove(yMax); yMax = 1.0 if yMax < 0.9 else yMax
 
         # split values into two lists
         xVals = [[xMin], [xMin]]
@@ -257,8 +254,8 @@ class PolygonSampler:
             yVals[i%2].append(yValues[i])
 
         # sort the arrays and add max values
-        for vals in xVals: vals.sort(); vals.append(xMax)
-        for vals in yVals: vals.sort(); vals.append(yMax)
+        for i in [0, 1]: xVals[i].sort(); xVals[i].append(xMax)
+        for i in [0, 1]: yVals[i].sort(); yVals[i].append(yMax)
 
         # transform values into deltas
         for vals in [xVals[0], xVals[1], yVals[0], yVals[1]]:

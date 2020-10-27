@@ -64,8 +64,8 @@ diskSampler = DiskSampler(makeUniformPointSampler(domainBBox),           # sampl
 quadSampler = QuadrilateralSampler(makeUniformPointSampler(domainBBox),             # sampler for quadrilateral center points
                                    normalSampler(toRadians(45.0), toRadians(5.0)),  # strike angle: mean value & standard deviation
                                    normalSampler(toRadians(90.0), toRadians(5.0)),  # dip angle: mean value & standard deviation
-                                   normalSampler(45.0, 5.0),                        # edge length: mean value & standard deviation
-                                   5.0)                                             # threshold for minimum edge length
+                                   uniformSampler(30.0, 60.0),                      # strike length
+                                   uniformSampler(30.0, 60.0))                      # dip length
 
 # Define ids for the two entity sets
 diskSetId = Id(1) # we give the set of orientation one, consisting of disks, the id 1
@@ -103,15 +103,15 @@ constraintsOnOther.setMinIntersectingAngle(toRadians(40.0))
 
 # We can use the constraints matrix to facilitate constraint evaluation
 constraintsMatrix = EntityNetworkConstraintsMatrix()
-constraintsMatrix.addConstraints(constraints1,                       # constraint instance
-                                 [diskSetId.get(), diskSetId.get()]) # sets between which to use these constraints
+constraintsMatrix.addConstraints(constraints1,           # constraint instance
+                                 [diskSetId, diskSetId]) # sets between which to use these constraints
 
-constraintsMatrix.addConstraints(constraints2,                       # constraint instance
-                                 [quadSetId.get(), quadSetId.get()]) # sets between which to use these constraints
+constraintsMatrix.addConstraints(constraints2,           # constraint instance
+                                 [quadSetId, quadSetId]) # sets between which to use these constraints
 
-constraintsMatrix.addConstraints(constraintsOnOther,                   # constraint instance
-                                 [[diskSetId.get(), quadSetId.get()],  # sets between which to use these constraints
-                                  [quadSetId.get(), diskSetId.get()]]) # sets between which to use these constraints
+constraintsMatrix.addConstraints(constraintsOnOther,       # constraint instance
+                                 [[diskSetId, quadSetId],  # sets between which to use these constraints
+                                  [quadSetId, diskSetId]]) # sets between which to use these constraints
 
 # Moreover, we define constraints w.r.t. the domain boundary
 constraintsOnDomain = makeDefaultConstraints()
@@ -130,7 +130,7 @@ status.setTargetCount(diskSetId, 12) # we want 11 entities of orientation 1
 status.setTargetCount(quadSetId, 16) # we want 13 entities of orientation 2
 
 # store all entity sets in a dictionary
-entitySets = {diskSetId.get(): [], quadSetId.get(): []}
+entitySets = {diskSetId: [], quadSetId: []}
 
 # Alternate between set 1 & set 2 during sampling phase
 sampleIntoSet1 = True
@@ -163,7 +163,7 @@ while not status.finished():
         continue
 
     # the geometry is admissible
-    entitySets[id.get()].append(geom)
+    entitySets[id].append(geom)
     status.increaseCounter(id)
     status.print()
 
@@ -184,7 +184,7 @@ print("\nEntity density of the contained network: {:f} m²/m³\n".format(density
 ##########################################################################
 
 # construct and write a contained network, i.e. write out both network and domain.
-print("Building and writing contained, confined network\n")
+print("Building and writing contained, confined network")
 from frackit.entitynetwork import EntityNetworkBuilder, ContainedEntityNetworkBuilder
 builder = ContainedEntityNetworkBuilder();
 
@@ -205,7 +205,7 @@ gmshWriter.write("contained_confined", # body of the filename to be used (will a
 
 # we can also not confine the network to its sub-domain,
 # simply by adding the sub-domains as non-confining
-print("Building and writing contained, unconfined network\n")
+print("Building and writing contained, unconfined network")
 builder.clear();
 builder.addSubDomain(solids[0],     Id(1));
 builder.addSubDomain(networkDomain, Id(2));
@@ -226,7 +226,7 @@ gmshWriter = GmshWriter(uncontainedBuilder.build());
 gmshWriter.write("uncontained_confined", 2.5);
 
 # ... or not confining it
-print("Building and writing uncontained, unconfined network\n")
+print("Building and writing uncontained, unconfined network")
 uncontainedBuilder.clear();
 for setId in entitySets: uncontainedBuilder.addSubDomainEntities(entitySets[setId], Id(2))
 

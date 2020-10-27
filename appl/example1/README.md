@@ -20,15 +20,16 @@ For example, we instantiate an instance of this class by writing:
 static constexpr int worldDimension = 3;
 
 using ctype = double;
-using Distro = std::normal_distribution<ctype>;
+using NormalDistro = std::normal_distribution<ctype>;
+using UniformDistro = std::uniform_real_distribution<ctype>;
 using QuadSampler = QuadrilateralSampler<worldDimension>;
 
 Box<ctype> domain(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 QuadSampler quadSampler(makeUniformPointSampler(domain),         // point sampler that samples the center points of the quadrilaterals
-                        Distro(toRadians(0.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
-                        Distro(toRadians(0.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
-                        Distro(0.5, 0.1),                        // edge length: mean value & standard deviation
-                        0.05);                                   // threshold for minimum edge length
+                        NormalDistro(toRadians(0.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
+                        NormalDistro(toRadians(0.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
+                        UniformDistro(0.4, 0.8),                       // strike length
+                        UniformDistro(0.4, 0.8));                      // dip length
 ```
 
 The first constructor argument is a point sampler with which the center points of
@@ -36,9 +37,8 @@ the quadrilaterals are sampled. Here we use uniformly sampled points in the unit
 cube, which is represented by an instance of the `Box` class,  stored in the
 variable `domain`. The second and third arguments define the distributions for
 the strike and dip angle (for details see the [class documentation][2]), where in this case we use uniform distributions with
-a mean value of 0° and a standard deviation of 5°. The fourth argument is the
-distribution to be used for sampling the edge lengths, while the last argument
-defines a minimum value below which the edge length must not fall.
+a mean value of 0° and a standard deviation of 5°. The fourth and last arguments
+are distributions for the sizes of the quadrilaterals in strike and dip direction.
 
 In the example, the quadrilaterals are sampled from the two samplers `quadSampler1` and
 `quadSampler2`, using the `()` operator:
