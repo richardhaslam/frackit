@@ -34,6 +34,7 @@ void registerId(py::module& module)
     cls.def(py::init<std::size_t>());
     cls.def("get", &Id::get, "return the id");
     cls.def(py::self == Id());
+    cls.def(hash(py::self));
 }
 
 } // end namespace Frackit::Python
