@@ -13,6 +13,7 @@ hollowcylinder.hh
 line.hh
 plane.hh
 point.hh
+polygon.hh
 quadrilateral.hh
 registerdimensionproperties.hh
 segment.hh

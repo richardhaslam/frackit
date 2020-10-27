@@ -27,6 +27,7 @@
 #include <frackit/python/geometry/line.hh>
 #include <frackit/python/geometry/triangle.hh>
 #include <frackit/python/geometry/quadrilateral.hh>
+#include <frackit/python/geometry/polygon.hh>
 #include <frackit/python/geometry/ellipticalgeometry.hh>
 #include <frackit/python/geometry/ellipse.hh>
 #include <frackit/python/geometry/ellipsearc.hh>
@@ -57,6 +58,7 @@ PYBIND11_MODULE(_geometry, module)
     Frackit::Python::registerPlane<double>(module);
     Frackit::Python::registerTriangle<double>(module);
     Frackit::Python::registerQuadrilateral<double>(module);
+    Frackit::Python::registerPolygon<double>(module);
     Frackit::Python::registerDisk<double>(module);
     Frackit::Python::registerCylinderSurface<double>(module);
 
