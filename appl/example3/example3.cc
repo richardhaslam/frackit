@@ -71,26 +71,27 @@ int main(int argc, char** argv)
     //    and disk/quadrilaterals as entities (using the sampled center points) //
     //////////////////////////////////////////////////////////////////////////////
 
-    // we use the default sampler types -> normal distributions for all parameters
-    using Distro = std::normal_distribution<ctype>;
+    // we use the default sampler types, thus, default distributions (see traits classes)
+    using NormalDistro = std::normal_distribution<ctype>;
+    using UniformDistro = std::uniform_real_distribution<ctype>;
 
     // Bounding box of the domain in which we want to place the entities
     const auto domainBBox = OCCUtilities::getBoundingBox(networkDomain);
 
     // sampler for disks (orientation 1)
     DiskSampler diskSampler(makeUniformPointSampler(domainBBox),                               // sampler for disk center points
-                            Distro(30.0, 6.5),                        // major axis length: mean value & standard deviation
-                            Distro(24.0, 4.5),                        // minor axis length: mean value & standard deviation
-                            Distro(toRadians(0.0), toRadians(7.5)),   // rotation around x-axis: mean value & standard deviation
-                            Distro(toRadians(0.0), toRadians(7.5)),   // rotation around y-axis: mean value & standard deviation
-                            Distro(toRadians(0.0), toRadians(7.5)));  // rotation around z-axis: mean value & standard deviation
+                            NormalDistro(30.0, 6.5),                        // major axis length: mean value & standard deviation
+                            NormalDistro(24.0, 4.5),                        // minor axis length: mean value & standard deviation
+                            NormalDistro(toRadians(0.0), toRadians(7.5)),   // rotation around x-axis: mean value & standard deviation
+                            NormalDistro(toRadians(0.0), toRadians(7.5)),   // rotation around y-axis: mean value & standard deviation
+                            NormalDistro(toRadians(0.0), toRadians(7.5)));  // rotation around z-axis: mean value & standard deviation
 
     // sampler for quadrilaterals (orientation 2)
     QuadrilateralSampler<3> quadSampler(makeUniformPointSampler(domainBBox),                               // sampler for quadrilateral center points
-                                        Distro(toRadians(45.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
-                                        Distro(toRadians(90.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
-                                        Distro(45.0, 5.0),                        // edge length: mean value & standard deviation
-                                        5.0);                                                              // threshold for minimum edge length
+                                        NormalDistro(toRadians(45.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
+                                        NormalDistro(toRadians(90.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
+                                        UniformDistro(30.0, 60.0),                      // strike length
+                                        UniformDistro(30.0, 60.0));                     // dip length
 
     // Define ids for the two entity sets
     const Id diskSetId(1); // we give the set of orientation one, consisting of disks, the id 1
