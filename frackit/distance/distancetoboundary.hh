@@ -36,6 +36,7 @@
 #include <frackit/precision/precision.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/cylindersurface.hh>
 
 #include <frackit/geometryutilities/name.hh>
@@ -115,6 +116,27 @@ computeDistanceToBoundary(const Point<ctype1, 3>& p,
     ctype distance = std::numeric_limits<ctype>::max();
     for (unsigned int i = 0; i < quad.numEdges(); ++i)
         distance = min(distance, computeDistance(quad.edge(i), p));
+    return distance;
+}
+
+/*!
+ * \ingroup Distance
+ * \brief Compute the distance of a point
+ *        to the bounding of a polygon.
+ * \param p The point
+ * \param polygon The polygon
+ */
+template<class ctype1, class ctype2>
+PromotedType<ctype1, ctype2>
+computeDistanceToBoundary(const Point<ctype1, 3>& p,
+                          const Polygon<ctype2, 3>& polygon)
+{
+    using std::min;
+    using ctype = PromotedType<ctype1, ctype2>;
+
+    ctype distance = std::numeric_limits<ctype>::max();
+    for (unsigned int i = 0; i < polygon.numEdges(); ++i)
+        distance = min(distance, computeDistance(polygon.edge(i), p));
     return distance;
 }
 
@@ -217,11 +239,39 @@ ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
                                 Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
                                 Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
 {
-    return computeDistance(shape,
-                           OCCUtilities::getShape(quad),
-                           deflection,
-                           extFlag,
-                           extAlgo);
+    using std::min;
+    ctype minDist = std::numeric_limits<ctype>::max();
+    for (unsigned int i = 0; i < quad.numCorners(); ++i)
+        minDist = min(minDist, computeDistance(shape,
+                                               quad.edge(i),
+                                               deflection, extFlag, extAlgo));
+    return minDist;
+}
+
+/*!
+ * \ingroup Distance
+ * \brief Compute the distance of a shape
+ *        to the bounding wire of a polygon.
+ * \param shape The shape
+ * \param polygon The polygon
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class ctype>
+ctype computeDistanceToBoundary(const TopoDS_Shape& shape,
+                                const Polygon<ctype, 3>& polygon,
+                                ctype deflection = Precision<ctype>::confusion(),
+                                Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                                Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{
+    using std::min;
+    ctype minDist = std::numeric_limits<ctype>::max();
+    for (unsigned int i = 0; i < polygon.numCorners(); ++i)
+        minDist = min(minDist, computeDistance(shape,
+                                               polygon.edge(i),
+                                               deflection, extFlag, extAlgo));
+    return minDist;
 }
 
 /*!
