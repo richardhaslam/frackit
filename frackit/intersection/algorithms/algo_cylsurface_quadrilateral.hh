@@ -55,8 +55,10 @@ intersect_cylinderSurface_quadrilateral(const CylinderSurface<ctype>& cylSurface
     using std::max;
     ctype charLength = 0.0;
     for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
-        charLength = max(charLength, quad.edge(edgeIdx).length());
-    return intersect_cylinderSurface_planarGeometry(cylSurface, quad, charLength, eps);
+        charLength = max(charLength, quad.edge(edgeIdx).squaredLength());
+
+    using std::sqrt;
+    return intersect_cylinderSurface_planarGeometry(cylSurface, quad, sqrt(charLength), eps);
 }
 
 } // end namespace IntersectionAlgorithms
