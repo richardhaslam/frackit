@@ -26,6 +26,7 @@
 #define FRACKIT_CYLINDERSURFACE_QUADRILATERAL_INTERSECTION_HH
 
 #include <cmath>
+#include <stdexcept>
 
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
@@ -36,7 +37,7 @@
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect a lateral cylinder surface and a disk
+//! Intersect a lateral cylinder surface and a quadrilateral
 //! The result can be:
 //! - an ellipse
 //! - ellipse arc(s)
@@ -48,6 +49,9 @@ intersect_cylinderSurface_quadrilateral(const CylinderSurface<ctype>& cylSurface
                                         const Quadrilateral<ctype, 3>& quad,
                                         ctype eps)
 {
+    if (!quad.isConvex())
+        throw std::runtime_error("Cylindersurface-Quadrilateral algorithm not robust for concave quadrilaterals!");
+
     using std::max;
     ctype charLength = 0.0;
     for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
