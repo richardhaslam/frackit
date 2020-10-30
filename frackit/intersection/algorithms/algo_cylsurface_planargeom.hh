@@ -31,6 +31,7 @@
 #include <BRep_Tool.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 
 #include <frackit/occ/breputilities.hh>
@@ -45,6 +46,54 @@
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
+namespace Detail {
+
+    // gets the start and end point of the given wire
+    template<class ctype>
+    std::pair<Point<ctype, 3>, Point<ctype, 3>> getWireTips(const TopoDS_Wire& wire)
+    {
+        // find corners of the arc that this wire describes
+        TopoDS_Vertex v1, v2;
+        TopExp::Vertices(wire, v1, v2);
+        assert(!v1.IsNull());
+        assert(!v2.IsNull());
+        assert(!v1.IsSame(v2));
+
+        return std::make_pair(OCCUtilities::point(v1), OCCUtilities::point(v2));
+    }
+
+    // parses the wire into the ellipse arc living on the given ellipse
+    template<class ctype>
+    EllipseArc<ctype, 3> makeArc(const TopoDS_Wire& wire,
+                                 const Ellipse<ctype, 3>& ellipse,
+                                 const ctype eps)
+    {
+        using EllipseArc = EllipseArc<ctype, 3>;
+
+        const auto [p1, p2] = getWireTips<ctype>(wire);
+
+        // select the arc whose center is on the set of given edges
+        EllipseArc arc1(ellipse, p1, p2);
+        EllipseArc arc2(ellipse, p2, p1);
+        const auto center1 = OCCUtilities::point(arc1.getPoint(0.5));
+        const auto center2 = OCCUtilities::point(arc2.getPoint(0.5));
+
+        unsigned int resultArcIndex = 0;
+        for (const auto& edge : OCCUtilities::getEdges(wire))
+        {
+            auto curve = OCCUtilities::getGeomHandle(edge);
+            GeomAPI_ProjectPointOnCurve c1OnCurve(center1, curve);
+            GeomAPI_ProjectPointOnCurve c2OnCurve(center2, curve);
+
+            if (c1OnCurve.NbPoints() > 0 && c1OnCurve.LowerDistance() < eps) { resultArcIndex = 1; break; }
+            if (c2OnCurve.NbPoints() > 0 && c2OnCurve.LowerDistance() < eps) { resultArcIndex = 2; break; }
+        }
+
+        assert(resultArcIndex != 0);
+        return resultArcIndex == 1 ? arc1 : arc2;
+    }
+
+} // end namespace Detail
 
 /*!
  * \brief Intersect a lateral cylinder surface and
@@ -79,19 +128,76 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
     using Direction = typename Ellipse::Direction;
     using Vector = typename Direction::Vector;
 
-    // Intersect the planar geometry with the cylinder
+    // determine the orientation of the geometries
+    const auto& faceGeomPlane = faceGeom.supportingPlane();
+    gp_Vec dn(OCCUtilities::direction(faceGeomPlane.normal()));
+    gp_Vec ca(OCCUtilities::direction(cylSurface.direction()));
+    const bool faceGeomIsParallel = dn.IsNormal(ca, Precision<ctype>::angular());
+    const bool faceGeomIsOrthogonal = dn.IsParallel(ca, Precision<ctype>::angular());
+    const bool resultIsElliptical = faceGeomIsOrthogonal || !faceGeomIsParallel;
+
+    // Depending on the orientation, the results might live on an ellipse.
+    Ellipse infEllipse;
+    if (faceGeomIsOrthogonal)
+        infEllipse = Ellipse(faceGeomPlane.projection(cylSurface.centerSegment().source()),
+                             cylSurface.base1(), cylSurface.base2(),
+                             cylSurface.radius(), cylSurface.radius());
+    else if (!faceGeomIsParallel)
+    {
+        Vector cylDir(cylSurface.direction());
+        cylDir *= charLength;
+
+        Direction majAxis(Vector(faceGeom.center(), faceGeomPlane.projection(faceGeom.center() + cylDir)));
+        Direction minAxis(crossProduct(Vector(faceGeomPlane.normal()), Vector(majAxis)));
+        if (!isRightHandSystem(Vector(majAxis), Vector(minAxis), Vector(faceGeomPlane.normal())))
+            majAxis.invert();
+
+        using std::cos;
+        using std::abs;
+        const ctype majAxisLength = abs(cylSurface.radius()/cos(dn.Angle(ca)));
+        const auto& cylAxisLine = cylSurface.centerSegment().supportingLine();
+        const auto center = std::get<Point>(intersect(faceGeomPlane, cylAxisLine, eps));
+        infEllipse = Ellipse(center, majAxis, minAxis, majAxisLength, cylSurface.radius());
+    }
+
+    // Determine the part of the planar geometry inside the cylinder
     const auto faceShape = OCCUtilities::getShape(faceGeom);
     const auto cylinder = OCCUtilities::getShape(cylSurface.cylinder());
     const auto cylLateralFace = OCCUtilities::getShape(cylSurface);
-
     const auto containedFaceShape = OCCUtilities::intersect(faceShape, cylinder, 0.1*eps);
-    auto containedFaces = OCCUtilities::getFaces(containedFaceShape);
+    const auto containedFaces = OCCUtilities::getFaces(containedFaceShape);
     assert(containedFaces.size() <= 1);
 
-    // detect possible touching points
+    // if the face is completely outside, there might still be touching edges or corners
+    // first, check for wires on the cylinder surfaces
     const auto faceGeomWires = OCCUtilities::getWires(faceShape);
-
     assert(faceGeomWires.size() == 1);
+    if (containedFaces.empty())
+    {
+        const auto is = OCCUtilities::intersect(faceGeomWires[0], cylLateralFace, 0.1*eps);
+        const auto wires = OCCUtilities::getWires(is);
+
+        if (!wires.empty())
+        {
+            ResultType result;
+            if (resultIsElliptical)
+            {
+                for (const auto& w : wires)
+                    result.emplace_back(Detail::makeArc(w, infEllipse, eps));
+            }
+            else
+            {
+                for (const auto& w : wires)
+                {
+                    const auto [p1, p2] = Detail::getWireTips<ctype>(w);
+                    result.emplace_back(Segment(p1, p2));
+                }
+            }
+            return result;
+        }
+    }
+
+    // detect possible touching points
     const auto faceGeomWireCut = OCCUtilities::cut(faceGeomWires[0], cylLateralFace, eps*0.1);
     const auto faceGeomWireCutVertices = OCCUtilities::getVertices(faceGeomWireCut);
 
@@ -119,37 +225,6 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
         return result;
     }
 
-    // there are intersection edges, get orientation of the geometries
-    const auto& faceGeomPlane = faceGeom.supportingPlane();
-    gp_Vec dn(OCCUtilities::direction(faceGeomPlane.normal()));
-    gp_Vec ca(OCCUtilities::direction(cylSurface.direction()));
-    const bool faceGeomIsParallel = dn.IsNormal(ca, Precision<ctype>::angular());
-    const bool faceGeomIsOrthogonal = dn.IsParallel(ca, Precision<ctype>::angular());
-
-    // ... and (maybe) the ellipse on which the results live
-    Ellipse infEllipse;
-    if (faceGeomIsOrthogonal)
-        infEllipse = Ellipse(faceGeomPlane.projection(cylSurface.centerSegment().source()),
-                             cylSurface.base1(), cylSurface.base2(),
-                             cylSurface.radius(), cylSurface.radius());
-    else if (!faceGeomIsParallel)
-    {
-        Vector cylDir(cylSurface.direction());
-        cylDir *= charLength;
-
-        Direction majAxis(Vector(faceGeom.center(), faceGeomPlane.projection(faceGeom.center() + cylDir)));
-        Direction minAxis(crossProduct(Vector(faceGeomPlane.normal()), Vector(majAxis)));
-        if (!isRightHandSystem(Vector(majAxis), Vector(minAxis), Vector(faceGeomPlane.normal())))
-            majAxis.invert();
-
-        using std::cos;
-        using std::abs;
-        const ctype majAxisLength = abs(cylSurface.radius()/cos(dn.Angle(ca)));
-        const auto& cylAxisLine = cylSurface.centerSegment().supportingLine();
-        const auto center = std::get<Point>(intersect(faceGeomPlane, cylAxisLine, eps));
-        infEllipse = Ellipse(center, majAxis, minAxis, majAxisLength, cylSurface.radius());
-    }
-
     // intersect the wire of the contained face shape with cylinder surface
     const auto containedFaceWires = OCCUtilities::getWires(containedFaceShape);
     assert(containedFaceWires.size() == 1);
@@ -165,41 +240,13 @@ intersect_cylinderSurface_planarGeometry(const CylinderSurface<ctype>& cylSurfac
         if (BRep_Tool::IsClosed(wire))
             return ResultType({ infEllipse });
 
-        // find corners of the arc that this wire describes
-        TopoDS_Vertex v1, v2;
-        TopExp::Vertices(wire, v1, v2);
-        assert(!v1.IsNull());
-        assert(!v2.IsNull());
-        assert(!v1.IsSame(v2));
-
-        const auto p1 = OCCUtilities::point(v1);
-        const auto p2 = OCCUtilities::point(v2);
-
         if (faceGeomIsOrthogonal || !faceGeomIsParallel)
-        {
-            // select the arc whose center is on the set of given edges
-            EllipseArc arc1(infEllipse, p1, p2);
-            EllipseArc arc2(infEllipse, p2, p1);
-            const auto center1 = OCCUtilities::point(arc1.getPoint(0.5));
-            const auto center2 = OCCUtilities::point(arc2.getPoint(0.5));
-
-            unsigned int resultArcIndex = 0;
-            for (const auto& edge : OCCUtilities::getEdges(wire))
-            {
-                auto curve = OCCUtilities::getGeomHandle(edge);
-                GeomAPI_ProjectPointOnCurve c1OnCurve(center1, curve);
-                GeomAPI_ProjectPointOnCurve c2OnCurve(center2, curve);
-
-                if (c1OnCurve.NbPoints() > 0 && c1OnCurve.LowerDistance() < eps) { resultArcIndex = 1; break; }
-                if (c2OnCurve.NbPoints() > 0 && c2OnCurve.LowerDistance() < eps) { resultArcIndex = 2; break; }
-            }
-
-            assert(resultArcIndex != 0);
-            if (resultArcIndex == 1) isArcs.emplace_back( std::move(arc1) );
-            else isArcs.emplace_back( std::move(arc2) );
-        }
+            isArcs.emplace_back(Detail::makeArc(wire, infEllipse, eps));
         else
+        {
+            const auto [p1, p2] = Detail::getWireTips<ctype>(wire);
             isSegments.emplace_back(p1, p2);
+        }
     }
 
     // (Maybe) add touching points
