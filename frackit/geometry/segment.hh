@@ -93,6 +93,8 @@ public:
     Direction direction() const { return Vector(source(), target()); }
     //! Returns the length of the segment
     ctype length() const { return Vector(source(), target()).length(); }
+    //! Returns the squared length of the segment
+    ctype squaredLength() const { return Vector(source(), target()).squaredLength(); }
     //! Constructs an object for the supporting line
     Line supportingLine() const
     { return Line(source(), direction()); }
