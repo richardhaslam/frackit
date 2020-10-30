@@ -242,7 +242,7 @@ public:
     {
         // use the minimum angle between the geometry plane and the
         // tangent plane on the surface at four sample points
-        std::array<ctype, 5> params({0.0, 0.25, 0.5, 0.75, 1.0});
+        std::array<ctype, 5> params({0.01, 0.25, 0.5, 0.75, 0.99});
         ctype resultAngle = std::numeric_limits<ctype>::max();
         const auto& geoPlane = geo.supportingPlane();
 
@@ -286,9 +286,9 @@ public:
         // tangent plane on the surface at eight sample points
         const auto& geoPlane = geo.supportingPlane();
         ctype resultAngle = std::numeric_limits<ctype>::max();
-        std::array<ctype, 9> params({0.0, 0.125, 0.25, 0.375,
-                                     0.5, 0.625, 0.75, 0.875,
-                                     1.0});
+        std::array<ctype, 9> params({0.001, 0.125, 0.25, 0.375,
+                                     0.5,   0.625, 0.75, 0.875,
+                                     0.999});
 
         using std::min;
         for (auto param : params)
@@ -372,7 +372,6 @@ public:
         projection1.LowerDistanceParameters(paramU1, paramV1);
         projection2.LowerDistanceParameters(paramU2, paramV2);
 
-
         // construct the tangent planes of the faces in the point
         gp_Pnt p1, p2;
         gp_Vec baseVec11, baseVec12, baseVec21, baseVec22;
@@ -422,7 +421,7 @@ public:
         const auto deltaParam = edgeHandle->LastParameter() - edgeHandle->FirstParameter();
 
         ctype resultAngle = std::numeric_limits<ctype>::max();
-        std::array<ctype, 5> paramFactors({0.0, 0.25, 0.5, 0.75, 1.0});
+        std::array<ctype, 5> paramFactors({0.01, 0.25, 0.5, 0.75, 0.99});
 
         using std::min;
         for (auto f : paramFactors)
@@ -450,7 +449,7 @@ public:
         const auto deltaParam = edgeHandle->LastParameter() - edgeHandle->FirstParameter();
 
         ctype resultAngle = std::numeric_limits<ctype>::max();
-        std::array<ctype, 5> paramFactors({0.0, 0.25, 0.5, 0.75, 1.0});
+        std::array<ctype, 5> paramFactors({0.01, 0.25, 0.5, 0.75, 0.99});
 
         using std::min;
         for (auto f : paramFactors)
