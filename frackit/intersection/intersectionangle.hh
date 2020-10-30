@@ -363,6 +363,8 @@ public:
         const auto geomSurface2 = OCCUtilities::getGeomHandle(face2);
         GeomAPI_ProjectPointOnSurf projection1(OCCUtilities::point(isPoint), geomSurface1);
         GeomAPI_ProjectPointOnSurf projection2(OCCUtilities::point(isPoint), geomSurface2);
+        assert(projection1.IsDone());
+        assert(projection2.IsDone());
 
         // since the intersection point should have been on the face, distance < eps!
         assert(projection1.LowerDistance() < defaultEpsilon(face1));
@@ -375,8 +377,11 @@ public:
         // construct the tangent planes of the faces in the point
         gp_Pnt p1, p2;
         gp_Vec baseVec11, baseVec12, baseVec21, baseVec22;
-        geomSurface1->D1(projection1, paramV1, p1, baseVec11, baseVec12);
-        geomSurface2->D1(projection2, paramV2, p2, baseVec21, baseVec22);
+        geomSurface1->D1(paramU1, paramV1, p1, baseVec11, baseVec12);
+        geomSurface2->D1(paramU2, paramV2, p2, baseVec21, baseVec22);
+
+        assert(OCCUtilities::point(p1).isEqual(isPoint, defaultEpsilon(face1)));
+        assert(OCCUtilities::point(p2).isEqual(isPoint, defaultEpsilon(face1)));
 
         using Direction = Direction<ctype, 3>;
         const auto base11 = OCCUtilities::vector(baseVec11);
