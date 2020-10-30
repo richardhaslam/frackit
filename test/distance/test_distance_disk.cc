@@ -82,8 +82,12 @@ int main()
         // do the same with an inclined disk
         Direction e22(Vector(0.0, 1.0, 1.0));
         Disk disk2(Point(0.5*f, 0.0, 0.5*f), e1, e22, 0.5*f, 0.25*f);
-
         is = Frackit::intersect(cylSurface, disk2);
+
+        // test distance computation to the intersection (should be zero)
+        if (computeDistance(disk2, is) > Frackit::Precision<ctype>::confusion()*f)
+            throw std::runtime_error("Could not compute distance to intersection");
+
         if (is.size() != 1)
             throw std::runtime_error("Unexpected number of intersections");
         if (!std::holds_alternative<Frackit::EllipseArc<ctype, 3>>(is[0]))
