@@ -99,23 +99,6 @@ public:
     }
 
     /*!
-     * \brief Returns the angle in which two planes intersect in a line
-     * \param plane1 The first plane
-     * \param plane2 The second plane
-     * \param isLine The line in which the two planes intersect
-     */
-    template<int wd>
-    ctype operator() (const Plane<ctype, wd>& plane1,
-                      const Plane<ctype, wd>& plane2,
-                      const Line<ctype, wd>& isLine) const
-    {
-        using std::abs;
-        using std::acos;
-        using Vector = Vector<ctype, wd>;
-        return acos( abs(Vector(plane1.normal())*Vector(plane2.normal())) );
-    }
-
-    /*!
      * \brief Returns the angle in which two planes intersect
      * \param plane1 The first plane
      * \param plane2 The second plane
@@ -133,6 +116,18 @@ public:
         using Vector = Vector<ctype, wd>;
         return acos( abs(Vector(plane1.normal())*Vector(plane2.normal())) );
     }
+
+    /*!
+     * \brief Returns the angle in which two planes intersect in a line
+     * \param plane1 The first plane
+     * \param plane2 The second plane
+     * \param isLine The line in which the two planes intersect
+     */
+    template<int wd>
+    ctype operator() (const Plane<ctype, wd>& plane1,
+                      const Plane<ctype, wd>& plane2,
+                      const Line<ctype, wd>& isLine) const
+    { return (*this)(plane1, plane2); }
 
     /*!
      * \brief Returns the angle in which two planar 2-dimensional
@@ -242,7 +237,7 @@ public:
     {
         // use the minimum angle between the geometry plane and the
         // tangent plane on the surface at four sample points
-        constexpr std::array<ctype, 5> params({0.01, 0.25, 0.5, 0.75, 0.99});
+        constexpr std::array<ctype, 5> params({0.0, 0.25, 0.5, 0.75, 1.0});
         ctype resultAngle = std::numeric_limits<ctype>::max();
         const auto& geoPlane = geo.supportingPlane();
 
@@ -286,9 +281,8 @@ public:
         // tangent plane on the surface at eight sample points
         const auto& geoPlane = geo.supportingPlane();
         ctype resultAngle = std::numeric_limits<ctype>::max();
-        constexpr std::array<ctype, 9> params({0.001, 0.125, 0.25, 0.375,
-                                              0.5,   0.625, 0.75, 0.875,
-                                              0.999});
+        constexpr std::array<ctype, 9> params({0.0, 0.125, 0.25, 0.375,
+                                               0.5, 0.625, 0.75, 0.875, 1.0});
 
         using std::min;
         for (auto param : params)
@@ -313,40 +307,6 @@ public:
                       const Geo& geo,
                       const Ellipse<ctype, 3>& isEllipse) const
     { return (*this)(geo, cylSurface, isEllipse); }
-
-    /*!
-     * \brief Returns the angle in which a planar 2d geometry
-     *        and a face shape touch in a point.
-     * \param geo The planar geometry
-     * \param face The face shape
-     * \param isPoint The touching point
-     */
-    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
-    ctype operator() (const Geo& geo,
-                      const TopoDS_Face& face,
-                      const Point<ctype, 3>& isPoint) const
-    {
-        // get the parameters of this point on the face via orthogonal projection
-        const auto geomSurface = OCCUtilities::getGeomHandle(face);
-        GeomAPI_ProjectPointOnSurf projection(OCCUtilities::point(isPoint), geomSurface);
-
-        // since the intersection point should have been on the face, distance < eps!
-        assert(projection.LowerDistance() < defaultEpsilon(face));
-
-        ctype paramU, paramV;
-        projection.LowerDistanceParameters(paramU, paramV);
-
-        // construct the tangent plane of the face in the point
-        gp_Pnt p;
-        gp_Vec baseVec1, baseVec2;
-        geomSurface->D1(projection, paramV, p, baseVec1, baseVec2);
-
-        const auto base1 = OCCUtilities::vector(baseVec1);
-        const auto base2 = OCCUtilities::vector(baseVec2);
-        const Direction<ctype, 3> normal(crossProduct(base1, base2));
-        const Plane<ctype, 3> tangentPlane(isPoint, normal);
-        return (*this)(geo.supportingPlane(), tangentPlane);
-    }
 
     /*!
      * \brief Returns the angle in which two face shapes touch in a point.
@@ -396,6 +356,40 @@ public:
     }
 
     /*!
+     * \brief Returns the angle in which a planar 2d geometry
+     *        and a face shape touch in a point.
+     * \param geo The planar geometry
+     * \param face The face shape
+     * \param isPoint The touching point
+     */
+    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    ctype operator() (const Geo& geo,
+                      const TopoDS_Face& face,
+                      const Point<ctype, 3>& isPoint) const
+    {
+        // get the parameters of this point on the face via orthogonal projection
+        const auto geomSurface = OCCUtilities::getGeomHandle(face);
+        GeomAPI_ProjectPointOnSurf projection(OCCUtilities::point(isPoint), geomSurface);
+
+        // since the intersection point should have been on the face, distance < eps!
+        assert(projection.LowerDistance() < defaultEpsilon(face));
+
+        ctype paramU, paramV;
+        projection.LowerDistanceParameters(paramU, paramV);
+
+        // construct the tangent plane of the face in the point
+        gp_Pnt p;
+        gp_Vec baseVec1, baseVec2;
+        geomSurface->D1(projection, paramV, p, baseVec1, baseVec2);
+
+        const auto base1 = OCCUtilities::vector(baseVec1);
+        const auto base2 = OCCUtilities::vector(baseVec2);
+        const Direction<ctype, 3> normal(crossProduct(base1, base2));
+        const Plane<ctype, 3> tangentPlane(isPoint, normal);
+        return (*this)(geo.supportingPlane(), tangentPlane);
+    }
+
+    /*!
      * \brief Returns the angle in which a face shape
      *        and a planar 2d geometry intersect in a point.
      * \param face The face shape
@@ -408,6 +402,34 @@ public:
                       const Geo& geo,
                       const Point<ctype, 3>& isPoint) const
     { return (*this)(geo, face, isPoint); }
+
+    /*!
+     * \brief Returns the angle in which two face shapes intersect in an edge.
+     * \param face1 The first face shape
+     * \param face2 The second face shape
+     * \param isEdge The intersection edge
+     */
+    ctype operator() (const TopoDS_Face& face1,
+                      const TopoDS_Face& face2,
+                      const TopoDS_Edge& isEdge) const
+    {
+        // compute the angle at several sample points along the edge and take minimum
+        const auto edgeHandle = OCCUtilities::getGeomHandle(isEdge);
+        const auto deltaParam = edgeHandle->LastParameter() - edgeHandle->FirstParameter();
+
+        ctype resultAngle = std::numeric_limits<ctype>::max();
+        constexpr std::array<ctype, 5> paramFactors({0.0, 0.25, 0.5, 0.75, 1.0});
+
+        using std::min;
+        for (auto f : paramFactors)
+        {
+            const auto param = edgeHandle->FirstParameter() + f*deltaParam;
+            const auto isPoint = OCCUtilities::point(edgeHandle->Value(param));
+            resultAngle = min(resultAngle, (*this)(face1, face2, isPoint));
+        }
+
+        return resultAngle;
+    }
 
     /*!
      * \brief Returns the angle in which a planar 2d geometry
@@ -426,7 +448,7 @@ public:
         const auto deltaParam = edgeHandle->LastParameter() - edgeHandle->FirstParameter();
 
         ctype resultAngle = std::numeric_limits<ctype>::max();
-        constexpr std::array<ctype, 5> paramFactors({0.01, 0.25, 0.5, 0.75, 0.99});
+        constexpr std::array<ctype, 5> paramFactors({0.0, 0.25, 0.5, 0.75, 1.0});
 
         using std::min;
         for (auto f : paramFactors)
@@ -434,34 +456,6 @@ public:
             const auto param = edgeHandle->FirstParameter() + f*deltaParam;
             const auto isPoint = OCCUtilities::point(edgeHandle->Value(param));
             resultAngle = min(resultAngle, (*this)(geo, face, isPoint));
-        }
-
-        return resultAngle;
-    }
-
-    /*!
-     * \brief Returns the angle in which two face shapes intersect in an edge.
-     * \param face1 The first face shape
-     * \param face2 The second face shape
-     * \param isEdge The intersection edge
-     */
-    ctype operator() (const TopoDS_Face& face1,
-                      const TopoDS_Face& face2,
-                      const TopoDS_Edge& isEdge) const
-    {
-        // compute the angle at several sample points along the edge and take minimum
-        const auto edgeHandle = OCCUtilities::getGeomHandle(isEdge);
-        const auto deltaParam = edgeHandle->LastParameter() - edgeHandle->FirstParameter();
-
-        ctype resultAngle = std::numeric_limits<ctype>::max();
-        constexpr std::array<ctype, 5> paramFactors({0.01, 0.25, 0.5, 0.75, 0.99});
-
-        using std::min;
-        for (auto f : paramFactors)
-        {
-            const auto param = edgeHandle->FirstParameter() + f*deltaParam;
-            const auto isPoint = OCCUtilities::point(edgeHandle->Value(param));
-            resultAngle = min(resultAngle, (*this)(face1, face2, isPoint));
         }
 
         return resultAngle;
@@ -504,9 +498,7 @@ public:
      * \param geo The planar geometry
      * \param isFace The intersection face
      */
-    template<class Geo,
-             std::enable_if_t<IsPlanarGeometry<Geo>::value
-                              && !(std::is_same_v<Geo, TopoDS_Face>), int> = 0>
+    template<class Geo, std::enable_if_t<!(std::is_same_v<Geo, TopoDS_Face>), int> = 0>
     ctype operator() (const TopoDS_Face& face,
                       const Geo& geo,
                       const TopoDS_Face& isFace) const
