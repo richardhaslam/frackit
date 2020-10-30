@@ -53,6 +53,7 @@
 #include <frackit/geometry/cylindersurface.hh>
 
 #include <frackit/geometryutilities/name.hh>
+#include <frackit/geometryutilities/isplanar.hh>
 #include <frackit/common/extractdimension.hh>
 
 #include <frackit/occ/gputilities.hh>
@@ -73,12 +74,6 @@ namespace Frackit {
 template<class ctype = double>
 class IntersectionAngle
 {
-    template<class G>
-    struct IsPlanarGeometry
-    {
-        static constexpr bool value = DimensionalityTraits<G>::geometryDimension() == 2
-                                      && DimensionalityTraits<G>::worldDimension() == 3;
-    };
 
 public:
 
@@ -455,13 +450,15 @@ public:
     { return (*this)(geo, face, isEdge); }
 
     /*!
-     * \brief Returns the angle in which a planar 2d geometry
+     * \brief Returns the angle in which a geometry
      *        intersects a face shape in a face.
      * \param geo The planar geometry
      * \param face The face shape
      * \param isFace The intersection face
+     * \note if the intersection object is a face itself,
+     *       the angle in which the geometries intersect is always zero.
      */
-    template<class Geo, std::enable_if_t<IsPlanarGeometry<Geo>::value, int> = 0>
+    template<class Geo>
     ctype operator() (const Geo& geo,
                       const TopoDS_Face& face,
                       const TopoDS_Face& isFace) const
