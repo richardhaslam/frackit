@@ -26,6 +26,11 @@
 #define FRACKIT_DISTANCE_HH
 
 #include <cmath>
+#include <limits>
+#include <vector>
+#include <variant>
+#include <stdexcept>
+#include <type_traits>
 
 #include <TopoDS_Shape.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
@@ -206,6 +211,42 @@ template<class ctype1, class ctype2, int worldDim>
 PromotedType<ctype1, ctype2> computeDistance(const Segment<ctype1, worldDim>& seg,
                                              const Point<ctype2, worldDim>& p)
 { return computeDistance(p, seg); }
+
+/*!
+ * \ingroup Distance
+ * \brief Returns the minimum distance between a geometry and
+ *        std::variant, for instance, resulting from intersection
+ *        of two geometries.
+ * \param geo The first geometry
+ * \param is The intersection geometry
+ */
+template<class Geo, class... Geos>
+auto computeDistance(const Geo& geo1,
+                     const std::variant<Geos...>& is)
+{ return std::visit([&] (const auto& isGeo) { return computeDistance(geo1, isGeo); }, is); }
+
+/*!
+ * \ingroup Distance
+ * \brief Returns the minimum distance between a geometry and
+ *        vector of geometries.
+ * \param geo1 The first geometry
+ * \param geos2 The vector of geometries
+ * \return the minimum of the distances with the individual
+ *         geometries provided in geos2.
+ */
+template<class Geo1, class Geo2>
+auto computeDistance(const Geo1& geo1,
+                     const std::vector<Geo2>& geos2)
+{
+    using std::min;
+    using ctype = std::decay_t<decltype(computeDistance(geo1, geos2[0]))>;
+
+    ctype minDist = std::numeric_limits<ctype>::max();
+    for (const auto& geo2 : geos2)
+        minDist = min(minDist, computeDistance(geo1, geo2));
+
+    return minDist;
+}
 
 } // end namespace Frackit
 
