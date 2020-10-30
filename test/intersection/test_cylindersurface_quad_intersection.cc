@@ -417,6 +417,21 @@ int main()
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::ellipseArc); }, result[0]);
         std::cout << "Test passed" << std::endl;
 
+        // disk that touches in a segment
+        Quad quad18(Point(0.0*f, 0.5*f, 0.25*f),
+                    Point(0.0*f, 0.5*f, 0.75*f),
+                    Point(0.0*f, 1.0*f, 0.25*f),
+                    Point(0.0*f, 1.0*f, 0.75*f));
+        result = intersect(cylSurface, quad18);
+        if (result.size() != 1)
+            throw std::runtime_error("17: Did not find a single intersections");
+        std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::segment); }, result[0]);
+        if (abs(std::get<Segment>(result[0]).source().x() - 0.0) > eps)
+            throw std::runtime_error("Unexpected segment (source point)");
+        if (abs(std::get<Segment>(result[0]).target().x() - 0.0) > eps)
+            throw std::runtime_error("Unexpected segment (target point)");
+        if (abs(std::get<Segment>(result[0]).getPoint(0.5).z() - 0.5*f) > eps)
+            throw std::runtime_error("Unexpected segment (mid point)");
         std::cout << "Test passed" << std::endl;
 
         std::cout << "All tests passed"  << std::endl;
