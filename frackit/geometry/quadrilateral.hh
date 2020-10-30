@@ -194,7 +194,7 @@ public:
     /*!
      * \brief Returns true if the quadrilateral is convex.
      */
-    bool isConvex() { return isConvex_; }
+    bool isConvex() const { return isConvex_; }
 
 private:
     //! determines if the polygon is convex or not
