@@ -9,7 +9,7 @@
 #include <frackit/distance/distance.hh>
 #include <frackit/precision/precision.hh>
 
-//! test some functionality of ellipse arcs
+//! test some distance computation functionalities
 int main()
 {
     static constexpr int worldDim = 3;

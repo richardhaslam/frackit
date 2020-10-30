@@ -11,7 +11,7 @@
 #include <frackit/precision/precision.hh>
 #include <frackit/intersection/intersect.hh>
 
-//! test some functionality of ellipse arcs
+//! test some distance computation functionalities
 int main()
 {
     using ctype = double;
