@@ -36,6 +36,8 @@
 
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/cylindersurface.hh>
 
 #include <frackit/geometryutilities/name.hh>
@@ -90,6 +92,25 @@ bool pointOnGeometryBoundary(const Point<ctype1, 3>& p,
 {
     for (unsigned int i = 0; i < quad.numEdges(); ++i)
         if (pointOnGeometry(p, quad.edge(i), eps))
+            return true;
+    return false;
+}
+
+/*!
+ * \ingroup Distance
+ * \brief Evaluate if a point lies on the boundary of
+ *        a polygon in 3d space.
+ * \param p The point
+ * \param polygon The polygon
+ * \param eps Epsilon value to be used for the check
+ */
+template<class ctype1, class ctype2, class ctype3>
+bool pointOnGeometryBoundary(const Point<ctype1, 3>& p,
+                             const Polygon<ctype2, 3>& polygon,
+                             ctype3 eps)
+{
+    for (unsigned int i = 0; i < polygon.numEdges(); ++i)
+        if (pointOnGeometry(p, polygon.edge(i), eps))
             return true;
     return false;
 }
