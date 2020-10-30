@@ -39,6 +39,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 
 #include <frackit/precision/defaultepsilon.hh>
@@ -429,6 +430,34 @@ public:
             const auto param = edgeHandle->FirstParameter() + f*deltaParam;
             const auto isPoint = OCCUtilities::point(edgeHandle->Value(param));
             resultAngle = min(resultAngle, (*this)(geo, face, isPoint));
+        }
+
+        return resultAngle;
+    }
+
+    /*!
+     * \brief Returns the angle in which two face shapes intersect in an edge.
+     * \param face1 The first face shape
+     * \param face2 The second face shape
+     * \param isEdge The intersection edge
+     */
+    ctype operator() (const TopoDS_Face& face1,
+                      const TopoDS_Face& face2,
+                      const TopoDS_Edge& isEdge) const
+    {
+        // compute the angle at several sample points along the edge and take minimum
+        const auto edgeHandle = OCCUtilities::getGeomHandle(isEdge);
+        const auto deltaParam = edgeHandle->LastParameter() - edgeHandle->FirstParameter();
+
+        ctype resultAngle = std::numeric_limits<ctype>::max();
+        std::array<ctype, 5> paramFactors({0.0, 0.25, 0.5, 0.75, 1.0});
+
+        using std::min;
+        for (auto f : paramFactors)
+        {
+            const auto param = edgeHandle->FirstParameter() + f*deltaParam;
+            const auto isPoint = OCCUtilities::point(edgeHandle->Value(param));
+            resultAngle = min(resultAngle, (*this)(face1, face2, isPoint));
         }
 
         return resultAngle;
