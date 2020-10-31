@@ -35,6 +35,7 @@
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/cylindersurface.hh>
 
 #include <frackit/geometryutilities/name.hh>
@@ -55,6 +56,7 @@
 #include "algorithms/algo_quadrilateral_line.hh"
 #include "algorithms/algo_quadrilateral_quadrilateral.hh"
 #include "algorithms/algo_quadrilateral_disk.hh"
+#include "algorithms/algo_polygon_polygon.hh"
 #include "algorithms/algo_disk_disk.hh"
 #include "algorithms/algo_cylsurface_disk.hh"
 #include "algorithms/algo_cylsurface_face.hh"
@@ -218,6 +220,22 @@ intersect(const Quadrilateral<ctype, 3>& quad1, const Quadrilateral<ctype, 3>& q
     if (!doIntersect(getBoundingBox(quad1), getBoundingBox(quad2), eps))
         return {EmptyIntersection<3, ctype>()};
     return IntersectionAlgorithms::intersect_quadrilateral_quadrilateral(quad1, quad2, eps);
+}
+
+/*!
+ * \ingroup Intersection
+ * \brief Intersect two polygons in 3d space.
+ * \param polygon1 The first polygon
+ * \param polygon2 The second polygon
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Polygon<ctype, 3>, Polygon<ctype, 3> >
+intersect(const Polygon<ctype, 3>& polygon1, const Polygon<ctype, 3>& polygon2, ctype eps)
+{
+    if (!doIntersect(getBoundingBox(polygon1), getBoundingBox(polygon2), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_polygon_polygon(polygon1, polygon2, eps);
 }
 
 /*!

@@ -39,6 +39,7 @@
 #include <frackit/geometry/plane.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/cylindersurface.hh>
@@ -130,6 +131,21 @@ struct IntersectionTraits< Line<ctype, 3>, Quadrilateral<ctype, 3> >
 : public IntersectionTraits< Quadrilateral<ctype, 3>, Line<ctype, 3> >
 {};
 
+//! Result type of the intersection of a 3d polygon and a line
+template<class ctype>
+struct IntersectionTraits< Polygon<ctype, 3>, Line<ctype, 3> >
+{
+    using type = std::variant< Point<ctype, 3>,
+                               Segment<ctype, 3>,
+                               EmptyIntersection<3> >;
+};
+
+//! Result type of the intersection of a line and a 3d polygon
+template<class ctype>
+struct IntersectionTraits< Line<ctype, 3>, Polygon<ctype, 3> >
+: public IntersectionTraits< Polygon<ctype, 3>, Line<ctype, 3> >
+{};
+
 //! Result type of the intersection of a disk and a disk
 template<class ctype>
 struct IntersectionTraits< Disk<ctype>, Disk<ctype> >
@@ -141,6 +157,16 @@ struct IntersectionTraits< Disk<ctype>, Disk<ctype> >
                                Segment<ctype, wd>,
                                Polygon<ctype, 3>,
                                EmptyIntersection<wd> >;
+};
+
+//! Result type of the intersection of two polygons in 3d space
+template<class ctype>
+struct IntersectionTraits< Polygon<ctype, 3>, Polygon<ctype, 3> >
+{
+    using type = std::variant< Point<ctype, 3>,
+                               Segment<ctype, 3>,
+                               Polygon<ctype, 3>,
+                               EmptyIntersection<3> >;
 };
 
 //! Result type of the intersection of two quadrilaterals in 3d space
