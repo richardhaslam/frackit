@@ -19,16 +19,15 @@
 /*!
  * \file
  * \brief Contains the intersection algorithm
- *        between two quadrilaterals.
+ *        between two quadrilaterals in 3d space.
  */
 #ifndef FRACKIT_QUADRILATERAL_QUADRILATERAL_INTERSECTION_HH
 #define FRACKIT_QUADRILATERAL_QUADRILATERAL_INTERSECTION_HH
 
 #include <cmath>
+#include <stdexcept>
 
-#include <frackit/precision/precision.hh>
 #include <frackit/geometry/quadrilateral.hh>
-
 #include <frackit/intersection/intersectiontraits.hh>
 #include "algo_planargeom_planargeom.hh"
 
@@ -47,19 +46,20 @@ intersect_quadrilateral_quadrilateral(const Quadrilateral<ctype, 3>& quad1,
                                       const Quadrilateral<ctype, 3>& quad2,
                                       ctype eps)
 {
+    if (!quad1.isConvex() || !quad2.isConvex())
+        throw std::runtime_error("Quad-Quad intersection algorithm not robust for concave quads");
+
     using std::max;
     ctype charLength = 0.0;
     for (unsigned int edgeIdx = 0; edgeIdx < quad1.numEdges(); ++edgeIdx)
-        charLength = max(charLength, quad1.edge(edgeIdx).length());
+        charLength = max(charLength, quad1.edge(edgeIdx).squaredLength());
     for (unsigned int edgeIdx = 0; edgeIdx < quad2.numEdges(); ++edgeIdx)
-        charLength = max(charLength, quad2.edge(edgeIdx).length());
+        charLength = max(charLength, quad2.edge(edgeIdx).squaredLength());
 
-    return intersect_planarGeometry_planarGeometry(quad1,
-                                                   quad2,
-                                                   charLength,
-                                                   eps,
-                                                   eps,
-                                                   eps);
+    using std::sqrt;
+    return intersect_planarGeometry_planarGeometry(quad1, quad2,
+                                                   sqrt(charLength),
+                                                   eps, eps, eps);
 }
 
 } // end namespace IntersectionAlgorithms

@@ -79,19 +79,19 @@ int main()
         std::cout << "Test 1 passed" << std::endl;
 
         // quad that intersects quad1 in a crooked segment
-        Quad quad3(Point(-0.25*f, -0.25, -0.25*f),
-                   Point(0.25*f,  -0.25, -0.25*f),
-                   Point(-0.25*f, 0.25,  0.25*f),
-                   Point(0.25*f,  0.25,  0.25*f));
+        Quad quad3(Point(-0.25*f, -0.25*f, -0.25*f),
+                   Point(0.25*f,  -0.25*f, -0.25*f),
+                   Point(-0.25*f, 0.25*f,  0.25*f),
+                   Point(0.25*f,  0.25*f,  0.25*f));
         result = intersect(quad1, quad3);
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::segment); }, result);
         std::cout << "Test 2 passed" << std::endl;
 
         // quad that touches quad1 in origin
-        Quad quad4(Point(-0.25*f, -0.25, 0.25*f),
+        Quad quad4(Point(-0.25*f, -0.25*f, 0.25*f),
                    Point(0.0*f,  0.0, 0.0*f),
-                   Point(0.25*f, 0.25,  0.25*f),
-                   Point(0.0*f,  0.0,  0.5*f));
+                   Point(0.0*f,  0.0,  0.5*f),
+                   Point(0.25*f, 0.25*f,  0.25*f));
         result = intersect(quad1, quad4);
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::point); }, result);
         if (!std::get<Point>(result).isEqual(Point(0.0, 0.0, 0.0), Frackit::Precision<ctype>::confusion()*f))
@@ -101,8 +101,8 @@ int main()
         // quad that is slightly above quad1
         Quad quad5(Point(-0.25*f, -0.25, 0.25*f),
                    Point(0.0*f,  0.0, 1e-6*f),
-                   Point(0.25*f, 0.25,  0.25*f),
-                   Point(0.0*f,  0.0,  0.5*f));
+                   Point(0.0*f,  0.0,  0.5*f),
+                   Point(0.25*f, 0.25,  0.25*f));
         result = intersect(quad1, quad5);
         std::visit([&] (auto&& is) { checkResultGeometry(is, IntersectionType::empty); }, result);
         std::cout << "Test 4 passed" << std::endl;
