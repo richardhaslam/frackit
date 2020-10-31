@@ -19,45 +19,47 @@
 /*!
  * \file
  * \brief Contains the intersection algorithm
- *        between two quadrilaterals in 3d space.
+ *        between two polygons in 3d space.
  */
-#ifndef FRACKIT_QUADRILATERAL_QUADRILATERAL_INTERSECTION_HH
-#define FRACKIT_QUADRILATERAL_QUADRILATERAL_INTERSECTION_HH
+#ifndef FRACKIT_POLYGON_POLYGON_INTERSECTION_HH
+#define FRACKIT_POLYGON_POLYGON_INTERSECTION_HH
 
 #include <cmath>
 #include <stdexcept>
 
-#include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/intersection/intersectiontraits.hh>
 #include "algo_planargeom_planargeom.hh"
 
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect two quadrilaterals in 3d space
+//! Intersect two polygons in 3d space
 //! The result can be:
 //! - a polygon bounded by segments
 //! - a segment
 //! - a point
 //! - no intersection
 template<class ctype>
-Intersection< Quadrilateral<ctype, 3>, Quadrilateral<ctype, 3> >
-intersect_quadrilateral_quadrilateral(const Quadrilateral<ctype, 3>& quad1,
-                                      const Quadrilateral<ctype, 3>& quad2,
-                                      ctype eps)
+Intersection< Polygon<ctype, 3>, Polygon<ctype, 3> >
+intersect_polygon_polygon(const Polygon<ctype, 3>& polygon1,
+                          const Polygon<ctype, 3>& polygon2,
+                          ctype eps)
 {
-    if (!quad1.isConvex() || !quad2.isConvex())
-        throw std::runtime_error("Quad-Quad intersection algorithm not robust for concave quads");
+    if (!polygon1.isConvex() || !polygon2.isConvex())
+        throw std::runtime_error("Polygon-Polygon algorithm only works for convex polygons");
 
     using std::max;
-    ctype charLength = 0.0;
-    for (unsigned int edgeIdx = 0; edgeIdx < quad1.numEdges(); ++edgeIdx)
-        charLength = max(charLength, quad1.edge(edgeIdx).squaredLength());
-    for (unsigned int edgeIdx = 0; edgeIdx < quad2.numEdges(); ++edgeIdx)
-        charLength = max(charLength, quad2.edge(edgeIdx).squaredLength());
-
     using std::sqrt;
-    return intersect_planarGeometry_planarGeometry(quad1, quad2,
+    using Segment = typename Polygon<ctype, 3>::Segment;
+
+    ctype charLength = 0.0;
+    for (unsigned int cIdx = 0; cIdx < polygon1.numCorners(); ++cIdx)
+        charLength = max(charLength, 2.0*Segment(polygon1.center(), polygon1.corner(cIdx)).squaredLength());
+    for (unsigned int cIdx = 0; cIdx < polygon2.numCorners(); ++cIdx)
+        charLength = max(charLength, 2.0*Segment(polygon2.center(), polygon2.corner(cIdx)).squaredLength());
+
+    return intersect_planarGeometry_planarGeometry(polygon1, polygon2,
                                                    sqrt(charLength),
                                                    eps, eps, eps);
 }
@@ -65,4 +67,4 @@ intersect_quadrilateral_quadrilateral(const Quadrilateral<ctype, 3>& quad1,
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_QUADRILATERAL_QUADRILATERAL_INTERSECTION_HH
+#endif // FRACKIT_POLYGON_POLYGON_INTERSECTION_HH

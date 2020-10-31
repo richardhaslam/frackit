@@ -38,6 +38,7 @@
 #include <frackit/geometry/ellipse.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
 #include <frackit/geometry/sphere.hh>
@@ -100,6 +101,17 @@ ctype defaultEpsilon(const Quadrilateral<ctype, 3>& quad)
 {
     using std::sqrt;
     return 0.5*sqrt(quad.area())*Precision<ctype>::confusion();
+}
+
+/*!
+ * \ingroup Precision
+ * \brief Default epsilon for operations on polygons.
+ */
+template<class ctype>
+ctype defaultEpsilon(const Polygon<ctype, 3>& polygon)
+{
+    using std::sqrt;
+    return 0.5*sqrt(polygon.area())*Precision<ctype>::confusion();
 }
 
 /*!

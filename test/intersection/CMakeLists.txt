@@ -42,6 +42,11 @@ frackit_add_test(NAME test_quad_quad_intersection
                  SOURCES test_quad_quad_intersection.cc
                  LABELS intersection)
 
+# polygon - polygon
+frackit_add_test(NAME test_polygon_polygon_intersection
+                 SOURCES test_polygon_polygon_intersection.cc
+                 LABELS intersection)
+
 # quadrilateral - disk
 frackit_add_test(NAME test_quad_disk_intersection
                  SOURCES test_quad_disk_intersection.cc
