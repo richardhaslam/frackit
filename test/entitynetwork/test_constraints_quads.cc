@@ -139,8 +139,8 @@ int main()
     Frackit::Cylinder<ctype> cylinder(0.5, 1.0);
     Quad quad11(Point(-0.6, -0.0, 1.0 - 0.05111),
                 Point( 0.0, -0.6, 1.0 - 0.05111),
-                Point( 0.6,  0.0, 1.0 - 0.05111),
-                Point( 0.0,  0.6, 1.0 - 0.05111));
+                Point( 0.0,  0.6, 1.0 - 0.05111),
+                Point( 0.6,  0.0, 1.0 - 0.05111));
     if (!constraints.evaluate(cylinder.lateralFace(), quad11))
         throw std::runtime_error("False positive intersection distance violation");
     std::cout << "Test 11 passed" << std::endl;
@@ -148,28 +148,28 @@ int main()
     // violates intersection distance constraint
     Quad quad12(Point(-0.6, -0.0, 1.0 - 0.04999),
                 Point( 0.0, -0.6, 1.0 - 0.04999),
-                Point( 0.6,  0.0, 1.0 - 0.04999),
-                Point( 0.0,  0.6, 1.0 - 0.04999));
+                Point( 0.0,  0.6, 1.0 - 0.04999),
+                Point( 0.6,  0.0, 1.0 - 0.04999));
     if (constraints.evaluate(cylinder.lateralFace(), quad12))
         throw std::runtime_error("Did not detect intersection distance violation");
     std::cout << "Test 12 passed" << std::endl;
 
-    // just doesn't violate distance constraint
-    Quad quad13(Point(-0.40001, -0.0,     01.5),
-                Point( 0.0,     -0.40001, 01.5),
-                Point( 0.40001,  0.0,     01.5),
-                Point( 0.0,      0.40001, 01.5));
-    if (!constraints.evaluate(cylinder.lateralFace(), quad13))
-        throw std::runtime_error("False positive distance violation");
+    // just violates distance constraint
+    Quad quad13(Point(-0.40001, -0.0,     0.5),
+                Point( 0.0,     -0.40001, 0.5),
+                Point( 0.0,      0.40001, 0.5),
+                Point( 0.400001, 0.0,     0.5));
+    if (constraints.evaluate(cylinder.lateralFace(), quad13))
+        throw std::runtime_error("Did not detect distance violation");
     std::cout << "Test 13 passed" << std::endl;
 
-    // just violates distance constraint
+    // just doesn't violate distance constraint
     Quad quad14(Point(-0.39999, -0.0,     0.5),
                 Point( 0.0,     -0.39999, 0.5),
-                Point( 0.39999,  0.0,     0.5),
-                Point( 0.0,      0.39999, 0.5));
-    if (constraints.evaluate(cylinder.lateralFace(), quad14))
-        throw std::runtime_error("Did not detect distance violation");
+                Point( 0.0,      0.39999, 0.5),
+                Point( 0.39999,  0.0,     0.5));
+    if (!constraints.evaluate(cylinder.lateralFace(), quad14))
+        throw std::runtime_error("False positive distance violation");
     std::cout << "Test 14 passed" << std::endl;
 
     std::cout << "All tests passed" << std::endl;
