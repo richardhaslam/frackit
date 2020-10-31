@@ -1,3 +1,5 @@
+#include <vector>
+
 #include <frackit/geometry/polygon.hh>
 #include <frackit/magnitude/length.hh>
 #include <frackit/intersection/intersect.hh>
