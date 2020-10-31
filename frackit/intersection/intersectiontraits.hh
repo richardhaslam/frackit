@@ -139,7 +139,7 @@ struct IntersectionTraits< Disk<ctype>, Disk<ctype> >
 
     using type = std::variant< Point<ctype, wd>,
                                Segment<ctype, wd>,
-                               Disk<ctype>, // TODO: Substitute by TopoDS_Face or polygon when supported?
+                               Polygon<ctype, 3>,
                                EmptyIntersection<wd> >;
 };
 
@@ -149,7 +149,7 @@ struct IntersectionTraits< Quadrilateral<ctype, 3>, Quadrilateral<ctype, 3> >
 {
     using type = std::variant< Point<ctype, 3>,
                                Segment<ctype, 3>,
-                               Quadrilateral<ctype, 3>, // TODO: Substitute by TopoDS_Face or polygon when supported?
+                               Polygon<ctype, 3>,
                                EmptyIntersection<3> >;
 };
 
@@ -246,6 +246,17 @@ struct IntersectionTraits< Quadrilateral<ctype, 3>, TopoDS_Face >
 template<class ctype>
 struct IntersectionTraits< TopoDS_Face, Quadrilateral<ctype, 3> >
 : public IntersectionTraits< Quadrilateral<ctype, 3>, TopoDS_Face >
+{};
+
+//! Result type of the intersection of a cylinder surface and a TopoDS_Face
+template<class ctype>
+struct IntersectionTraits< CylinderSurface<ctype>, TopoDS_Face >
+{ using type = IntersectionDetail::FaceFaceIntersection<ctype>; };
+
+//! Result type of the intersection of a TopoDS_Face and a cylinder surface
+template<class ctype>
+struct IntersectionTraits< TopoDS_Face, CylinderSurface<ctype> >
+: public IntersectionTraits< CylinderSurface<ctype>, TopoDS_Face >
 {};
 
 } // end namespace Frackit

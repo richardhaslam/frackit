@@ -57,6 +57,7 @@
 #include "algorithms/algo_quadrilateral_disk.hh"
 #include "algorithms/algo_disk_disk.hh"
 #include "algorithms/algo_cylsurface_disk.hh"
+#include "algorithms/algo_cylsurface_face.hh"
 #include "algorithms/algo_cylsurface_quadrilateral.hh"
 #include "algorithms/algo_face_face_3d.hh"
 
@@ -302,6 +303,34 @@ template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, CylinderSurface<ctype> >
 intersect(const Quadrilateral<ctype, 3>& quad, const CylinderSurface<ctype>& cylSurface, ctype eps)
 { return intersect(cylSurface, quad, eps); }
+
+/*!
+ * \ingroup Intersection
+ * \brief Intersect a lateral cylinder surface and a TopoDS_Face.
+ * \param cylSurface The lateral cylinder surface
+ * \param face The face shape
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< CylinderSurface<ctype>, TopoDS_Face >
+intersect(const CylinderSurface<ctype>& cylSurface, const TopoDS_Face& face, ctype eps)
+{
+    if (!doIntersect(getBoundingBox(cylSurface), getBoundingBox(face), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_cylinderSurface_face(cylSurface, face, eps);
+}
+
+/*!
+ * \ingroup Intersection
+ * \brief Intersect a TopoDS_Face and a lateral cylinder surface.
+ * \param face The face shape
+ * \param cylSurface The lateral cylinder surface
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< TopoDS_Face, CylinderSurface<ctype> >
+intersect(const TopoDS_Face& face, const CylinderSurface<ctype>& cylSurface, ctype eps)
+{ return intersect(cylSurface, face, eps); }
 
 /*!
  * \ingroup Intersection
