@@ -274,6 +274,17 @@ struct IntersectionTraits< TopoDS_Face, Quadrilateral<ctype, 3> >
 : public IntersectionTraits< Quadrilateral<ctype, 3>, TopoDS_Face >
 {};
 
+//! Result type of the intersection of a polygon and a face
+template<class ctype>
+struct IntersectionTraits< Polygon<ctype, 3>, TopoDS_Face >
+{ using type = IntersectionDetail::FaceFaceIntersection<ctype>; };
+
+//! Result type of the intersection of a face and a polygon
+template<class ctype>
+struct IntersectionTraits< TopoDS_Face, Polygon<ctype, 3> >
+: public IntersectionTraits< Polygon<ctype, 3>, TopoDS_Face >
+{};
+
 //! Result type of the intersection of a cylinder surface and a TopoDS_Face
 template<class ctype>
 struct IntersectionTraits< CylinderSurface<ctype>, TopoDS_Face >

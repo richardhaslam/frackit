@@ -417,6 +417,30 @@ intersect(const TopoDS_Face& face, const Quadrilateral<ctype, 3>& quad, ctype ep
 
 /*!
  * \ingroup Intersection
+ * \brief Intersect a polygon and a face shape.
+ * \param polygon The polygon
+ * \param face The face shape
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Polygon<ctype, 3>, TopoDS_Face >
+intersect(const Polygon<ctype, 3>& polygon, const TopoDS_Face& face, ctype eps)
+{ return intersect(OCCUtilities::getShape(polygon), face, eps); }
+
+/*!
+ * \ingroup Intersection
+ * \brief Intersect a face shape and a polygon.
+ * \param face The face shape
+ * \param polygon The polygon
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< TopoDS_Face, Polygon<ctype, 3> >
+intersect(const TopoDS_Face& face, const Polygon<ctype, 3>& polygon, ctype eps)
+{ return intersect(polygon, face, eps); }
+
+/*!
+ * \ingroup Intersection
  * \brief Interface for intersecting two geometries.
  * \param geo1 The first geometry
  * \param geo2 The second geometry
