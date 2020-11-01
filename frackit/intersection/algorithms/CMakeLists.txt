@@ -2,6 +2,7 @@ install(FILES
 algo_cylsurface_disk.hh
 algo_cylsurface_face.hh
 algo_cylsurface_planargeom.hh
+algo_cylsurface_polygon.hh
 algo_cylsurface_quadrilateral.hh
 algo_disk_disk.hh
 algo_disk_line.hh

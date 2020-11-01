@@ -1,10 +1,13 @@
+#include <vector>
 #include <variant>
+#include <type_traits>
 
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopExp.hxx>
 
 #include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/ellipsearc.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometryutilities/name.hh>
@@ -80,17 +83,35 @@ void checkResultGeometry(const std::vector<IS>& intersections, IntersectionType 
         checkResultGeometry(is, expected);
 }
 
-//! test cylinder surface - quadrilateral intersections
-int main()
+//! function to create the quadrilateral geometry from corner points
+template<class QuadGeometry>
+QuadGeometry makeQuad(const std::vector<Frackit::Point<typename QuadGeometry::ctype, 3>>& corners)
 {
-    using ctype = double;
-    using CylinderSurface = Frackit::CylinderSurface<ctype>;
-    using Segment = typename CylinderSurface::Segment;
-    using Quad = Frackit::Quadrilateral<ctype, 3>;
+    using ctype = typename QuadGeometry::ctype;
+    if constexpr (std::is_same_v<QuadGeometry, Frackit::Quadrilateral<ctype, 3>>)
+        return QuadGeometry(corners[0], corners[1], corners[3], corners[2]);
+    else if constexpr (std::is_same_v<QuadGeometry, Frackit::Polygon<ctype, 3>>)
+        return QuadGeometry(corners);
+    else
+        throw std::runtime_error("Only Polygon or Quadrilateral are supported");
+}
+
+//! We test cylinder surface - quadrilateral intersections,
+//! but also support quadrilaterals described by the polygon class
+//! in order to test if the algorithm with polygon gives the same result
+template<class QuadGeometry>
+void doTest()
+{
+    using Quad = QuadGeometry;
+    using ctype = typename Quad::ctype;
     using Point = typename Quad::Point;
+    using CornerVector = std::vector<Point>;
+
     using Ellipse = Frackit::Ellipse<ctype, 3>;
     using Vector = Frackit::Vector<ctype, 3>;
     using EllipseArc = Frackit::EllipseArc<ctype, 3>;
+    using CylinderSurface = Frackit::CylinderSurface<ctype>;
+    using Segment = typename CylinderSurface::Segment;
 
     // OCC seems to fail below 1e-3 :(
     std::vector<ctype> scales({1.0e-3, 1.0, 1.0e3});
@@ -107,10 +128,10 @@ int main()
         const ctype eps = Frackit::Precision<ctype>::confusion()*0.5*f;
 
         // quarilateral that touches the cylinder surface in one point
-        Quad quad1(Point(-0.5*f, 0.0*f, 0.0*f),
-                   Point(-1.0*f, 0.0*f, 0.0*f),
-                   Point(-0.5*f, 1.0*f, 0.0*f),
-                   Point(-1.0*f, 1.0*f, 0.0*f));
+        auto quad1 = makeQuad<QuadGeometry>(CornerVector({Point(-0.5*f, 0.0*f, 0.0*f),
+                                            Point(-1.0*f, 0.0*f, 0.0*f),
+                                            Point(-1.0*f, 1.0*f, 0.0*f),
+                                            Point(-0.5*f, 1.0*f, 0.0*f)}));
         auto result = intersect(cylSurface, quad1);
         auto resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad1));
         if (result.size() > 1)
@@ -129,10 +150,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that describes a horizontal cross-section (circle) of the surface
-        Quad quad2(Point(-1.0*f, -1.0*f, 0.0*f),
-                   Point( 1.0*f, -1.0*f, 0.0*f),
-                   Point(-1.0*f, 1.0*f, 0.0*f),
-                   Point( 1.0*f, 1.0*f, 0.0*f));
+        auto quad2 = makeQuad<QuadGeometry>(CornerVector({Point(-1.0*f, -1.0*f, 0.0*f),
+                                            Point( 1.0*f, -1.0*f, 0.0*f),
+                                            Point( 1.0*f, 1.0*f, 0.0*f),
+                                            Point(-1.0*f, 1.0*f, 0.0*f)}));
         result = intersect(cylSurface, quad2);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad2));
         if (result.size() > 1)
@@ -163,10 +184,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that describes a vertical cross-section of the surface (two segments)
-        Quad quad3(Point(-1.0*f, 0.0*f, -1.0*f),
-                   Point(-1.0*f, 0.0*f,  1.0*f),
-                   Point( 1.0*f, 0.0*f, -1.0*f),
-                   Point( 1.0*f, 0.0*f,  1.0*f));
+        auto quad3 = makeQuad<QuadGeometry>(CornerVector({Point(-1.0*f, 0.0*f, -1.0*f),
+                                            Point(-1.0*f, 0.0*f,  1.0*f),
+                                            Point( 1.0*f, 0.0*f,  1.0*f),
+                                            Point( 1.0*f, 0.0*f, -1.0*f)}));
         result = intersect(cylSurface, quad3);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad3));
         if (result.size() != 2)
@@ -207,10 +228,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that touches the cylinder surface in one point (opposite side)
-        Quad quad4(Point(0.5*f, 0.0*f, 0.0*f),
-                   Point(1.0*f, 0.0*f, 0.0*f),
-                   Point(0.5*f, 1.0*f, 0.0*f),
-                   Point(1.0*f, 1.0*f, 0.0*f));
+        auto quad4 = makeQuad<QuadGeometry>(CornerVector({Point(0.5*f, 0.0*f, 0.0*f),
+                                            Point(1.0*f, 0.0*f, 0.0*f),
+                                            Point(1.0*f, 1.0*f, 0.0*f),
+                                            Point(0.5*f, 1.0*f, 0.0*f)}));
         result = intersect(cylSurface, quad4);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad4));
         if (result.size() > 1)
@@ -228,10 +249,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // no intersection
-        Quad quad5(Point(0.5*f+1e-3*f, 0.0*f, 0.0*f),
-                   Point(1.0*f, 0.0*f, 0.0*f),
-                   Point(0.5*f, 1.0*f, 0.0*f),
-                   Point(1.0*f, 1.0*f, 0.0*f));
+        auto quad5 = makeQuad<QuadGeometry>(CornerVector({Point(0.5*f+1e-3*f, 0.0*f, 0.0*f),
+                                            Point(1.0*f, 0.0*f, 0.0*f),
+                                            Point(1.0*f, 1.0*f, 0.0*f),
+                                            Point(0.5*f, 1.0*f, 0.0*f)}));
         result = intersect(cylSurface, quad5);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad5));
         if (result.size() > 1)
@@ -245,10 +266,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that intersects on one side only
-        Quad quad6(Point(0.0*f,  0.0*f, 0.5*f),
-                   Point(1.0*f, -1.0*f, 0.5*f),
-                   Point(1.0*f,  1.0*f, 0.5*f),
-                   Point(2.0*f,  0.0*f, 0.5*f));
+        auto quad6 = makeQuad<QuadGeometry>(CornerVector({Point(0.0*f,  0.0*f, 0.5*f),
+                                            Point(1.0*f, -1.0*f, 0.5*f),
+                                            Point(2.0*f,  0.0*f, 0.5*f),
+                                            Point(1.0*f,  1.0*f, 0.5*f)}));
         result = intersect(cylSurface, quad6);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad6));
         if (result.size() > 1)
@@ -281,10 +302,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that intersects on two sides
-        Quad quad7(Point(-2.0*f, -0.25*f, 0.5*f),
-                   Point( 2.0*f, -0.25*f, 0.5*f),
-                   Point(-2.0*f,  0.25*f, 0.5*f),
-                   Point( 2.0*f,  0.25*f, 0.5*f));
+        auto quad7 = makeQuad<QuadGeometry>(CornerVector({Point(-2.0*f, -0.25*f, 0.5*f),
+                                            Point( 2.0*f, -0.25*f, 0.5*f),
+                                            Point( 2.0*f,  0.25*f, 0.5*f),
+                                            Point(-2.0*f,  0.25*f, 0.5*f)}));
         result = intersect(cylSurface, quad7);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad7));
         if (result.size() != 2)
@@ -324,10 +345,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // same as the previous test but with an inclined quad
-        Quad quad8(Point(-2.0*f, -0.25*f, 0.5*f + 0.3*2.0*f),
-                   Point( 2.0*f, -0.25*f, 0.5*f - 0.3*2.0*f),
-                   Point(-2.0*f,  0.25*f, 0.5*f + 0.3*2.0*f),
-                   Point( 2.0*f,  0.25*f, 0.5*f - 0.3*2.0*f));
+        auto quad8 = makeQuad<QuadGeometry>(CornerVector({Point(-2.0*f, -0.25*f, 0.5*f + 0.3*2.0*f),
+                                            Point( 2.0*f, -0.25*f, 0.5*f - 0.3*2.0*f),
+                                            Point( 2.0*f,  0.25*f, 0.5*f - 0.3*2.0*f),
+                                            Point(-2.0*f,  0.25*f, 0.5*f + 0.3*2.0*f)}));
         result = intersect(cylSurface, quad8);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad8));
         if (result.size() != 2)
@@ -367,10 +388,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that is much bigger, intersection an ellipse
-        Quad quad9(Point(-2.0*f, -2.0*f, 0.5*f + 0.3*2.0*f),
-                   Point( 2.0*f, -2.0*f, 0.5*f - 0.3*2.0*f),
-                   Point(-2.0*f,  2.0*f, 0.5*f + 0.3*2.0*f),
-                   Point( 2.0*f,  2.0*f, 0.5*f - 0.3*2.0*f));
+        auto quad9 = makeQuad<QuadGeometry>(CornerVector({Point(-2.0*f, -2.0*f, 0.5*f + 0.3*2.0*f),
+                                            Point( 2.0*f, -2.0*f, 0.5*f - 0.3*2.0*f),
+                                            Point( 2.0*f,  2.0*f, 0.5*f - 0.3*2.0*f),
+                                            Point(-2.0*f,  2.0*f, 0.5*f + 0.3*2.0*f)}));
         result = intersect(cylSurface, quad9);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad9));
         if (result.size() > 1)
@@ -400,10 +421,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that touches in two points
-        Quad quad10(Point(-0.5*f,  0.0*f, 0.5*f),
-                    Point( 0.0*f, -0.25*f, 0.5*f),
-                    Point( 0.0*f,  0.25*f, 0.5*f),
-                    Point( 0.5*f,  0.0*f, 0.5*f));
+        auto quad10 = makeQuad<QuadGeometry>(CornerVector({Point(-0.5*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f, -0.25*f, 0.5*f),
+                                             Point( 0.5*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f,  0.25*f, 0.5*f)}));
         result = intersect(cylSurface, quad10);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad10));
         if (result.size() != 2)
@@ -431,10 +452,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that intersects in four points
-        Quad quad11(Point(-0.5*f,  0.0*f, 0.5*f),
-                    Point( 0.0*f, -0.5*f, 0.5*f),
-                    Point( 0.0*f,  0.5*f, 0.5*f),
-                    Point( 0.5*f,  0.0*f, 0.5*f));
+        auto quad11 = makeQuad<QuadGeometry>(CornerVector({Point(-0.5*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f, -0.5*f, 0.5*f),
+                                             Point( 0.5*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f,  0.5*f, 0.5*f)}));
         result = intersect(cylSurface, quad11);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad11));
         if (result.size() != 4)
@@ -490,10 +511,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that intersects in two short segments
-        Quad quad12(Point(-0.6*f, 0.0*f, 0.5*f),
-                    Point( 0.0*f, 0.0*f, 0.4*f),
-                    Point( 0.0*f, 0.0*f, 0.6*f),
-                    Point( 0.6*f, 0.0*f, 0.5*f));
+        auto quad12 = makeQuad<QuadGeometry>(CornerVector({Point(-0.6*f, 0.0*f, 0.5*f),
+                                             Point( 0.0*f, 0.0*f, 0.4*f),
+                                             Point( 0.6*f, 0.0*f, 0.5*f),
+                                             Point( 0.0*f, 0.0*f, 0.6*f)}));
         result = intersect(cylSurface, quad12);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad12));
         if (result.size() != 2)
@@ -530,10 +551,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that intersects in two short arcs
-        Quad quad13(Point(-0.6*f,  0.0*f, 0.5*f),
-                    Point( 0.0*f, -0.1*f, 0.5*f),
-                    Point( 0.0*f,  0.1*f, 0.5*f),
-                    Point( 0.6*f,  0.0*f, 0.5*f));
+        auto quad13 = makeQuad<QuadGeometry>(CornerVector({Point(-0.6*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f, -0.1*f, 0.5*f),
+                                             Point( 0.6*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f,  0.1*f, 0.5*f)}));
         result = intersect(cylSurface, quad13);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad13));
         if (result.size() != 2)
@@ -576,10 +597,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that intersects in two long arcs
-        Quad quad14(Point(-0.6*f,  0.0*f, 0.5*f),
-                    Point( 0.0*f, -0.4*f, 0.5*f),
-                    Point( 0.0*f,  0.4*f, 0.5*f),
-                    Point( 0.6*f,  0.0*f, 0.5*f));
+        auto quad14 = makeQuad<QuadGeometry>(CornerVector({Point(-0.6*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f, -0.4*f, 0.5*f),
+                                             Point( 0.6*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f,  0.4*f, 0.5*f)}));
         result = intersect(cylSurface, quad14);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad14));
         if (result.size() != 2)
@@ -622,10 +643,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that intersects in one segment and one point
-        Quad quad15(Point(-0.6*f, 0.0*f, 0.5*f),
-                    Point( 0.0*f, 0.0*f, 0.4*f),
-                    Point( 0.0*f, 0.0*f, 0.6*f),
-                    Point( 0.5*f, 0.0*f, 0.5*f));
+        auto quad15 = makeQuad<QuadGeometry>(CornerVector({Point(-0.6*f, 0.0*f, 0.5*f),
+                                             Point( 0.0*f, 0.0*f, 0.4*f),
+                                             Point( 0.5*f, 0.0*f, 0.5*f),
+                                             Point( 0.0*f, 0.0*f, 0.6*f)}));
         result = intersect(cylSurface, quad15);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad15));
         if (result.size() != 2)
@@ -644,10 +665,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that intersects in one arc and one point
-        Quad quad16(Point(-0.6*f,  0.0*f, 0.5*f),
-                    Point( 0.0*f, -0.1*f, 0.5*f),
-                    Point( 0.0*f,  0.1*f, 0.5*f),
-                    Point( 0.5*f,  0.0*f, 0.5*f));
+        auto quad16 = makeQuad<QuadGeometry>(CornerVector({Point(-0.6*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f, -0.1*f, 0.5*f),
+                                             Point( 0.5*f,  0.0*f, 0.5*f),
+                                             Point( 0.0*f,  0.1*f, 0.5*f)}));
         result = intersect(cylSurface, quad16);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad16));
         if (result.size() != 2)
@@ -665,10 +686,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // disk that intersects in one parabola
-        Quad quad17(Point( 0.0*f, -1.0*f, 0.0*f),
-                    Point( 2.0*f, -0.5*f, 0.5*f),
-                    Point(-2.0*f, -0.5*f, 0.5*f),
-                    Point( 0.0*f,  1.0*f, 2.0*f));
+        auto quad17 = makeQuad<QuadGeometry>(CornerVector({Point( 0.0*f, -1.0*f, 0.0*f),
+                                             Point( 2.0*f, -0.5*f, 0.5*f),
+                                             Point( 0.0*f,  1.0*f, 2.0*f),
+                                             Point(-2.0*f, -0.5*f, 0.5*f)}));
         result = intersect(cylSurface, quad17);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad17));
         if (result.size() != 1)
@@ -706,10 +727,10 @@ int main()
         std::cout << "Test passed" << std::endl;
 
         // quad that touches in a segment
-        Quad quad18(Point(0.0*f, 0.5*f, 0.25*f),
-                    Point(0.0*f, 0.5*f, 0.75*f),
-                    Point(0.0*f, 1.0*f, 0.25*f),
-                    Point(0.0*f, 1.0*f, 0.75*f));
+        auto quad18 = makeQuad<QuadGeometry>(CornerVector({Point(0.0*f, 0.5*f, 0.25*f),
+                                             Point(0.0*f, 0.5*f, 0.75*f),
+                                             Point(0.0*f, 1.0*f, 0.75*f),
+                                             Point(0.0*f, 1.0*f, 0.25*f)}));
         result = intersect(cylSurface, quad18);
         resultFromShape = intersect(cylSurface, Frackit::OCCUtilities::getShape(quad18));
         if (result.size() != 1)
@@ -745,6 +766,17 @@ int main()
         std::cout << "Test passed" << std::endl;
         std::cout << "All tests passed"  << std::endl;
     }
+}
+
+//! test both with quadrilaterals and polygons
+int main()
+{
+    using ctype = double;
+    using Quad = Frackit::Quadrilateral<ctype, 3>;
+    using Polygon = Frackit::Polygon<ctype, 3>;
+
+    doTest<Quad>();
+    doTest<Polygon>();
 
     return 0;
 }

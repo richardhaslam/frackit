@@ -239,6 +239,27 @@ struct IntersectionTraits< Quadrilateral<ctype, 3>, CylinderSurface<ctype> >
 : public IntersectionTraits< CylinderSurface<ctype>, Quadrilateral<ctype, 3> >
 {};
 
+//! Result type of the intersection of a cylinder surface and a polygon
+template<class ctype>
+struct IntersectionTraits< CylinderSurface<ctype>, Polygon<ctype, 3> >
+{
+    static constexpr int wd = CylinderSurface<ctype>::worldDimension();
+    static_assert(wd == 3, "World dimension of 3 expected");
+
+    using BaseType = std::variant< Point<ctype, 3>,
+                                   Segment<ctype, 3>,
+                                   EllipseArc<ctype, 3>,
+                                   Ellipse<ctype, 3>,
+                                   EmptyIntersection<3> >;
+    using type = std::vector<BaseType>;
+};
+
+//! Result type of the intersection of a polygon and a cylinder surface
+template<class ctype>
+struct IntersectionTraits< Polygon<ctype, 3>, CylinderSurface<ctype> >
+: public IntersectionTraits< CylinderSurface<ctype>, Polygon<ctype, 3> >
+{};
+
 namespace IntersectionDetail {
     template<class ctype>
     using FaceFaceIntersection = std::vector< std::variant< Point<ctype, 3>,
