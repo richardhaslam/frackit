@@ -62,6 +62,17 @@ public:
     }
 
     /*!
+     * \brief Reset everything.
+     */
+    void reset()
+    {
+        headerPrinted_ = false;
+        rejectedCount_ = 0;
+        count_.clear();
+        targetCount_.clear();
+    }
+
+    /*!
      * \brief Reset all counters.
      */
     void resetCounters()
