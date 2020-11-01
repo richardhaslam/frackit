@@ -61,6 +61,7 @@
 #include "algorithms/algo_cylsurface_disk.hh"
 #include "algorithms/algo_cylsurface_face.hh"
 #include "algorithms/algo_cylsurface_quadrilateral.hh"
+#include "algorithms/algo_cylsurface_polygon.hh"
 #include "algorithms/algo_face_face_3d.hh"
 
 namespace Frackit {
@@ -321,6 +322,34 @@ template<class ctype>
 Intersection< Quadrilateral<ctype, 3>, CylinderSurface<ctype> >
 intersect(const Quadrilateral<ctype, 3>& quad, const CylinderSurface<ctype>& cylSurface, ctype eps)
 { return intersect(cylSurface, quad, eps); }
+
+/*!
+ * \ingroup Intersection
+ * \brief Intersect a lateral cylinder surface and a polygon.
+ * \param cylSurface The lateral cylinder surface
+ * \param polygon The polygon
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< CylinderSurface<ctype>, Polygon<ctype, 3> >
+intersect(const CylinderSurface<ctype>& cylSurface, const Polygon<ctype, 3>& polygon, ctype eps)
+{
+    if (!doIntersect(getBoundingBox(cylSurface), getBoundingBox(polygon), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_cylinderSurface_polygon(cylSurface, polygon, eps);
+}
+
+/*!
+ * \ingroup Intersection
+ * \brief Intersect a polygon and a lateral cylinder surface.
+ * \param polygon The polygon
+ * \param cylSurface The lateral cylinder surface
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Polygon<ctype, 3>, CylinderSurface<ctype> >
+intersect(const Polygon<ctype, 3>& polygon, const CylinderSurface<ctype>& cylSurface, ctype eps)
+{ return intersect(cylSurface, polygon, eps); }
 
 /*!
  * \ingroup Intersection
