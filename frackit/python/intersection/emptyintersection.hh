@@ -16,38 +16,40 @@
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  *****************************************************************************/
-#ifndef FRACKIT_PYTHON_IO_GMSH_WRITER_HH
-#define FRACKIT_PYTHON_IO_GMSH_WRITER_HH
+#ifndef FRACKIT_PYTHON_EMPTY_INTERSECTION_HH
+#define FRACKIT_PYTHON_EMPTY_INTERSECTION_HH
 
+#include <string>
 #include <pybind11/pybind11.h>
 
-#include <frackit/io/gmshwriter.hh>
-#include <frackit/entitynetwork/entitynetwork.hh>
-#include <frackit/entitynetwork/containedentitynetwork.hh>
+#include <frackit/intersection/emptyintersection.hh>
+#include <frackit/python/geometry/registerdimensionproperties.hh>
 
 namespace Frackit::Python {
 
 namespace py = pybind11;
 
-template<class ctype>
-void registerGmshWriter(py::module& module)
+namespace Detail {
+
+template<class ct, int wd>
+void registerEmptyIntersection(py::module& module)
 {
-    using EntityNetwork = Frackit::EntityNetwork;
-    using ContainedEntityNetwork = Frackit::ContainedEntityNetwork;
+    using EI = Frackit::EmptyIntersection<wd, ct>;
+    const std::string className = "EmptyIntersection_" + std::to_string(wd);
 
-    py::class_<GmshWriter> cls(module, "GmshWriter");
-    cls.def(py::init<const EntityNetwork&>());
-    cls.def(py::init<const ContainedEntityNetwork&>());
+    py::class_<EI> cls(module, className.c_str());
+    cls.def("name", &EI::name, "return the name of this (empty) geometry");
+    registerDimensionProperties(cls);
+}
 
-    using namespace py::literals;
-    cls.def("write",
-            py::overload_cast<const std::string&, ctype, ctype>(&GmshWriter::template write<ctype>),
-            "fileName"_a, "meshSizeAtEntities"_a, "meshSizeAtBoundary"_a,
-            "write the entity network to a .geo file");
-    cls.def("write",
-            py::overload_cast<const std::string&, ctype>(&GmshWriter::template write<ctype>),
-            "fileName"_a, "meshSizeAtEntities"_a,
-            "write the entity network to a .geo file");
+} // end namespace Detail
+
+template<class ctype>
+void registerEmptyIntersection(py::module& module)
+{
+    Detail::registerEmptyIntersection<ctype, 1>(module);
+    Detail::registerEmptyIntersection<ctype, 2>(module);
+    Detail::registerEmptyIntersection<ctype, 3>(module);
 }
 
 } // end namespace Frackit::Python

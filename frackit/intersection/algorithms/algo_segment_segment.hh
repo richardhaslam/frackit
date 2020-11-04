@@ -54,6 +54,8 @@ intersect_segment_segment(const Segment<ctype, wd>& segment1,
                           const Segment<ctype, wd>& segment2,
                           ctype eps)
 {
+    static_assert(wd == 3, "Segment-Segment algorithm currently only works in 3d");
+
     using ResultType = Intersection<Segment<ctype, wd>, Segment<ctype, wd>>;
     using Segment = Frackit::Segment<ctype, wd>;
     using Direction = typename Segment::Direction;
@@ -108,8 +110,7 @@ intersect_segment_segment(const Segment<ctype, wd>& segment1,
             for (TopExp_Explorer explorer(edge, TopAbs_VERTEX); explorer.More(); explorer.Next())
             {
                 auto curPoint = OCCUtilities::point(TopoDS::Vertex(explorer.Current()));
-                if (!curPoint.isEqual(s1, eps) && !curPoint.isEqual(t1, eps)
-                    && !curPoint.isEqual(s2, eps) && !curPoint.isEqual(t2, eps))
+                if (segment1.contains(curPoint, eps) && segment2.contains(curPoint, eps))
                     return ResultType( std::move(curPoint) );
             }
         }

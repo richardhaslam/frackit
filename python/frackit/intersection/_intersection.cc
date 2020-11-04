@@ -16,40 +16,13 @@
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  *****************************************************************************/
-#ifndef FRACKIT_PYTHON_IO_GMSH_WRITER_HH
-#define FRACKIT_PYTHON_IO_GMSH_WRITER_HH
-
 #include <pybind11/pybind11.h>
 
-#include <frackit/io/gmshwriter.hh>
-#include <frackit/entitynetwork/entitynetwork.hh>
-#include <frackit/entitynetwork/containedentitynetwork.hh>
+#include <frackit/python/intersection/emptyintersection.hh>
+#include <frackit/python/intersection/intersect.hh>
 
-namespace Frackit::Python {
-
-namespace py = pybind11;
-
-template<class ctype>
-void registerGmshWriter(py::module& module)
+PYBIND11_MODULE(_intersection, module)
 {
-    using EntityNetwork = Frackit::EntityNetwork;
-    using ContainedEntityNetwork = Frackit::ContainedEntityNetwork;
-
-    py::class_<GmshWriter> cls(module, "GmshWriter");
-    cls.def(py::init<const EntityNetwork&>());
-    cls.def(py::init<const ContainedEntityNetwork&>());
-
-    using namespace py::literals;
-    cls.def("write",
-            py::overload_cast<const std::string&, ctype, ctype>(&GmshWriter::template write<ctype>),
-            "fileName"_a, "meshSizeAtEntities"_a, "meshSizeAtBoundary"_a,
-            "write the entity network to a .geo file");
-    cls.def("write",
-            py::overload_cast<const std::string&, ctype>(&GmshWriter::template write<ctype>),
-            "fileName"_a, "meshSizeAtEntities"_a,
-            "write the entity network to a .geo file");
+    Frackit::Python::registerEmptyIntersection<double>(module);
+    Frackit::Python::registerIntersectionFunctions<double>(module);
 }
-
-} // end namespace Frackit::Python
-
-#endif

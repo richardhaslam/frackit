@@ -26,6 +26,7 @@
 
 #include <string>
 #include <variant>
+#include <algorithm>
 
 namespace Frackit {
 
