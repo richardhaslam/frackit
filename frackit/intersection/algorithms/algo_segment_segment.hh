@@ -54,6 +54,8 @@ intersect_segment_segment(const Segment<ctype, wd>& segment1,
                           const Segment<ctype, wd>& segment2,
                           ctype eps)
 {
+    static_assert(wd == 3, "Segment-Segment algorithm currently only works in 3d");
+
     using ResultType = Intersection<Segment<ctype, wd>, Segment<ctype, wd>>;
     using Segment = Frackit::Segment<ctype, wd>;
     using Direction = typename Segment::Direction;
