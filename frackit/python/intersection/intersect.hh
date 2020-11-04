@@ -40,6 +40,9 @@
 #include <frackit/intersection/intersectiontraits.hh>
 
 namespace Frackit::Python {
+
+namespace py = pybind11;
+
 namespace Detail {
 
 //! for compatibility with BRepWrapper classes
@@ -157,8 +160,6 @@ void registerIntersectionFunction(py::module& module,
 }
 
 } // end namespace Detail
-
-namespace py = pybind11;
 
 template<class ctype>
 void registerIntersectionFunctions(py::module& module)
