@@ -92,3 +92,22 @@ def Circle(*args, **kwargs):
     if dim == 1: raiseGeometryConstructorException("circle", "notImplemented") # todo
     elif dim == 2: raiseGeometryConstructorException("circle", "notImplemented") # todo
     else: return Circle_3(*args, **kwargs)
+
+############################################
+# Compute the distance between two geometries
+def computeDistance(geo1, geo2):
+
+    """
+    Compute the minimum euclidian distance between geometries.
+    If the second argument (geo2) is a list of geometries, the minimum
+    distance of geo1 to the geometries of geo2 is returned.
+    """
+
+    def doComputation(geo):
+        from frackit.occutilities import getShape, OCCShapeWrapper
+        try: return _geometry.computeDistance(geo1, geo)
+        except: return _geometry.computeDistance(OCCShapeWrapper(getShape(geo1)),
+                                                 OCCShapeWrapper(getShape(geo)))
+
+    if not isinstance(geo2, list): return doComputation(geo2)
+    else: return min([doComputation(g) for g in geo2])

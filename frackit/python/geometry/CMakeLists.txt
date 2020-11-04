@@ -5,6 +5,7 @@ cylinder.hh
 cylindersurface.hh
 direction.hh
 disk.hh
+distance.hh
 ellipsearc.hh
 ellipse.hh
 ellipticalgeometry.hh
