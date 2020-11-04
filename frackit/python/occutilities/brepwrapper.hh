@@ -134,6 +134,24 @@ struct IsBRepWrapper : public std::false_type {};
 template<class S>
 struct IsBRepWrapper<BRepWrapper<S>> : public std::true_type {};
 
+// helper function to obtain the unwrapped geometry type
+template<class Geo, std::enable_if_t<IsBRepWrapper<Geo>::value, int> = 0>
+const typename Geo::Shape& getUnwrappedShape(const Geo& geo)
+{ return geo.get(); }
+
+template<class Geo, std::enable_if_t<!IsBRepWrapper<Geo>::value, int> = 0>
+const Geo& getUnwrappedShape(const Geo& geo)
+{ return geo; }
+
+// helper function to obtain the wrapped geometry type
+template<class Geo, std::enable_if_t<std::is_convertible_v<Geo, TopoDS_Shape>, int> = 0>
+BRepWrapper<Geo> getWrappedShape(const Geo& geo)
+{ return {geo}; }
+
+template<class Geo, std::enable_if_t<!std::is_convertible_v<Geo, TopoDS_Shape>, int> = 0>
+const Geo& getWrappedShape(const Geo& geo)
+{ return geo; }
+
 } // end namespace Frackit::Python::OCCUtilities
 
 #endif

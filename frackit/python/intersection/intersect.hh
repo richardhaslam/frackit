@@ -125,35 +125,18 @@ IntersectionResult<Geo1, Geo2> intersectAndConvert(const Geo1& geo1, const Geo2&
 template<class Geo1, class Geo2>
 IntersectionResult<Geo1, Geo2> intersect(const Geo1& geo1, const Geo2& geo2)
 {
-    constexpr bool isWrapper1 = OCCUtilities::IsBRepWrapper<Geo1>::value;
-    constexpr bool isWrapper2 = OCCUtilities::IsBRepWrapper<Geo2>::value;
-
-    if constexpr (isWrapper1 && isWrapper2)
-        return intersectAndConvert(geo1.get(), geo2.get());
-    else if constexpr(isWrapper1 && !isWrapper2)
-        return intersectAndConvert(geo1.get(), geo2);
-    else if constexpr(!isWrapper1 && isWrapper2)
-        return intersectAndConvert(geo1, geo2.get());
-    else
-        return intersectAndConvert(geo1, geo2);
+    using namespace OCCUtilities;
+    return intersectAndConvert(getUnwrappedShape(geo1), getUnwrappedShape(geo2));
 }
 
 //! convert shape wrapper function arguments into shape representations and forward
 template<class Geo1, class Geo2, class ctype>
 IntersectionResult<Geo1, Geo2> intersect(const Geo1& geo1, const Geo2& geo2, ctype eps)
 {
-    constexpr bool isWrapper1 = OCCUtilities::IsBRepWrapper<Geo1>::value;
-    constexpr bool isWrapper2 = OCCUtilities::IsBRepWrapper<Geo2>::value;
-
-    if constexpr (isWrapper1 && isWrapper2)
-        return intersectAndConvert(geo1.get(), geo2.get(), eps);
-    else if constexpr(isWrapper1 && !isWrapper2)
-        return intersectAndConvert(geo1.get(), geo2, eps);
-    else if constexpr(!isWrapper1 && isWrapper2)
-        return intersectAndConvert(geo1, geo2.get(), eps);
-    else
-        return intersectAndConvert(geo1, geo2, eps);
+    using namespace OCCUtilities;
+    return intersectAndConvert(getUnwrappedShape(geo1), getUnwrappedShape(geo2), eps);
 }
+
 
 template<class Geo1, class Geo2, class ctype>
 void registerIntersectionFunction(py::module& module,
