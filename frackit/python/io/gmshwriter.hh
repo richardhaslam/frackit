@@ -19,6 +19,8 @@
 #ifndef FRACKIT_PYTHON_IO_GMSH_WRITER_HH
 #define FRACKIT_PYTHON_IO_GMSH_WRITER_HH
 
+#include <pybind11/pybind11.h>
+
 #include <frackit/io/gmshwriter.hh>
 #include <frackit/entitynetwork/entitynetwork.hh>
 #include <frackit/entitynetwork/containedentitynetwork.hh>
