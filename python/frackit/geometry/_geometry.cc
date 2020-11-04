@@ -39,6 +39,8 @@
 #include <frackit/python/geometry/box.hh>
 #include <frackit/python/geometry/sphere.hh>
 
+#include <frackit/python/geometry/distance.hh>
+
 PYBIND11_MODULE(_geometry, module)
 {
     Frackit::Python::registerGeometry(module);
@@ -66,4 +68,7 @@ PYBIND11_MODULE(_geometry, module)
     Frackit::Python::registerHollowCylinder<double>(module);
     Frackit::Python::registerBox<double>(module);
     Frackit::Python::registerSphere<double>(module);
+
+    // distance queries
+    Frackit::Python::registerComputeDistance<double>(module);
 }
