@@ -16,8 +16,8 @@
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  *****************************************************************************/
-#ifndef FRACKIT_PYTHON_INTERSECT_HH
-#define FRACKIT_PYTHON_INTERSECT_HH
+#ifndef FRACKIT_PYTHON_GEOMETRY_INTERSECT_HH
+#define FRACKIT_PYTHON_GEOMETRY_INTERSECT_HH
 
 #include <vector>
 #include <variant>
