@@ -27,9 +27,9 @@
 
 #include <TopoDS_Shape.hxx>
 
-#include <frackit/common/extractdimension.hh>
 #include <frackit/precision/defaultepsilon.hh>
 #include <frackit/geometry/point.hh>
+#include <frackit/geometry/dimension.hh>
 
 #include "distance.hh"
 

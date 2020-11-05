@@ -18,11 +18,11 @@
  *****************************************************************************/
 /*!
  * \file
- * \ingroup Common
+ * \ingroup Geometry
  * \brief Type traits to extract the dimensionality of geometric objects.
  */
-#ifndef FRACKIT_COMMON_EXTRACT_DIMENSION_HH
-#define FRACKIT_COMMON_EXTRACT_DIMENSION_HH
+#ifndef FRACKIT_GEOMETRY_DIMENSION_HH
+#define FRACKIT_GEOMETRY_DIMENSION_HH
 
 #include <utility>
 #include <memory>
@@ -42,7 +42,7 @@
 namespace Frackit {
 
 /*!
- * \ingroup Common
+ * \ingroup Geometry
  * \brief Traits class to extract the dimensionalty of a geometry.
  * \note This is the specialization used for internal geometry types
  *       which carry the information of the dimensions themselves.
@@ -146,4 +146,4 @@ constexpr int getWorldDimension(const Geom& g)
 
 } // end namespace Frackit
 
-#endif // FRACKIT_COMMON_EXTRACT_DIMENSION_HH
+#endif // FRACKIT_GEOMETRY_DIMENSION_HH

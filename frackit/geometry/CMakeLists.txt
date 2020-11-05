@@ -6,6 +6,7 @@ CMakeLists.txt
 ctype.hh
 cylinder.hh
 cylindersurface.hh
+dimension.hh
 direction.hh
 disk.hh
 ellipsearc.hh

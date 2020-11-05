@@ -35,7 +35,7 @@
 #include <TopoDS_Shape.hxx>
 
 #include <frackit/common/id.hh>
-#include <frackit/common/extractdimension.hh>
+#include <frackit/geometry/dimension.hh>
 
 #include <frackit/precision/defaultepsilon.hh>
 #include <frackit/precision/precision.hh>

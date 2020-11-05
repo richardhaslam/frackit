@@ -31,7 +31,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Solid.hxx>
 
-#include <frackit/common/extractdimension.hh>
+#include <frackit/geometry/dimension.hh>
 
 namespace Frackit {
 namespace ConstraintImpl {

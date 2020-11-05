@@ -28,7 +28,7 @@
 
 #include <frackit/magnitude/magnitude.hh>
 #include <frackit/intersection/emptyintersection.hh>
-#include <frackit/common/extractdimension.hh>
+#include <frackit/geometry/dimension.hh>
 
 namespace Frackit {
 namespace ConstraintImpl {

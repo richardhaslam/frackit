@@ -29,7 +29,8 @@
 #include <stdexcept>
 
 #include <frackit/geometry/line.hh>
-#include <frackit/common/extractdimension.hh>
+#include <frackit/geometry/dimension.hh>
+
 #include <frackit/occ/breputilities.hh>
 #include <frackit/precision/precision.hh>
 

@@ -24,7 +24,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
 
-#include <frackit/common/extractdimension.hh>
+#include <frackit/geometry/dimension.hh>
 #include <frackit/python/geometry/brepwrapper.hh>
 
 namespace Frackit::Python {
