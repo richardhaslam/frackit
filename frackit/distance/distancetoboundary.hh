@@ -148,6 +148,27 @@ computeDistanceToBoundary(const Point<ctype1, 3>& p,
 
 /*!
  * \ingroup Distance
+ * \brief Compute the distance of a point
+ *        to the surface of a box.
+ * \param p The point
+ * \param box The box
+ */
+template<class ctype1, class ctype2>
+PromotedType<ctype1, ctype2>
+computeDistanceToBoundary(const Point<ctype1, 3>& p,
+                          const Box<ctype2>& box)
+{
+    using std::min;
+    using ctype = PromotedType<ctype1, ctype2>;
+
+    ctype distance = std::numeric_limits<ctype>::max();
+    for (unsigned int i = 0; i < box.numFaces(); ++i)
+        distance = min(distance, computeDistance(box.face(i), p));
+    return distance;
+}
+
+/*!
+ * \ingroup Distance
  * \brief Compute the distance of a geometry
  *        to the bounding circles of a cylinder surface.
  * \param geo The geometry
