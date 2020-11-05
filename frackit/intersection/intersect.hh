@@ -56,6 +56,7 @@
 #include "algorithms/algo_quadrilateral_line.hh"
 #include "algorithms/algo_quadrilateral_quadrilateral.hh"
 #include "algorithms/algo_quadrilateral_disk.hh"
+#include "algorithms/algo_polygon_disk.hh"
 #include "algorithms/algo_polygon_polygon.hh"
 #include "algorithms/algo_disk_disk.hh"
 #include "algorithms/algo_cylsurface_disk.hh"
@@ -266,6 +267,34 @@ template<class ctype>
 Intersection< Disk<ctype>, Quadrilateral<ctype, 3> >
 intersect(const Disk<ctype>& disk, const Quadrilateral<ctype, 3>& quad, ctype eps)
 { return intersect(quad, disk, eps); }
+
+/*!
+ * \ingroup Intersection
+ * \brief Intersect a polygon and a disk in 3d space.
+ * \param polygon The polygon
+ * \param disk The disk
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Polygon<ctype, 3>, Disk<ctype> >
+intersect(const Polygon<ctype, 3>& polygon, const Disk<ctype>& disk, ctype eps)
+{
+    if (!doIntersect(getBoundingBox(polygon), getBoundingBox(disk), eps))
+        return {EmptyIntersection<3, ctype>()};
+    return IntersectionAlgorithms::intersect_polygon_disk(polygon, disk, eps);
+}
+
+/*!
+ * \ingroup Intersection
+ * \brief Intersect a disk and a polygon in 3d space.
+ * \param polygon The polygon
+ * \param quad The quadrilateral
+ * \param eps Tolerance to be used for floating point comparisons
+ */
+template<class ctype>
+Intersection< Disk<ctype>, Polygon<ctype, 3> >
+intersect(const Disk<ctype>& disk, const Polygon<ctype, 3>& polygon, ctype eps)
+{ return intersect(polygon, disk, eps); }
 
 /*!
  * \ingroup Intersection

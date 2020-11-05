@@ -195,6 +195,22 @@ struct IntersectionTraits< Disk<ctype>, Quadrilateral<ctype, 3> >
 : public IntersectionTraits< Quadrilateral<ctype, 3>, Disk<ctype> >
 {};
 
+//! Result type of the intersection of a polygon and a disk in 3d space
+template<class ctype>
+struct IntersectionTraits< Polygon<ctype, 3>, Disk<ctype> >
+{
+    using type = std::variant< Point<ctype, 3>,
+                               Segment<ctype, 3>,
+                               TopoDS_Face,
+                               EmptyIntersection<3> >;
+};
+
+//! Result type of the intersection of a disk and a polygon in 3d space
+template<class ctype>
+struct IntersectionTraits< Disk<ctype>, Polygon<ctype, 3> >
+: public IntersectionTraits< Polygon<ctype, 3>, Disk<ctype> >
+{};
+
 //! Result type of the intersection of a cylinder surface and a disk
 template<class ctype>
 struct IntersectionTraits< CylinderSurface<ctype>, Disk<ctype> >
