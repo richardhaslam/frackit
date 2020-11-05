@@ -69,9 +69,6 @@ namespace Detail {
         cls.def("add", &Wrapper::add<SolidWrapper>, "Add a solid to the compound");
     }
 
-    // convenience function to create wrapper around compound shape
-    CompoundWrapper makeCompoundWrapper() { return {}; }
-
 } // end namespace Detail
 
 void registerBRepWrappers(pybind11::module& module)
@@ -84,8 +81,6 @@ void registerBRepWrappers(pybind11::module& module)
     Detail::registerBRepWrapper<TopoDS_Shell>(module, "OCCShellWrapper");
     Detail::registerBRepWrapper<TopoDS_Solid>(module, "OCCSolidWrapper");
     Detail::registerCompoundWrapper(module);
-
-    module.def("makeCompoundWrapper", &Detail::makeCompoundWrapper, "Creates an empty compound to which shapes can be added");
 }
 
 } // end namespace Frackit::Python
