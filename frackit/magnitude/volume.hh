@@ -38,6 +38,15 @@ namespace Frackit {
 
 /*!
  * \ingroup Magnitude
+ * \brief Returns the volume of an internal geometry
+ *        that has a volume() function available.
+ */
+template<class Geometry>
+typename Geometry::ctype computeVolume(const Geometry& geometry)
+{ return geometry.volume(); }
+
+/*!
+ * \ingroup Magnitude
  * \brief Returns the volume of a TopoDS_Solid.
  * \param solid The solid
  * \param eps Tolerance value to be used

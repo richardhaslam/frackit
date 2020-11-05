@@ -29,9 +29,12 @@
 
 #include <gp_Pnt.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
 
 #include <frackit/precision/precision.hh>
+
 #include "length.hh"
 #include "area.hh"
 #include "volume.hh"
@@ -80,6 +83,14 @@ ctype computeMagnitude(const TopoDS_Edge& edge)
 
 /*!
  * \ingroup Magnitude
+ * \brief Returns the length of a BRep wire
+ */
+template<class ctype = double>
+ctype computeMagnitude(const TopoDS_Wire& wire)
+{ return computeLength(wire); }
+
+/*!
+ * \ingroup Magnitude
  * \brief Returns the area of a BRep face
  * \param face The face
  * \param eps Tolerance value to be used
@@ -92,6 +103,21 @@ ctype computeMagnitude(const TopoDS_Face& face,
                        ctype eps = Precision<ctype>::confusion(),
                        const gp_Pnt& loc = gp_Pnt())
 { return computeArea(face, eps, loc); }
+
+/*!
+ * \ingroup Magnitude
+ * \brief Returns the area of a BRep shell
+ * \param shell The shell
+ * \param eps Tolerance value to be used
+ * \param loc A location; defaults to the origin, however,
+ *            higher precision is achieved if a point close
+ *            to the actual face is chosen.
+ */
+template<class ctype = double>
+ctype computeMagnitude(const TopoDS_Shell& shell,
+                       ctype eps = Precision<ctype>::confusion(),
+                       const gp_Pnt& loc = gp_Pnt())
+{ return computeArea(shell, eps, loc); }
 
 /*!
  * \ingroup Magnitude
