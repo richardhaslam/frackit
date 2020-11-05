@@ -15,7 +15,9 @@ ellipticalgeometry.hh
 emptyintersection.hh
 geometry.hh
 hollowcylinder.hh
+intersect.hh
 line.hh
+magnitude.hh
 plane.hh
 point.hh
 polygon.hh

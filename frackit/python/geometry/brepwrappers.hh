@@ -23,6 +23,8 @@
 #include <pybind11/pybind11.h>
 
 #include <TopoDS_Shape.hxx>
+
+#include "registerdimensionproperties.hh"
 #include "brepwrapper.hh"
 
 namespace Frackit::Python {
@@ -36,6 +38,7 @@ namespace Detail {
         using Wrapper = BRepWrapper<Shape>;
         pybind11::class_<Wrapper> cls(module, className.c_str());
         cls.def("name", &Wrapper::name, "return the name of the wrapper");
+        registerDimensionProperties(cls);
 
         // add constructor from other shape wrappers
         if constexpr(std::is_same_v<Shape, TopoDS_Shape>)
@@ -57,6 +60,7 @@ namespace Detail {
         using Wrapper = CompoundWrapper;
         pybind11::class_<Wrapper> cls(module, "OCCCompoundWrapper");
         cls.def(pybind11::init<>());
+        registerDimensionProperties(cls);
 
         // functions to add shapes to the compound
         cls.def("name", &Wrapper::name, "return the name of the wrapper");

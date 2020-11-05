@@ -26,12 +26,15 @@
 #define FRACKIT_MAGNITUDE_AREA_HH
 
 #include <cmath>
+#include <numeric>
 
 #include <gp_Pnt.hxx>
-#include <TopoDS_Face.hxx>
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
 
+#include <frackit/occ/breputilities.hh>
 #include <frackit/precision/precision.hh>
 
 namespace Frackit {
@@ -62,6 +65,26 @@ ctype computeArea(const TopoDS_Face& face,
     GProp_GProps gprops(loc);
     BRepGProp::SurfaceProperties(face, gprops, eps);
     return gprops.Mass();
+}
+
+/*!
+ * \ingroup Magnitude
+ * \brief Returns the area of a TopoDS_Shell.
+ * \param shell The shell
+ * \param eps Tolerance value to be used
+ * \param loc A location; defaults to the origin, however,
+ *            higher precision is achieved if a point close
+ *            to the actual face is chosen.
+ */
+template<class ctype = double>
+ctype computeArea(const TopoDS_Shell& shell,
+                  ctype eps = Precision<ctype>::confusion(),
+                  const gp_Pnt& loc = gp_Pnt())
+{
+    const auto faces = OCCUtilities::getFaces(shell);
+    auto addArea = [&] (const ctype& cur, const TopoDS_Face& face)
+                       { return cur + computeArea(face, eps, loc); };
+    return std::accumulate(faces.begin(), faces.end(), ctype(0.0), addArea);
 }
 
 } // end namespace Frackit

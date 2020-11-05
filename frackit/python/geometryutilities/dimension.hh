@@ -16,30 +16,42 @@
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  *****************************************************************************/
-#ifndef FRACKIT_PYTHON_GEOMETRY_REGISTER_DIMENSION_PROPERTIES_HH
-#define FRACKIT_PYTHON_GEOMETRY_REGISTER_DIMENSION_PROPERTIES_HH
+#ifndef FRACKIT_PYTHON_GEOMETRY_DIMENSION_HH
+#define FRACKIT_PYTHON_GEOMETRY_DIMENSION_HH
 
-#include <pybind11/pybind11.h>
-#include <frackit/python/geometryutilities/dimension.hh>
+#include <type_traits>
+
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Compound.hxx>
+
+#include <frackit/common/extractdimension.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 
 namespace Frackit::Python {
 
-namespace py = pybind11;
+//! import traits from Frackit namespace
+template<class Geometry>
+struct DimensionalityTraits
+: public Frackit::DimensionalityTraits<Geometry>
+{};
 
-template<class Geometry, class... options>
-void registerDimensionProperties(py::class_<Geometry, options...>& cls)
-{
-    if constexpr (HasFixedDimensionality<Geometry>::value)
-        cls.def_property_readonly_static("myDimension",
-                                         [] (py::object /*self*/)
-                                         { return DimensionalityTraits<Geometry>::geometryDimension(); },
-                                         "dimension of the geometry");
+//! dimensionality traits for brep shape wrappers
+template<class Shape>
+struct DimensionalityTraits<BRepWrapper<Shape>>
+: public Frackit::DimensionalityTraits<Shape>
+{};
 
-    cls.def_property_readonly_static("worldDimension",
-                                     [] (py::object /*self*/)
-                                     { return DimensionalityTraits<Geometry>::worldDimension(); },
-                                     "space dimension");
-}
+//! Helper struct to check if a geometry has dimensionality known at compile-time
+template<class Geometry>
+struct HasFixedDimensionality : public std::true_type {};
+template<>
+struct HasFixedDimensionality<TopoDS_Shape> : public std::false_type {};
+template<>
+struct HasFixedDimensionality<TopoDS_Compound> : public std::false_type {};
+
+template<class Shape>
+struct HasFixedDimensionality<BRepWrapper<Shape>>
+: public HasFixedDimensionality<Shape> {};
 
 } // end namespace Frackit::Python
 

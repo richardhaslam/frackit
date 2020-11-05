@@ -115,7 +115,7 @@ public:
     //! Return the radius of the cylinder
     ctype radius() const { return bottom_.radius(); }
     //! Return the area of this surface
-    ctype area() { return 2.0*M_PI*radius()*height(); }
+    ctype area() const { return 2.0*M_PI*radius()*height(); }
 
     //! Return the circle describing the top boundary of this surface
     const Circle& upperBoundingCircle() const { return top_; }
