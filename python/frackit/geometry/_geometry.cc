@@ -39,6 +39,7 @@
 #include <frackit/python/geometry/box.hh>
 #include <frackit/python/geometry/sphere.hh>
 #include <frackit/python/geometry/brepwrappers.hh>
+#include <frackit/python/geometry/emptyintersection.hh>
 
 #include <frackit/python/geometry/distance.hh>
 #include <frackit/python/geometry/distancetoboundary.hh>
@@ -73,6 +74,9 @@ PYBIND11_MODULE(_geometry, module)
 
     // wrapper classes for OpenCascade BRep shapes
     Frackit::Python::registerBRepWrappers(module);
+
+    // register empty intersection type as geometry class
+    Frackit::Python::registerEmptyIntersection<double>(module);
 
     // distance queries
     Frackit::Python::registerComputeDistance<double>(module);

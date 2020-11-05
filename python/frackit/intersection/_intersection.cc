@@ -18,11 +18,9 @@
  *****************************************************************************/
 #include <pybind11/pybind11.h>
 
-#include <frackit/python/intersection/emptyintersection.hh>
 #include <frackit/python/intersection/intersect.hh>
 
 PYBIND11_MODULE(_intersection, module)
 {
-    Frackit::Python::registerEmptyIntersection<double>(module);
     Frackit::Python::registerIntersectionFunctions<double>(module);
 }
