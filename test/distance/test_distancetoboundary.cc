@@ -4,9 +4,11 @@
 #include <variant>
 #include <vector>
 
+#include <frackit/geometry/box.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/segment.hh>
+#include <frackit/geometry/polygon.hh>
 
 #include <frackit/distance/distancetoboundary.hh>
 #include <frackit/precision/precision.hh>
@@ -22,6 +24,8 @@ int main()
     using Vector = typename Direction::Vector;
     using Segment = Frackit::Segment<ctype, 3>;
     using Quad = Frackit::Quadrilateral<ctype, 3>;
+    using Polygon = Frackit::Polygon<ctype, 3>;
+    using Box = Frackit::Box<ctype>;
 
     // base directions
     Direction e1(Vector(1.0, 0.0, 0.0));
@@ -70,6 +74,37 @@ int main()
         if (!std::holds_alternative<Segment>(is2)) throw std::runtime_error("Expected segment intersection");
         d = computeDistanceToBoundary(Frackit::OCCUtilities::getShape(std::get<Segment>(is2)), quad);
         if (abs(d - 1e-6*f) > eps) printAndThrow(d, "Test 6 failed");
+
+        // do the same with the quadrilateral represented by a polygon
+        using CornerVector = std::vector<Point>;
+        const Polygon poly(CornerVector{{Point(-0.5*f, -0.5*f, 0.0), Point(0.5*f, -0.5*f, 0.0),
+                                         Point(0.5*f,  0.5*f, 0.0), Point(-0.5*f,  0.5*f, 0.0)}});
+        const auto is3 = intersect(poly, disk2, eps);
+        if (!std::holds_alternative<Segment>(is3)) throw std::runtime_error("Expected segment intersection");
+        d = computeDistanceToBoundary(Frackit::OCCUtilities::getShape(std::get<Segment>(is3)), poly);
+        if (abs(d - 1e-6*f) > eps) printAndThrow(d, "Test 7 failed");
+
+        // test distance of points to a box
+        Box box(0.0, 0.0, 0.0, f, f, f);
+        d = computeDistanceToBoundary(Point(0.0, 0.5*f, 0.5*f), Frackit::OCCUtilities::getShape(box));
+        if ( d > eps ) printAndThrow(d, "Test 8 failed");
+
+        d = computeDistanceToBoundary(Point(0.0, 0.0, 0.0), Frackit::OCCUtilities::getShape(box));
+        if ( d > eps ) printAndThrow(d, "Test 9 failed");
+
+        using std::sqrt;
+        d = computeDistanceToBoundary(Point(-f, -f, -f), Frackit::OCCUtilities::getShape(box));
+        if ( abs( sqrt(3.0)*f - d) > eps ) printAndThrow(d, "Test 10 failed");
+
+        // test the same with implicit overload for boxes
+        d = computeDistanceToBoundary(Point(0.0, 0.5*f, 0.5*f), box);
+        if ( d > eps ) printAndThrow(d, "Test 11 failed");
+
+        d = computeDistanceToBoundary(Point(0.0, 0.0, 0.0), box);
+        if ( d > eps ) printAndThrow(d, "Test 12 failed");
+
+        d = computeDistanceToBoundary(Point(-f, -f, -f), box);
+        if ( abs( sqrt(3.0)*f - d) > eps ) printAndThrow(d, "Test 13 failed");
     }
 
     std::cout << "All tests passed" << std::endl;

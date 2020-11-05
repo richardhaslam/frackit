@@ -21,6 +21,11 @@
  * \ingroup Distance
  * \brief Contains functionality for computing the distance
  *        of a geometry to the boundary of another geometry.
+ *        The difference to the distance computation functions
+ *        is that those return a distance of zero if the geometries
+ *        intersect, while here, it is only zero if it intersects the boundary.
+ *        For instance, the distance of a point to a box is zero if the point
+ *        is inside the box, but the distance to the box surface may be non-zero.
  */
 #ifndef FRACKIT_DISTANCE_TO_BOUNDARY_HH
 #define FRACKIT_DISTANCE_TO_BOUNDARY_HH
@@ -32,6 +37,7 @@
 #include <Extrema_ExtAlgo.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <BRepTools.hxx>
+#include <BRepClass3d.hxx>
 
 #include <frackit/precision/precision.hh>
 #include <frackit/geometry/disk.hh>
@@ -137,6 +143,27 @@ computeDistanceToBoundary(const Point<ctype1, 3>& p,
     ctype distance = std::numeric_limits<ctype>::max();
     for (unsigned int i = 0; i < polygon.numEdges(); ++i)
         distance = min(distance, computeDistance(polygon.edge(i), p));
+    return distance;
+}
+
+/*!
+ * \ingroup Distance
+ * \brief Compute the distance of a point
+ *        to the surface of a box.
+ * \param p The point
+ * \param box The box
+ */
+template<class ctype1, class ctype2>
+PromotedType<ctype1, ctype2>
+computeDistanceToBoundary(const Point<ctype1, 3>& p,
+                          const Box<ctype2>& box)
+{
+    using std::min;
+    using ctype = PromotedType<ctype1, ctype2>;
+
+    ctype distance = std::numeric_limits<ctype>::max();
+    for (unsigned int i = 0; i < box.numFaces(); ++i)
+        distance = min(distance, computeDistance(box.face(i), p));
     return distance;
 }
 
@@ -295,6 +322,32 @@ computeDistanceToBoundary(const Geo& geo,
 {
     return computeDistance(OCCUtilities::getShape(geo),
                            BRepTools::OuterWire(face),
+                           deflection,
+                           extFlag,
+                           extAlgo);
+}
+
+/*!
+ * \ingroup Distance
+ * \brief Compute the distance of a geometry
+ *        to the boundary of a TopoDS_Solid.
+ * \param geo The geometry
+ * \param solid The TopoDS_Solid
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class Geo>
+typename Geo::ctype
+computeDistanceToBoundary(const Geo& geo,
+                          const TopoDS_Solid& solid,
+                          typename Geo::ctype deflection
+                          = Precision<typename Geo::ctype>::confusion(),
+                          Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                          Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{
+    return computeDistance(OCCUtilities::getShape(geo),
+                           BRepClass3d::OuterShell(solid),
                            deflection,
                            extFlag,
                            extAlgo);
