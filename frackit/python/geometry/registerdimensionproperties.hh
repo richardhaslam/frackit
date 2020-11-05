@@ -20,6 +20,7 @@
 #define FRACKIT_PYTHON_GEOMETRY_REGISTER_DIMENSION_PROPERTIES_HH
 
 #include <pybind11/pybind11.h>
+#include <frackit/python/geometryutilities/dimension.hh>
 
 namespace Frackit::Python {
 
@@ -28,8 +29,16 @@ namespace py = pybind11;
 template<class Geometry, class... options>
 void registerDimensionProperties(py::class_<Geometry, options...>& cls)
 {
-    cls.def_property_readonly_static("myDimension", [] (py::object /*self*/) { return Geometry::myDimension(); }, "dimension of the geometry");
-    cls.def_property_readonly_static("worldDimension", [] (py::object /*self*/) { return Geometry::worldDimension(); }, "space dimension");
+    if constexpr (HasFixedDimensionality<Geometry>::value)
+        cls.def_property_readonly_static("myDimension",
+                                         [] (py::object /*self*/)
+                                         { return DimensionalityTraits<Geometry>::geometryDimension(); },
+                                         "dimension of the geometry");
+
+    cls.def_property_readonly_static("worldDimension",
+                                     [] (py::object /*self*/)
+                                     { return DimensionalityTraits<Geometry>::worldDimension(); },
+                                     "space dimension");
 }
 
 } // end namespace Frackit::Python
