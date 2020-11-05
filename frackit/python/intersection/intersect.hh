@@ -180,6 +180,9 @@ void registerIntersectionFunctions(py::module& module)
     Detail::registerIntersectionFunction<Quad, Disk, ctype>(module, "Quadrilateral", "Disk");
     Detail::registerIntersectionFunction<Disk, Quad, ctype>(module, "Disk", "Quadrilateral");
 
+    Detail::registerIntersectionFunction<Quad, Disk, ctype>(module, "Polygon", "Disk");
+    Detail::registerIntersectionFunction<Disk, Quad, ctype>(module, "Disk", "Polygon");
+
     Detail::registerIntersectionFunction<FaceWrapper, Disk, ctype>(module, "TopoDS_Face_Wrapper", "Disk");
     Detail::registerIntersectionFunction<Disk, FaceWrapper, ctype>(module, "Disk", "TopoDS_Face_Wrapper");
 

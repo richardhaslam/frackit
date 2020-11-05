@@ -19,16 +19,17 @@
 /*!
  * \file
  * \brief Contains the intersection algorithm
- *        between a quadrilateral and a disk.
+ *        between a polygon and a disk.
  */
-#ifndef FRACKIT_QUADRILATERAL_DISK_INTERSECTION_HH
-#define FRACKIT_QUADRILATERAL_DISK_INTERSECTION_HH
+#ifndef FRACKIT_POLYGON_DISK_INTERSECTION_HH
+#define FRACKIT_POLYGON_DISK_INTERSECTION_HH
 
 #include <cmath>
 
 #include <frackit/precision/precision.hh>
-#include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/segment.hh>
 
 #include <frackit/intersection/intersectiontraits.hh>
 #include "algo_planargeom_planargeom.hh"
@@ -36,25 +37,27 @@
 namespace Frackit {
 namespace IntersectionAlgorithms {
 
-//! Intersect two disks
+//! Intersect a polygon and a disk
 //! The result can be:
 //! - a surface bounded by segments and/or elliptical arcs
 //! - a segment
 //! - a point
 //! - no intersection
 template<class ctype>
-Intersection< Quadrilateral<ctype, 3>, Disk<ctype> >
-intersect_quadrilateral_disk(const Quadrilateral<ctype, 3>& quad,
+Intersection< Polygon<ctype, 3>, Disk<ctype> >
+intersect_polygon_disk(const Polygon<ctype, 3>& polygon,
                              const Disk<ctype>& disk,
                              ctype eps)
 {
+    using Segment = Segment<ctype, 3>;
+    ctype charLength = 0.0;
+
     using std::max;
-    ctype charLength = disk.majorAxisLength()*disk.majorAxisLength();
-    for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
-        charLength = max(charLength, quad.edge(edgeIdx).squaredLength());
+    for (unsigned int i = 0; i < polygon.numCorners(); ++i)
+        charLength = max(charLength, Segment(polygon.center(), polygon.corner(i)).squaredLength());
 
     using std::sqrt;
-    return intersect_planarGeometry_planarGeometry(quad, disk,
+    return intersect_planarGeometry_planarGeometry(polygon, disk,
                                                    sqrt(charLength),
                                                    eps, eps, eps);
 }
@@ -62,4 +65,4 @@ intersect_quadrilateral_disk(const Quadrilateral<ctype, 3>& quad,
 } // end namespace IntersectionAlgorithms
 } // end namespace Frackit
 
-#endif // FRACKIT_QUADRILATERAL_DISK_INTERSECTION_HH
+#endif // FRACKIT_POLYGON_DISK_INTERSECTION_HH
