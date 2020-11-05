@@ -39,7 +39,7 @@
 #include <frackit/occ/gputilities.hh>
 
 #include <frackit/geometry/cylindersurface.hh>
-#include <frackit/common/extractdimension.hh>
+#include <frackit/geometry/dimension.hh>
 
 #include <frackit/intersection/intersectiontraits.hh>
 #include <frackit/intersection/emptyintersection.hh>

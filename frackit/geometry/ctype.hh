@@ -38,7 +38,7 @@
 namespace Frackit {
 
 /*!
- * \ingroup Common
+ * \ingroup Geometry
  * \brief Traits class to extract the coordinate type from a geometry.
  * \note This is the specialization used for internal geometry types
  *       which carry the information of the coordinate type themselves.

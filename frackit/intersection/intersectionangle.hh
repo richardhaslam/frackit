@@ -55,7 +55,7 @@
 
 #include <frackit/geometryutilities/name.hh>
 #include <frackit/geometryutilities/isplanar.hh>
-#include <frackit/common/extractdimension.hh>
+#include <frackit/geometry/dimension.hh>
 
 #include <frackit/occ/gputilities.hh>
 #include <frackit/occ/geomutilities.hh>

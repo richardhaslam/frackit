@@ -31,7 +31,6 @@
 #include <BRepTools.hxx>
 #include <TopoDS_Face.hxx>
 
-#include <frackit/common/extractdimension.hh>
 #include <frackit/precision/defaultepsilon.hh>
 
 #include <frackit/geometry/point.hh>
@@ -39,6 +38,7 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/dimension.hh>
 
 #include <frackit/geometryutilities/name.hh>
 

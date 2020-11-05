@@ -1,5 +1,4 @@
 install(FILES
-extractdimension.hh
 id.hh
 idpair.hh
 math.hh
