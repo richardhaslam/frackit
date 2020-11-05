@@ -25,9 +25,18 @@
 // supported (registered) geometry types (so far)
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/segment.hh>
+#include <frackit/geometry/vector.hh>
+#include <frackit/geometry/circle.hh>
+#include <frackit/geometry/ellipse.hh>
+#include <frackit/geometry/ellipsearc.hh>
+#include <frackit/geometry/triangle.hh>
 #include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/box.hh>
+#include <frackit/geometry/sphere.hh>
 #include <frackit/geometry/cylinder.hh>
+#include <frackit/geometry/hollowcylinder.hh>
+#include <frackit/geometry/cylindersurface.hh>
 #include <frackit/python/geometry/brepwrapper.hh>
 #include <frackit/python/common/extractctype.hh>
 
@@ -74,11 +83,24 @@ template<class ctype>
 void registerMagnitude(py::module& module)
 {
     using namespace Frackit;
+    Detail::registerMagnitude< Vector<ctype, 3> >(module);
     Detail::registerMagnitude< Segment<ctype, 3> >(module);
+    Detail::registerMagnitude< Circle<ctype, 3> >(module);
+    Detail::registerMagnitude< Ellipse<ctype, 3> >(module);
+    Detail::registerMagnitude< EllipseArc<ctype, 3> >(module);
     Detail::registerMagnitude< Disk<ctype> >(module);
+    Detail::registerMagnitude< Triangle<ctype, 3> >(module);
     Detail::registerMagnitude< Quadrilateral<ctype, 3> >(module);
+    Detail::registerMagnitude< Polygon<ctype, 3> >(module);
+    Detail::registerMagnitude< CylinderSurface<ctype> >(module);
+    Detail::registerMagnitude< Cylinder<ctype> >(module);
+    Detail::registerMagnitude< HollowCylinder<ctype> >(module);
+    Detail::registerMagnitude< Box<ctype> >(module);
+    Detail::registerMagnitude< Sphere<ctype> >(module);
     Detail::registerMagnitude< EdgeWrapper >(module);
+    Detail::registerMagnitude< WireWrapper >(module);
     Detail::registerMagnitude< FaceWrapper >(module);
+    Detail::registerMagnitude< ShellWrapper >(module);
     Detail::registerMagnitude< SolidWrapper >(module);
 }
 
