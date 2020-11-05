@@ -16,8 +16,8 @@
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  *****************************************************************************/
-#ifndef FRACKIT_PYTHON_OCC_BREP_WRAPPER_HH
-#define FRACKIT_PYTHON_OCC_BREP_WRAPPER_HH
+#ifndef FRACKIT_PYTHON_GEOMETRY_OCC_BREP_WRAPPER_HH
+#define FRACKIT_PYTHON_GEOMETRY_OCC_BREP_WRAPPER_HH
 
 #include <type_traits>
 
@@ -33,7 +33,7 @@
 
 #include <frackit/geometryutilities/name.hh>
 
-namespace Frackit::Python::OCCUtilities {
+namespace Frackit::Python {
 
 // Wrapper class to be used around occ brep classes
 template<class S>
@@ -152,6 +152,6 @@ template<class Geo, std::enable_if_t<!std::is_convertible_v<Geo, TopoDS_Shape>, 
 const Geo& getWrappedShape(const Geo& geo)
 { return geo; }
 
-} // end namespace Frackit::Python::OCCUtilities
+} // end namespace Frackit::Python
 
 #endif

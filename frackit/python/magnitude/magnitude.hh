@@ -28,7 +28,7 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/box.hh>
 #include <frackit/geometry/cylinder.hh>
-#include <frackit/python/occutilities/brepwrapper.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 #include <frackit/python/common/extractctype.hh>
 
 #include <frackit/magnitude/magnitude.hh>
@@ -44,30 +44,13 @@ namespace Detail {
     template<class Geo, class Domain>
     typename CoordinateTypeTraits<Geo>::type
     computeContainedMagnitude(const Geo& geo, const Domain& domain)
-    {
-        static constexpr bool isWrapperGeo = OCCUtilities::IsBRepWrapper<Geo>::value;
-        static constexpr bool isWrapperDomain = OCCUtilities::IsBRepWrapper<Domain>::value;
-
-        if constexpr (isWrapperGeo && isWrapperDomain)
-            return Frackit::computeContainedMagnitude(geo.get(), domain.get());
-        else if constexpr (isWrapperGeo && !isWrapperDomain)
-            return Frackit::computeContainedMagnitude(geo.get(), domain);
-        else if constexpr (!isWrapperGeo && isWrapperDomain)
-            return Frackit::computeContainedMagnitude(geo, domain.get());
-        else
-            return Frackit::computeContainedMagnitude(geo, domain);
-    }
+    { return Frackit::computeContainedMagnitude(getUnwrappedShape(geo), getUnwrappedShape(domain)); }
 
     //! overload for computation of the magnitude of the contained part of a shape wrapper
     template<class Geo>
     typename CoordinateTypeTraits<Geo>::type
     computeMagnitude(const Geo& geo)
-    {
-        if constexpr (OCCUtilities::IsBRepWrapper<Geo>::value)
-            return Frackit::computeMagnitude(geo.get());
-        else
-            return Frackit::computeMagnitude(geo);
-    }
+    { return Frackit::computeMagnitude(getUnwrappedShape(geo)); }
 
     template<class Geo>
     void registerMagnitude(py::module& module)
@@ -91,7 +74,6 @@ template<class ctype>
 void registerMagnitude(py::module& module)
 {
     using namespace Frackit;
-    using namespace Frackit::Python::OCCUtilities;
     Detail::registerMagnitude< Segment<ctype, 3> >(module);
     Detail::registerMagnitude< Disk<ctype> >(module);
     Detail::registerMagnitude< Quadrilateral<ctype, 3> >(module);
@@ -104,7 +86,6 @@ template<class ctype>
 void registerContainedMagnitude(py::module& module)
 {
     using namespace Frackit;
-    using namespace Frackit::Python::OCCUtilities;
     Detail::registerContainedMagnitude< Segment<ctype, 3>, Box<ctype> >(module);
     Detail::registerContainedMagnitude< Segment<ctype, 3>, Cylinder<ctype> >(module);
     Detail::registerContainedMagnitude< Segment<ctype, 3>, SolidWrapper >(module);

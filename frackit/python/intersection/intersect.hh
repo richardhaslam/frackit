@@ -34,8 +34,8 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 
-#include <frackit/python/occutilities/brepwrapper.hh>
 #include <frackit/intersection/intersect.hh>
 #include <frackit/intersection/intersectiontraits.hh>
 
@@ -47,13 +47,13 @@ namespace Detail {
 
 //! for compatibility with BRepWrapper classes
 template<class Geo> struct UnwrapperHelper { using type = Geo; };
-template<class Geo> struct UnwrapperHelper<OCCUtilities::BRepWrapper<Geo>> { using type = Geo; };
+template<class Geo> struct UnwrapperHelper<BRepWrapper<Geo>> { using type = Geo; };
 template<class Geo> using UnwrappedType = typename UnwrapperHelper<Geo>::type;
 
 //! the converted type of an individual geometry type
 template<class Geo>
 using ConvertedType = std::conditional_t< std::is_convertible_v<Geo, TopoDS_Shape>,
-                                          OCCUtilities::BRepWrapper<Geo>,
+                                          BRepWrapper<Geo>,
                                           Geo >;
 
 template<class T> struct IsVector : public std::false_type {};
@@ -88,7 +88,7 @@ using IntersectionResult = ConvertedIntersection<Frackit::Intersection<Unwrapped
 
 //! convert shape into wrapper
 template<class Geo, std::enable_if_t<std::is_convertible_v<Geo, TopoDS_Shape>, int> = 0>
-OCCUtilities::BRepWrapper<Geo> convertShape(const Geo& geo) { return {geo}; }
+BRepWrapper<Geo> convertShape(const Geo& geo) { return {geo}; }
 
 template<class Geo, std::enable_if_t<!std::is_convertible_v<Geo, TopoDS_Shape>, int> = 0>
 Geo convertShape(const Geo& geo) { return geo; }
@@ -127,19 +127,12 @@ IntersectionResult<Geo1, Geo2> intersectAndConvert(const Geo1& geo1, const Geo2&
 //! convert shape wrapper function arguments into shape representations and forward
 template<class Geo1, class Geo2>
 IntersectionResult<Geo1, Geo2> intersect(const Geo1& geo1, const Geo2& geo2)
-{
-    using namespace OCCUtilities;
-    return intersectAndConvert(getUnwrappedShape(geo1), getUnwrappedShape(geo2));
-}
+{ return intersectAndConvert(getUnwrappedShape(geo1), getUnwrappedShape(geo2)); }
 
 //! convert shape wrapper function arguments into shape representations and forward
 template<class Geo1, class Geo2, class ctype>
 IntersectionResult<Geo1, Geo2> intersect(const Geo1& geo1, const Geo2& geo2, ctype eps)
-{
-    using namespace OCCUtilities;
-    return intersectAndConvert(getUnwrappedShape(geo1), getUnwrappedShape(geo2), eps);
-}
-
+{ return intersectAndConvert(getUnwrappedShape(geo1), getUnwrappedShape(geo2), eps); }
 
 template<class Geo1, class Geo2, class ctype>
 void registerIntersectionFunction(py::module& module,
@@ -169,7 +162,7 @@ void registerIntersectionFunctions(py::module& module)
     using Polygon = Frackit::Polygon<ctype, 3>;
     using Disk = Frackit::Disk<ctype>;
     using CylSurf = Frackit::CylinderSurface<ctype>;
-    using FaceWrapper = Frackit::Python::OCCUtilities::FaceWrapper;
+    using FaceWrapper = Frackit::Python::FaceWrapper;
 
     Detail::registerIntersectionFunction<Segment, Segment, ctype>(module, "Segment", "Segment");
     Detail::registerIntersectionFunction<Quad, Quad, ctype>(module, "Quadrilateral", "Quadrilateral");

@@ -23,8 +23,8 @@
 
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/segment.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 
-#include <frackit/python/occutilities/brepwrapper.hh>
 #include <frackit/distance/distance.hh>
 
 namespace Frackit::Python {
@@ -35,10 +35,7 @@ namespace Detail {
 
 template<class Geo1, class Geo2, class ctype>
 ctype computeDistance(const Geo1& geo1, const Geo2& geo2)
-{
-    return Frackit::computeDistance(OCCUtilities::getUnwrappedShape(geo1),
-                                    OCCUtilities::getUnwrappedShape(geo2));
-}
+{ return Frackit::computeDistance(getUnwrappedShape(geo1), getUnwrappedShape(geo2)); }
 
 } // end namespace Detail
 
@@ -48,7 +45,7 @@ void registerComputeDistance(py::module& module)
     using namespace py::literals;
     using Point = Frackit::Point<ctype, 3>;
     using Segment = Frackit::Segment<ctype, 3>;
-    using ShapeWrapper = OCCUtilities::ShapeWrapper;
+    using ShapeWrapper = Frackit::Python::ShapeWrapper;
 
     module.def("computeDistance",
                py::overload_cast<const Point&, const Point&>(&Detail::computeDistance<Point, Point, ctype>),

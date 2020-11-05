@@ -19,7 +19,7 @@
 #ifndef FRACKIT_PYTHON_ENTITYNETWORK_BUILDER_WRAPPERS_HH
 #define FRACKIT_PYTHON_ENTITYNETWORK_BUILDER_WRAPPERS_HH
 
-#include <frackit/python/occutilities/brepwrapper.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 #include <frackit/entitynetwork/networkbuilder.hh>
 #include <frackit/common/id.hh>
 
@@ -28,6 +28,7 @@ namespace Frackit::Python {
 namespace Detail {
 
     // Wrappers around the builder classes to support brep wrappers
+    // we use the convenience function getUnwrappedShape() to support all types
     template<class ctype>
     class EntityNetworkBuilderWrapper
     : public EntityNetworkBuilder<ctype>
@@ -37,36 +38,19 @@ namespace Detail {
     public:
         template<class Entity>
         void addSubDomainEntity(const Entity& entity, Id subDomainId)
-        {
-            if constexpr (OCCUtilities::IsBRepWrapper<Entity>::value)
-                ParentType::addSubDomainEntity(entity.get(), subDomainId);
-            else
-                ParentType::addSubDomainEntity(entity, subDomainId);
-        }
+        { ParentType::addSubDomainEntity(getUnwrappedShape(entity), subDomainId); }
 
         template<class Entity>
         void addEntity(const Entity& entity)
-        {
-            addSubDomainEntity(entity, Id(0));
-        }
+        { addSubDomainEntity(entity, Id(0)); }
 
         template<class Domain>
         void addConfiningSubDomain(const Domain& domain, Id subDomainId)
-        {
-            if constexpr (OCCUtilities::IsBRepWrapper<Domain>::value)
-                ParentType::addConfiningSubDomain(domain.get(), subDomainId);
-            else
-                ParentType::addConfiningSubDomain(domain, subDomainId);
-        }
+        { ParentType::addConfiningSubDomain(getUnwrappedShape(domain), subDomainId); }
 
         template<class Domain>
         void addSubDomain(const Domain& domain, Id subDomainId)
-        {
-            if constexpr (OCCUtilities::IsBRepWrapper<Domain>::value)
-                ParentType::addSubDomain(domain.get(), subDomainId);
-            else
-                ParentType::addSubDomain(domain, subDomainId);
-        }
+        { ParentType::addSubDomain(getUnwrappedShape(domain), subDomainId); }
     };
 
     template<class ctype>
@@ -78,30 +62,15 @@ namespace Detail {
     public:
         template<class Entity>
         void addSubDomainEntity(const Entity& entity, Id subDomainId)
-        {
-            if constexpr (OCCUtilities::IsBRepWrapper<Entity>::value)
-                ParentType::addSubDomainEntity(entity.get(), subDomainId);
-            else
-                ParentType::addSubDomainEntity(entity, subDomainId);
-        }
+        { ParentType::addSubDomainEntity(getUnwrappedShape(entity), subDomainId); }
 
         template<class Domain>
         void addConfiningSubDomain(const Domain& domain, Id subDomainId)
-        {
-            if constexpr (OCCUtilities::IsBRepWrapper<Domain>::value)
-                ParentType::addConfiningSubDomain(domain.get(), subDomainId);
-            else
-                ParentType::addConfiningSubDomain(domain, subDomainId);
-        }
+        { ParentType::addConfiningSubDomain(getUnwrappedShape(domain), subDomainId); }
 
         template<class Domain>
         void addSubDomain(const Domain& domain, Id subDomainId)
-        {
-            if constexpr (OCCUtilities::IsBRepWrapper<Domain>::value)
-                ParentType::addSubDomain(domain.get(), subDomainId);
-            else
-                ParentType::addSubDomain(domain, subDomainId);
-        }
+        { ParentType::addSubDomain(getUnwrappedShape(domain), subDomainId); }
     };
 
 } // end namespace Detail
