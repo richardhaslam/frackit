@@ -4,6 +4,7 @@
 #include <variant>
 #include <vector>
 
+#include <frackit/geometry/box.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/segment.hh>
@@ -24,6 +25,7 @@ int main()
     using Segment = Frackit::Segment<ctype, 3>;
     using Quad = Frackit::Quadrilateral<ctype, 3>;
     using Polygon = Frackit::Polygon<ctype, 3>;
+    using Box = Frackit::Box<ctype>;
 
     // base directions
     Direction e1(Vector(1.0, 0.0, 0.0));
@@ -94,6 +96,15 @@ int main()
         d = computeDistanceToBoundary(Point(-f, -f, -f), Frackit::OCCUtilities::getShape(box));
         if ( abs( sqrt(3.0)*f - d) > eps ) printAndThrow(d, "Test 10 failed");
 
+        // test the same with implicit overload for boxes
+        d = computeDistanceToBoundary(Point(0.0, 0.5*f, 0.5*f), box);
+        if ( d > eps ) printAndThrow(d, "Test 11 failed");
+
+        d = computeDistanceToBoundary(Point(0.0, 0.0, 0.0), box);
+        if ( d > eps ) printAndThrow(d, "Test 12 failed");
+
+        d = computeDistanceToBoundary(Point(-f, -f, -f), box);
+        if ( abs( sqrt(3.0)*f - d) > eps ) printAndThrow(d, "Test 13 failed");
     }
 
     std::cout << "All tests passed" << std::endl;
