@@ -32,8 +32,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
-#include <frackit/common/extractctype.hh>
-
+#include <frackit/geometry/ctype.hh>
 #include <frackit/geometry/point.hh>
 #include <frackit/geometry/segment.hh>
 #include <frackit/geometry/plane.hh>

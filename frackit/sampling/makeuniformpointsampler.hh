@@ -25,7 +25,7 @@
 #ifndef FRACKIT_MAKE_UNIFORM_POINT_SAMPLER_HH
 #define FRACKIT_MAKE_UNIFORM_POINT_SAMPLER_HH
 
-#include <frackit/common/extractctype.hh>
+#include <frackit/geometry/ctype.hh>
 #include <frackit/common/extractdimension.hh>
 
 #include "uniformpointsamplertraits.hh"
