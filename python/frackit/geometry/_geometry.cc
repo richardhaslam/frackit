@@ -40,6 +40,7 @@
 #include <frackit/python/geometry/sphere.hh>
 
 #include <frackit/python/geometry/distance.hh>
+#include <frackit/python/geometry/distancetoboundary.hh>
 
 PYBIND11_MODULE(_geometry, module)
 {
@@ -71,4 +72,5 @@ PYBIND11_MODULE(_geometry, module)
 
     // distance queries
     Frackit::Python::registerComputeDistance<double>(module);
+    Frackit::Python::registerComputeDistanceToBoundary<double>(module);
 }

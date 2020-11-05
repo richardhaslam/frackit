@@ -111,3 +111,20 @@ def computeDistance(geo1, geo2):
 
     if not isinstance(geo2, list): return doComputation(geo2)
     else: return min([doComputation(g) for g in geo2])
+
+########################################################################
+# Compute the distance of a geometry to the boundary of another geometry
+def computeDistanceToBoundary(geo1, geo2):
+
+    """
+    Compute the minimum euclidian distance between a geometry and the
+    boundary of another geometry. The first argument is the geometry
+    for which the distance to the boundary of the geometry passed with
+    the second function argument.
+    """
+
+    # try to use an overload for the given geometries, if none is found
+    # try the more generic implementation where the first argument is a shape
+    from frackit.occutilities import getShape, OCCShapeWrapper
+    try: return _geometry.computeDistanceToBoundary(geo1, geo2)
+    except: return _geometry.computeDistanceToBoundary(OCCShapeWrapper(getShape(geo1)), geo2)
