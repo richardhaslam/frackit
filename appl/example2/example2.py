@@ -113,7 +113,7 @@ while not status.finished():
         continue
 
     # reject entities whose contained part is too small
-    from frackit.magnitude import computeContainedMagnitude
+    from frackit.geometry import computeContainedMagnitude
     containedArea = computeContainedMagnitude(quad, domain);
     if (containedArea < 0.01):
         status.increaseRejectedCounter()

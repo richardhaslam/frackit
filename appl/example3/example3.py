@@ -18,7 +18,7 @@ if len(solids) != 3: raise RuntimeError("Expected the .brep file to contain 3 so
 
 # The sub-domain we want to create a network in is the center one.
 # Compute its volume and get the boundary faces for constraint evaluation.
-from frackit.magnitude import computeMagnitude
+from frackit.geometry import computeMagnitude
 networkDomain = solids[1]
 domainVolume = computeMagnitude(networkDomain);
 shells = getShells(networkDomain)
@@ -145,7 +145,7 @@ while not status.finished():
         continue
 
     # Moreover, we want to avoid small fragments (< 250 m²)
-    from frackit.magnitude import computeContainedMagnitude
+    from frackit.geometry import computeContainedMagnitude
     containedArea = computeContainedMagnitude(geom, networkDomain);
     if containedArea < 350.0:
         status.increaseRejectedCounter()
