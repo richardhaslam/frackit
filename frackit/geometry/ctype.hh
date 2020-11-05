@@ -18,11 +18,11 @@
  *****************************************************************************/
 /*!
  * \file
- * \ingroup Common
+ * \ingroup Geometry
  * \brief Type traits to extract the coordinate type of geometric objects.
  */
-#ifndef FRACKIT_COMMON_COORDINATE_TYPE_HH
-#define FRACKIT_COMMON_COORDINATE_TYPE_HH
+#ifndef FRACKIT_GEOMETRY_COORDINATE_TYPE_HH
+#define FRACKIT_GEOMETRY_COORDINATE_TYPE_HH
 
 #include <utility>
 
@@ -106,4 +106,4 @@ struct CoordinateTypeTraits<TopoDS_Solid>
 
 } // end namespace Frackit
 
-#endif // FRACKIT_COMMON_COORDINATE_TYPE_HH
+#endif // FRACKIT_GEOMETRY_COORDINATE_TYPE_HH

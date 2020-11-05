@@ -29,10 +29,10 @@
 #include <type_traits>
 
 #include <frackit/occ/breputilities.hh>
-#include <frackit/common/extractctype.hh>
 #include <frackit/common/extractdimension.hh>
 #include <frackit/precision/defaultepsilon.hh>
 
+#include <frackit/geometry/ctype.hh>
 #include <frackit/geometry/geometry.hh>
 #include <frackit/geometryutilities/applyongeometry.hh>
 

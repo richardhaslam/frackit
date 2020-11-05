@@ -30,7 +30,7 @@
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
 #include <frackit/python/geometry/brepwrapper.hh>
-#include <frackit/python/common/extractctype.hh>
+#include <frackit/python/geometry/ctype.hh>
 
 #include <frackit/precision/defaultepsilon.hh>
 

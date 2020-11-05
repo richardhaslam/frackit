@@ -37,12 +37,12 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/cylindersurface.hh>
+#include <frackit/geometry/ctype.hh>
 
 #include <frackit/geometryutilities/name.hh>
 #include <frackit/geometryutilities/getboundingbox.hh>
 
 #include <frackit/occ/breputilities.hh>
-#include <frackit/common/extractctype.hh>
 #include <frackit/precision/defaultepsilon.hh>
 
 #include "intersectiontraits.hh"

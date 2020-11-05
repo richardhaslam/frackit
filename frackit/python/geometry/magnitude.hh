@@ -38,7 +38,7 @@
 #include <frackit/geometry/hollowcylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/python/geometry/brepwrapper.hh>
-#include <frackit/python/common/extractctype.hh>
+#include <frackit/python/geometry/ctype.hh>
 
 #include <frackit/magnitude/magnitude.hh>
 #include <frackit/magnitude/containedmagnitude.hh>

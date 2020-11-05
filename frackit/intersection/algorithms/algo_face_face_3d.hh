@@ -30,9 +30,9 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
+#include <frackit/geometry/ctype.hh>
 #include <frackit/geometry/point.hh>
 #include <frackit/occ/breputilities.hh>
-#include <frackit/common/extractctype.hh>
 
 #include <frackit/intersection/intersectiontraits.hh>
 #include <frackit/intersection/emptyintersection.hh>

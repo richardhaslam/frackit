@@ -3,6 +3,7 @@ boundingbox.hh
 box.hh
 circle.hh
 CMakeLists.txt
+ctype.hh
 cylinder.hh
 cylindersurface.hh
 direction.hh

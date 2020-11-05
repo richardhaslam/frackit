@@ -3,6 +3,7 @@ box.hh
 brepwrapper.hh
 brepwrappers.hh
 circle.hh
+ctype.hh
 cylinder.hh
 cylindersurface.hh
 direction.hh

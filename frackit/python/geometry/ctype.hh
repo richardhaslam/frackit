@@ -16,10 +16,10 @@
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  *****************************************************************************/
-#ifndef FRACKIT_PYTHON_EXTRACT_CTYPE_HH
-#define FRACKIT_PYTHON_EXTRACT_CTYPE_HH
+#ifndef FRACKIT_PYTHON_GEOMETRY_CTYPE_HH
+#define FRACKIT_PYTHON_GEOMETRY_CTYPE_HH
 
-#include <frackit/common/extractctype.hh>
+#include <frackit/geometry/ctype.hh>
 #include <frackit/python/geometry/brepwrapper.hh>
 
 namespace Frackit::Python {
