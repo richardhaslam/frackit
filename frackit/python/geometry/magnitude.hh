@@ -16,8 +16,8 @@
  *   You should have received a copy of the GNU General Public License       *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
  *****************************************************************************/
-#ifndef FRACKIT_PYTHON_MAGNITUDE_HH
-#define FRACKIT_PYTHON_MAGNITUDE_HH
+#ifndef FRACKIT_PYTHON_GEOMETRY_MAGNITUDE_HH
+#define FRACKIT_PYTHON_GEOMETRY_MAGNITUDE_HH
 
 #include <pybind11/pybind11.h>
 

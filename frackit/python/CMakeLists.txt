@@ -1,7 +1,6 @@
 add_subdirectory(common)
 add_subdirectory(geometry)
 add_subdirectory(io)
-add_subdirectory(magnitude)
 add_subdirectory(occutilities)
 add_subdirectory(precision)
 add_subdirectory(sampling)
