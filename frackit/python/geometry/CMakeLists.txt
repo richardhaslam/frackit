@@ -1,5 +1,7 @@
 install(FILES
 box.hh
+brepwrapper.hh
+brepwrappers.hh
 circle.hh
 cylinder.hh
 cylindersurface.hh

@@ -41,12 +41,11 @@
 #include <frackit/geometry/cylinder.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/sphere.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 
 #include <frackit/occ/breputilities.hh>
 #include <frackit/occ/gputilities.hh>
 #include <frackit/occ/geomutilities.hh>
-
-#include "brepwrapper.hh"
 
 namespace Frackit::Python {
 
@@ -338,10 +337,10 @@ void registerBRepUtilities(pybind11::module& module)
     module.def("getShape", &OCCUtilities::getShape<Sphere<ctype>>, "Returns the OCC BRep of a sphere");
 
     // register "shape conversions" also for wrapped shapes
-    Detail::registerWrappedShapeConversions<OCCUtilities::ShapeWrapper, OCCUtilities::VertexWrapper,
-                                            OCCUtilities::EdgeWrapper,  OCCUtilities::WireWrapper,
-                                            OCCUtilities::FaceWrapper,  OCCUtilities::ShellWrapper,
-                                            OCCUtilities::SolidWrapper, OCCUtilities::CompoundWrapper>(module);
+    Detail::registerWrappedShapeConversions<ShapeWrapper, VertexWrapper,
+                                            EdgeWrapper,  WireWrapper,
+                                            FaceWrapper,  ShellWrapper,
+                                            SolidWrapper, CompoundWrapper>(module);
 
     // register getter functions for (sub-)shapes of a wrapped shape
     Detail::registerSubShapeGetterFunctions(module);
@@ -350,7 +349,7 @@ void registerBRepUtilities(pybind11::module& module)
     module.def("readShape", &OCCUtilities::readShape, "Reads in the shapes from a file");
 
     // register bounding box computations for wrapped shape
-    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<OCCUtilities::ShapeWrapper, ctype>, "returns the bounding box of a wrapped shape");
+    module.def("getBoundingBox", &OCCUtilities::getBoundingBox<ShapeWrapper, ctype>, "returns the bounding box of a wrapped shape");
 
     // register transformations (we could use recurring templates as for registerWrappedShapeConversions)
     module.def("translate", &OCCUtilities::translate<TopoDS_Shape, ctype, 3>, "translation of a shape with a vector defined in 3d space");
@@ -365,30 +364,30 @@ void registerBRepUtilities(pybind11::module& module)
     // register boolean operations for shape wrapper
     using namespace py::literals;
     module.def("cut",
-               &OCCUtilities::cut<OCCUtilities::ShapeWrapper, OCCUtilities::ShapeWrapper, ctype>,
+               &OCCUtilities::cut<ShapeWrapper, ShapeWrapper, ctype>,
                "object"_a, "tool"_a, "tolerance"_a,
                "cuts the tool from the object");
 
     using namespace py::literals;
     module.def("intersect",
-               &OCCUtilities::intersect<OCCUtilities::ShapeWrapper, OCCUtilities::ShapeWrapper, ctype>,
+               &OCCUtilities::intersect<ShapeWrapper, ShapeWrapper, ctype>,
                "object1"_a, "object2"_a, "tolerance"_a,
                "returns the common part (intersection) between the two given shapes");
 
     using namespace py::literals;
     module.def("fragment",
-               &OCCUtilities::fragment<OCCUtilities::ShapeWrapper, ctype>,
+               &OCCUtilities::fragment<ShapeWrapper, ctype>,
                "objects"_a, "tolerance"_a,
                "returns the fragments after intersection of the all given shapes");
 
     using namespace py::literals;
     module.def("fuse",
-               &OCCUtilities::fuse<OCCUtilities::ShapeWrapper, ctype>,
+               &OCCUtilities::fuse<ShapeWrapper, ctype>,
                "objects"_a, "tolerance"_a,
                "fuse all given shapes into a single one");
 
     // register write function for wrapped shapes
-    module.def("write", &OCCUtilities::write<OCCUtilities::ShapeWrapper>, "writes a wrapped shape to a BRep file");
+    module.def("write", &OCCUtilities::write<ShapeWrapper>, "writes a wrapped shape to a BRep file");
 }
 
 } // end namespace Frackit::Python

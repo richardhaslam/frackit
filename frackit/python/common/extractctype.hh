@@ -20,7 +20,7 @@
 #define FRACKIT_PYTHON_EXTRACT_CTYPE_HH
 
 #include <frackit/common/extractctype.hh>
-#include <frackit/python/occutilities/brepwrapper.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 
 namespace Frackit::Python {
 
@@ -31,7 +31,7 @@ struct CoordinateTypeTraits
 : public Frackit::CoordinateTypeTraits<Geo> {};
 
 template<class S>
-struct CoordinateTypeTraits<OCCUtilities::BRepWrapper<S>>
+struct CoordinateTypeTraits<BRepWrapper<S>>
 : public Frackit::CoordinateTypeTraits<S> {};
 
 } // end namespace Frackit::Python

@@ -35,8 +35,7 @@ if len(domainBoundaryFaces) != 6: raise RuntimeError("Expected 6 faces to bound 
 
 # Bounding box of the domain in which we want to place the entities
 # In order for this to work we parse the solid back into a wrapper around a BRep shape
-from frackit.geometry import Box
-from frackit.occutilities import OCCShapeWrapper
+from frackit.geometry import Box, OCCShapeWrapper
 domainBBox = getBoundingBox( OCCShapeWrapper(networkDomain) )
 
 # creates a uniform sampler within an interval

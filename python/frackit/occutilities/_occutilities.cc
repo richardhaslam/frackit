@@ -18,14 +18,10 @@
  *****************************************************************************/
 
 #include <pybind11/pybind11.h>
-#include <frackit/python/occutilities/brepwrappers.hh>
 #include <frackit/python/occutilities/breputilities.hh>
 
 PYBIND11_MODULE(_occutilities, module)
 {
-    // wrapper classes for OpenCascade BRep shapes
-    Frackit::Python::registerBRepWrappers(module);
-
     // utility functions for BReps
     Frackit::Python::registerBRepUtilities<double>(module);
 }

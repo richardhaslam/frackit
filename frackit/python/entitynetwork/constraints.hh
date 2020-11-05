@@ -29,7 +29,7 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/entitynetwork/constraints.hh>
 
-#include <frackit/python/occutilities/brepwrapper.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 
 namespace Frackit::Python {
 
@@ -48,19 +48,7 @@ namespace Detail {
         // evaluate the constraint between two geometries
         template<class Geo1, class Geo2>
         bool evaluateBinary(const Geo1& geo1, const Geo2& geo2) const
-        {
-            static constexpr auto isWrapper1 = OCCUtilities::IsBRepWrapper<Geo1>::value;
-            static constexpr auto isWrapper2 = OCCUtilities::IsBRepWrapper<Geo2>::value;
-
-            if constexpr (!isWrapper1 && !isWrapper2)
-                return ParentType::evaluate(geo1, geo2);
-            else if constexpr (!isWrapper1 && isWrapper2)
-                return ParentType::evaluate(geo1, geo2.get());
-            else if constexpr (isWrapper1 && !isWrapper2)
-                return ParentType::evaluate(geo1.get(), geo2);
-            else
-                return ParentType::evaluate(geo1.get(), geo2.get());
-        }
+        { return ParentType::evaluate(getUnwrappedShape(geo1), getUnwrappedShape(geo2)); }
     };
 
     template<class Constraints>
@@ -104,7 +92,7 @@ namespace Detail {
         // types for which this ought to be able to evaluate
         using Disk = Frackit::Disk<ctype>;
         using Quad_3 = Frackit::Quadrilateral<ctype, 3>;
-        using Face = OCCUtilities::FaceWrapper;
+        using Face = FaceWrapper;
 
         registerBinaryEvaluator<Disk, Disk>(cls);
         registerBinaryEvaluator<Disk, Quad_3>(cls);

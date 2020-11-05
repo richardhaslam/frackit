@@ -27,8 +27,8 @@
 #include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 
-#include <frackit/python/occutilities/brepwrapper.hh>
 #include <frackit/distance/distancetoboundary.hh>
 
 namespace Frackit::Python {
@@ -39,10 +39,7 @@ namespace Detail {
 
 template<class Geo1, class Geo2, class ctype>
 ctype computeDistanceToBoundary(const Geo1& geo1, const Geo2& geo2)
-{
-    return Frackit::computeDistance(OCCUtilities::getUnwrappedShape(geo1),
-                                    OCCUtilities::getUnwrappedShape(geo2));
-}
+{ return Frackit::computeDistance(getUnwrappedShape(geo1), getUnwrappedShape(geo2)); }
 
 } // end namespace Detail
 
@@ -56,9 +53,9 @@ void registerComputeDistanceToBoundary(py::module& module)
     using Disk = Frackit::Disk<ctype>;
     using CylinderSurface = Frackit::CylinderSurface<ctype>;
     using Box = Frackit::Box<ctype>;
-    using ShapeWrapper = Frackit::Python::OCCUtilities::ShapeWrapper;
-    using FaceWrapper = Frackit::Python::OCCUtilities::FaceWrapper;
-    using SolidWrapper = Frackit::Python::OCCUtilities::SolidWrapper;
+    using ShapeWrapper = Frackit::Python::ShapeWrapper;
+    using FaceWrapper = Frackit::Python::FaceWrapper;
+    using SolidWrapper = Frackit::Python::SolidWrapper;
 
     // explicitly implemented overloads
     module.def("computeDistanceToBoundary",

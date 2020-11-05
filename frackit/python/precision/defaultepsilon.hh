@@ -29,7 +29,7 @@
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/geometry/cylindersurface.hh>
 #include <frackit/geometry/box.hh>
-#include <frackit/python/occutilities/brepwrapper.hh>
+#include <frackit/python/geometry/brepwrapper.hh>
 #include <frackit/python/common/extractctype.hh>
 
 #include <frackit/precision/defaultepsilon.hh>
@@ -43,12 +43,7 @@ namespace Detail {
     template<class Geo>
     typename CoordinateTypeTraits<Geo>::type
     defaultEpsilon(const Geo& geo)
-    {
-        if constexpr(OCCUtilities::IsBRepWrapper<Geo>::value)
-            return Frackit::defaultEpsilon(geo.get());
-        else
-            return Frackit::defaultEpsilon(geo);
-    }
+    { return Frackit::defaultEpsilon(getUnwrappedShape(geo)); }
 
     template<class Geo>
     void registerDefaultEpsilon(py::module& module)
@@ -70,7 +65,7 @@ void registerDefaultEpsilon(py::module& module)
     Detail::registerDefaultEpsilon<Quadrilateral<ctype, 3>>(module);
     Detail::registerDefaultEpsilon<CylinderSurface<ctype>>(module);
     Detail::registerDefaultEpsilon<Box<ctype>>(module);
-    Detail::registerDefaultEpsilon<OCCUtilities::ShapeWrapper>(module);
+    Detail::registerDefaultEpsilon<ShapeWrapper>(module);
 }
 
 } // end namespace Frackit::Python
