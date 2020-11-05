@@ -81,6 +81,19 @@ int main()
         if (!std::holds_alternative<Segment>(is3)) throw std::runtime_error("Expected segment intersection");
         d = computeDistanceToBoundary(Frackit::OCCUtilities::getShape(std::get<Segment>(is3)), poly);
         if (abs(d - 1e-6*f) > eps) printAndThrow(d, "Test 7 failed");
+
+        // test distance of points to a box
+        Box box(0.0, 0.0, 0.0, f, f, f);
+        d = computeDistanceToBoundary(Point(0.0, 0.5*f, 0.5*f), Frackit::OCCUtilities::getShape(box));
+        if ( d > eps ) printAndThrow(d, "Test 8 failed");
+
+        d = computeDistanceToBoundary(Point(0.0, 0.0, 0.0), Frackit::OCCUtilities::getShape(box));
+        if ( d > eps ) printAndThrow(d, "Test 9 failed");
+
+        using std::sqrt;
+        d = computeDistanceToBoundary(Point(-f, -f, -f), Frackit::OCCUtilities::getShape(box));
+        if ( abs( sqrt(3.0)*f - d) > eps ) printAndThrow(d, "Test 10 failed");
+
     }
 
     std::cout << "All tests passed" << std::endl;
