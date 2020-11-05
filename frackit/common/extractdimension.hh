@@ -34,6 +34,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopoDS_Compound.hxx>
 #include <Standard.hxx>
 
 #include <frackit/geometry/geometry.hh>
@@ -111,6 +112,15 @@ template<>
 struct DimensionalityTraits<TopoDS_Solid>
 : public DimensionalityTraits<TopoDS_Shape>
 { static constexpr int geometryDimension() { return 3; } };
+
+/*!
+ * \brief Specialization for Brep solids.
+ * \note For compounds the geometry dimension is also not clear.
+ */
+template<>
+struct DimensionalityTraits<TopoDS_Compound>
+: public DimensionalityTraits<TopoDS_Shape>
+{};
 
 /*!
  * \brief The dimension of the abstract base class is not known.
