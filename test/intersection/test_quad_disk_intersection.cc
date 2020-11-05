@@ -1,4 +1,9 @@
+#include <vector>
+#include <stdexcept>
+#include <type_traits>
+
 #include <frackit/geometry/quadrilateral.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/disk.hh>
 #include <frackit/magnitude/length.hh>
 #include <frackit/intersection/intersect.hh>
@@ -48,25 +53,40 @@ void checkResultGeometry(const TopoDS_Face& face, IntersectionType expected)
     std::cout << "Test passed" << std::endl;
 }
 
-//! test quadrilateral-disk intersections
-int main()
+// make quadrilateral instance
+template<class Quad, class Point>
+Quad makeQuad(const Point& p1, const Point& p2,
+              const Point& p3, const Point& p4, std::false_type)
+{ return Quad(p1, p2, p3, p4); }
+
+// make polygon instance
+template<class Quad, class Point>
+Quad makeQuad(const Point& p1, const Point& p2,
+              const Point& p3, const Point& p4, std::true_type)
+{ return Quad(std::vector<Point>({p1, p2, p4, p3})); }
+
+//! test quadrilateral/polygon - disk intersections
+template<class QuadGeom>
+void doTest()
 {
-    using ctype = double;
+    using Quad = QuadGeom;
+    using ctype = typename Quad::ctype;
     using Disk = Frackit::Disk<ctype>;
-    using Quad = Frackit::Quadrilateral<ctype, 3>;
     using Point = typename Disk::Point;
     using Direction = typename Disk::Direction;
     using Vector = typename Direction::Vector;
+    constexpr bool isPolygonImpl = std::is_same_v<Quad, Frackit::Polygon<ctype, 3>>;
 
     std::vector<ctype> scales({1.0e-5, 1, 1e5});
     for (auto f : scales)
     {
         std::cout << "Checking scale factor " << f << std::endl;
 
-        Quad quad(Point(-0.5*f, -0.5*f, 0.0),
-                  Point(0.5*f, -0.5*f, 0.0),
-                  Point(-0.5*f, 0.5*f, 0.0),
-                  Point(0.5*f, 0.5*f, 0.0));
+        auto quad = makeQuad<Quad>(Point(-0.5*f, -0.5*f, 0.0),
+                                   Point(0.5*f, -0.5*f, 0.0),
+                                   Point(-0.5*f, 0.5*f, 0.0),
+                                   Point(0.5*f, 0.5*f, 0.0),
+                                   std::integral_constant<bool, isPolygonImpl>());
 
         // disk that intersects quad in a segment fully in quad
         Direction e11(Vector(1.0, 0.0, 0.0));
@@ -95,5 +115,12 @@ int main()
         std::cout << "All tests passed"  << std::endl;
     }
 
+}
+
+int main()
+{
+    using ctype = double;
+    doTest<Frackit::Quadrilateral<ctype, 3>>();
+    doTest<Frackit::Polygon<ctype, 3>>();
     return 0;
 }
