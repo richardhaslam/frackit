@@ -37,6 +37,7 @@
 #include <Extrema_ExtAlgo.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <BRepTools.hxx>
+#include <BRepClass3d.hxx>
 
 #include <frackit/precision/precision.hh>
 #include <frackit/geometry/disk.hh>
@@ -300,6 +301,32 @@ computeDistanceToBoundary(const Geo& geo,
 {
     return computeDistance(OCCUtilities::getShape(geo),
                            BRepTools::OuterWire(face),
+                           deflection,
+                           extFlag,
+                           extAlgo);
+}
+
+/*!
+ * \ingroup Distance
+ * \brief Compute the distance of a geometry
+ *        to the boundary of a TopoDS_Solid.
+ * \param geo The geometry
+ * \param solid The TopoDS_Solid
+ * \param deflection The epsilon used in the BrepExtrema command
+ * \param extFlag The flag passed to the BrepExtrema command (MIN/MAX/MINMAX)
+ * \param extAlgo The algorithm passed to the BrepExtrema command (TREE/GRAD)
+ */
+template<class Geo>
+typename Geo::ctype
+computeDistanceToBoundary(const Geo& geo,
+                          const TopoDS_Solid& solid,
+                          typename Geo::ctype deflection
+                          = Precision<typename Geo::ctype>::confusion(),
+                          Extrema_ExtFlag extFlag = Extrema_ExtFlag_MINMAX,
+                          Extrema_ExtAlgo extAlgo = Extrema_ExtAlgo_Grad)
+{
+    return computeDistance(OCCUtilities::getShape(geo),
+                           BRepClass3d::OuterShell(solid),
                            deflection,
                            extFlag,
                            extAlgo);
