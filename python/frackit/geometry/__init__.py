@@ -93,6 +93,49 @@ def Circle(*args, **kwargs):
     elif dim == 2: raiseGeometryConstructorException("circle", "notImplemented") # todo
     else: return Circle_3(*args, **kwargs)
 
+###################################################
+# Compute the length of a one-dimensional geometry
+def computeLength(geo):
+
+    """
+    Compute the length of a one-dimensional finite geometry.
+    """
+    try: geoDim = geo.myDimension
+    except: raise TypeError("The given geometry does not state its dimensionality. "\
+                            "Try using computeMagnitude() instead.")
+
+    if geoDim != 1:
+        raise TypeError("Length can only be computed for one-dimensional geometries")
+    return _geometry.computeMagnitude(geo)
+
+# Compute the area of a two-dimensional geometry
+def computeArea(geo):
+
+    """
+    Compute the area of a two-dimensional finite geometry.
+    """
+    try: geoDim = geo.myDimension
+    except: raise TypeError("The given geometry does not state its dimensionality. "\
+                            "Try using computeMagnitude() instead.")
+
+    if geoDim != 2:
+        raise TypeError("Area can only be computed for two-dimensional geometries")
+    return _geometry.computeMagnitude(geo)
+
+# Compute the volume of a three-dimensional geometry
+def computeVolume(geo):
+
+    """
+    Compute the volume of a three-dimensional finite geometry.
+    """
+    try: geoDim = geo.myDimension
+    except: raise TypeError("The given geometry does not state its dimensionality. "\
+                            "Try using computeMagnitude() instead.")
+
+    if geoDim != 3:
+        raise TypeError("Volume can only be computed for three-dimensional geometries")
+    return _geometry.computeMagnitude(geo)
+
 ############################################
 # Compute the distance between two geometries
 def computeDistance(geo1, geo2):
@@ -100,7 +143,7 @@ def computeDistance(geo1, geo2):
     """
     Compute the minimum euclidian distance between geometries.
     If the second argument (geo2) is a list of geometries, the minimum
-    distance of geo1 to the geometries of geo2 is returned.
+    distance of geo1 to the geometries contained in the list geo2 is returned.
     """
 
     def doComputation(geo):
@@ -120,7 +163,7 @@ def computeDistanceToBoundary(geo1, geo2):
     Compute the minimum euclidian distance between a geometry and the
     boundary of another geometry. The first argument is the geometry
     for which the distance to the boundary of the geometry passed with
-    the second function argument.
+    the second function argument is to be computed.
     """
 
     # try to use an overload for the given geometries, if none is found
