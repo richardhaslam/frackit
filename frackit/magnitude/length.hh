@@ -26,15 +26,18 @@
 #define FRACKIT_MAGNITUDE_LENGTH_HH
 
 #include <cmath>
+#include <numeric>
 
 #include <Standard_Handle.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Wire.hxx>
 
 #include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 
 #include <frackit/occ/geomutilities.hh>
+#include <frackit/occ/breputilities.hh>
 
 #include <frackit/geometry/circle.hh>
 #include <frackit/geometry/ellipse.hh>
@@ -72,6 +75,19 @@ ctype computeLength(const Handle(Geom_Curve)& curve)
 template<class ctype = double>
 ctype computeLength(const TopoDS_Edge& edge)
 { return computeLength(OCCUtilities::getGeomHandle(edge)); }
+
+/*!
+ * \ingroup Magnitude
+ * \brief Returns the length of a BRep wire.
+ */
+template<class ctype = double>
+ctype computeLength(const TopoDS_Wire& wire)
+{
+    const auto edges = OCCUtilities::getEdges(wire);
+    auto addLength = [] (const ctype& cur, const TopoDS_Edge& edge)
+                        { return cur + computeLength(edge); };
+    return std::accumulate(edges.begin(), edges.end(), ctype(0.0), addLength);
+}
 
 /*!
  * \ingroup Magnitude
