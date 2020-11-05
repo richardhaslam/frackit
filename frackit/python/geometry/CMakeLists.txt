@@ -12,6 +12,7 @@ distancetoboundary.hh
 ellipsearc.hh
 ellipse.hh
 ellipticalgeometry.hh
+emptyintersection.hh
 geometry.hh
 hollowcylinder.hh
 line.hh
