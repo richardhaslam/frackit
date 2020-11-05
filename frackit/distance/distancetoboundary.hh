@@ -21,6 +21,11 @@
  * \ingroup Distance
  * \brief Contains functionality for computing the distance
  *        of a geometry to the boundary of another geometry.
+ *        The difference to the distance computation functions
+ *        is that those return a distance of zero if the geometries
+ *        intersect, while here, it is only zero if it intersects the boundary.
+ *        For instance, the distance of a point to a box is zero if the point
+ *        is inside the box, but the distance to the box surface may be non-zero.
  */
 #ifndef FRACKIT_DISTANCE_TO_BOUNDARY_HH
 #define FRACKIT_DISTANCE_TO_BOUNDARY_HH
