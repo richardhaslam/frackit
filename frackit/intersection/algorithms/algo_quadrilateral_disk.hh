@@ -49,16 +49,14 @@ intersect_quadrilateral_disk(const Quadrilateral<ctype, 3>& quad,
                              ctype eps)
 {
     using std::max;
-    ctype charLength = disk.majorAxisLength();
+    ctype charLength = disk.majorAxisLength()*disk.majorAxisLength();
     for (unsigned int edgeIdx = 0; edgeIdx < quad.numEdges(); ++edgeIdx)
-        charLength = max(charLength, quad.edge(edgeIdx).length());
+        charLength = max(charLength, quad.edge(edgeIdx).squaredLength());
 
-    return intersect_planarGeometry_planarGeometry(quad,
-                                                   disk,
-                                                   charLength,
-                                                   eps,
-                                                   Precision<ctype>::confusion(),
-                                                   eps);
+    using std::sqrt;
+    return intersect_planarGeometry_planarGeometry(quad, disk,
+                                                   sqrt(charLength),
+                                                   eps, eps, eps);
 }
 
 } // end namespace IntersectionAlgorithms
