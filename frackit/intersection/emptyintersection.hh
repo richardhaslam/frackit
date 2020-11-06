@@ -27,17 +27,18 @@
 #include <string>
 #include <variant>
 #include <algorithm>
+#include <frackit/geometry/geometry.hh>
 
 namespace Frackit {
 
 /*!
  * \ingroup Intersection
- * \brief Class used to define empty intersection.
+ * \brief Class used to define empty intersections.
  * \tparam wd The dimension of the coordinate space.
  * \tparam CT The type used for coordinates
  */
 template<int wd = 3, class CT = double>
-struct EmptyIntersection
+struct EmptyIntersection : public Geometry
 {
     //! Technically, this does not have a defined dimension
     static constexpr int myDimension() { return 0; }
@@ -46,7 +47,7 @@ struct EmptyIntersection
     static constexpr int worldDimension() { return wd; }
 
     //! Return the name of this geometry
-    static std::string name() { return "EmptyIntersection"; }
+    std::string name() const override { return "EmptyIntersection_" + std::to_string(wd); }
 
     //! Export coordinate type for compatibility
     using ctype = CT;
