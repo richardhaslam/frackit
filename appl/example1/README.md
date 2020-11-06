@@ -12,6 +12,8 @@ to this example is the file `example1.cc` which is located in this folder. Note
 that this description focuses on the C++ implementation, but in `example1.py`
 it is illustrated how to realize this example using the Frackit python bindings.
 
+### Quadrilateral samplers
+
 Two main orientations are considered for the quadrilaterals, for both of which
 a corresponding instance of the `QuadrilateralSampler` class is created.
 For example, we instantiate an instance of this class by writing:
@@ -51,7 +53,12 @@ Here, we use the boolean variable `sampleIntoSet1` to determine from
 which sampler we should sample the next quadrilateral (more details follow below).
 The variable `quad` holds a new candidate for an entity of the network, however,
 we want to enforce certain constraints such as a minimum distance between
-entities. For this we use instances of the `EntityNetworkConstraints` class and
+entities.
+
+### Constraints definitions
+
+In order to certain constraints to be fulfilled among the entities, we use instances
+of the `EntityNetworkConstraints` class and
 configure it as desired. For example, the constraints on entities of the same
 orientation are defined in this example as follows:
 
@@ -69,8 +76,11 @@ constraintsOnSelf.setMinIntersectionMagnitude(0.05);
 constraintsOnSelf.setMinIntersectionDistance(0.05);
 ```
 
-In the main loop of quadrilateral generation, the fulfilment of these constraints is
-evaluated against the other quadrilaterals with:
+### Entity sampling
+
+In the main loop of quadrilateral generation, we sample candidates for new
+entities as described above. Then, the fulfilment of the above-mentioned
+constraints is evaluated against the other quadrilaterals with:
 
 ```cpp
 auto& entitySet = sampleIntoSet1 ? entitySet1 : entitySet2;
@@ -94,6 +104,8 @@ at the end of the loop makes sure that a quadrilateral of the other orientation
 is sampled next. In [Example 3][0] we will get to know how to use helper classes
 that store different entity sets and automatically sample from various sampler
 classes such that this can be written more easily.
+
+### Network construction
 
 After the desired number of entities has been generated, the entities are cast
 into an entity network using the builder class:
