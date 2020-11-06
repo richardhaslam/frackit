@@ -33,6 +33,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopoDS_Compound.hxx>
 #include <Standard.hxx>
 
 namespace Frackit {
@@ -101,6 +102,14 @@ struct CoordinateTypeTraits<TopoDS_Shell>
  */
 template<>
 struct CoordinateTypeTraits<TopoDS_Solid>
+: public CoordinateTypeTraits<TopoDS_Shape>
+{};
+
+/*!
+ * \brief Specialization for Brep compounds.
+ */
+template<>
+struct CoordinateTypeTraits<TopoDS_Compound>
 : public CoordinateTypeTraits<TopoDS_Shape>
 {};
 
