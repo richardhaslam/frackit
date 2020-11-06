@@ -226,6 +226,8 @@ written out in the same manner as shown in the other examples. At the end of the
 main file `example3.cc`, it is shown how different types of networks
 (contained-confined, contained-unconfined, etc.) can be created from the raw entities.
 
+| [:arrow_right: Go to example 4](https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example4) |
+|---:|
 
 [0]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example2/README.md
 [1]: http://gmsh.info/
