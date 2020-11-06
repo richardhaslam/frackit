@@ -55,6 +55,9 @@ public:
     //! export underlying vector type
     using Vector = typename Frackit::Vector<CT, 1>;
 
+    //! export type used for coordinates
+    using ctype = CT;
+
     //! export dimensionality
     static constexpr int myDimension() { return 1; };
     static constexpr int worldDimension() { return 1; };
@@ -110,6 +113,9 @@ class Direction<CT, 2> : public Geometry
 public:
     //! export underlying vector type
     using Vector = typename Frackit::Vector<CT, 2>;
+
+    //! export type used for coordinates
+    using ctype = CT;
 
     //! export dimensionality
     static constexpr int myDimension() { return 1; };
@@ -170,6 +176,9 @@ class Direction<CT, 3> : public Geometry
 public:
     //! export underlying vector type
     using Vector = typename Frackit::Vector<CT, 3>;
+
+    //! export type used for coordinates
+    using ctype = CT;
 
     //! export dimensionality
     static constexpr int myDimension() { return 1; };
