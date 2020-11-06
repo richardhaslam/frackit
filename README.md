@@ -80,10 +80,16 @@ using the provided functions, classes and concepts. The modular design of the
 above-mentioned building blocks enables users to fully customize each step to
 their needs. Three exemplary applications are contained in this repository:
 
+### Example applications
+
+This repository provides a number of examples that may help you to get familiar with the basic concepts of Frackit.
+These are not meant to represent realistic scenarios or lead to realistic network topologies, but are rather designed
+such that the execution time is low and that a wide range of functionalities of Frackit are covered.
+
 * [Example 1][5] Generation of a simple network consisting of quadrilaterals with two main orientations.
 * [Example 2][6] Generation of a network of quadrilaterals embedded in a cylindrical domain (mimicking a core sample).
 * [Example 3][4] Generation of a network consisting of both disks and quadrilaterals, confined and contained in one layer of a domain that is composed of three layers.
-
+* [Example 4][17] Generation of a network consisting of polygonal entities, distributed around a tunnel structure that is embedded in a spherical domain.
 
 
 Documentation
@@ -318,3 +324,4 @@ Advances in Water Resources, 110. doi:10.1016/j.advwatres.2017.10.031
 [14]: https://launchpad.net/~freecad-maintainers/+archive/ubuntu/occt-releases
 [15]: https://www.freecadweb.org/
 [16]: https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=1630119c3a5ec5a3268ddf8775a7085b5f6b06de;sf=tgz
+[17]: https://git.iws.uni-stuttgart.de/tools/frackit/tree/master/appl/example4
