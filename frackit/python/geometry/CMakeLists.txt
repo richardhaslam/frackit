@@ -15,6 +15,7 @@ ellipse.hh
 ellipticalgeometry.hh
 emptyintersection.hh
 geometry.hh
+getboundingbox.hh
 hollowcylinder.hh
 intersect.hh
 line.hh

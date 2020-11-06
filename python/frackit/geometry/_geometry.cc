@@ -45,6 +45,7 @@
 #include <frackit/python/geometry/distancetoboundary.hh>
 #include <frackit/python/geometry/magnitude.hh>
 #include <frackit/python/geometry/intersect.hh>
+#include <frackit/python/geometry/getboundingbox.hh>
 
 PYBIND11_MODULE(_geometry, module)
 {
@@ -90,4 +91,7 @@ PYBIND11_MODULE(_geometry, module)
 
     // intersection functions
     Frackit::Python::registerIntersectionFunctions<double>(module);
+
+    // bounding box computation
+    Frackit::Python::registerGetBoundingBox<double>(module);
 }
