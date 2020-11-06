@@ -1,3 +1,5 @@
+import sys
+
 # print welcome message
 print("\n\n"
       "##############################################################################\n"
@@ -14,7 +16,7 @@ domainShape = readShape("layers.brep")
 
 # obtain the three solids contained in the file
 solids = getSolids(domainShape)
-if len(solids) != 3: raise RuntimeError("Expected the .brep file to contain 3 solids")
+if len(solids) != 3: sys.exit("Expected the .brep file to contain 3 solids")
 
 # The sub-domain we want to create a network in is the center one.
 # Compute its volume and get the boundary faces for constraint evaluation.
@@ -22,10 +24,10 @@ from frackit.geometry import computeMagnitude
 networkDomain = solids[1]
 domainVolume = computeMagnitude(networkDomain);
 shells = getShells(networkDomain)
-if len(shells) != 1: raise RuntimeError("Expected a single shell bounding the domain")
+if len(shells) != 1: sys.exit("Expected a single shell bounding the domain")
 
 domainBoundaryFaces = getFaces(shells[0])
-if len(domainBoundaryFaces) != 6: raise RuntimeError("Expected 6 faces to bound the domain")
+if len(domainBoundaryFaces) != 6: sys.exit("Expected 6 faces to bound the domain")
 
 
 ##############################################################################
