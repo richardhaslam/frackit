@@ -145,6 +145,8 @@ from the command line via:
 sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libfreeimage-dev libtbb-dev libgl2ps-dev
 ``` -->
 
+### Installation of pybind11
+
 If you want to use the python bindings you need to install pybind11. You can get it from
 the GitHub repository at [github.com/pybind/pybind11/](https://github.com/pybind/pybind11/)
 and manually install it. Alternatively, you can install it via the command line (here shown for Ubuntu users)
