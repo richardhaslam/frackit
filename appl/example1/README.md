@@ -6,15 +6,23 @@
 Example 1
 =========
 
-In this exemplary application, a network of quadrilateral fractures is generated
-within the unit cube (see image above). The main file containing the source code
-to this example is the file `example1.cc` which is located in this folder. Note
-that this description focuses on the C++ implementation, but in `example1.py`
-it is illustrated how to realize this example using the Frackit python bindings.
+In this exemplary application, a network of quadrilateral fractures with two main
+orientations is generated within the unit cube (see image above). The main file
+containing the source code to this example is the file `example1.cc` which is
+located in this folder. Note that this description focuses on the C++ implementation,
+but in `example1.py` you can find how to realize this example using the Frackit
+python bindings.
+
+<b> _In this example, you will learn how to:_ </b>
+
+* use the sampler class for quadrilaterals
+* define and enforce geometric constraints between entities
+* construct an __EntityNetwork__ out of the raw entities to gather connectivity information
+
 
 ### Quadrilateral samplers
 
-Two main orientations are considered for the quadrilaterals, for both of which
+Two main orientations are considered for the quadrilaterals, and for both
 a corresponding instance of the `QuadrilateralSampler` class is created.
 For example, we instantiate an instance of this class by writing:
 
@@ -27,7 +35,7 @@ using UniformDistro = std::uniform_real_distribution<ctype>;
 using QuadSampler = QuadrilateralSampler<worldDimension>;
 
 Box<ctype> domain(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
-QuadSampler quadSampler(makeUniformPointSampler(domain),         // point sampler that samples the center points of the quadrilaterals
+QuadSampler quadSampler(makeUniformPointSampler(domain),               // point sampler that samples the center points of the quadrilaterals
                         NormalDistro(toRadians(0.0), toRadians(5.0)),  // strike angle: mean value & standard deviation
                         NormalDistro(toRadians(0.0), toRadians(5.0)),  // dip angle: mean value & standard deviation
                         UniformDistro(0.4, 0.8),                       // strike length
@@ -38,8 +46,9 @@ The first constructor argument is a point sampler with which the center points o
 the quadrilaterals are sampled. Here we use uniformly sampled points in the unit
 cube, which is represented by an instance of the `Box` class,  stored in the
 variable `domain`. The second and third arguments define the distributions for
-the strike and dip angle (for details see the [class documentation][2]), where in this case we use uniform distributions with
-a mean value of 0° and a standard deviation of 5°. The fourth and last arguments
+the strike and dip angles (for details see the [class documentation][2]), where in
+this case, we use uniform distributions with
+a mean value of 0° and a standard deviation of 5°. The last two arguments
 are distributions for the sizes of the quadrilaterals in strike and dip direction.
 
 In the example, the quadrilaterals are sampled from the two samplers `quadSampler1` and
@@ -57,7 +66,7 @@ entities.
 
 ### Constraints definitions
 
-In order to certain constraints to be fulfilled among the entities, we use instances
+In order for certain constraints to be fulfilled among the entities, we use instances
 of the `EntityNetworkConstraints` class and
 configure it as desired. For example, the constraints on entities of the same
 orientation are defined in this example as follows:
@@ -76,6 +85,16 @@ constraintsOnSelf.setMinIntersectionMagnitude(0.05);
 constraintsOnSelf.setMinIntersectionDistance(0.05);
 ```
 
+Among entities of different orientation, we want to ensure larger intersection angles.
+To this end, we simply create a copy of the constraints object, but define a larger
+minimum intersection angle:
+
+```cpp
+// with respect to entities of the other set, we want to have larger intersection angles
+ auto constraintsOnOther = constraintsOnSelf;
+constraintsOnOther.setMinIntersectingAngle(toRadians(40.0));
+```
+
 ### Entity sampling
 
 In the main loop of quadrilateral generation, we sample candidates for new
@@ -92,16 +111,22 @@ where `entityset1` and `entitySet2` are of type `std::vector<Quadrilateral>` and
 store all quadrilaterals that are accepted. The function `evaluate` of the
 `EntityNetworkConstraints` class evaluates the constraints for `quad` against all
 entities contained in `entitySet` and returns `true` only if no violation of
-any of the defined constraints has been found. After an admissible quadrilateral
-has been generated, the line
+any of the defined constraints has been detected. After an admissible quadrilateral
+has been generated, we add it to the current set by
+
+```cpp
+// the quadrilateral is admissible
+entitySet.push_back(quad);
+```
+
+and make sure that in the next iteration we sample a candidate of the other orientation:
 
 ```cpp
 // sample into the other set the next time
 sampleIntoSet1 = !sampleIntoSet1;
 ```
 
-at the end of the loop makes sure that a quadrilateral of the other orientation
-is sampled next. In [Example 3][0] we will get to know how to use helper classes
+In [Example 3][0] we will get to know how to use helper classes
 that store different entity sets and automatically sample from various sampler
 classes such that this can be written more easily.
 
@@ -123,7 +148,7 @@ This network can then be written to disk, for example in [Gmsh][1] (.geo) file f
 ```cpp
 GmshWriter writer(network);
 writer.write("network", // filename of the .geo files (will add extension .geo automatically)
-             0.1);      // element size to be used
+             0.1);      // element size to be used on the network entities
 ```
 
 Note that with the `EntityNetworkBuilder` class we have created a network that
