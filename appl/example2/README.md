@@ -10,6 +10,12 @@ __Note that this description focuses on the C++ implementation given in the main
 file `example2.cc`, but in `example2.py` it is illustrated how to realize this
 example using the Frackit python bindings.__
 
+<b> _In this example, you will learn how to:_ </b>
+
+* define a cylindrical domain
+* compute the part of entities that is contained inside the domain
+* confine the generated entity network onto the domain
+
 In this exemplary application, a network of quadrilaterals, following the same
 distributions as the network of [example 1][0], is created. However, in this
 example we want to confine the network to a cylindrical domain (see image above).
@@ -58,8 +64,8 @@ In the first two if clauses, the constraints against other entities are checked,
 subsequently, the constraints against the boundary faces of the domain cylinder are evaluated.
 As you can see, the constraints against the other entities are evaluated on the basis of the
 raw entities. This can potentially fail to detect small length scales that appear after confining
-the entities to the domain. A possibilty to address this and make the algorithm more robust (but
-less efficient) is discussed at the end of this page.
+the entities to the domain. A possibilty to address this and make the algorithm more robust
+(but computationally more demanding) is discussed at the end of this page.
 
 As you can see in the above code snippet, the `Cylinder` class provides functions for obtaining th
 representations of the top, bottom and lateral boundaries. The top and bottom boundaries are
@@ -160,7 +166,7 @@ In such a case, the constraint on the minimum allowed length of intersection seg
 might be fulfilled when checked on the raw entities, but might not be fulfilled on the
 final geometry after confinement of all entities to the domain.
 In order to overcome this, one can also evaluate the constraints on the confined entities,
-thus, using the final geometry of an entity after its confinement. This could be achieved
+and thus, using the final geometry of an entity after its confinement. This could be achieved
 by adjusting the part of the code of this example where the constraints are evaluated in the following way:
 
 ```cpp
@@ -185,7 +191,7 @@ Note that the variable `containedFaces` is of type `std::vector<TopoDS_Face>`,
 where `TopoDS_Face` is the OpenCascade type used to represent general two-dimensional
 faces. In the above code snippets we have assumed `entitySet` and `otherEntitySet`
 to also be of type `std::vector<TopoDS_Face>`, and to be composed of the previously
-accepted faces.
+accepted faces (also confined to the domain).
 
 An effective way to remove very small fragments or edges that were not "detected"
 by the constraints, is to adjust the epsilon used for the fragmentation.
