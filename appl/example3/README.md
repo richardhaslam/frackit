@@ -10,6 +10,16 @@ __As in the previous examples, this description focuses on the C++ implementatio
 given in the main file `example3.cc`, but in `example3.py` you can find how to
 realize this example using the Frackit python bindings.__
 
+<b> _In this example, you will learn how to:_ </b>
+
+* read in a complex domain geometry from an CAD file
+* get the bounding box of an arbitrary geometry
+* use the `MultiGeometrySampler` and `MultiGeometryEntitySet` classes to conveniently compose a network out of multiple entity geometries
+* use the `ConstraintsMatrix` class to conveniently define several constraints to be fulfilled among different entity sets
+* define multiple confining/non-confining sub-domains to place the entities in
+
+### Read in a domain geometry
+
 In contrast to the [previous example][0], we now want to create a network within
 a complex domain that cannot be represented by the internal geometry classes.
 The domain has been created with [Gmsh][1] and has been saved in .brep file format.
@@ -24,7 +34,7 @@ const auto domainShape = OCCUtilities::readShape(BREPFILE);
 BREPFILE is a preprocessor variable that is substituted by cmake with the actual
 path to the .brep file used for this test (see the file `CMakeLists.txt` in this folder).
 The domain specified in the .brep file consists of three layers (see above image),
-and we want to construct an entity network only in the center one. The variable
+and here we want to construct an entity network only in the center one. The variable
 `domainShape` contains the information of all layers, and we can use the utility
 function
 
@@ -41,6 +51,9 @@ const auto& networkDomain = solids[1];
 ```
 
 Note that this requires knowledge about the ordering of the solids in the .brep file.
+
+### Define entity samplers
+
 As in the previous examples, we need a point sampler that samples the points to be
 used as the center points of the fracture entities. In this example, we again want to
 uniformly sample the points within a box, for which we use the bounding box of
@@ -83,7 +96,7 @@ constructor arguments specify the distributions used to determine the orientatio
 of the disks (for details we refer to the [class documentation][3]).
 
 We use the `MultiGeometrySampler` class to facilitate sampling from several sampler
-class with possibly varying geometry types. Arbitrary many samplers can be added to
+classes with possibly varying geometry types. Arbitrary many samplers can be added to
 this class, with the following syntax:
 
 ```cpp
@@ -102,8 +115,8 @@ multiSampler.addGeometrySampler(diskSampler, diskSetId);
 multiSampler.addGeometrySampler(quadSampler, quadSetId);
 ```
 
-Each sampler is associated with a unique identifier and an error is thrown if it
-is tried to add a sampler with an identifier that is already taken. Sampling
+Each sampler is associated with a unique identifier and an error is thrown if one
+tries to add a sampler with an identifier that is already taken. Sampling
 occurs again by using the `()` operator, but, in this case it receives an instance
 of `Id`, in which it will store the identifier of the sampler from which the
 geometry has been generated. That is, the code
@@ -113,21 +126,26 @@ Id id;
 auto geom = multiSampler(id);
 ```
 
-stores in `id` the identifier of the sampler from which `geom` was sampled.
-The variable `geom` holds an instance of an abstract geometry class as the
-return type of the `()` operator of the `MultiGeometrySampler` must be uniquely
-defined. However, instances of the abstract geometry class can be cast back into
-the actual geometry (in this case `Disk` or `Quad`).
+stores in `id` the identifier of the sampler from which `geom` was sampled
+(in this case this is either `diskSetId` or `quadSetId`). Note that, per default,
+a `SequentialSamplingStrategy` is used, which means that the provided ids are used
+successively in the calls to the `()` operator. However, users can implement their
+own strategies and pass them to the constructor of `MultiGeometrySampler`.
+In the above code snippet, the variable `geom` holds an instance of an abstract
+geometry class as the return type of the `()` operator of the `MultiGeometrySampler`
+must be uniquely defined. However, instances of the abstract geometry class can be
+cast back into the actual geometry (in this case `Disk` or `Quad`).
 
 In this context, another useful class is the `MultiGeometryEntitySet`. It can
 store arbitrarily many sets of entities of different types. These
-types have to be provided as template arguments to the class:
+types have to be provided as template arguments to the class. In this example,
+we use `Quadrilateral`s and `Disk`s, and therefore, we construct the class as follows:
 
 ```cpp
 MultiGeometryEntitySet<Disk, Quad> entitySets;
 ```
 
-Entities are added passing a unique identifier, that is, the code
+Entities are again added by passing a unique identifier, that is, the code
 
 ```cpp
 Disk disk = diskSampler();
@@ -148,9 +166,11 @@ entitySets.addEntity(geom, id);
 This allows the generation and storage of multiple geometry types and multiple orientations
 in a compact way.
 
+### Constraints definitions
+
 In the previous examples, the constraints for a new entity candidate were evaluated
 manually against the previously admitted entities obtained from the different samplers.
-This becomes increasingly cumbersome the more directions are to be considered, especially
+This becomes increasingly cumbersome the more orientations are to be considered, especially
 if individual constraints are chosen between entities obtained from different samplers.
 In such cases, the `EntityNetworkConstraintsMatrix` class can be used to facilitate
 the constraints evaluation. It can be used in conjunction with the `MultiGeometryEntitySet`
@@ -184,10 +204,13 @@ if (!constraintsMatrix.evaluate(entitySets, geom, id))
 
 In this function call, `id` holds the identifier of the set for which the candidate
 `geom` was sampled. Internally, the `EntityNetworkConstraintsMatrix` instance will
-check `geom` against the other entity sets using all constraints that were defined for this identifier. For instance, in this example a disk-shaped geometry sampled from
+check `geom` against the other entity sets using all constraints that were defined for this identifier.
+For instance, in this example a disk-shaped geometry sampled from
 the sampler with id `diskSetId`, will be checked against all entities of the set with
 id `diskSetId` using `constraints1` and against all entities of the set with id `quadSetId`
 using `constraintsOnOther`.
+
+### Network construction
 
 After successful generation of the desired number of entities, we again want to
 construct an entity network from the raw entities and write it out in [Gmsh][1]
