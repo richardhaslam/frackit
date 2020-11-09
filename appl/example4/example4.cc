@@ -415,7 +415,7 @@ int main(int argc, char** argv)
     const auto domainVolume = computeMagnitude(domain);
     const auto numEntities = entitiesSet1.size()+entitiesSet2.size()+entitiesSet3.size();
     std::cout << "\nCreated a network consisting of " << numEntities << " entities\n";
-    std::cout << "Volume of the network: " << domainVolume << std::endl;
+    std::cout << "Volume of the domain: " << domainVolume << std::endl;
     std::cout << "Area of the network: " << area << " m²"
               << ", which corresponds to a density of " << area/domainVolume << " m²/m³" << std::endl;
 

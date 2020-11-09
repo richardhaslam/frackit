@@ -345,7 +345,7 @@ for e  in entitySets[setId2]:
 domainVolume = computeMagnitude(domain);
 numEntities = len(entitySets[setId1]) + len(entitySets[setId2]) + len(entitySets[setId3])
 print("\nCreated a network consisting of {:d} entities.".format(numEntities))
-print("Volume of the network: {:.2f}.".format(domainVolume))
+print("Volume of the domain: {:.2f}.".format(domainVolume))
 print("Area of the network: {:.2f} m², which corresponds to a density of {:.2f} m²/m³".format(area, area/domainVolume))
 
 ########################################################################################
