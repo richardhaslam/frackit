@@ -297,10 +297,10 @@ In this project, we follow the [styleguide][2] of the [DuMuX][0] project.
 Please have a look at this before you start coding your contributions.
 
 
-Ongoing Developments
+Future Developments
 ====================
 
-* Extending the available functionality in the Python bindings
+* Parallelization of the code
 * Kernel for detailed characterizations of the generated fracture networks (e.g. connectivity, density, etc.)
 * Capabilities for translation of fracture networks into graphs, allowing for efficient characterization of a network based on its graph representation.
 
