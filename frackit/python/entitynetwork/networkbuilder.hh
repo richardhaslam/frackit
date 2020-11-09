@@ -27,6 +27,7 @@
 
 // (currently) supported entity geometries
 #include <frackit/geometry/disk.hh>
+#include <frackit/geometry/polygon.hh>
 #include <frackit/geometry/quadrilateral.hh>
 #include <frackit/python/geometry/brepwrapper.hh>
 
@@ -76,6 +77,7 @@ namespace Detail {
     {
         registerSubDomainEntityAdder< Disk<ctype> >(cls);
         registerSubDomainEntityAdder< Quadrilateral<ctype, 3> >(cls);
+        registerSubDomainEntityAdder< Polygon<ctype, 3> >(cls);
         registerSubDomainEntityAdder< FaceWrapper >(cls);
     }
 
@@ -84,6 +86,7 @@ namespace Detail {
     {
         registerEntityAdder< Disk<ctype> >(cls);
         registerEntityAdder< Quadrilateral<ctype, 3> >(cls);
+        registerEntityAdder< Polygon<ctype, 3> >(cls);
         registerEntityAdder< FaceWrapper >(cls);
     }
 

@@ -92,19 +92,28 @@ namespace Detail {
         // types for which this ought to be able to evaluate
         using Disk = Frackit::Disk<ctype>;
         using Quad_3 = Frackit::Quadrilateral<ctype, 3>;
+        using Poly_3 = Frackit::Polygon<ctype, 3>;
         using Face = FaceWrapper;
 
         registerBinaryEvaluator<Disk, Disk>(cls);
         registerBinaryEvaluator<Disk, Quad_3>(cls);
+        registerBinaryEvaluator<Disk, Poly_3>(cls);
         registerBinaryEvaluator<Disk, Face>(cls);
 
         registerBinaryEvaluator<Quad_3, Quad_3>(cls);
+        registerBinaryEvaluator<Quad_3, Poly_3>(cls);
         registerBinaryEvaluator<Quad_3, Disk>(cls);
         registerBinaryEvaluator<Quad_3, Face>(cls);
+
+        registerBinaryEvaluator<Poly_3, Poly_3>(cls);
+        registerBinaryEvaluator<Poly_3, Quad_3>(cls);
+        registerBinaryEvaluator<Poly_3, Disk>(cls);
+        registerBinaryEvaluator<Poly_3, Face>(cls);
 
         registerBinaryEvaluator<Face, Face>(cls);
         registerBinaryEvaluator<Face, Disk>(cls);
         registerBinaryEvaluator<Face, Quad_3>(cls);
+        registerBinaryEvaluator<Face, Poly_3>(cls);
     }
 
 } // end namespace Detail
