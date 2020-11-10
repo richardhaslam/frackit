@@ -267,7 +267,7 @@ int main(int argc, char** argv)
 
     // after rejecting 500 candidates for an entity, we move to the next one
     const std::size_t maxTriesForEntity = 500;
-    auto printSkipMessage = [&maxTriesForEntity] ()
+    auto printSkipMessage = [&] ()
     {
         std::cout << "\t\t -- Skipped search for this entity after "
                   << maxTriesForEntity << " unsuccessful tries. --" << std::endl;
