@@ -118,7 +118,7 @@ of all geometric entities involved, i.e. the intersection geometries between
 all entities are computed. Thus, this information can be directly used in the
 context of discrete fracture-matrix (dfm) simulations in a conforming way as
 described before. For instance, the open-source simulator
-[DuMuX][3] [@Dumux; @koch2019dumux31]
+[DuMuX][3] [@Dumux; @Kochetal2020Dumux]
 contains a module for conforming dfm simulations of single- and multi-phase
 flow through fractured porous media, which has been used in several works
 [@glaeser2017; @glaeser2019; @andrianov2019].
