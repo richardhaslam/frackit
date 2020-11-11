@@ -34,7 +34,7 @@ a variety of CAD file formats for subsequent post-processing or meshing
 with other software. Besides that, output routines to the geometry file format
 of Gmsh ([gmsh.info/](https://www.gmsh.info/); @gmsh2009) are provided,
 which is an open-source mesh generator that is widely used in academic research
-on numerical methods (see e.g. @keilegavlen2017; @berge2019).
+on numerical methods (see e.g. @keilegavlen2020porepy; @berge2019).
 The code is written in C++, but Python
 bindings are provided that allow users to access all functionality from Python.
 
