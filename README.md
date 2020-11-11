@@ -172,7 +172,7 @@ the GitHub repository at [github.com/pybind/pybind11/](https://github.com/pybind
 and manually install it. Alternatively, you can install it via the command line (here shown for Ubuntu users)
 
 ```bash
-sudo apt install pybind11-dev
+sudo apt-get install pybind11-dev
 ```
 
 
