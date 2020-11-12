@@ -2,12 +2,11 @@
 .common:
   script: ./.ci_run_tests
 
-# base jobs using different compilers
-.ubuntu18.04 gcc-6:
-  extends: .common
-  variables:
-    CI_COMPILER: gcc
-    CI_COMPILER_VERSION: 6
+# base for merge requests that affect the core/tests
+.testbeforemerge:
+  only:
+    refs:
+      - merge_requests
 
 .ubuntu18.04 gcc-7:
   extends: .common
