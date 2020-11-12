@@ -157,9 +157,30 @@ THE FOLLOWING PHRASE BACK IN IF THEY RE-OPEN IT!
 , or get the tarballs from their
 development portal at http://dev.opencascade.org. Click [this link][16] to download
 the tarball for the version 7.3 release. -->
-Details on building [OpenCASCADE][2]
-can be found [HERE][10]. Please note that [OpenCASCADE][2] requires further 3rd
-party products, which are listed [HERE][11].
+Details on building [OpenCASCADE][2] can be found [HERE][10]. Please note that for
+a complete build, [OpenCASCADE][2] requires further third party products, which are
+listed [HERE][11]. However, Frackit only uses some of the modules of [OpenCASCADE][2]
+and for a minimal installation no third party products are required. To deactivate the
+modules that are not needed, set the corresponding cmake variables
+
+```sh
+BUILD_MODULE_ApplicationFramework=0
+BUILD_MODULE_DataExchange=0
+BUILD_MODULE_Draw=0
+BUILD_MODULE_Visualization=0 
+```
+
+for the configuration step of [OpenCASCADE][2]. For instance, after you downloaded the
+[OpenCASCADE][2] source files, go into the respective folder and type
+
+```sh
+mkdir build
+cd build
+cmake -DBUILD_MODULE_ApplicationFramework=0 -DBUILD_MODULE_DataExchange=0 -DBUILD_MODULE_Draw=0 -DBUILD_MODULE_Visualization=0 ../
+make install
+```
+
+to install only the required modules on your system.
 
 <!-- On Debian-based distributions, all of these can be installed
 from the command line via:
