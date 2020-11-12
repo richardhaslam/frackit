@@ -1,0 +1,39 @@
+# base for jobs, all run the same script
+.common:
+  script: ./.ci_run_tests
+
+# base for merge requests that affect the core/tests
+.testbeforemerge:
+  only:
+    refs:
+      - merge_requests
+
+.ubuntu18.04 gcc-7:
+  extends: .common
+  variables:
+    CI_COMPILER: gcc
+    CI_COMPILER_VERSION: 7
+
+.ubuntu18.04 gcc-8:
+  extends: .common
+  variables:
+    CI_COMPILER: gcc
+    CI_COMPILER_VERSION: 8
+
+.ubuntu18.04 clang-5:
+  extends: .common
+  variables:
+    CI_COMPILER: clang
+    CI_COMPILER_VERSION: 5
+
+.ubuntu18.04 clang-6:
+  extends: .common
+  variables:
+    CI_COMPILER: clang
+    CI_COMPILER_VERSION: 6
+
+.ubuntu18.04 clang-7:
+  extends: .common
+  variables:
+    CI_COMPILER: clang
+    CI_COMPILER_VERSION: 7

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# check if gcc or clang is to be used
+CI_CXX_COMPILER=""
+if [ "${CI_COMPILER}"=="gcc" ]; then
+    CI_CXX_COMPILER="g++"
+elif [ "${CI_COMPILER}"=="clang" ]; then
+    CI_CXX_COMPILER="clang++"
+else
+    echo "Unsupported compiler. Aborting."
+    exit 1
+fi
+
+echo "Compiling all tests with ${CI_COMPILER}-${CI_COMPILER_VERSION} " \
+                            "/ ${CI_CXX_COMPILER}-${CI_COMPILER_VERSION}"
+
+# create build directory, configure, build tests
+mkdir build && cd build && cmake -DCMAKE_C_COMPILER="${CI_COMPILER}-${CI_COMPILER_VERSION}" \
+                                 -DCMAKE_CXX_COMPILER="${CI_CXX_COMPILER}-${CI_COMPILER_VERSION}" ../
+
+# build tests
+make build_tests
+
+# run them
+ctest -V
