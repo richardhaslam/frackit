@@ -1,0 +1,6 @@
+include: .ci_base.yml
+
+# using OpenCascade 7.3
+ubuntu18.04 gcc-7 occ7.3:
+  extends: .ubuntu18.04 gcc-7
+  image: git.iws.uni-stuttgart.de:4567/tools/frackit/ubuntu18.04_occ7.3:latest
