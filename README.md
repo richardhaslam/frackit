@@ -176,7 +176,8 @@ sudo apt-get install pybind11-dev
 ```
 
 However, it is not guaranteed that the version of pybind11 that comes with the package
-contains all features used by `Frackit`. Therefore, we recommend to clone and install it from the repository.
+contains all features used by `Frackit`. Currently, testing occurs with version pybind11 version 2.6.
+Therefore, we recommend to clone the respective branch from the repository and maually install it.
 
 ### Building Frackit under Linux
 After [OpenCASCADE][2] and the other requirements listed above have been installed,
