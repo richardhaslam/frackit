@@ -91,8 +91,8 @@ numerical schemes, the mesh quality is of particular importance and should be
 taken into account already during the network generation. In particular, small length
 scales and angles at intersecting geometries should be avoided,
 as well as small distances due to fractures being very close to each other or to the
-domain boundary. Within the above-mentioned non-commercial packages, to the authors
-knowledge, such a feature (without the check for small angles) is only available
+domain boundary. Within the above-mentioned non-commercial packages,
+such a feature (without the check for small angles) is only available
 in @hyman2015dfnWorks. They describe fractures by polygons, which are also
 used to approximate elliptical shapes, and the domains are restricted
 to hexahedra. In ``Frackit``, such checks can be performed between arbitrary, possibly
@@ -118,7 +118,7 @@ of all geometric entities involved, i.e. the intersection geometries between
 all entities are computed. Thus, this information can be directly used in the
 context of discrete fracture-matrix (dfm) simulations in a conforming way as
 described before. For instance, the open-source simulator
-[DuMuX][3] [@Dumux; @Kochetal2020Dumux]
+[DuMuX][3] [@Dumux; @Kochetal2020Dumux; [dumux.org][3]]
 contains a module for conforming dfm simulations of single- and multi-phase
 flow through fractured porous media, which has been used in several works
 [@glaeser2017; @glaeser2019; @andrianov2019].
@@ -132,7 +132,7 @@ by means of numerical simulations.
 The design of ``Frackit`` is such that there is no predefined program flow, but
 instead, users should implement their own applications using the provided classes
 and functions. This allows for full customization of each step of the network
-generation. Besides this, in the case of available measurement data, one could
+generation. Furthermore, in the case of available measurement data, one could
 skip the network generation process and use ``Frackit`` to compute the fragmentation
 of the measured data and to generate CAD files for subsequent meshing. The code
 is structured around three fundamental tasks involved in the generation of random
@@ -146,10 +146,9 @@ networks:
 
 This paper focusses on the first two of the above-mentioned steps, and we refer
 to the code documentation for details on further available functionalities.
-Moreover, we focus on C++ code in the presented snippets, and refer to the examples
-of the ``Frackit`` repository
-([git.iws.uni-stuttgart.de/tools/frackit](https://git.iws.uni-stuttgart.de/tools/frackit))
-for details on how to use it from Python.
+The presented code snippets focus on the implementation in C++, and for details on
+how to use ``Frackit`` from Python we refer to the examples provided in the repository
+([git.iws.uni-stuttgart.de/tools/frackit][0]).
 
 ## Random generation of fracture entities
 
@@ -242,9 +241,9 @@ const auto quad = quadSampler();
 ## Evaluation of geometric constraints
 
 While the domain is populated with the raw fracture entities, users have the
-possibility to enforce geometric constraints between them in order
-to enforce topological characteristics as e.g. fracture spacing. Besides this,
-constraints can be used to avoid very small length scales that could cause problems
+possibility to enforce geometric constraints between them in order for the network
+to exhibit the desired topological characteristics such as, for instance, fracture spacing.
+Furthermore, constraints can be used to avoid very small length scales that could cause problems
 during mesh generation or could lead to ill-shaped elements. In the code, constraints
 can be defined and evaluated using the `EntityNetworkConstraints` class. These have
 to be fulfilled by a new fracture entity candidate against previously accepted
@@ -254,8 +253,8 @@ rejected and a new one is sampled. The current implementation of the
 to define a minimum distance between two entities that do not intersect. If two
 entities intersect, one can choose to enforce a minimum length of the intersection
 curve, a minimum intersection angle and a minimum distance between the intersection
-curve and the boundaries of the intersecting entities. An illustration of this
-is shown in \autoref{fig:constraints}.
+curve and the boundaries of the intersecting entities. An illustration of such
+situations is shown in \autoref{fig:constraints}.
 
 ![Illustration of the geometric settings that can be avoided using geometric constraints.\label{fig:constraints}](doc/img/constraints.png)
 
@@ -275,15 +274,16 @@ constraints.setMinIntersectingAngle(M_PI/4.0); // in radians
 constraints.setMinIntersectionMagnitude(0.05); // in meter
 constraints.setMinIntersectionDistance(0.05);  // in meter
 
-// define tolerance value to be used for intersections
+// define geometric tolerance to be used for intersections
 constraints.setIntersectionEpsilon(1e-6);
 ```
 
-When using the default constructor of `EntityNetworkConstraints`, all constraints
+When using the default constructor of `EntityNetworkConstraints` all constraints
 are inactive, and when defining values for the different constraint types, these
-get activated internally. Moreover, one can define the tolerance value that should
+get activated internally. The last line in the above code snippet shows how to
+define the geometric tolerance that should
 be used in the intersection algorithms between entities. If no tolerance is set,
-a default tolerance is computed based on the size of the entities for which the
+a default value is computed based on the size of the entities for which the
 intersection is to be determined. For two quadrilaterals `quad1` and `quad2`, one
 can then evaluate the defined constraints by writing:
 
@@ -316,11 +316,11 @@ and the documentation of that example in the repository. Note that this example 
 not meant to represent a realistic fracture network, but should rather highlight the
 flexibility of the code with respect to the geometries that can be used.
 
-Let us consider a domain consisting of three solid layers, of which we want to
-generate a fracture network only in the center volume. With the following piece
-of code we read in the domain geometry from the provided file, extract the three
-volumes of it and select the middle one as the one in which we want to place the
-fracture network.
+Let us consider a domain consisting of three solid layers of which we want to
+generate a fracture network only in the center volume. The following piece
+of code shows how to read in the domain geometry from a CAD file, extract
+its three volumes and select the middle one as the subdomain in which to place
+the fracture network (this assumes knowledge of the ordering of the volumes).
 
 ```cpp
 /////////////////////////////////////////////////////
@@ -356,7 +356,7 @@ of the `ContainedEntityNetwork` class. This can be used to define arbitrarily ma
 The `ContainedEntityNetwork` computes and stores the fragments of all entities
 and sub-domains resulting from mutual intersection. Output routines for instances
 of this class are implemented, which generate geometry files that are ready to be
-meshed using designated tools, as for example, [Gmsh][2].
+meshed using designated tools such as [Gmsh][2].
 
 The image below illustrates the workflow chosen in this example, using ``Frackit``
 to generate a random fracture network, [Gmsh][2] to mesh the resulting geometry,
@@ -381,7 +381,7 @@ the generated fracture networks into graph representations.
 
 # Acknowledgements
 
-We thank the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation)
+We thank the German Research Foundation (Deutsche Forschungsgemeinschaft)
 for supporting this work by funding SFB 1313, Project Number 327154368.
 
 # References
