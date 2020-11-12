@@ -20,9 +20,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -ggdb -Wall -Wextra -Wno-unused-parameter -Wno-sign-compare")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "$GXX_RELEASE_OPTS $GXX_RELEASE_WARNING_OPTS -g -ggdb -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS} -std=c++17 -O3 -g0 -Wall \
-                                              -funroll-loops -march=native \
+                                              -funroll-loops \
                                               -DNDEBUG=1 -fno-strict-aliasing \
                                               -fstrict-overflow -fno-finite-math-only")
+
+# if building for a docker container, do not use native flag
+option(CONFIG_FOR_DOCKER "Use compiler flags suitable for docker container" OFF)
+if (CONFIG_FOR_DOCKER)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=x86-64 -mtune=generic")
+else ()
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
+endif ()
 set(CMAKE_BUILD_TYPE Release)
 
 # Find OpenCascade
